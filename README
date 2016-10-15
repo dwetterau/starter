@@ -1,0 +1,15 @@
+## Initial setup:
+
+$ virtualenv --no-site-packages virtualenv/
+$ source virtualenv/bin/activate
+$ pip install django
+$ django-admin.py startproject starter
+$ cd starter
+$ python manage.py migrate
+
+## Webpack things
+$ npm install -g typescript webpack
+
+Then you can watch the dir with:
+$ webpack --progress --colors --watch
+

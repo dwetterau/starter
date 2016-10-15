@@ -1,0 +1,5 @@
+*.sqlite3
+virtualenv/
+node_modules/
+.idea/
+*.pyc

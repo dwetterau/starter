@@ -1,0 +1,16 @@
+{% extends "../base.html" %}
+
+{% block content %}
+
+    <div id="render-target"></div>
+    {%  load static %}
+    <!-- Dependencies -->
+    <script src="{% static "react/dist/react.js" %}"></script>
+    <script src="{% static "react-dom/dist/react-dom.js" %}"></script>
+
+    <script type="text/javascript" src="{%  static "dist/bundle.js" %}" charset="utf-8"></script>
+    <script defer>
+        AppRenderer({{ props|safe }})
+    </script>
+
+{% endblock content %}
