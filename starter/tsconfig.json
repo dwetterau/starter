@@ -9,6 +9,7 @@
     },
     "files": [
         "./static/js/main.tsx",
+        "./static/js/models.ts",
         "./static/js/components/app.tsx"
     ]
 }

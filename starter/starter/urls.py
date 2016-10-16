@@ -23,7 +23,7 @@ from starter import views
 
 
 urlpatterns = [
-    url(r'^/?$', views.index),
+    url(r'^$', views.index),
 
     # Auth urls
     # TODO: User creation as well

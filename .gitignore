@@ -3,3 +3,5 @@ virtualenv/
 node_modules/
 .idea/
 *.pyc
+site.db
+dist/

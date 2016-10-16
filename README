@@ -1,6 +1,6 @@
 ## Initial setup:
 
-$ virtualenv --no-site-packages virtualenv/
+$ virtualenv -p python3.5 --no-site-packages virtualenv/
 $ source virtualenv/bin/activate
 $ pip install django
 $ django-admin.py startproject starter
