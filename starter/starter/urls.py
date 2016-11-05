@@ -32,6 +32,9 @@ urlpatterns = [
     url(r'^auth/password_change/?$', auth_views.password_change),
     url(r'^auth/password_change_done/?$', auth_views.password_change_done),
 
+    # API v1
+    url(r'^api/1/task/create/?$', views.create_task),
+
     # Admin pages
     url(r'^admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
