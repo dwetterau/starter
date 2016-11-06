@@ -1,7 +1,7 @@
 import * as React from "react";
 import {CreateTaskComponent} from "./create_task"
 import {Task, User} from "../models";
-import {TaskComponent} from "./task"
+import {TaskBoardComponent} from "./task_board"
 
 export interface AppProps {meUser: User; tasks: Array<Task>;}
 
@@ -24,12 +24,14 @@ export class App extends React.Component<AppProps, {}> {
         return <CreateTaskComponent meUser={this.props.meUser}/>
     }
 
+    renderTaskBoard() {
+        return <TaskBoardComponent tasks={this.props.tasks} />
+    }
+
     render() {
         return <div>
             {this.renderHeader()}
-            {this.props.tasks.map((task) => {
-                return <TaskComponent task={task} key={task.id}/>
-            })}
+            {this.renderTaskBoard()}
             {this.renderCreateTask()}
         </div>
     }

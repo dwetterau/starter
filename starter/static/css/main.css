@@ -1,3 +1,36 @@
 body {
-    background: darkgrey;
+    background: rgb(250, 250, 250);
 }
+
+div.card {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, .04);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);
+    margin: 0 0 10px 0;
+    padding: 20px;
+    border-radius: 3px;
+    color: rgba(0, 0, 0, .84);
+    min-height: 20px;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+    display: block;
+}
+
+/* Task Board CSS */
+div.task-board {
+    width: 100%;
+}
+
+div.full-column-container {
+    display: flex;
+    flex-direction: row;
+}
+
+div.column-container {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    margin: .5em 1em;
+}
+
+/* End of Task Board CSS */

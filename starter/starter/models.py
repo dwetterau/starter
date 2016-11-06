@@ -63,6 +63,6 @@ class Task(models.Model):
 
             # TODO: include tags?
 
-            priority=self.Priority(self.priority).name,
-            state=self.State(self.state).name,
+            priority=self.Priority(self.priority).value,
+            state=self.State(self.state).value,
         )

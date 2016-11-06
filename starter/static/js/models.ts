@@ -13,9 +13,23 @@ export class Task {
     readonly authorId: number;
     ownerId: number;
     tags: Array<Tag>;
-    priority: string;
-    state: string;
+    priority: number;
+    state: number;
 }
+
+export const priorityNameList = [
+    ["Unknown",   0],
+    ["Lowest",  100],
+    ["Low",     200],
+    ["Normal",  300],
+    ["High",    400],
+    ["Highest", 500],
+];
+
+export const stateNameList = [
+    ["Open", 0], ["In Progress", 500],
+    ["Blocked", 750], ["Closed", 1000]
+];
 
 export class Tag {
     readonly id: number;
