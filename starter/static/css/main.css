@@ -24,6 +24,8 @@ div.task-board {
 div.full-column-container {
     display: flex;
     flex-direction: row;
+    height: 100%;
+    min-height: 768px;
 }
 
 div.column-container {
@@ -31,6 +33,10 @@ div.column-container {
     flex-direction: column;
     width: 25%;
     margin: .5em 1em;
+}
+
+div.column-container.drop-container {
+    background-color: rgba(0, 0, 0, .04);
 }
 
 /* End of Task Board CSS */
