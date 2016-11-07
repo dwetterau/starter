@@ -48,8 +48,8 @@ export class CreateTaskComponent extends React.Component<CreateTaskProps, {}> {
                 </select>
             </div>
 
-            <input type="hidden" name="author" value={this.props.meUser.id} />
-            <input type="hidden" name="owner" value={this.props.meUser.id} />
+            <input type="hidden" name="authorId" value={this.props.meUser.id} />
+            <input type="hidden" name="ownerId" value={this.props.meUser.id} />
 
             <input type="submit" value="Create" />
         </form>

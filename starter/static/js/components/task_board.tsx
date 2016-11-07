@@ -3,13 +3,13 @@ import * as jQuery from "jquery";
 import {Task, stateNameList} from "../models";
 import {TaskComponent} from "./task";
 
-export interface TaskBoardProps {tasks: Array<Task>}
+export interface TaskBoardProps {tasks: Array<Task>, updateTask: (task: Task) => void}
 export interface TaskBoardState {
     viewType: string,
     columns: Array<Array<Task>>,
     headers: Array<string>,
     columnTypes: Array<number>,
-    draggingTask: Task
+    draggingTask?: Task
 }
 
 export const TaskBoardViewTypes = {
@@ -22,9 +22,17 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     constructor(props: TaskBoardProps) {
         super(props);
 
+        this.state = this.getState(props);
+    }
+
+    componentWillReceiveProps(props: TaskBoardProps) {
+        this.setState(this.getState(props))
+    }
+
+    getState(props: TaskBoardProps): TaskBoardState {
         const viewType = TaskBoardViewTypes.status;
-        const [headers, columnTypes, columns] = this.divideByType(this.props.tasks, viewType);
-        this.state = {
+        const [headers, columnTypes, columns] = this.divideByType(props.tasks, viewType);
+        return {
             viewType,
             columns,
             headers,
@@ -67,7 +75,6 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         if (this.state.draggingTask) {
             throw Error("Already was dragging a task...")
         }
-        console.log("started dragging task:", task);
         this.state.draggingTask = task;
         this.setState(this.state)
     }
@@ -90,11 +97,14 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         event.preventDefault();
 
         // Update the task with the new column
-        console.log("Would update task to column type: ", columnType);
-        console.log(this.state.draggingTask.state);
+        if (this.state.viewType == TaskBoardViewTypes.status) {
+            this.state.draggingTask.state = columnType;
+        } else {
+            throw Error("Haven't implement drag and drop for this view type yet")
+        }
+        this.props.updateTask(this.state.draggingTask);
 
         jQuery(event.target).removeClass("drop-container");
-
         this.state.draggingTask = null;
         this.setState(this.state)
     }

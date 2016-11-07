@@ -61,8 +61,8 @@ def create_task(request):
         'description': str,
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
-        'author': lambda user_id: User.objects.get(id=int(user_id)),
-        'owner': lambda user_id: User.objects.get(id=int(user_id)),
+        'authorId': lambda user_id: User.objects.get(id=int(user_id)),
+        'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
 
     try:
@@ -71,7 +71,8 @@ def create_task(request):
         print(e)
         return HttpResponse(str(e.args).encode(), status=400, )
 
-    if arguments["author"] != request.user:
+    # Business logic checks
+    if arguments["authorId"] != request.user:
         return HttpResponse("Logged in user not the author".encode(), status=400)
 
     # TODO: tags!
@@ -80,8 +81,47 @@ def create_task(request):
         description=arguments["description"],
         priority=arguments["priority"].value,
         state=arguments["state"].value,
-        author=arguments["author"],
-        owner=arguments["owner"],
+        author=arguments["authorId"],
+        owner=arguments["ownerId"],
     )
+
+    return HttpResponse(json.dumps(task.to_dict()), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def update_task(request):
+    arguments = urllib.parse.parse_qs(request.body)
+    validation_map = {
+        'id': int,
+        'title': str,
+        'description': str,
+        'priority': lambda x: Task.Priority(int(x)),
+        'state': lambda x: Task.State(int(x)),
+        'authorId': lambda user_id: User.objects.get(id=int(user_id)),
+        'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
+    }
+
+    try:
+        arguments = _validate(arguments, validation_map)
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400)
+
+    # Business logic checks
+    if request.user not in [arguments["authorId"], arguments["ownerId"]]:
+        return HttpResponse("Must edit as owner or author".encode(), status=400)
+
+    task = Task.objects.get(id=arguments["id"])
+    if not task or task.author != arguments["authorId"]:
+        return HttpResponse("Invalid task specified.".encode(), status=400)
+
+    # Copy in all the mutable fields
+    task.title = arguments["title"]
+    task.description = arguments["description"]
+    task.priority = arguments["priority"].value
+    task.state = arguments["state"].value
+    task.owner = arguments["ownerId"]
+    task.save()
 
     return HttpResponse(json.dumps(task.to_dict()), status=200)
