@@ -16,6 +16,13 @@ export class App extends React.Component<AppProps, AppState> {
         }
     }
 
+    createTask(taskArgs: string) {
+        jQuery.post('/api/1/task/create', taskArgs, (newTaskJson: string) => {
+            this.state.tasks.push(JSON.parse(newTaskJson));
+            this.setState(this.state)
+        });
+    }
+
     updateTask(task: Task) {
         jQuery.post('/api/1/task/update', task, (updatedTaskJson: string) => {
             let updatedTask: Task = JSON.parse(updatedTaskJson);
@@ -28,6 +35,16 @@ export class App extends React.Component<AppProps, AppState> {
             });
             this.setState({tasks: newTasks});
         });
+    }
+
+    deleteTask(task: Task) {
+        jQuery.post('/api/1/task/delete', {id: task.id}, (deletedTaskJson: string) => {
+            const deletedTaskId = JSON.parse(deletedTaskJson).id;
+            const newTasks = this.state.tasks.filter((task: Task) => {
+                return task.id != deletedTaskId;
+            });
+            this.setState(({tasks: newTasks}));
+        })
     }
 
     renderAccountInfo() {
@@ -44,12 +61,17 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     renderCreateTask() {
-        return <CreateTaskComponent meUser={this.props.meUser}/>
+        return <CreateTaskComponent meUser={this.props.meUser}
+                                    createTask={this.createTask.bind(this)} />
     }
 
     renderTaskBoard() {
-        return <TaskBoardComponent tasks={this.state.tasks}
-                                   updateTask={this.updateTask.bind(this)} />
+        return <TaskBoardComponent
+            meUser={this.props.meUser}
+            tasks={this.state.tasks}
+            updateTask={this.updateTask.bind(this)}
+            deleteTask={this.deleteTask.bind(this)}
+        />
     }
 
     render() {

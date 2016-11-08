@@ -1,15 +1,23 @@
 import * as React from "react";
 import * as jQuery from "jquery";
-import {Task, stateNameList} from "../models";
+
+import {EditTaskComponent} from "./edit_task";
+import {Task, stateNameList, User} from "../models";
 import {TaskComponent} from "./task";
 
-export interface TaskBoardProps {tasks: Array<Task>, updateTask: (task: Task) => void}
+export interface TaskBoardProps {
+    meUser: User,
+    tasks: Array<Task>,
+    updateTask: (task: Task) => void,
+    deleteTask: (task: Task) => void,
+}
 export interface TaskBoardState {
     viewType: string,
     columns: Array<Array<Task>>,
     headers: Array<string>,
     columnTypes: Array<number>,
-    draggingTask?: Task
+    draggingTask?: Task,
+    editingTask?: Task,
 }
 
 export const TaskBoardViewTypes = {
@@ -37,7 +45,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             columns,
             headers,
             columnTypes,
-            draggingTask: null
+            draggingTask: null,
+            editingTask: null,
         }
     }
 
@@ -71,12 +80,14 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return [headerList, columnTypes, columnList];
     }
 
-    onDragStart(task: Task) {
+    _dragTargetElement: any = null;
+    onDragStart(task: Task, event: DragEvent) {
         if (this.state.draggingTask) {
             throw Error("Already was dragging a task...")
         }
         this.state.draggingTask = task;
-        this.setState(this.state)
+        this.setState(this.state);
+        this._dragTargetElement = jQuery(event.target)
     }
 
     onDragEnd(task: Task) {
@@ -86,7 +97,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
         // Clean up any leftover state if we didn't successfully drop somewhere
         this.state.draggingTask = null;
-        this.setState(this.state)
+        this.setState(this.state);
+        this._dragTargetElement.show();
     }
 
     onDrop(columnType: number, event: DragEvent) {
@@ -106,7 +118,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
         jQuery(event.target).removeClass("drop-container");
         this.state.draggingTask = null;
-        this.setState(this.state)
+        this.setState(this.state);
+        this._dragTargetElement.show();
     }
 
     onDragOver(event: any) {
@@ -115,6 +128,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             return
         }
         event.preventDefault();
+        this._dragTargetElement.hide();
         jQuery(event.target).addClass("drop-container")
     }
 
@@ -124,6 +138,12 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             return
         }
         jQuery(event.target).removeClass("drop-container")
+    }
+
+    onDoubleClick(task: Task) {
+        // Idk, open an editor modal or something
+        this.state.editingTask = task;
+        this.setState(this.state)
     }
 
     renderColumn(column: Array<Task>, header: string, columnType: number) {
@@ -136,8 +156,10 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             {column.map((task) => {
                 // TODO: determine draggability programatically
                 return <div key={task.id} className="draggable-task"
-                            draggable={true} onDragStart={this.onDragStart.bind(this, task)}
-                            onDragEnd={this.onDragEnd.bind(this, task)} >
+                            draggable={true}
+                            onDragStart={this.onDragStart.bind(this, task)}
+                            onDragEnd={this.onDragEnd.bind(this, task)}
+                            onDoubleClick={this.onDoubleClick.bind(this, task)} >
                     <TaskComponent task={task} viewType={this.state.viewType} />
                 </div>
             })}
@@ -161,9 +183,20 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         </div>
     }
 
+    renderEditingTask() {
+        if (!this.state.editingTask) {
+            return
+        }
+        return <EditTaskComponent meUser={this.props.meUser}
+                                  task={this.state.editingTask}
+                                  updateTask={this.props.updateTask}
+                                  deleteTask={this.props.deleteTask} />
+    }
+
     render() {
         return <div className="task-board">
             {this.renderColumns()}
+            {this.renderEditingTask()}
         </div>
     }
 }

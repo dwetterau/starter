@@ -35,6 +35,7 @@ urlpatterns = [
     # API v1
     url(r'^api/1/task/create/?$', views.create_task),
     url(r'^api/1/task/update/?$', views.update_task),
+    url(r'^api/1/task/delete/?$', views.delete_task),
 
     # Admin pages
     url(r'^admin/', admin.site.urls),

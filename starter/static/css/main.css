@@ -39,4 +39,8 @@ div.column-container.drop-container {
     background-color: rgba(0, 0, 0, .04);
 }
 
+div.draggable-task.-hidden {
+    display: none;
+}
+
 /* End of Task Board CSS */

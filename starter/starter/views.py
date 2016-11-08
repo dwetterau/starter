@@ -125,3 +125,25 @@ def update_task(request):
     task.save()
 
     return HttpResponse(json.dumps(task.to_dict()), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def delete_task(request):
+    arguments = urllib.parse.parse_qs(request.body)
+    validation_map = {
+        'id': int,
+    }
+    try:
+        arguments = _validate(arguments, validation_map)
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400)
+
+    # Business logic checks
+    task = Task.objects.get(id=arguments["id"])
+    if not task or task.author != request.user:
+        return HttpResponse("Invalid task specified".encode(), status=400)
+
+    task.delete()
+    return HttpResponse(json.dumps(dict(id=arguments["id"])), status=200)

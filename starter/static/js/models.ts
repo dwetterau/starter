@@ -7,6 +7,8 @@ export class User {
 }
 
 export class Task {
+    [k: string]: any // Needed because of some hacky reflection in edit_task.
+
     readonly id: number;
     title: string;
     description: string;

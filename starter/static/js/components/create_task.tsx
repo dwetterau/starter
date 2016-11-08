@@ -2,20 +2,20 @@ import * as React from "react";
 import {User} from "../models";
 import * as jQuery from "jquery";
 
-export interface CreateTaskProps {meUser: User;}
+export interface CreateTaskProps {meUser: User; createTask: (taskArgs: string) => void}
 
 export class CreateTaskComponent extends React.Component<CreateTaskProps, {}> {
 
-    static submitForm(event: React.FormEvent<HTMLFormElement>) {
+    submitForm(event: React.FormEvent<HTMLFormElement>) {
         // Note: This is pretty hacky, but for now it beats copying all form state out of the dom
         // with a lot of onChange handler stuff.
         event.preventDefault();
         const data = jQuery(event.target).serialize();
-        jQuery.post('/api/1/task/create', data);
+        this.props.createTask(data)
     }
 
     renderForm() {
-        return <form onSubmit={CreateTaskComponent.submitForm}>
+        return <form onSubmit={this.submitForm.bind(this)}>
             <div className="title-container">
                 <label htmlFor="title">Title: </label>
                 <input type="text" name="title" />
