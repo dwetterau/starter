@@ -2,7 +2,7 @@ import * as React from "react";
 import * as jQuery from "jquery";
 
 import {EditTaskComponent} from "./edit_task";
-import {Task, stateNameList, User} from "../models";
+import {Task, stateNameList, User, priorityNameList} from "../models";
 import {TaskComponent} from "./task";
 
 export interface TaskBoardProps {
@@ -12,7 +12,7 @@ export interface TaskBoardProps {
     deleteTask: (task: Task) => void,
 }
 export interface TaskBoardState {
-    viewType: string,
+    viewType: TaskBoardViewType,
     columns: Array<Array<Task>>,
     headers: Array<string>,
     columnTypes: Array<number>,
@@ -20,25 +20,24 @@ export interface TaskBoardState {
     editingTask?: Task,
 }
 
-export const TaskBoardViewTypes = {
-    status: "status",
-    priority: "priority"
-};
+export enum TaskBoardViewType {
+    status,
+    priority
+}
 
 export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoardState> {
 
     constructor(props: TaskBoardProps) {
         super(props);
 
-        this.state = this.getState(props);
+        this.state = this.getState(props, TaskBoardViewType.status);
     }
 
     componentWillReceiveProps(props: TaskBoardProps) {
-        this.setState(this.getState(props))
+        this.setState(this.getState(props, this.state.viewType))
     }
 
-    getState(props: TaskBoardProps): TaskBoardState {
-        const viewType = TaskBoardViewTypes.status;
+    getState(props: TaskBoardProps, viewType: TaskBoardViewType): TaskBoardState {
         const [headers, columnTypes, columns] = this.divideByType(props.tasks, viewType);
         return {
             viewType,
@@ -50,33 +49,65 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
     }
 
-    divideByType(tasks: Array<Task>, type: string): [
+    divideByType(tasks: Array<Task>, type: TaskBoardViewType): [
             Array<string>, Array<number>, Array<Array<Task>>] {
 
         const columns: {[columnType: number]: Array<Task>} = {};
         const columnList: Array<Array<Task>> = [];
         const headerList: Array<string> = [];
         const columnTypes: Array<number> = [];
-        if (type == TaskBoardViewTypes.status) {
-            // Categorize each task
-            tasks.forEach((task: Task) => {
-                if (!columns[task.state]) {
-                    columns[task.state] = [task];
-                } else {
-                    columns[task.state].push(task)
-                }
-            });
 
-            // Order the columns
-            stateNameList.forEach((stateAndValue: [string, number]) => {
-                let [state, value] = stateAndValue;
-                columnList.push(columns[value] || []);
-                headerList.push(state);
-                columnTypes.push(value);
-            })
-        } else {
+
+        const typeToHelpers: {
+            [type: string]: {
+                attr: string,
+                orderedNameAndValue: Array<Array<any>>
+                sortFunc: (a: Task, b: Task) => number
+            }
+        } = {};
+        typeToHelpers[TaskBoardViewType.status] = {
+            attr: "state",
+            orderedNameAndValue: stateNameList,
+            sortFunc: (a: Task, b: Task) => {
+                // This is to put UNKNOWN priority at the top.
+                const aPriority = a.priority == 0 ? 1000 : a.priority;
+                const bPriority = b.priority == 0 ? 1000 : b.priority;
+                return bPriority - aPriority
+            }
+        };
+        typeToHelpers[TaskBoardViewType.priority] = {
+            attr: "priority",
+            orderedNameAndValue: priorityNameList,
+            sortFunc: (a: Task, b: Task) => {
+                return a.state - b.state
+            }
+        };
+
+        if (!typeToHelpers[type]) {
             throw Error("Split type not implemented: " + type)
         }
+        const {attr, orderedNameAndValue, sortFunc} = typeToHelpers[type];
+
+        // Categorize each task
+        tasks.forEach((task: Task) => {
+            if (!columns[task[attr]]) {
+                columns[task[attr]] = [task];
+            } else {
+                columns[task[attr]].push(task)
+            }
+        });
+
+        // Order the columns
+        orderedNameAndValue.forEach((nameAndValue: [string, number]) => {
+            let [name, value] = nameAndValue;
+            // Sort each column
+            const column = columns[value] || [];
+            column.sort(sortFunc);
+            columnList.push(columns[value] || []);
+            headerList.push(name);
+            columnTypes.push(value);
+        });
+
         return [headerList, columnTypes, columnList];
     }
 
@@ -109,8 +140,10 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         event.preventDefault();
 
         // Update the task with the new column
-        if (this.state.viewType == TaskBoardViewTypes.status) {
+        if (this.state.viewType == TaskBoardViewType.status) {
             this.state.draggingTask.state = columnType;
+        } else if (this.state.viewType == TaskBoardViewType.priority) {
+            this.state.draggingTask.priority = columnType;
         } else {
             throw Error("Haven't implement drag and drop for this view type yet")
         }
@@ -144,6 +177,39 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         // Idk, open an editor modal or something
         this.state.editingTask = task;
         this.setState(this.state)
+    }
+
+    changeViewType(type: TaskBoardViewType) {
+        const [headers, columnTypes, columns] = this.divideByType(this.props.tasks, type);
+        this.setState({
+            viewType: type,
+            headers,
+            columnTypes,
+            columns,
+        });
+    }
+
+    renderTypeChoice(type: TaskBoardViewType) {
+        let className = "view-type-choice";
+        if (type == this.state.viewType) {
+            className += " -selected"
+        }
+        return (
+            <div className={className} key={type}
+                 onClick={this.changeViewType.bind(this, type)}
+            >
+                {TaskBoardViewType[type]}
+            </div>
+        )
+    }
+
+    renderTypeSelector() {
+        return (
+            <div className="view-type-selector">
+                {this.renderTypeChoice(TaskBoardViewType.priority)}
+                {this.renderTypeChoice(TaskBoardViewType.status)}
+            </div>
+        )
     }
 
     renderColumn(column: Array<Task>, header: string, columnType: number) {
@@ -195,6 +261,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     render() {
         return <div className="task-board">
+            {this.renderTypeSelector()}
             {this.renderColumns()}
             {this.renderEditingTask()}
         </div>

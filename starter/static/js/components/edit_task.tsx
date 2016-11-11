@@ -1,5 +1,6 @@
 import * as React from "react";
 import {User, Task} from "../models";
+import {TokenizerComponent, Tokenizable} from "./tokenizer";
 
 export interface EditTaskProps {
     meUser: User;
@@ -33,6 +34,11 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
     updateAttr(attrName: string, event: any) {
         this.state.task[attrName] = event.target.value;
         this.setState(this.state);
+    }
+
+    retrieveTags(tokens: Array<Tokenizable>) {
+        // TODO: Take the tags and send them to the server on save.
+        // console.log("Got new token:", tokens)
     }
 
     renderForm() {
@@ -77,6 +83,10 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
                     <option value="750">Blocked</option>
                     <option value="1000">Closed</option>
                 </select>
+            </div>
+
+            <div className="tag-tokenizer-container">
+                <TokenizerComponent onChange={this.retrieveTags.bind(this)} />
             </div>
 
             <input type="hidden" name="authorId" value={this.state.task.authorId} />

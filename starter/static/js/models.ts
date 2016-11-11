@@ -21,11 +21,11 @@ export class Task {
 
 export const priorityNameList = [
     ["Unknown",   0],
-    ["Lowest",  100],
-    ["Low",     200],
-    ["Normal",  300],
-    ["High",    400],
     ["Highest", 500],
+    ["High",    400],
+    ["Normal",  300],
+    ["Low",     200],
+    ["Lowest",  100],
 ];
 
 export const stateNameList = [

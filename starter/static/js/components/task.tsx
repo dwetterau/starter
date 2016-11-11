@@ -1,12 +1,17 @@
 import * as React from "react";
 import {Task, priorityNameList, stateNameList} from "../models";
-import {TaskBoardViewTypes} from "./task_board";
+import {TaskBoardViewType} from "./task_board";
 
-export interface TaskProps {task: Task; viewType: string}
+export interface TaskProps {task: Task; viewType: TaskBoardViewType}
 
 export class TaskComponent extends React.Component<TaskProps, {}> {
 
     renderPriority() {
+        // If we are viewing in priority columns, omit this line
+        if (this.props.viewType == TaskBoardViewType.priority) {
+            return
+        }
+
         let name = '';
         priorityNameList.forEach((nameAndPriority: [string, number]) => {
             let [n, priority] = nameAndPriority;
@@ -21,7 +26,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
 
     renderState() {
         // If we are viewing in state columns, omit this line
-        if (this.props.viewType == TaskBoardViewTypes.status) {
+        if (this.props.viewType == TaskBoardViewType.status) {
             return
         }
 
