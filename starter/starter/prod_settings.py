@@ -23,7 +23,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'node_modules/react-dom/dist/'),
     os.path.join(BASE_DIR, 'node_modules/jquery/dist/'),
 )
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+STATIC_ROOT = '/www/starter/static'
 
 
 # Quick-start development settings - unsuitable for production
