@@ -13,25 +13,30 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(PROJECT_DIR)
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
-    os.path.join(BASE_DIR, 'node_modules/'),
+
+    # 3rd party libraries we don't bundle for caching reasons
+    os.path.join(BASE_DIR, 'node_modules/react/dist/'),
+    os.path.join(BASE_DIR, 'node_modules/react-dom/dist/'),
+    os.path.join(BASE_DIR, 'node_modules/jquery/dist/'),
 )
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# This secret is only used for the debugging mode.
-SECRET_KEY = 'xtw1#&-#zs7-7y0mwc%mlewvki6ulblb0@y(n*m3ten4olciv5'
+import os
+SECRET_KEY = os.environ['SECRET_KEY'] 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
