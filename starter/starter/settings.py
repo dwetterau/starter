@@ -16,7 +16,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
-    os.path.join(BASE_DIR, 'node_modules/'),
+
+    # 3rd party libraries we don't bundle for caching reasons
+    os.path.join(BASE_DIR, 'node_modules/react/dist/'),
+    os.path.join(BASE_DIR, 'node_modules/react-dom/dist/'),
+    os.path.join(BASE_DIR, 'node_modules/jquery/dist/'),
 )
 
 
