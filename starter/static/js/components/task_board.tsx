@@ -47,7 +47,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             columnTypes,
             draggingTask: null,
             editingTask: null,
-            shouldHideClosedTasks: false,
+            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : false,
         }
     }
 

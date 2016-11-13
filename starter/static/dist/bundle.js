@@ -643,7 +643,7 @@
 	            columnTypes: columnTypes,
 	            draggingTask: null,
 	            editingTask: null,
-	            shouldHideClosedTasks: false,
+	            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : false,
 	        };
 	    };
 	    TaskBoardComponent.prototype.divideByType = function (tasks, type) {
