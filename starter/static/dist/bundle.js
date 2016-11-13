@@ -134,7 +134,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n", ""]);
+	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n/* Task view CSS */", ""]);
 	
 	// exports
 
@@ -617,8 +617,8 @@
 	var React = __webpack_require__(5);
 	var jQuery = __webpack_require__(7);
 	var edit_task_1 = __webpack_require__(11);
-	var models_1 = __webpack_require__(12);
-	var task_1 = __webpack_require__(13);
+	var models_1 = __webpack_require__(13);
+	var task_1 = __webpack_require__(14);
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
 	    TaskBoardViewType[TaskBoardViewType["priority"] = 1] = "priority";
@@ -643,9 +643,11 @@
 	            columnTypes: columnTypes,
 	            draggingTask: null,
 	            editingTask: null,
+	            shouldHideClosedTasks: false,
 	        };
 	    };
 	    TaskBoardComponent.prototype.divideByType = function (tasks, type) {
+	        var _this = this;
 	        var columns = {};
 	        var columnList = [];
 	        var headerList = [];
@@ -672,8 +674,18 @@
 	            throw Error("Split type not implemented: " + type);
 	        }
 	        var _a = typeToHelpers[type], attr = _a.attr, orderedNameAndValue = _a.orderedNameAndValue, sortFunc = _a.sortFunc;
+	        var shouldHideTask = function (task) {
+	            if (!_this.state) {
+	                // This is the initial call where we are defining state...
+	                return false;
+	            }
+	            return _this.state.shouldHideClosedTasks && task.state == 1000;
+	        };
 	        // Categorize each task
 	        tasks.forEach(function (task) {
+	            if (shouldHideTask(task)) {
+	                return;
+	            }
 	            if (!columns[task[attr]]) {
 	                columns[task[attr]] = [task];
 	            }
@@ -760,7 +772,15 @@
 	            headers: headers,
 	            columnTypes: columnTypes,
 	            columns: columns,
+	            shouldHideClosedTasks: this.state.shouldHideClosedTasks
 	        });
+	    };
+	    TaskBoardComponent.prototype.changeHideClosedTasks = function () {
+	        this.state.shouldHideClosedTasks = !this.state.shouldHideClosedTasks;
+	        // As a hack to reflow the columns, we will "change the view type to the current one".
+	        this.changeViewType(this.state.viewType);
+	        // We omit a call to setState ourselves because the hiding of the task will also call
+	        // setState.
 	    };
 	    TaskBoardComponent.prototype.renderTypeChoice = function (type) {
 	        var className = "view-type-choice";
@@ -773,6 +793,21 @@
 	        return (React.createElement("div", {className: "view-type-selector"}, 
 	            this.renderTypeChoice(TaskBoardViewType.priority), 
 	            this.renderTypeChoice(TaskBoardViewType.status)));
+	    };
+	    TaskBoardComponent.prototype.renderHideClosedTasks = function () {
+	        return (React.createElement("div", {className: "hide-closed-tasks"}, 
+	            "Hide closed?", 
+	            React.createElement("input", {type: "checkbox", onChange: this.changeHideClosedTasks.bind(this), value: this.state.shouldHideClosedTasks.toString()})));
+	    };
+	    TaskBoardComponent.prototype.renderTypeBasedOptions = function () {
+	        if (this.state.viewType == TaskBoardViewType.priority) {
+	            return this.renderHideClosedTasks();
+	        }
+	    };
+	    TaskBoardComponent.prototype.renderOptions = function () {
+	        return (React.createElement("div", {className: "task-board-options"}, 
+	            this.renderTypeSelector(), 
+	            this.renderTypeBasedOptions()));
 	    };
 	    TaskBoardComponent.prototype.renderColumn = function (column, header, columnType) {
 	        var _this = this;
@@ -801,7 +836,7 @@
 	    };
 	    TaskBoardComponent.prototype.render = function () {
 	        return React.createElement("div", {className: "task-board"}, 
-	            this.renderTypeSelector(), 
+	            this.renderOptions(), 
 	            this.renderColumns(), 
 	            this.renderEditingTask());
 	    };
@@ -821,7 +856,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(14);
+	var tokenizer_1 = __webpack_require__(12);
 	var EditTaskComponent = (function (_super) {
 	    __extends(EditTaskComponent, _super);
 	    function EditTaskComponent(props) {
@@ -893,110 +928,6 @@
 
 /***/ },
 /* 12 */
-/***/ function(module, exports) {
-
-	"use strict";
-	var User = (function () {
-	    function User() {
-	    }
-	    return User;
-	}());
-	exports.User = User;
-	var Task = (function () {
-	    function Task() {
-	    }
-	    return Task;
-	}());
-	exports.Task = Task;
-	exports.priorityNameList = [
-	    ["Unknown", 0],
-	    ["Highest", 500],
-	    ["High", 400],
-	    ["Normal", 300],
-	    ["Low", 200],
-	    ["Lowest", 100],
-	];
-	exports.stateNameList = [
-	    ["Open", 0], ["In Progress", 500],
-	    ["Blocked", 750], ["Closed", 1000]
-	];
-	var Tag = (function () {
-	    function Tag() {
-	    }
-	    return Tag;
-	}());
-	exports.Tag = Tag;
-	var TagGroup = (function () {
-	    function TagGroup() {
-	    }
-	    return TagGroup;
-	}());
-	exports.TagGroup = TagGroup;
-
-
-/***/ },
-/* 13 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(5);
-	var models_1 = __webpack_require__(12);
-	var task_board_1 = __webpack_require__(10);
-	var TaskComponent = (function (_super) {
-	    __extends(TaskComponent, _super);
-	    function TaskComponent() {
-	        _super.apply(this, arguments);
-	    }
-	    TaskComponent.prototype.renderPriority = function () {
-	        var _this = this;
-	        // If we are viewing in priority columns, omit this line
-	        if (this.props.viewType == task_board_1.TaskBoardViewType.priority) {
-	            return;
-	        }
-	        var name = '';
-	        models_1.priorityNameList.forEach(function (nameAndPriority) {
-	            var n = nameAndPriority[0], priority = nameAndPriority[1];
-	            if (_this.props.task.priority == priority) {
-	                name = n;
-	            }
-	        });
-	        return (React.createElement("div", {className: "task-priority"}, name));
-	    };
-	    TaskComponent.prototype.renderState = function () {
-	        var _this = this;
-	        // If we are viewing in state columns, omit this line
-	        if (this.props.viewType == task_board_1.TaskBoardViewType.status) {
-	            return;
-	        }
-	        var name = '';
-	        models_1.stateNameList.forEach(function (nameAndState) {
-	            var n = nameAndState[0], state = nameAndState[1];
-	            if (_this.props.task.state == state) {
-	                name = n;
-	            }
-	        });
-	        return (React.createElement("div", {className: "task-state"}, name));
-	    };
-	    TaskComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "task card"}, 
-	            React.createElement("div", {className: "task-title"}, this.props.task.title), 
-	            React.createElement("div", {className: "task-description"}, this.props.task.description), 
-	            this.renderPriority(), 
-	            this.renderState(), 
-	            React.createElement("div", {className: "task-owner"}, this.props.task.ownerId));
-	    };
-	    return TaskComponent;
-	}(React.Component));
-	exports.TaskComponent = TaskComponent;
-
-
-/***/ },
-/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1054,6 +985,119 @@
 	    return TokenizerComponent;
 	}(React.Component));
 	exports.TokenizerComponent = TokenizerComponent;
+
+
+/***/ },
+/* 13 */
+/***/ function(module, exports) {
+
+	"use strict";
+	var User = (function () {
+	    function User() {
+	    }
+	    return User;
+	}());
+	exports.User = User;
+	var Task = (function () {
+	    function Task() {
+	    }
+	    return Task;
+	}());
+	exports.Task = Task;
+	exports.priorityNameList = [
+	    ["Unknown", 0],
+	    ["Highest", 500],
+	    ["High", 400],
+	    ["Normal", 300],
+	    ["Low", 200],
+	    ["Lowest", 100],
+	];
+	exports.stateNameList = [
+	    ["Open", 0], ["In Progress", 500],
+	    ["Blocked", 750], ["Closed", 1000]
+	];
+	var Tag = (function () {
+	    function Tag() {
+	    }
+	    return Tag;
+	}());
+	exports.Tag = Tag;
+	var TagGroup = (function () {
+	    function TagGroup() {
+	    }
+	    return TagGroup;
+	}());
+	exports.TagGroup = TagGroup;
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var models_1 = __webpack_require__(13);
+	var task_board_1 = __webpack_require__(10);
+	var TaskComponent = (function (_super) {
+	    __extends(TaskComponent, _super);
+	    function TaskComponent() {
+	        _super.apply(this, arguments);
+	    }
+	    TaskComponent.prototype.renderTaskId = function () {
+	        return (React.createElement("div", {className: "task-id"}, 
+	            "T", 
+	            this.props.task.id));
+	    };
+	    TaskComponent.prototype.renderPriority = function () {
+	        var _this = this;
+	        // If we are viewing in priority columns, omit this line
+	        if (this.props.viewType == task_board_1.TaskBoardViewType.priority) {
+	            return;
+	        }
+	        var name = '';
+	        models_1.priorityNameList.forEach(function (nameAndPriority) {
+	            var n = nameAndPriority[0], priority = nameAndPriority[1];
+	            if (_this.props.task.priority == priority) {
+	                name = n;
+	            }
+	        });
+	        return (React.createElement("div", {className: "task-priority"}, 
+	            "Priority: ", 
+	            name));
+	    };
+	    TaskComponent.prototype.renderState = function () {
+	        var _this = this;
+	        // If we are viewing in state columns, omit this line
+	        if (this.props.viewType == task_board_1.TaskBoardViewType.status) {
+	            return;
+	        }
+	        var name = '';
+	        models_1.stateNameList.forEach(function (nameAndState) {
+	            var n = nameAndState[0], state = nameAndState[1];
+	            if (_this.props.task.state == state) {
+	                name = n;
+	            }
+	        });
+	        return (React.createElement("div", {className: "task-state"}, 
+	            "State: ", 
+	            name));
+	    };
+	    TaskComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "task card"}, 
+	            this.renderTaskId(), 
+	            React.createElement("div", {className: "task-title"}, this.props.task.title), 
+	            React.createElement("div", {className: "task-description"}, this.props.task.description), 
+	            this.renderPriority(), 
+	            this.renderState());
+	    };
+	    return TaskComponent;
+	}(React.Component));
+	exports.TaskComponent = TaskComponent;
 
 
 /***/ }

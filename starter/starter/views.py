@@ -20,7 +20,7 @@ from starter.utils import user_to_dict
 def index(request):
     props = json.dumps(dict(
         meUser=user_to_dict(request.user),
-        tasks=[task.to_dict() for task in Task.get_by_owner_id(request.user)],
+        tasks=[task.to_dict() for task in Task.get_by_owner_id(request.user.id)],
     ))
     return render(request, 'starter/index.html', dict(props=props))
 
@@ -84,6 +84,7 @@ def create_task(request):
         author=arguments["authorId"],
         owner=arguments["ownerId"],
     )
+    task.create_local_id(arguments["authorId"])
 
     return HttpResponse(json.dumps(task.to_dict()), status=200)
 
@@ -112,7 +113,7 @@ def update_task(request):
     if request.user not in [arguments["authorId"], arguments["ownerId"]]:
         return HttpResponse("Must edit as owner or author".encode(), status=400)
 
-    task = Task.objects.get(id=arguments["id"])
+    task = Task.get_by_local_id(arguments["id"], request.user)
     if not task or task.author != arguments["authorId"]:
         return HttpResponse("Invalid task specified.".encode(), status=400)
 
@@ -141,7 +142,7 @@ def delete_task(request):
         return HttpResponse(str(e.args).encode(), status=400)
 
     # Business logic checks
-    task = Task.objects.get(id=arguments["id"])
+    task = Task.get_by_local_id(arguments["id"], request.user)
     if not task or task.author != request.user:
         return HttpResponse("Invalid task specified".encode(), status=400)
 

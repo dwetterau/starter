@@ -44,3 +44,14 @@ div.draggable-task.-hidden {
 }
 
 /* End of Task Board CSS */
+
+/* Task view CSS */
+.task-id {
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
+.task-title {
+    font-weight: bold;
+}
+/* Task view CSS */

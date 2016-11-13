@@ -18,6 +18,7 @@ export interface TaskBoardState {
     columnTypes: Array<number>,
     draggingTask?: Task,
     editingTask?: Task,
+    shouldHideClosedTasks: boolean,
 }
 
 export enum TaskBoardViewType {
@@ -46,6 +47,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             columnTypes,
             draggingTask: null,
             editingTask: null,
+            shouldHideClosedTasks: false,
         }
     }
 
@@ -88,8 +90,20 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
         const {attr, orderedNameAndValue, sortFunc} = typeToHelpers[type];
 
+        const shouldHideTask = (task: Task) => {
+            if (!this.state) {
+                // This is the initial call where we are defining state...
+                return false
+            }
+            return this.state.shouldHideClosedTasks && task.state == 1000
+        };
+
         // Categorize each task
         tasks.forEach((task: Task) => {
+            if (shouldHideTask(task)) {
+                return
+            }
+
             if (!columns[task[attr]]) {
                 columns[task[attr]] = [task];
             } else {
@@ -186,7 +200,18 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             headers,
             columnTypes,
             columns,
+            shouldHideClosedTasks: this.state.shouldHideClosedTasks
         });
+    }
+
+    changeHideClosedTasks() {
+        this.state.shouldHideClosedTasks = !this.state.shouldHideClosedTasks;
+
+        // As a hack to reflow the columns, we will "change the view type to the current one".
+        this.changeViewType(this.state.viewType);
+
+        // We omit a call to setState ourselves because the hiding of the task will also call
+        // setState.
     }
 
     renderTypeChoice(type: TaskBoardViewType) {
@@ -208,6 +233,32 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             <div className="view-type-selector">
                 {this.renderTypeChoice(TaskBoardViewType.priority)}
                 {this.renderTypeChoice(TaskBoardViewType.status)}
+            </div>
+        )
+    }
+
+    renderHideClosedTasks() {
+        return (
+            <div className="hide-closed-tasks">
+                Hide closed?
+                <input type="checkbox" onChange={this.changeHideClosedTasks.bind(this)}
+                       value={this.state.shouldHideClosedTasks.toString()}
+                />
+            </div>
+        )
+    }
+
+    renderTypeBasedOptions() {
+        if (this.state.viewType == TaskBoardViewType.priority) {
+            return this.renderHideClosedTasks()
+        }
+    }
+
+    renderOptions() {
+        return (
+            <div className="task-board-options">
+                {this.renderTypeSelector()}
+                {this.renderTypeBasedOptions()}
             </div>
         )
     }
@@ -261,7 +312,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     render() {
         return <div className="task-board">
-            {this.renderTypeSelector()}
+            {this.renderOptions()}
             {this.renderColumns()}
             {this.renderEditingTask()}
         </div>

@@ -6,6 +6,14 @@ export interface TaskProps {task: Task; viewType: TaskBoardViewType}
 
 export class TaskComponent extends React.Component<TaskProps, {}> {
 
+    renderTaskId() {
+        return (
+            <div className="task-id">
+                T{this.props.task.id}
+            </div>
+        )
+    }
+
     renderPriority() {
         // If we are viewing in priority columns, omit this line
         if (this.props.viewType == TaskBoardViewType.priority) {
@@ -20,7 +28,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
             }
         });
         return (
-            <div className="task-priority">{name}</div>
+            <div className="task-priority">Priority: {name}</div>
         );
     }
 
@@ -38,17 +46,17 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
             }
         });
         return (
-            <div className="task-state">{name}</div>
+            <div className="task-state">State: {name}</div>
         );
     }
 
     render() {
         return <div className="task card">
+            {this.renderTaskId()}
             <div className="task-title">{this.props.task.title}</div>
             <div className="task-description">{this.props.task.description}</div>
             {this.renderPriority()}
             {this.renderState()}
-            <div className="task-owner">{this.props.task.ownerId}</div>
         </div>
     }
 }

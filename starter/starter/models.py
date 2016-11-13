@@ -50,12 +50,30 @@ class Task(models.Model):
     state = models.SmallIntegerField("The current state of the task")
 
     @classmethod
-    def get_by_owner_id(cls, user):
-        return Task.objects.filter(owner_id=user.id)
+    def get_by_owner_id(cls, user_id):
+        return Task.objects.filter(owner_id=user_id)
+
+    @classmethod
+    def get_by_local_id(cls, local_id, user):
+        task_id = TaskGlobalId.objects.get(user_id=user.id, local_id=local_id).task_id
+        return Task.objects.get(id=task_id)
+
+    def create_local_id(self, user):
+        cur_last = TaskGlobalId.objects.filter(user_id=user.id).order_by("local_id").last()
+        last_id = cur_last.local_id if cur_last else 0
+        TaskGlobalId.objects.create(
+            task=self,
+            user=user,
+            local_id=last_id + 1,
+        )
+
+    def get_local_id(self):
+        # TODO: Cache this locally since it's immutable?
+        return TaskGlobalId.objects.get(task_id=self.id, user_id=self.author_id).local_id
 
     def to_dict(self):
         return dict(
-            id=self.id,
+            id=self.get_local_id(),
             title=self.title,
             description=self.description,
             authorId=self.author_id,
@@ -66,3 +84,9 @@ class Task(models.Model):
             priority=self.Priority(self.priority).value,
             state=self.State(self.state).value,
         )
+
+
+class TaskGlobalId(models.Model):
+    user = models.ForeignKey(User, related_name="user")
+    task = models.ForeignKey(Task, related_name="task")
+    local_id = models.IntegerField(db_index=True)
