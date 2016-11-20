@@ -1,4 +1,5 @@
 import enum
+from threading import Lock
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -8,16 +9,36 @@ class Tag(models.Model):
     """
     A way to keep track of many different tasks.
     """
-    name = models.CharField("descriptive name of the tag", max_length=64)
+    name = models.CharField("descriptive name of the tag", max_length=64, db_index=True)
+    models.ManyToManyField("self",
+                           through="TagEdge",
+                           symmetrical=False,
+                           verbose_name="The tags contained by this tag")
+    owner = models.ForeignKey(User, related_name="owned_tags", verbose_name="Owner of this tag")
+
+    def get_children(self):
+        return self.child_tag.all()
+
+    def get_parents(self):
+        return self.parent_tag.all()
+
+    def to_dict(self):
+        return dict(
+            id=self.id,
+            name=self.name,
+            ownerId=self.owner_id,
+            childTagIds=[x.child_tag_id for x in self.get_children()],
+        )
+
+    @classmethod
+    def get_all_owned_tags(cls, user: User):
+        return user.owned_tags.all()
 
 
-class TagGroup(models.Model):
-    """
-    A higher-order tag that contains other tags. In the future this may contain other TagGroups
-    as well.
-    """
-    name = models.CharField("descriptive name of the tag group", max_length=64)
-    models.ManyToManyField(Tag, verbose_name="The tags for this group of tags")
+class TagEdge(models.Model):
+    # No, these related names are not flipped. It's just unintuitive.
+    parent_tag = models.ForeignKey(Tag, related_name='child_tag')
+    child_tag = models.ForeignKey(Tag, related_name='parent_tag')
 
 
 class Task(models.Model):
@@ -59,13 +80,14 @@ class Task(models.Model):
         return Task.objects.get(id=task_id)
 
     def create_local_id(self, user):
-        cur_last = TaskGlobalId.objects.filter(user_id=user.id).order_by("local_id").last()
-        last_id = cur_last.local_id if cur_last else 0
-        TaskGlobalId.objects.create(
-            task=self,
-            user=user,
-            local_id=last_id + 1,
-        )
+        with TaskGlobalId.GLOBAL_WLOCK:
+            cur_last = TaskGlobalId.objects.filter(user_id=user.id).order_by("local_id").last()
+            last_id = cur_last.local_id if cur_last else 0
+            TaskGlobalId.objects.create(
+                task=self,
+                user=user,
+                local_id=last_id + 1,
+            )
 
     def get_local_id(self):
         # TODO: Cache this locally since it's immutable?
@@ -90,3 +112,5 @@ class TaskGlobalId(models.Model):
     user = models.ForeignKey(User, related_name="user")
     task = models.ForeignKey(Task, related_name="task")
     local_id = models.IntegerField(db_index=True)
+
+    GLOBAL_WLOCK = Lock()

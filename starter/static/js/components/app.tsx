@@ -1,10 +1,15 @@
 import * as React from "react";
 import * as jQuery from "jquery";
 import {CreateTaskComponent} from "./create_task"
-import {Task, User} from "../models";
+import {Tag, Task, User} from "../models";
+import {TagGraphComponent} from "./tag_graph";
 import {TaskBoardComponent} from "./task_board"
 
-export interface AppProps {meUser: User; tasks: Array<Task>;}
+export interface AppProps {
+    meUser: User;
+    tasks: Array<Task>;
+    tags: Array<Tag>;
+}
 export interface AppState {tasks: Array<Task>}
 
 export class App extends React.Component<AppProps, AppState> {
@@ -60,11 +65,6 @@ export class App extends React.Component<AppProps, AppState> {
         </div>
     }
 
-    renderCreateTask() {
-        return <CreateTaskComponent meUser={this.props.meUser}
-                                    createTask={this.createTask.bind(this)} />
-    }
-
     renderTaskBoard() {
         return <TaskBoardComponent
             meUser={this.props.meUser}
@@ -74,10 +74,20 @@ export class App extends React.Component<AppProps, AppState> {
         />
     }
 
+    renderTagGraph() {
+        return <TagGraphComponent tags={this.props.tags} />
+    }
+
+    renderCreateTask() {
+        return <CreateTaskComponent meUser={this.props.meUser}
+                                    createTask={this.createTask.bind(this)} />
+    }
+
     render() {
         return <div>
             {this.renderHeader()}
             {this.renderTaskBoard()}
+            {this.renderTagGraph()}
             {this.renderCreateTask()}
         </div>
     }

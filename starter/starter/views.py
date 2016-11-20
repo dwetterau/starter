@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
-from starter.models import Task
+from starter.models import Tag, Task
 from starter.utils import user_to_dict
 
 #
@@ -21,6 +21,7 @@ def index(request):
     props = json.dumps(dict(
         meUser=user_to_dict(request.user),
         tasks=[task.to_dict() for task in Task.get_by_owner_id(request.user.id)],
+        tags=[tag.to_dict() for tag in Tag.get_all_owned_tags(request.user)],
     ))
     return render(request, 'starter/index.html', dict(props=props))
 

@@ -478,6 +478,7 @@
 	var React = __webpack_require__(5);
 	var jQuery = __webpack_require__(7);
 	var create_task_1 = __webpack_require__(9);
+	var tag_graph_1 = __webpack_require__(15);
 	var task_board_1 = __webpack_require__(10);
 	var App = (function (_super) {
 	    __extends(App, _super);
@@ -527,16 +528,20 @@
 	            React.createElement("div", null, "Starter"), 
 	            this.renderAccountInfo());
 	    };
-	    App.prototype.renderCreateTask = function () {
-	        return React.createElement(create_task_1.CreateTaskComponent, {meUser: this.props.meUser, createTask: this.createTask.bind(this)});
-	    };
 	    App.prototype.renderTaskBoard = function () {
 	        return React.createElement(task_board_1.TaskBoardComponent, {meUser: this.props.meUser, tasks: this.state.tasks, updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this)});
+	    };
+	    App.prototype.renderTagGraph = function () {
+	        return React.createElement(tag_graph_1.TagGraphComponent, {tags: this.props.tags});
+	    };
+	    App.prototype.renderCreateTask = function () {
+	        return React.createElement(create_task_1.CreateTaskComponent, {meUser: this.props.meUser, createTask: this.createTask.bind(this)});
 	    };
 	    App.prototype.render = function () {
 	        return React.createElement("div", null, 
 	            this.renderHeader(), 
 	            this.renderTaskBoard(), 
+	            this.renderTagGraph(), 
 	            this.renderCreateTask());
 	    };
 	    return App;
@@ -1022,12 +1027,6 @@
 	    return Tag;
 	}());
 	exports.Tag = Tag;
-	var TagGroup = (function () {
-	    function TagGroup() {
-	    }
-	    return TagGroup;
-	}());
-	exports.TagGroup = TagGroup;
 
 
 /***/ },
@@ -1098,6 +1097,80 @@
 	    return TaskComponent;
 	}(React.Component));
 	exports.TaskComponent = TaskComponent;
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var TagGraphComponent = (function (_super) {
+	    __extends(TagGraphComponent, _super);
+	    function TagGraphComponent(props) {
+	        _super.call(this, props);
+	        this.state = this.getState(props);
+	    }
+	    TagGraphComponent.prototype.componentWillReceiveProps = function (props) {
+	        this.setState(this.getState(props));
+	    };
+	    TagGraphComponent.prototype.getState = function (props) {
+	        var tagsById = {};
+	        for (var _i = 0, _a = props.tags; _i < _a.length; _i++) {
+	            var tag = _a[_i];
+	            tagsById[tag.id] = tag;
+	        }
+	        var _b = this.computeTagGraph(tagsById), tagGraph = _b[0], rootTagIds = _b[1];
+	        return {
+	            tagGraph: tagGraph,
+	            rootTagIds: rootTagIds,
+	            tagsById: tagsById,
+	        };
+	    };
+	    TagGraphComponent.prototype.computeTagGraph = function (tagsById) {
+	        var tagGraph = {};
+	        // Initially we think that all tags are root tags.
+	        var rootTagIds = {};
+	        Object.keys(tagsById).forEach(function (tagId) {
+	            rootTagIds[tagId] = true;
+	        });
+	        Object.keys(tagsById).forEach(function (tagId) {
+	            var tag = tagsById[+tagId];
+	            var childTagIds = [];
+	            for (var _i = 0, _a = tag.childTagIds; _i < _a.length; _i++) {
+	                var childTagId = _a[_i];
+	                childTagIds.push(childTagId);
+	                if (rootTagIds.hasOwnProperty("" + childTagId)) {
+	                    delete rootTagIds[childTagId];
+	                }
+	            }
+	            tagGraph[tag.id] = childTagIds;
+	        });
+	        var rootTagIdList = [];
+	        Object.keys(rootTagIds).forEach(function (rootTagId) {
+	            rootTagIdList.push(+rootTagId);
+	        });
+	        return [tagGraph, rootTagIdList];
+	    };
+	    TagGraphComponent.prototype.renderTag = function (tag) {
+	        return React.createElement("div", {className: "tag-container", key: tag.id}, 
+	            "Name: ", 
+	            tag.name);
+	    };
+	    TagGraphComponent.prototype.renderTags = function () {
+	        return React.createElement("div", {className: "tags-container"});
+	    };
+	    TagGraphComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "tag-graph"}, this.renderTags());
+	    };
+	    return TagGraphComponent;
+	}(React.Component));
+	exports.TagGraphComponent = TagGraphComponent;
 
 
 /***/ }

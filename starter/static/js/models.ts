@@ -36,10 +36,6 @@ export const stateNameList = [
 export class Tag {
     readonly id: number;
     name: string;
-}
-
-export class TagGroup {
-    readonly  id: number;
-    name: string;
-    tags: Array<Tag>
+    readonly ownerId: number;
+    childTagIds: Array<number>;
 }
