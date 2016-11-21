@@ -4,23 +4,17 @@ import {TokenizerComponent, Tokenizable} from "./tokenizer";
 
 export interface CreateTagProps {
     meUser: User;
-    tags: Array<Tag>;
+    tagsById: TagsById;
     createTag: (tag: Tag) => void;
 }
 export interface CreateTagState {
     tag: Tag;
-    tagsById: TagsById;
 }
 
 export class CreateTagComponent extends React.Component<CreateTagProps, CreateTagState> {
 
     constructor(props: CreateTagProps) {
         super(props);
-        const tagsById: TagsById = {};
-        for (let tag of props.tags) {
-            tagsById[tag.id] = tag;
-        }
-
         this.state = {
             tag: {
                 id: 0,
@@ -28,7 +22,6 @@ export class CreateTagComponent extends React.Component<CreateTagProps, CreateTa
                 childTagIds: [],
                 ownerId: this.props.meUser.id,
             },
-            tagsById,
         }
     }
 
@@ -44,7 +37,7 @@ export class CreateTagComponent extends React.Component<CreateTagProps, CreateTa
     getCurrentChildren(): Array<Tokenizable> {
         const childrenNames: Array<Tokenizable> = [];
         this.state.tag.childTagIds.forEach((tagId) => {
-            const tag = this.state.tagsById[tagId];
+            const tag = this.props.tagsById[tagId];
             childrenNames.push({
                 label: tag.name,
                 value: tag.id
@@ -57,8 +50,8 @@ export class CreateTagComponent extends React.Component<CreateTagProps, CreateTa
         // This function is used to determine the set of valid tokens for the tokenizer.
         // We should think about excluding tokens from here that would cause cycles.
         const allNames: Array<Tokenizable> = [];
-        Object.keys(this.state.tagsById).forEach((tagId) => {
-            const tag = this.state.tagsById[+tagId];
+        Object.keys(this.props.tagsById).forEach((tagId) => {
+            const tag = this.props.tagsById[+tagId];
             allNames.push({
                 label: tag.name,
                 value: tag.id

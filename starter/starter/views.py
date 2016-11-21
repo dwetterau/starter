@@ -67,19 +67,29 @@ def create_task(request):
         'description': str,
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
+        'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
 
     try:
-        arguments = dict(_validate(arguments, validation_map))
+        arguments = _validate(arguments, validation_map)
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400, )
 
+    # Combine new tags:
+    new_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "tagIds[]"}
+
+    # Now it's safe to squash all the arguments together into a dict
+    arguments = dict(arguments)
+
     # Business logic checks
     if arguments["authorId"] != request.user:
         return HttpResponse("Logged in user not the author".encode(), status=400)
+
+    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
+        return HttpResponse("Tag not found".encode(), status=400)
 
     # TODO: tags!
     task = Task.objects.create(
@@ -91,6 +101,8 @@ def create_task(request):
         owner=arguments["ownerId"],
     )
     task.create_local_id(arguments["authorId"])
+    if new_tags_by_id:
+        task.set_tags(new_tags_by_id.values())
 
     return HttpResponse(json.dumps(task.to_dict()), status=200)
 
@@ -105,15 +117,22 @@ def update_task(request):
         'description': str,
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
+        'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
 
     try:
-        arguments = dict(_validate(arguments, validation_map))
+        arguments = _validate(arguments, validation_map)
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400)
+
+    # Combine new tags:
+    new_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "tagIds[]"}
+
+    # Now it's safe to squash all the arguments together into a dict
+    arguments = dict(arguments)
 
     # Business logic checks
     if request.user not in [arguments["authorId"], arguments["ownerId"]]:
@@ -123,6 +142,9 @@ def update_task(request):
     if not task or task.author != arguments["authorId"]:
         return HttpResponse("Invalid task specified.".encode(), status=400)
 
+    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
+        return HttpResponse("Tag not found".encode(), status=400)
+
     # Copy in all the mutable fields
     task.title = arguments["title"]
     task.description = arguments["description"]
@@ -130,6 +152,9 @@ def update_task(request):
     task.state = arguments["state"].value
     task.owner = arguments["ownerId"]
     task.save()
+
+    if set(new_tags_by_id.keys()) != set(task.get_tag_ids()):
+        task.set_tags(new_tags_by_id.values())
 
     return HttpResponse(json.dumps(task.to_dict()), status=200)
 
@@ -229,6 +254,9 @@ def update_tag(request):
 
     if request.user != arguments["ownerId"]:
         return HttpResponse("Must edit as owner".encode(), status=400)
+
+    if any(tag.owner_id != request.user.id for tag in child_tags_by_id.values()):
+        return HttpResponse("Tag not found".encode(), status=400)
 
     all_tags_by_id = {t.id: t for t in Tag.get_all_owned_tags(request.user)}
 

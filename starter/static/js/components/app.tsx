@@ -2,7 +2,7 @@ import * as React from "react";
 import * as jQuery from "jquery";
 import {CreateTagComponent} from "./create_tag"
 import {CreateTaskComponent} from "./create_task"
-import {Tag, Task, User} from "../models";
+import {Tag, Task, User, TagsById} from "../models";
 import {TagGraphComponent} from "./tag_graph";
 import {TaskBoardComponent} from "./task_board"
 
@@ -14,16 +14,20 @@ export interface AppProps {
 export interface AppState {
     tasks: Array<Task>,
     tags: Array<Tag>,
+    tagsById: TagsById,
 }
 
 export class App extends React.Component<AppProps, AppState> {
 
     constructor(props: AppProps) {
         super(props);
-        this.state = {
+        const newState = {
             tasks: props.tasks,
             tags: props.tags,
-        }
+            tagsById: {},
+        };
+        App.updateTagsById(newState);
+        this.state = newState;
     }
 
     createTask(taskArgs: string) {
@@ -57,10 +61,19 @@ export class App extends React.Component<AppProps, AppState> {
         })
     }
 
+    static updateTagsById(state: AppState) {
+        const tagsById: TagsById = {};
+        for (let tag of state.tags) {
+            tagsById[tag.id] = tag;
+        }
+        state.tagsById = tagsById;
+    }
+
     createTag(tag: Tag) {
         delete tag["id"];
         jQuery.post('/api/1/tag/create', tag, (newTagJson: string) => {
             this.state.tags.push(JSON.parse(newTagJson));
+            App.updateTagsById(this.state);
             this.setState(this.state);
         })
     }
@@ -75,6 +88,7 @@ export class App extends React.Component<AppProps, AppState> {
                     return tag;
                 }
             });
+            App.updateTagsById(this.state);
             this.setState(this.state);
         })
     }
@@ -102,12 +116,13 @@ export class App extends React.Component<AppProps, AppState> {
             tasks={this.state.tasks}
             updateTask={this.updateTask.bind(this)}
             deleteTask={this.deleteTask.bind(this)}
+            tagsById={this.state.tagsById}
         />
     }
 
     renderTagGraph() {
         return <TagGraphComponent
-            tags={this.props.tags}
+            tagsById={this.state.tagsById}
             updateTag={this.updateTag.bind(this)}
             deleteTag={this.deleteTag.bind(this)}
         />
@@ -122,7 +137,7 @@ export class App extends React.Component<AppProps, AppState> {
         return <CreateTagComponent
             meUser={this.props.meUser}
             createTag={this.createTag.bind(this)}
-            tags={this.state.tags}
+            tagsById={this.state.tagsById}
         />
     }
 

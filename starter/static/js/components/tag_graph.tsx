@@ -4,7 +4,7 @@ import {Tag, TagsById} from "../models";
 import {EditTagComponent} from "./edit_tag";
 
 export interface TagGraphProps {
-    tags: Array<Tag>,
+    tagsById: TagsById,
     updateTag: (tag: Tag) => void,
     deleteTag: (tag: Tag) => void,
 }
@@ -29,15 +29,11 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
     }
 
     getState(props: TagGraphProps): TagGraphState {
-        const tagsById: TagsById = {};
-        for (let tag of props.tags) {
-            tagsById[tag.id] = tag;
-        }
-        const [tagGraph, rootTagIds] = this.computeTagGraph(tagsById);
+        const [tagGraph, rootTagIds] = this.computeTagGraph(props.tagsById);
         return {
             tagGraph: tagGraph,
             rootTagIds: rootTagIds,
-            tagsById: tagsById,
+            tagsById: props.tagsById,
             editingTag: null,
         }
     }

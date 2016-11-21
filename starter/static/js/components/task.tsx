@@ -1,8 +1,12 @@
 import * as React from "react";
-import {Task, priorityNameList, stateNameList} from "../models";
+import {Task, priorityNameList, stateNameList, TagsById} from "../models";
 import {TaskBoardViewType} from "./task_board";
 
-export interface TaskProps {task: Task; viewType: TaskBoardViewType}
+export interface TaskProps {
+    task: Task,
+    viewType: TaskBoardViewType,
+    tagsById: TagsById,
+}
 
 export class TaskComponent extends React.Component<TaskProps, {}> {
 
@@ -50,6 +54,27 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         );
     }
 
+    renderTag(tagId: number) {
+        const tag = this.props.tagsById[tagId];
+        return (
+            <div className="task-tag card" key={tagId}>
+                {tag.name}
+            </div>
+        )
+    }
+
+    renderTags() {
+        if (!this.props.task.tagIds.length) {
+            return;
+        }
+        return (
+            <div className="task-tags-container">
+                Tags:
+                {this.props.task.tagIds.map(this.renderTag.bind(this))}
+            </div>
+        )
+    }
+
     render() {
         return <div className="task card">
             {this.renderTaskId()}
@@ -57,6 +82,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
             <div className="task-description">{this.props.task.description}</div>
             {this.renderPriority()}
             {this.renderState()}
+            {this.renderTags()}
         </div>
     }
 }

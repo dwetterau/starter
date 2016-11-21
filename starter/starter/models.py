@@ -102,6 +102,15 @@ class Task(models.Model):
         # TODO: Cache this locally since it's immutable?
         return TaskGlobalId.objects.get(task_id=self.id, user_id=self.author_id).local_id
 
+    def get_tag_ids(self):
+        return [x.id for x in self.tags.all()]
+
+    def set_tags(self, new_tags):
+        # TODO: Optimize this
+        self.tags.clear()
+        for tag in new_tags:
+            self.tags.add(tag)
+
     def to_dict(self):
         return dict(
             id=self.get_local_id(),
@@ -109,9 +118,7 @@ class Task(models.Model):
             description=self.description,
             authorId=self.author_id,
             ownerId=self.owner_id,
-
-            # TODO: include tags?
-
+            tagIds=self.get_tag_ids(),
             priority=self.Priority(self.priority).value,
             state=self.State(self.state).value,
         )

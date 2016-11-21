@@ -54,6 +54,15 @@ div.draggable-task.-hidden {
 .task-title {
     font-weight: bold;
 }
+
+div.task-tags-container {
+    display: flex;
+}
+
+div.task-tags-container div.task-tag {
+    margin-left: .25em;
+    padding: .1em .25em;
+}
 /* End of Task view CSS */
 
 /* Tag graph CSS */

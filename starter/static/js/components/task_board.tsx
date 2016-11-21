@@ -2,7 +2,7 @@ import * as React from "react";
 import * as jQuery from "jquery";
 
 import {EditTaskComponent} from "./edit_task";
-import {Task, stateNameList, User, priorityNameList} from "../models";
+import {Task, stateNameList, User, priorityNameList, TagsById} from "../models";
 import {TaskComponent} from "./task";
 
 export interface TaskBoardProps {
@@ -10,6 +10,7 @@ export interface TaskBoardProps {
     tasks: Array<Task>,
     updateTask: (task: Task) => void,
     deleteTask: (task: Task) => void,
+    tagsById: TagsById,
 }
 export interface TaskBoardState {
     viewType: TaskBoardViewType,
@@ -277,7 +278,11 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                             onDragStart={this.onDragStart.bind(this, task)}
                             onDragEnd={this.onDragEnd.bind(this, task)}
                             onDoubleClick={this.onDoubleClick.bind(this, task)} >
-                    <TaskComponent task={task} viewType={this.state.viewType} />
+                    <TaskComponent
+                        task={task}
+                        viewType={this.state.viewType}
+                        tagsById={this.props.tagsById}
+                    />
                 </div>
             })}
         </div>
@@ -306,6 +311,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
         return <EditTaskComponent meUser={this.props.meUser}
                                   task={this.state.editingTask}
+                                  tagsById={this.props.tagsById}
                                   updateTask={this.props.updateTask}
                                   deleteTask={this.props.deleteTask} />
     }

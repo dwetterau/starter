@@ -14,7 +14,7 @@ export class Task {
     description: string;
     readonly authorId: number;
     ownerId: number;
-    tags: Array<Tag>;
+    tagIds: Array<number>;
     priority: number;
     state: number;
 }
