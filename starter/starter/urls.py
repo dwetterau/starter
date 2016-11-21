@@ -37,6 +37,8 @@ urlpatterns = [
     url(r'^api/1/task/update/?$', views.update_task),
     url(r'^api/1/task/delete/?$', views.delete_task),
 
+    url(r'^api/1/tag/update/?$', views.update_tag),
+
     # Admin pages
     url(r'^admin/', admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -19,6 +19,15 @@ class Tag(models.Model):
     def get_children(self):
         return self.child_tag.all()
 
+    def set_children(self, new_children):
+        # TODO: Optimize this
+        self.child_tag.all().delete()
+        for child in new_children:
+            TagEdge.objects.create(
+                parent_tag_id=self.id,
+                child_tag_id=child.id
+            )
+
     def get_parents(self):
         return self.parent_tag.all()
 

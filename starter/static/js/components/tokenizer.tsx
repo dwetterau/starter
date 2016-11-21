@@ -6,6 +6,7 @@ export interface Tokenizable {
 }
 export interface TokenizerProps {
     onChange: (tokens: Array<Tokenizable>) => void,
+    initialValues?: Array<Tokenizable>, // Note this does not work outside of the first call.
     possibleTokens?: Array<Tokenizable>,
 }
 export interface TokenizerState {
@@ -16,11 +17,34 @@ export interface TokenizerState {
 export class TokenizerComponent extends React.Component<TokenizerProps, TokenizerState> {
     constructor(props: TokenizerProps) {
         super(props);
+        this.state = this.getState(props);
+    }
 
-        this.state = {
+    componentWillReceiveProps(newProps: TokenizerProps) {
+        this.setState(this.getState(newProps));
+    }
+
+    getState(props: TokenizerProps): TokenizerState {
+        const newState: TokenizerState = {
             tokens: [],
             pendingToken: '',
+        };
+        if (this.state) {
+            // We should copy some things over
+            newState.pendingToken = this.state.pendingToken;
+            this.state.tokens.forEach((token) => {
+                newState.tokens.push(token)
+            })
+        } else {
+            // First call, copy over the initial values:
+            if (this.props.initialValues) {
+                this.props.initialValues.forEach((token) => {
+                    newState.tokens.push(token)
+                })
+            }
         }
+
+        return newState;
     }
 
     updatePendingToken(event: any) {
@@ -30,13 +54,32 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
 
     onKeyPress(event: any) {
         if (event.key == "Enter") {
-            // TODO: actually check with the possibleTokens
             const newToken = this.state.pendingToken.trim();
-            this.state.tokens.push({label: newToken, value: newToken});
-            this.state.pendingToken = '';
-            this.setState(this.state);
+            let foundMatch = false;
 
-            this.props.onChange(this.state.tokens);
+            if (!this.props.possibleTokens) {
+                foundMatch = true;
+                this.state.tokens.push({label: newToken, value: newToken});
+            } else {
+                this.props.possibleTokens.forEach((possibleToken: Tokenizable) => {
+                    if (possibleToken.label == newToken) {
+                        foundMatch = true;
+                        this.state.tokens.push({
+                            label: possibleToken.label,
+                            value: possibleToken.value,
+                        })
+                    }
+                })
+            }
+
+            if (foundMatch) {
+                this.state.pendingToken = '';
+                this.setState(this.state);
+
+                this.props.onChange(this.state.tokens);
+            } else {
+                // TODO: Do something if we didn't find a matching token.
+            }
         }
     }
 

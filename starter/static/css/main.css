@@ -54,4 +54,18 @@ div.draggable-task.-hidden {
 .task-title {
     font-weight: bold;
 }
-/* Task view CSS */
+/* End of Task view CSS */
+
+/* Tag graph CSS */
+.tag-graph {
+    margin: 1em 0;
+}
+
+.tags-root-container, .tag-children-container {
+    border: 1px black solid;
+}
+
+.tag-children-container {
+    margin-left: .5em;
+}
+/* End of Tag graph CSS */

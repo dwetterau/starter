@@ -1,17 +1,20 @@
 import * as React from "react";
 
-import {Tag} from "../models";
+import {Tag, TagsById} from "../models";
+import {EditTagComponent} from "./edit_tag";
 
 export interface TagGraphProps {
     tags: Array<Tag>,
+    updateTag: (tag: Tag) => void,
+    deleteTag: (tag: Tag) => void,
 }
 
 interface TagGraph {[parentTagId: number]: Array<number>}
-interface TagsById {[tagId: number]: Tag}
 export interface TagGraphState {
     tagGraph: TagGraph,
-    rootTagIds: Array<number>;
-    tagsById: TagsById
+    rootTagIds: Array<number>,
+    tagsById: TagsById,
+    editingTag?: Tag,
 }
 
 export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphState> {
@@ -32,9 +35,10 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
         }
         const [tagGraph, rootTagIds] = this.computeTagGraph(tagsById);
         return {
-            tagGraph,
-            rootTagIds,
-            tagsById,
+            tagGraph: tagGraph,
+            rootTagIds: rootTagIds,
+            tagsById: tagsById,
+            editingTag: null,
         }
     }
 
@@ -66,21 +70,66 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
         return [tagGraph, rootTagIdList]
     }
 
-    renderTag(tag: Tag) {
-        return <div className="tag-container" key={tag.id}>
+    onDoubleClick(tag: Tag, event: any) {
+        // Idk, open an editor modal or something
+        this.state.editingTag = tag;
+        this.setState(this.state);
+
+        // Don't let this keep going to the parent element.
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    renderTagById(tagId: number) {
+        const tag = this.state.tagsById[tagId];
+
+        const renderChildren = () => {
+            if (tag.childTagIds.length == 0) {
+                return
+            }
+            return (
+                <div className="tag-children-container">
+                    {tag.childTagIds.map(this.renderTagById.bind(this))}
+                </div>
+            )
+        };
+
+        return <div
+            className="tag-container"
+            key={tag.id}
+            onDoubleClick={this.onDoubleClick.bind(this, tag)}
+        >
             Name: {tag.name}
+            {renderChildren()}
+        </div>
+    }
+
+    renderFromRootTagId(rootTagId: number) {
+        return <div className="tags-root-container" key={rootTagId}>
+            {this.renderTagById(rootTagId)}
         </div>
     }
 
     renderTags() {
         return <div className="tags-container">
-            {/*this.state.tags.map(this.renderTag)*/}
+            {this.state.rootTagIds.map(this.renderFromRootTagId.bind(this))}
         </div>
+    }
+
+    renderEditingTag() {
+        if (!this.state.editingTag) {
+            return
+        }
+        return <EditTagComponent tag={this.state.editingTag}
+                                 tagsById={this.state.tagsById}
+                                 updateTag={this.props.updateTag}
+                                 deleteTag={this.props.deleteTag} />
     }
 
     render() {
         return <div className="tag-graph">
             {this.renderTags()}
+            {this.renderEditingTag()}
         </div>
     }
 }

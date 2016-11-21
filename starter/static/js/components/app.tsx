@@ -10,14 +10,18 @@ export interface AppProps {
     tasks: Array<Task>;
     tags: Array<Tag>;
 }
-export interface AppState {tasks: Array<Task>}
+export interface AppState {
+    tasks: Array<Task>,
+    tags: Array<Tag>,
+}
 
 export class App extends React.Component<AppProps, AppState> {
 
     constructor(props: AppProps) {
         super(props);
         this.state = {
-            tasks: props.tasks
+            tasks: props.tasks,
+            tags: props.tags,
         }
     }
 
@@ -31,25 +35,43 @@ export class App extends React.Component<AppProps, AppState> {
     updateTask(task: Task) {
         jQuery.post('/api/1/task/update', task, (updatedTaskJson: string) => {
             let updatedTask: Task = JSON.parse(updatedTaskJson);
-            const newTasks = this.state.tasks.map((task: Task) => {
+            this.state.tasks = this.state.tasks.map((task: Task) => {
                 if (task.id == updatedTask.id) {
                     return updatedTask
                 } else {
                     return task
                 }
             });
-            this.setState({tasks: newTasks});
+            this.setState(this.state);
         });
     }
 
     deleteTask(task: Task) {
         jQuery.post('/api/1/task/delete', {id: task.id}, (deletedTaskJson: string) => {
             const deletedTaskId = JSON.parse(deletedTaskJson).id;
-            const newTasks = this.state.tasks.filter((task: Task) => {
+            this.state.tasks = this.state.tasks.filter((task: Task) => {
                 return task.id != deletedTaskId;
             });
-            this.setState(({tasks: newTasks}));
+            this.setState(this.state);
         })
+    }
+
+    updateTag(tag: Tag) {
+        jQuery.post('/api/1/tag/update', tag, (updatedTagJson: string) => {
+            let updatedTag: Tag = JSON.parse(updatedTagJson);
+            this.state.tags = this.state.tags.map((tag: Tag) => {
+                if (tag.id == updatedTag.id) {
+                    return updatedTag;
+                } else {
+                    return tag;
+                }
+            });
+            this.setState(this.state);
+        })
+    }
+
+    deleteTag(tag: Tag) {
+        // TODO: Filter out all tags and children or something
     }
 
     renderAccountInfo() {
@@ -75,7 +97,11 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     renderTagGraph() {
-        return <TagGraphComponent tags={this.props.tags} />
+        return <TagGraphComponent
+            tags={this.props.tags}
+            updateTag={this.updateTag.bind(this)}
+            deleteTag={this.deleteTag.bind(this)}
+        />
     }
 
     renderCreateTask() {

@@ -39,3 +39,5 @@ export class Tag {
     readonly ownerId: number;
     childTagIds: Array<number>;
 }
+
+export interface TagsById {[tagId: number]: Tag}
