@@ -699,12 +699,17 @@
 	        this.setState(this.getState(newProps));
 	    };
 	    TokenizerComponent.prototype.getState = function (props) {
+	        var _this = this;
 	        var newState = {
 	            tokens: [],
 	            pendingToken: '',
 	        };
 	        if (props.initialValues) {
 	            props.initialValues.forEach(function (token) {
+	                if (_this.props.tokenLimit && newState.tokens.length >= _this.props.tokenLimit) {
+	                    // We are at the limit of the number of tokens, return early.
+	                    return;
+	                }
 	                newState.tokens.push(token);
 	            });
 	        }
@@ -720,6 +725,10 @@
 	    TokenizerComponent.prototype.onKeyPress = function (event) {
 	        var _this = this;
 	        if (event.key == "Enter") {
+	            if (this.props.tokenLimit && this.state.tokens.length >= this.props.tokenLimit) {
+	                // We are at the limit of the number of tokens, return early.
+	                return;
+	            }
 	            var newToken_1 = this.state.pendingToken.trim();
 	            var foundMatch_1 = false;
 	            if (!this.props.possibleTokens) {
@@ -770,12 +779,19 @@
 	        }
 	        return (React.createElement("div", {className: "tokens-container"}, this.state.tokens.map(this.renderToken.bind(this))));
 	    };
+	    TokenizerComponent.prototype.renderPendingToken = function () {
+	        // If we are at the maximum number of tokens, don't render the container
+	        if (this.props.tokenLimit && this.state.tokens.length >= this.props.tokenLimit) {
+	            return;
+	        }
+	        return (React.createElement("div", {className: "pending-token-container"}, 
+	            React.createElement("input", {type: "text", value: this.state.pendingToken, onChange: this.updatePendingToken.bind(this), onKeyPress: this.onKeyPress.bind(this)})
+	        ));
+	    };
 	    TokenizerComponent.prototype.render = function () {
 	        return (React.createElement("div", {className: "tokenizer-container"}, 
 	            this.renderTokens(), 
-	            React.createElement("div", {className: "pending-token-container"}, 
-	                React.createElement("input", {type: "text", value: this.state.pendingToken, onChange: this.updatePendingToken.bind(this), onKeyPress: this.onKeyPress.bind(this)})
-	            )));
+	            this.renderPendingToken()));
 	    };
 	    return TokenizerComponent;
 	}(React.Component));
@@ -1048,6 +1064,7 @@
 	var edit_task_1 = __webpack_require__(15);
 	var models_1 = __webpack_require__(16);
 	var task_1 = __webpack_require__(17);
+	var tokenizer_1 = __webpack_require__(10);
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
 	    TaskBoardViewType[TaskBoardViewType["priority"] = 1] = "priority";
@@ -1072,6 +1089,7 @@
 	            columnTypes: columnTypes,
 	            draggingTask: null,
 	            editingTask: null,
+	            selectedTag: null,
 	            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : false,
 	        };
 	    };
@@ -1103,12 +1121,39 @@
 	            throw Error("Split type not implemented: " + type);
 	        }
 	        var _a = typeToHelpers[type], attr = _a.attr, orderedNameAndValue = _a.orderedNameAndValue, sortFunc = _a.sortFunc;
+	        var allChildIdsOfSelectedTag = {};
+	        if (this.state && this.state.selectedTag) {
+	            var queue = [this.state.selectedTag];
+	            while (queue.length) {
+	                var curTag = queue.pop();
+	                allChildIdsOfSelectedTag[curTag.id] = true;
+	                for (var _i = 0, _b = curTag.childTagIds; _i < _b.length; _i++) {
+	                    var tagId = _b[_i];
+	                    if (!allChildIdsOfSelectedTag[tagId]) {
+	                        queue.push(this.props.tagsById[tagId]);
+	                    }
+	                }
+	            }
+	        }
 	        var shouldHideTask = function (task) {
 	            if (!_this.state) {
 	                // This is the initial call where we are defining state...
 	                return false;
 	            }
-	            return _this.state.shouldHideClosedTasks && task.state == 1000;
+	            if (_this.state.shouldHideClosedTasks && task.state == 1000) {
+	                return true;
+	            }
+	            if (_this.state.selectedTag) {
+	                // See if the task has the right tag
+	                var matches_1 = false;
+	                task.tagIds.forEach(function (tagId) {
+	                    matches_1 = matches_1 || allChildIdsOfSelectedTag[tagId];
+	                });
+	                if (!matches_1) {
+	                    return true;
+	                }
+	            }
+	            return false;
 	        };
 	        // Categorize each task
 	        tasks.forEach(function (task) {
@@ -1211,6 +1256,39 @@
 	        // We omit a call to setState ourselves because the hiding of the task will also call
 	        // setState.
 	    };
+	    TaskBoardComponent.prototype.getCurrentTagToken = function () {
+	        if (!this.state.selectedTag) {
+	            return [];
+	        }
+	        return [{
+	                label: this.state.selectedTag.name,
+	                value: this.state.selectedTag.id,
+	            }];
+	    };
+	    TaskBoardComponent.prototype.changeCurrentTagToken = function (newTokens) {
+	        if (newTokens.length) {
+	            this.state.selectedTag = this.props.tagsById[newTokens[0].value];
+	        }
+	        else {
+	            this.state.selectedTag = null;
+	        }
+	        // As a hack to reflow the columns, we will "change the view type to the current one".
+	        this.changeViewType(this.state.viewType);
+	    };
+	    TaskBoardComponent.prototype.getAllTagNames = function () {
+	        var _this = this;
+	        // This function is used to determine the set of valid tokens for the tokenizer.
+	        // We should think about excluding tokens from here that would cause cycles.
+	        var allNames = [];
+	        Object.keys(this.props.tagsById).forEach(function (tagId) {
+	            var tag = _this.props.tagsById[+tagId];
+	            allNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return allNames;
+	    };
 	    TaskBoardComponent.prototype.renderTypeChoice = function (type) {
 	        var className = "view-type-choice";
 	        if (type == this.state.viewType) {
@@ -1237,6 +1315,11 @@
 	        return (React.createElement("div", {className: "task-board-options"}, 
 	            this.renderTypeSelector(), 
 	            this.renderTypeBasedOptions()));
+	    };
+	    TaskBoardComponent.prototype.renderTagSelector = function () {
+	        return (React.createElement("div", {className: "task-board-tag-selector-container"}, 
+	            React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1})
+	        ));
 	    };
 	    TaskBoardComponent.prototype.renderColumn = function (column, header, columnType) {
 	        var _this = this;
@@ -1266,6 +1349,7 @@
 	    TaskBoardComponent.prototype.render = function () {
 	        return React.createElement("div", {className: "task-board"}, 
 	            this.renderOptions(), 
+	            this.renderTagSelector(), 
 	            this.renderColumns(), 
 	            this.renderEditingTask());
 	    };

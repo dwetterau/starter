@@ -2,8 +2,9 @@ import * as React from "react";
 import * as jQuery from "jquery";
 
 import {EditTaskComponent} from "./edit_task";
-import {Task, stateNameList, User, priorityNameList, TagsById} from "../models";
+import {Task, stateNameList, User, priorityNameList, TagsById, Tag} from "../models";
 import {TaskComponent} from "./task";
+import {TokenizerComponent, Tokenizable} from "./tokenizer";
 
 export interface TaskBoardProps {
     meUser: User,
@@ -20,6 +21,7 @@ export interface TaskBoardState {
     draggingTask?: Task,
     editingTask?: Task,
     shouldHideClosedTasks: boolean,
+    selectedTag?: Tag,
 }
 
 export enum TaskBoardViewType {
@@ -48,6 +50,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             columnTypes,
             draggingTask: null,
             editingTask: null,
+            selectedTag: null,
             shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : false,
         }
     }
@@ -91,12 +94,41 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
         const {attr, orderedNameAndValue, sortFunc} = typeToHelpers[type];
 
+        const allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
+        if (this.state && this.state.selectedTag) {
+            const queue = [this.state.selectedTag];
+            while (queue.length) {
+                const curTag: Tag = queue.pop();
+                allChildIdsOfSelectedTag[curTag.id] = true;
+                for (let tagId of curTag.childTagIds) {
+                    if (!allChildIdsOfSelectedTag[tagId]) {
+                        queue.push(this.props.tagsById[tagId]);
+                    }
+                }
+            }
+        }
+
         const shouldHideTask = (task: Task) => {
             if (!this.state) {
                 // This is the initial call where we are defining state...
                 return false
             }
-            return this.state.shouldHideClosedTasks && task.state == 1000
+            if (this.state.shouldHideClosedTasks && task.state == 1000) {
+                return true;
+            }
+
+            if (this.state.selectedTag) {
+                // See if the task has the right tag
+                let matches = false;
+                task.tagIds.forEach((tagId: number) => {
+                    matches = matches || allChildIdsOfSelectedTag[tagId]
+                });
+                if (!matches) {
+                    return true;
+                }
+            }
+
+            return false;
         };
 
         // Categorize each task
@@ -215,6 +247,42 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         // setState.
     }
 
+    getCurrentTagToken(): Array<Tokenizable> {
+        if (!this.state.selectedTag) {
+            return [];
+        }
+
+        return [{
+            label: this.state.selectedTag.name,
+            value: this.state.selectedTag.id,
+        }]
+    }
+
+    changeCurrentTagToken(newTokens: Array<Tokenizable>) {
+        if (newTokens.length) {
+            this.state.selectedTag = this.props.tagsById[newTokens[0].value];
+        } else {
+            this.state.selectedTag = null;
+        }
+
+        // As a hack to reflow the columns, we will "change the view type to the current one".
+        this.changeViewType(this.state.viewType);
+    }
+
+    getAllTagNames(): Array<Tokenizable> {
+        // This function is used to determine the set of valid tokens for the tokenizer.
+        // We should think about excluding tokens from here that would cause cycles.
+        const allNames: Array<Tokenizable> = [];
+        Object.keys(this.props.tagsById).forEach((tagId) => {
+            const tag = this.props.tagsById[+tagId];
+            allNames.push({
+                label: tag.name,
+                value: tag.id
+            })
+        });
+        return allNames;
+    }
+
     renderTypeChoice(type: TaskBoardViewType) {
         let className = "view-type-choice";
         if (type == this.state.viewType) {
@@ -260,6 +328,19 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             <div className="task-board-options">
                 {this.renderTypeSelector()}
                 {this.renderTypeBasedOptions()}
+            </div>
+        )
+    }
+
+    renderTagSelector() {
+        return (
+            <div className="task-board-tag-selector-container">
+                <TokenizerComponent
+                    onChange={this.changeCurrentTagToken.bind(this)}
+                    initialValues={this.getCurrentTagToken()}
+                    possibleTokens={this.getAllTagNames()}
+                    tokenLimit={1}
+                />
             </div>
         )
     }
@@ -319,6 +400,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     render() {
         return <div className="task-board">
             {this.renderOptions()}
+            {this.renderTagSelector()}
             {this.renderColumns()}
             {this.renderEditingTask()}
         </div>

@@ -8,6 +8,7 @@ export interface TokenizerProps {
     onChange: (tokens: Array<Tokenizable>) => void,
     initialValues?: Array<Tokenizable>, // Note this does not work outside of the first call.
     possibleTokens?: Array<Tokenizable>,
+    tokenLimit?: number, // Limit of 0 is the same as unlimited
 }
 export interface TokenizerState {
     tokens: Array<Tokenizable>,
@@ -31,6 +32,10 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         };
         if (props.initialValues) {
             props.initialValues.forEach((token) => {
+                if (this.props.tokenLimit && newState.tokens.length >= this.props.tokenLimit) {
+                    // We are at the limit of the number of tokens, return early.
+                    return;
+                }
                 newState.tokens.push(token)
             })
         }
@@ -48,6 +53,11 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
 
     onKeyPress(event: any) {
         if (event.key == "Enter") {
+            if (this.props.tokenLimit && this.state.tokens.length >= this.props.tokenLimit) {
+                // We are at the limit of the number of tokens, return early.
+                return;
+            }
+
             const newToken = this.state.pendingToken.trim();
             let foundMatch = false;
 
@@ -117,17 +127,28 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         )
     }
 
-    render() {
+    renderPendingToken() {
+        // If we are at the maximum number of tokens, don't render the container
+        if (this.props.tokenLimit && this.state.tokens.length >= this.props.tokenLimit) {
+            return
+        }
+
         return (
-            <div className="tokenizer-container">
-                {this.renderTokens()}
-                <div className="pending-token-container">
+            <div className="pending-token-container">
                 <input type="text"
                        value={this.state.pendingToken}
                        onChange={this.updatePendingToken.bind(this)}
                        onKeyPress={this.onKeyPress.bind(this)}
                 />
-                </div>
+            </div>
+        )
+    }
+
+    render() {
+        return (
+            <div className="tokenizer-container">
+                {this.renderTokens()}
+                {this.renderPendingToken()}
             </div>
         )
     }
