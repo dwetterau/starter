@@ -69,3 +69,25 @@ div.draggable-task.-hidden {
     margin-left: .5em;
 }
 /* End of Tag graph CSS */
+
+/* Tokenizer CSS */
+div.tokenizer-container {
+    display: flex;
+}
+
+div.tokens-container {
+    display: flex;
+    margin-right: .5em;
+}
+
+div.rendered-token {
+    display: flex;
+    margin-left: .25em;
+    padding: .1em .25em;
+}
+
+div.rendered-token div.remove-token {
+    margin-left: .25em;
+    cursor: pointer;
+}
+/* End of Tokenizer CSS */

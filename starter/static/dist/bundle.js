@@ -134,7 +134,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n/* End of Task view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */", ""]);
+	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n/* End of Task view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
 	
 	// exports
 
@@ -477,6 +477,7 @@
 	};
 	var React = __webpack_require__(5);
 	var jQuery = __webpack_require__(7);
+	var create_tag_1 = __webpack_require__(17);
 	var create_task_1 = __webpack_require__(9);
 	var tag_graph_1 = __webpack_require__(10);
 	var task_board_1 = __webpack_require__(13);
@@ -521,6 +522,14 @@
 	            _this.setState(_this.state);
 	        });
 	    };
+	    App.prototype.createTag = function (tag) {
+	        var _this = this;
+	        delete tag["id"];
+	        jQuery.post('/api/1/tag/create', tag, function (newTagJson) {
+	            _this.state.tags.push(JSON.parse(newTagJson));
+	            _this.setState(_this.state);
+	        });
+	    };
 	    App.prototype.updateTag = function (tag) {
 	        var _this = this;
 	        jQuery.post('/api/1/tag/update', tag, function (updatedTagJson) {
@@ -556,12 +565,16 @@
 	    App.prototype.renderCreateTask = function () {
 	        return React.createElement(create_task_1.CreateTaskComponent, {meUser: this.props.meUser, createTask: this.createTask.bind(this)});
 	    };
+	    App.prototype.renderCreateTag = function () {
+	        return React.createElement(create_tag_1.CreateTagComponent, {meUser: this.props.meUser, createTag: this.createTag.bind(this), tags: this.state.tags});
+	    };
 	    App.prototype.render = function () {
 	        return React.createElement("div", null, 
 	            this.renderHeader(), 
 	            this.renderTaskBoard(), 
 	            this.renderTagGraph(), 
-	            this.renderCreateTask());
+	            this.renderCreateTask(), 
+	            this.renderCreateTag());
 	    };
 	    return App;
 	}(React.Component));
@@ -849,20 +862,13 @@
 	            tokens: [],
 	            pendingToken: '',
 	        };
-	        if (this.state) {
-	            // We should copy some things over
-	            newState.pendingToken = this.state.pendingToken;
-	            this.state.tokens.forEach(function (token) {
+	        if (props.initialValues) {
+	            props.initialValues.forEach(function (token) {
 	                newState.tokens.push(token);
 	            });
 	        }
-	        else {
-	            // First call, copy over the initial values:
-	            if (this.props.initialValues) {
-	                this.props.initialValues.forEach(function (token) {
-	                    newState.tokens.push(token);
-	                });
-	            }
+	        if (this.state) {
+	            newState.pendingToken = this.state.pendingToken;
 	        }
 	        return newState;
 	    };
@@ -899,6 +905,13 @@
 	            }
 	        }
 	    };
+	    TokenizerComponent.prototype.removeToken = function (tokenToRemove) {
+	        this.state.tokens = this.state.tokens.filter(function (token) {
+	            return tokenToRemove.label != token.label;
+	        });
+	        this.setState(this.state);
+	        this.props.onChange(this.state.tokens);
+	    };
 	    TokenizerComponent.prototype.getTokenValues = function () {
 	        // This function intended to be called via. ref to get the list of tokens.
 	        // TODO: Decide if we want a call like this to attempt to tokenize whatever is left in
@@ -906,13 +919,15 @@
 	        return this.state.tokens;
 	    };
 	    TokenizerComponent.prototype.renderToken = function (token, index) {
-	        return (React.createElement("div", {className: "rendered-token", key: index}, token.label));
+	        return (React.createElement("div", {className: "card rendered-token", key: index}, 
+	            token.label, 
+	            React.createElement("div", {className: "remove-token", onClick: this.removeToken.bind(this, token)}, "x")));
 	    };
 	    TokenizerComponent.prototype.renderTokens = function () {
 	        if (!this.state.tokens.length) {
 	            return;
 	        }
-	        return (React.createElement("div", {className: "tokens-container"}, this.state.tokens.map(this.renderToken)));
+	        return (React.createElement("div", {className: "tokens-container"}, this.state.tokens.map(this.renderToken.bind(this))));
 	    };
 	    TokenizerComponent.prototype.render = function () {
 	        return (React.createElement("div", {className: "tokenizer-container"}, 
@@ -1353,6 +1368,96 @@
 	    return TaskComponent;
 	}(React.Component));
 	exports.TaskComponent = TaskComponent;
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var tokenizer_1 = __webpack_require__(12);
+	var CreateTagComponent = (function (_super) {
+	    __extends(CreateTagComponent, _super);
+	    function CreateTagComponent(props) {
+	        _super.call(this, props);
+	        var tagsById = {};
+	        for (var _i = 0, _a = props.tags; _i < _a.length; _i++) {
+	            var tag = _a[_i];
+	            tagsById[tag.id] = tag;
+	        }
+	        this.state = {
+	            tag: {
+	                id: 0,
+	                name: '',
+	                childTagIds: [],
+	                ownerId: this.props.meUser.id,
+	            },
+	            tagsById: tagsById,
+	        };
+	    }
+	    CreateTagComponent.prototype.submitForm = function () {
+	        this.props.createTag(this.state.tag);
+	    };
+	    CreateTagComponent.prototype.updateName = function (event) {
+	        this.state.tag.name = event.target.value;
+	        this.setState(this.state);
+	    };
+	    CreateTagComponent.prototype.getCurrentChildren = function () {
+	        var _this = this;
+	        var childrenNames = [];
+	        this.state.tag.childTagIds.forEach(function (tagId) {
+	            var tag = _this.state.tagsById[tagId];
+	            childrenNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return childrenNames;
+	    };
+	    CreateTagComponent.prototype.getAllTagNames = function () {
+	        var _this = this;
+	        // This function is used to determine the set of valid tokens for the tokenizer.
+	        // We should think about excluding tokens from here that would cause cycles.
+	        var allNames = [];
+	        Object.keys(this.state.tagsById).forEach(function (tagId) {
+	            var tag = _this.state.tagsById[+tagId];
+	            allNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return allNames;
+	    };
+	    CreateTagComponent.prototype.retrieveChildNames = function (tokens) {
+	        this.state.tag.childTagIds = tokens.map(function (token) {
+	            return token.value;
+	        });
+	        this.setState(this.state);
+	    };
+	    CreateTagComponent.prototype.renderForm = function () {
+	        return React.createElement("div", null, 
+	            React.createElement("div", {className: "name-container"}, 
+	                React.createElement("label", {htmlFor: "name"}, "Name: "), 
+	                React.createElement("input", {type: "text", name: "name", value: this.state.tag.name, onChange: this.updateName.bind(this)})), 
+	            React.createElement("div", {className: "children-container"}, 
+	                React.createElement("label", {htmlFor: "children"}, "Children: "), 
+	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveChildNames.bind(this), initialValues: this.getCurrentChildren(), possibleTokens: this.getAllTagNames()})), 
+	            React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this)}));
+	    };
+	    CreateTagComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "create-tag-container"}, 
+	            React.createElement("h3", null, "Create Tag Form:"), 
+	            this.renderForm());
+	    };
+	    return CreateTagComponent;
+	}(React.Component));
+	exports.CreateTagComponent = CreateTagComponent;
 
 
 /***/ }

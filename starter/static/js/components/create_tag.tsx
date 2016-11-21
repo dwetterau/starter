@@ -1,41 +1,39 @@
 import * as React from "react";
-import {Tag, TagsById} from "../models";
+import {Tag, TagsById, User} from "../models";
 import {TokenizerComponent, Tokenizable} from "./tokenizer";
 
-export interface EditTagProps {
-    tag: Tag;
-    tagsById: TagsById;
-    updateTag: (tag: Tag) => void;
-    deleteTag: (tag: Tag) => void;
+export interface CreateTagProps {
+    meUser: User;
+    tags: Array<Tag>;
+    createTag: (tag: Tag) => void;
 }
-export interface EditTagState {
+export interface CreateTagState {
     tag: Tag;
     tagsById: TagsById;
 }
 
-export class EditTagComponent extends React.Component<EditTagProps, EditTagState> {
+export class CreateTagComponent extends React.Component<CreateTagProps, CreateTagState> {
 
-    constructor(props: EditTagProps) {
+    constructor(props: CreateTagProps) {
         super(props);
+        const tagsById: TagsById = {};
+        for (let tag of props.tags) {
+            tagsById[tag.id] = tag;
+        }
+
         this.state = {
-            tag: props.tag,
-            tagsById: props.tagsById,
+            tag: {
+                id: 0,
+                name: '',
+                childTagIds: [],
+                ownerId: this.props.meUser.id,
+            },
+            tagsById,
         }
     }
 
-    componentWillReceiveProps(newProps: EditTagProps) {
-        this.setState({
-            tag: newProps.tag,
-            tagsById: newProps.tagsById
-        })
-    }
-
-    submitForm(eventType: string) {
-        if (eventType == "save") {
-            this.props.updateTag(this.state.tag);
-        } else {
-            this.props.deleteTag(this.state.tag);
-        }
+    submitForm() {
+        this.props.createTag(this.state.tag);
     }
 
     updateName(event: any) {
@@ -96,14 +94,13 @@ export class EditTagComponent extends React.Component<EditTagProps, EditTagState
                 />
             </div>
 
-            <input type="button" value="delete" onClick={this.submitForm.bind(this, "delete")} />
-            <input type="button" value="save" onClick={this.submitForm.bind(this, "save")} />
+            <input type="button" value="create" onClick={this.submitForm.bind(this)} />
         </div>
     }
 
     render() {
-        return <div className="edit-tag-container">
-            <h3>Tag Edit Form:</h3>
+        return <div className="create-tag-container">
+            <h3>Create Tag Form:</h3>
             {this.renderForm()}
         </div>
     }

@@ -29,19 +29,13 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
             tokens: [],
             pendingToken: '',
         };
-        if (this.state) {
-            // We should copy some things over
-            newState.pendingToken = this.state.pendingToken;
-            this.state.tokens.forEach((token) => {
+        if (props.initialValues) {
+            props.initialValues.forEach((token) => {
                 newState.tokens.push(token)
             })
-        } else {
-            // First call, copy over the initial values:
-            if (this.props.initialValues) {
-                this.props.initialValues.forEach((token) => {
-                    newState.tokens.push(token)
-                })
-            }
+        }
+        if (this.state) {
+            newState.pendingToken = this.state.pendingToken;
         }
 
         return newState;
@@ -83,6 +77,14 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         }
     }
 
+    removeToken(tokenToRemove: Tokenizable) {
+        this.state.tokens = this.state.tokens.filter((token: Tokenizable) => {
+            return tokenToRemove.label != token.label
+        });
+        this.setState(this.state);
+        this.props.onChange(this.state.tokens);
+    }
+
     getTokenValues(): Array<Tokenizable>{
         // This function intended to be called via. ref to get the list of tokens.
         // TODO: Decide if we want a call like this to attempt to tokenize whatever is left in
@@ -92,8 +94,13 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
 
     renderToken(token: Tokenizable, index: number) {
         return (
-            <div className="rendered-token" key={index}>
+            <div className="card rendered-token" key={index}>
                 {token.label}
+                <div className="remove-token"
+                     onClick={this.removeToken.bind(this, token)}
+                >
+                    x
+                </div>
             </div>
         )
     }
@@ -105,7 +112,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
 
         return (
             <div className="tokens-container">
-                {this.state.tokens.map(this.renderToken)}
+                {this.state.tokens.map(this.renderToken.bind(this))}
             </div>
         )
     }
