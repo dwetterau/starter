@@ -737,7 +737,7 @@
 	            }
 	            else {
 	                this.props.possibleTokens.forEach(function (possibleToken) {
-	                    if (possibleToken.label == newToken_1) {
+	                    if (possibleToken.label.toLowerCase() == newToken_1.toLowerCase()) {
 	                        foundMatch_1 = true;
 	                        _this.state.tokens.push({
 	                            label: possibleToken.label,
@@ -1082,7 +1082,7 @@
 	    };
 	    TaskBoardComponent.prototype.getState = function (props, viewType) {
 	        var _a = this.divideByType(props.tasks, viewType), headers = _a[0], columnTypes = _a[1], columns = _a[2];
-	        return {
+	        var newState = {
 	            viewType: viewType,
 	            columns: columns,
 	            headers: headers,
@@ -1092,6 +1092,11 @@
 	            selectedTag: null,
 	            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : false,
 	        };
+	        if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
+	            // Copy over the previous selectedTag
+	            newState.selectedTag = this.state.selectedTag;
+	        }
+	        return newState;
 	    };
 	    TaskBoardComponent.prototype.divideByType = function (tasks, type) {
 	        var _this = this;
@@ -1304,7 +1309,7 @@
 	    TaskBoardComponent.prototype.renderHideClosedTasks = function () {
 	        return (React.createElement("div", {className: "hide-closed-tasks"}, 
 	            "Hide closed?", 
-	            React.createElement("input", {type: "checkbox", onChange: this.changeHideClosedTasks.bind(this), value: this.state.shouldHideClosedTasks.toString()})));
+	            React.createElement("input", {type: "checkbox", onChange: this.changeHideClosedTasks.bind(this), checked: this.state.shouldHideClosedTasks})));
 	    };
 	    TaskBoardComponent.prototype.renderTypeBasedOptions = function () {
 	        if (this.state.viewType == TaskBoardViewType.priority) {

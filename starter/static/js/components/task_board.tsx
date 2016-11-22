@@ -43,7 +43,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     getState(props: TaskBoardProps, viewType: TaskBoardViewType): TaskBoardState {
         const [headers, columnTypes, columns] = this.divideByType(props.tasks, viewType);
-        return {
+        const newState: TaskBoardState = {
             viewType,
             columns,
             headers,
@@ -52,7 +52,12 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             editingTask: null,
             selectedTag: null,
             shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : false,
+        };
+        if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
+            // Copy over the previous selectedTag
+            newState.selectedTag = this.state.selectedTag;
         }
+        return newState;
     }
 
     divideByType(tasks: Array<Task>, type: TaskBoardViewType): [
@@ -310,8 +315,10 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return (
             <div className="hide-closed-tasks">
                 Hide closed?
-                <input type="checkbox" onChange={this.changeHideClosedTasks.bind(this)}
-                       value={this.state.shouldHideClosedTasks.toString()}
+                <input
+                    type="checkbox"
+                    onChange={this.changeHideClosedTasks.bind(this)}
+                    checked={this.state.shouldHideClosedTasks}
                 />
             </div>
         )

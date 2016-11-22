@@ -66,7 +66,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
                 this.state.tokens.push({label: newToken, value: newToken});
             } else {
                 this.props.possibleTokens.forEach((possibleToken: Tokenizable) => {
-                    if (possibleToken.label == newToken) {
+                    if (possibleToken.label.toLowerCase() == newToken.toLowerCase()) {
                         foundMatch = true;
                         this.state.tokens.push({
                             label: possibleToken.label,
