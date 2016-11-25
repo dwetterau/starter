@@ -478,7 +478,7 @@
 	var React = __webpack_require__(5);
 	var jQuery = __webpack_require__(7);
 	var create_tag_1 = __webpack_require__(9);
-	var create_task_1 = __webpack_require__(11);
+	var edit_task_1 = __webpack_require__(11);
 	var tag_graph_1 = __webpack_require__(12);
 	var task_board_1 = __webpack_require__(14);
 	var App = (function (_super) {
@@ -493,9 +493,10 @@
 	        App.updateTagsById(newState);
 	        this.state = newState;
 	    }
-	    App.prototype.createTask = function (taskArgs) {
+	    App.prototype.createTask = function (task) {
 	        var _this = this;
-	        jQuery.post('/api/1/task/create', taskArgs, function (newTaskJson) {
+	        delete task["id"];
+	        jQuery.post('/api/1/task/create', task, function (newTaskJson) {
 	            _this.state.tasks.push(JSON.parse(newTaskJson));
 	            _this.setState(_this.state);
 	        });
@@ -576,7 +577,7 @@
 	        return React.createElement(tag_graph_1.TagGraphComponent, {tagsById: this.state.tagsById, updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this)});
 	    };
 	    App.prototype.renderCreateTask = function () {
-	        return React.createElement(create_task_1.CreateTaskComponent, {meUser: this.props.meUser, createTask: this.createTask.bind(this)});
+	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, tagsById: this.state.tagsById, createMode: true, createTask: this.createTask.bind(this), updateTask: function (task) { }, deleteTask: function (task) { }});
 	    };
 	    App.prototype.renderCreateTag = function () {
 	        return React.createElement(create_tag_1.CreateTagComponent, {meUser: this.props.meUser, createTag: this.createTag.bind(this), tagsById: this.state.tagsById});
@@ -809,30 +810,127 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var jQuery = __webpack_require__(7);
-	var CreateTaskComponent = (function (_super) {
-	    __extends(CreateTaskComponent, _super);
-	    function CreateTaskComponent() {
-	        _super.apply(this, arguments);
+	var tokenizer_1 = __webpack_require__(10);
+	var EditTaskComponent = (function (_super) {
+	    __extends(EditTaskComponent, _super);
+	    function EditTaskComponent(props) {
+	        _super.call(this, props);
+	        if (props.createMode) {
+	            this.state = {
+	                task: this._getEmptyTask(props.meUser)
+	            };
+	        }
+	        else {
+	            this.state = {
+	                task: props.task,
+	            };
+	        }
 	    }
-	    CreateTaskComponent.prototype.submitForm = function (event) {
-	        // Note: This is pretty hacky, but for now it beats copying all form state out of the dom
-	        // with a lot of onChange handler stuff.
-	        event.preventDefault();
-	        var data = jQuery(event.target).serialize();
-	        this.props.createTask(data);
+	    EditTaskComponent.prototype.componentWillReceiveProps = function (newProps) {
+	        if (newProps.createMode) {
+	            this.setState({
+	                task: this._getEmptyTask(newProps.meUser),
+	            });
+	        }
+	        else {
+	            this.setState({
+	                task: newProps.task,
+	            });
+	        }
 	    };
-	    CreateTaskComponent.prototype.renderForm = function () {
-	        return React.createElement("form", {onSubmit: this.submitForm.bind(this)}, 
+	    EditTaskComponent.prototype._getEmptyTask = function (user) {
+	        return {
+	            id: 0,
+	            title: '',
+	            description: '',
+	            authorId: user.id,
+	            ownerId: user.id,
+	            tagIds: [],
+	            priority: 300,
+	            state: 0,
+	        };
+	    };
+	    EditTaskComponent.prototype.submitForm = function (eventType) {
+	        if (eventType == "save") {
+	            this.props.updateTask(this.state.task);
+	        }
+	        else if (eventType == "delete") {
+	            this.props.deleteTask(this.state.task);
+	        }
+	        else if (eventType == "create") {
+	            this.props.createTask(this.state.task);
+	        }
+	        else {
+	            throw Error("Unknown submit type!");
+	        }
+	    };
+	    EditTaskComponent.prototype.updateAttr = function (attrName, event) {
+	        this.state.task[attrName] = event.target.value;
+	        this.setState(this.state);
+	    };
+	    EditTaskComponent.prototype.getCurrentTags = function () {
+	        var _this = this;
+	        var tagNames = [];
+	        this.state.task.tagIds.forEach(function (tagId) {
+	            var tag = _this.props.tagsById[tagId];
+	            tagNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return tagNames;
+	    };
+	    EditTaskComponent.prototype.getAllTagNames = function () {
+	        var _this = this;
+	        // This function is used to determine the set of valid tokens for the tokenizer.
+	        // We should think about excluding tokens from here that would cause cycles.
+	        var allNames = [];
+	        Object.keys(this.props.tagsById).forEach(function (tagId) {
+	            var tag = _this.props.tagsById[+tagId];
+	            allNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return allNames;
+	    };
+	    EditTaskComponent.prototype.retrieveTagNames = function (tokens) {
+	        this.state.task.tagIds = tokens.map(function (token) {
+	            return token.value;
+	        });
+	        this.setState(this.state);
+	    };
+	    EditTaskComponent.prototype.renderFormTitle = function () {
+	        if (this.props.createMode) {
+	            return React.createElement("h3", null, "Create Task Form:");
+	        }
+	        else {
+	            return React.createElement("h3", null, "Task Edit Form:");
+	        }
+	    };
+	    EditTaskComponent.prototype.renderButtons = function () {
+	        if (this.props.createMode) {
+	            return (React.createElement("div", {className: "edit-task-button-container"}, 
+	                React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this, "create")})
+	            ));
+	        }
+	        else {
+	            return (React.createElement("div", {className: "edit-task-button-container"}, 
+	                React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
+	                React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")})));
+	        }
+	    };
+	    EditTaskComponent.prototype.renderForm = function () {
+	        return React.createElement("div", null, 
 	            React.createElement("div", {className: "title-container"}, 
 	                React.createElement("label", {htmlFor: "title"}, "Title: "), 
-	                React.createElement("input", {type: "text", name: "title"})), 
+	                React.createElement("input", {type: "text", name: "title", value: this.state.task.title, onChange: this.updateAttr.bind(this, "title")})), 
 	            React.createElement("div", {className: "description-container"}, 
 	                React.createElement("label", {htmlFor: "description"}, "Description: "), 
-	                React.createElement("textarea", {type: "text", name: "description"})), 
+	                React.createElement("textarea", {type: "text", name: "description", value: this.state.task.description, onChange: this.updateAttr.bind(this, "description")})), 
 	            React.createElement("div", {className: "priority-selector"}, 
 	                React.createElement("label", {htmlFor: "priority"}, "Priority: "), 
-	                React.createElement("select", {name: "priority", defaultValue: "300"}, 
+	                React.createElement("select", {name: "priority", value: this.state.task.priority, onChange: this.updateAttr.bind(this, "priority")}, 
 	                    React.createElement("option", {value: "0"}, "Unknown"), 
 	                    React.createElement("option", {value: "100"}, "Lowest"), 
 	                    React.createElement("option", {value: "200"}, "Low"), 
@@ -841,21 +939,24 @@
 	                    React.createElement("option", {value: "500"}, "Highest"))), 
 	            React.createElement("div", {className: "state-selector"}, 
 	                React.createElement("label", {htmlFor: "state"}, "Status: "), 
-	                React.createElement("select", {name: "state", defaultValue: "0"}, 
+	                React.createElement("select", {name: "state", value: this.state.task.state, onChange: this.updateAttr.bind(this, "state")}, 
 	                    React.createElement("option", {value: "0"}, "Open"), 
 	                    React.createElement("option", {value: "500"}, "In Progress"), 
 	                    React.createElement("option", {value: "750"}, "Blocked"), 
 	                    React.createElement("option", {value: "1000"}, "Closed"))), 
-	            React.createElement("input", {type: "hidden", name: "authorId", value: this.props.meUser.id}), 
-	            React.createElement("input", {type: "hidden", name: "ownerId", value: this.props.meUser.id}), 
-	            React.createElement("input", {type: "submit", value: "Create"}));
+	            React.createElement("div", {className: "tag-tokenizer-container"}, 
+	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames()})
+	            ), 
+	            this.renderButtons());
 	    };
-	    CreateTaskComponent.prototype.render = function () {
-	        return React.createElement("div", null, this.renderForm());
+	    EditTaskComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "edit-task-container"}, 
+	            this.renderFormTitle(), 
+	            this.renderForm());
 	    };
-	    return CreateTaskComponent;
+	    return EditTaskComponent;
 	}(React.Component));
-	exports.CreateTaskComponent = CreateTaskComponent;
+	exports.EditTaskComponent = EditTaskComponent;
 
 
 /***/ },
@@ -1061,9 +1162,9 @@
 	};
 	var React = __webpack_require__(5);
 	var jQuery = __webpack_require__(7);
-	var edit_task_1 = __webpack_require__(15);
-	var models_1 = __webpack_require__(16);
-	var task_1 = __webpack_require__(17);
+	var edit_task_1 = __webpack_require__(11);
+	var models_1 = __webpack_require__(15);
+	var task_1 = __webpack_require__(16);
 	var tokenizer_1 = __webpack_require__(10);
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
@@ -1349,7 +1450,7 @@
 	        if (!this.state.editingTask) {
 	            return;
 	        }
-	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, task: this.state.editingTask, tagsById: this.props.tagsById, updateTask: this.props.updateTask, deleteTask: this.props.deleteTask});
+	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, task: this.state.editingTask, tagsById: this.props.tagsById, createMode: false, createTask: function (task) { }, updateTask: this.props.updateTask, deleteTask: this.props.deleteTask});
 	    };
 	    TaskBoardComponent.prototype.render = function () {
 	        return React.createElement("div", {className: "task-board"}, 
@@ -1365,117 +1466,6 @@
 
 /***/ },
 /* 15 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(10);
-	var EditTaskComponent = (function (_super) {
-	    __extends(EditTaskComponent, _super);
-	    function EditTaskComponent(props) {
-	        _super.call(this, props);
-	        this.state = {
-	            task: props.task,
-	        };
-	    }
-	    EditTaskComponent.prototype.componentWillReceiveProps = function (newProps) {
-	        this.setState({
-	            task: newProps.task,
-	        });
-	    };
-	    EditTaskComponent.prototype.submitForm = function (eventType) {
-	        if (eventType == "save") {
-	            this.props.updateTask(this.state.task);
-	        }
-	        else {
-	            this.props.deleteTask(this.state.task);
-	        }
-	    };
-	    EditTaskComponent.prototype.updateAttr = function (attrName, event) {
-	        this.state.task[attrName] = event.target.value;
-	        this.setState(this.state);
-	    };
-	    EditTaskComponent.prototype.getCurrentTags = function () {
-	        var _this = this;
-	        var tagNames = [];
-	        this.state.task.tagIds.forEach(function (tagId) {
-	            var tag = _this.props.tagsById[tagId];
-	            tagNames.push({
-	                label: tag.name,
-	                value: tag.id
-	            });
-	        });
-	        return tagNames;
-	    };
-	    EditTaskComponent.prototype.getAllTagNames = function () {
-	        var _this = this;
-	        // This function is used to determine the set of valid tokens for the tokenizer.
-	        // We should think about excluding tokens from here that would cause cycles.
-	        var allNames = [];
-	        Object.keys(this.props.tagsById).forEach(function (tagId) {
-	            var tag = _this.props.tagsById[+tagId];
-	            allNames.push({
-	                label: tag.name,
-	                value: tag.id
-	            });
-	        });
-	        return allNames;
-	    };
-	    EditTaskComponent.prototype.retrieveTagNames = function (tokens) {
-	        this.state.task.tagIds = tokens.map(function (token) {
-	            return token.value;
-	        });
-	        this.setState(this.state);
-	    };
-	    EditTaskComponent.prototype.renderForm = function () {
-	        return React.createElement("div", null, 
-	            React.createElement("div", {className: "title-container"}, 
-	                React.createElement("label", {htmlFor: "title"}, "Title: "), 
-	                React.createElement("input", {type: "text", name: "title", value: this.state.task.title, onChange: this.updateAttr.bind(this, "title")})), 
-	            React.createElement("div", {className: "description-container"}, 
-	                React.createElement("label", {htmlFor: "description"}, "Description: "), 
-	                React.createElement("textarea", {type: "text", name: "description", value: this.state.task.description, onChange: this.updateAttr.bind(this, "description")})), 
-	            React.createElement("div", {className: "priority-selector"}, 
-	                React.createElement("label", {htmlFor: "priority"}, "Priority: "), 
-	                React.createElement("select", {name: "priority", value: this.state.task.priority, onChange: this.updateAttr.bind(this, "priority")}, 
-	                    React.createElement("option", {value: "0"}, "Unknown"), 
-	                    React.createElement("option", {value: "100"}, "Lowest"), 
-	                    React.createElement("option", {value: "200"}, "Low"), 
-	                    React.createElement("option", {value: "300"}, "Normal"), 
-	                    React.createElement("option", {value: "400"}, "High"), 
-	                    React.createElement("option", {value: "500"}, "Highest"))), 
-	            React.createElement("div", {className: "state-selector"}, 
-	                React.createElement("label", {htmlFor: "state"}, "Status: "), 
-	                React.createElement("select", {name: "state", value: this.state.task.state, onChange: this.updateAttr.bind(this, "state")}, 
-	                    React.createElement("option", {value: "0"}, "Open"), 
-	                    React.createElement("option", {value: "500"}, "In Progress"), 
-	                    React.createElement("option", {value: "750"}, "Blocked"), 
-	                    React.createElement("option", {value: "1000"}, "Closed"))), 
-	            React.createElement("div", {className: "tag-tokenizer-container"}, 
-	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames()})
-	            ), 
-	            React.createElement("input", {type: "hidden", name: "authorId", value: this.state.task.authorId}), 
-	            React.createElement("input", {type: "hidden", name: "ownerId", value: this.state.task.ownerId}), 
-	            React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
-	            React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")}));
-	    };
-	    EditTaskComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "edit-task-container"}, 
-	            React.createElement("h3", null, "Task Edit Form:"), 
-	            this.renderForm());
-	    };
-	    return EditTaskComponent;
-	}(React.Component));
-	exports.EditTaskComponent = EditTaskComponent;
-
-
-/***/ },
-/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1512,7 +1502,7 @@
 
 
 /***/ },
-/* 17 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1522,7 +1512,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var models_1 = __webpack_require__(16);
+	var models_1 = __webpack_require__(15);
 	var task_board_1 = __webpack_require__(14);
 	var TaskComponent = (function (_super) {
 	    __extends(TaskComponent, _super);

@@ -10,8 +10,6 @@
     "files": [
         "./static/js/main.tsx",
         "./static/js/models.ts",
-        "./static/js/components/app.tsx",
-        "./static/js/components/create_task.tsx",
-        "./static/js/components/task.tsx"
+        "./static/js/components/app.tsx"
     ]
 }

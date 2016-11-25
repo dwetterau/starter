@@ -4,8 +4,10 @@ import {TokenizerComponent, Tokenizable} from "./tokenizer";
 
 export interface EditTaskProps {
     meUser: User,
-    task: Task,
+    task?: Task,
     tagsById: TagsById,
+    createMode: boolean,
+    createTask: (task: Task) => void,
     updateTask: (task: Task) => void,
     deleteTask: (task: Task) => void,
 }
@@ -17,22 +19,51 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
 
     constructor(props: EditTaskProps) {
         super(props);
-        this.state = {
-            task: props.task,
+        if (props.createMode) {
+            this.state = {
+                task: this._getEmptyTask(props.meUser)
+            }
+        } else {
+            this.state = {
+                task: props.task,
+            }
         }
     }
 
     componentWillReceiveProps(newProps: EditTaskProps) {
-        this.setState({
-            task: newProps.task,
-        })
+        if (newProps.createMode) {
+            this.setState({
+                task: this._getEmptyTask(newProps.meUser),
+            })
+        } else {
+            this.setState({
+                task: newProps.task,
+            })
+        }
+    }
+
+    _getEmptyTask(user: User): Task {
+        return {
+            id: 0,
+            title: '',
+            description: '',
+            authorId: user.id,
+            ownerId: user.id,
+            tagIds: [],
+            priority: 300,
+            state: 0,
+        }
     }
 
     submitForm(eventType: string) {
         if (eventType == "save") {
             this.props.updateTask(this.state.task);
-        } else {
+        } else if (eventType == "delete") {
             this.props.deleteTask(this.state.task);
+        } else if (eventType == "create") {
+            this.props.createTask(this.state.task);
+        } else {
+            throw Error("Unknown submit type!");
         }
     }
 
@@ -72,6 +103,34 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
             return token.value;
         });
         this.setState(this.state)
+    }
+
+    renderFormTitle() {
+        if (this.props.createMode) {
+            return <h3>Create Task Form:</h3>
+        } else {
+            return <h3>Task Edit Form:</h3>
+        }
+    }
+
+    renderButtons() {
+        if (this.props.createMode) {
+             return (
+                <div className="edit-task-button-container">
+                    <input type="button" value="create"
+                           onClick={this.submitForm.bind(this, "create")} />
+                </div>
+            )
+        } else {
+            return (
+                <div className="edit-task-button-container">
+                    <input type="button" value="delete"
+                           onClick={this.submitForm.bind(this, "delete")} />
+                    <input type="button" value="save"
+                           onClick={this.submitForm.bind(this, "save")} />
+                </div>
+            )
+        }
     }
 
     renderForm() {
@@ -126,17 +185,13 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
                 />
             </div>
 
-            <input type="hidden" name="authorId" value={this.state.task.authorId} />
-            <input type="hidden" name="ownerId" value={this.state.task.ownerId} />
-
-            <input type="button" value="delete" onClick={this.submitForm.bind(this, "delete")} />
-            <input type="button" value="save" onClick={this.submitForm.bind(this, "save")} />
+            {this.renderButtons()}
         </div>
     }
 
     render() {
         return <div className="edit-task-container">
-            <h3>Task Edit Form:</h3>
+            {this.renderFormTitle()}
             {this.renderForm()}
         </div>
     }

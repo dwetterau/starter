@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as jQuery from "jquery";
 import {CreateTagComponent} from "./create_tag"
-import {CreateTaskComponent} from "./create_task"
+import {EditTaskComponent} from "./edit_task"
 import {Tag, Task, User, TagsById} from "../models";
 import {TagGraphComponent} from "./tag_graph";
 import {TaskBoardComponent} from "./task_board"
@@ -30,8 +30,9 @@ export class App extends React.Component<AppProps, AppState> {
         this.state = newState;
     }
 
-    createTask(taskArgs: string) {
-        jQuery.post('/api/1/task/create', taskArgs, (newTaskJson: string) => {
+    createTask(task: Task) {
+        delete task["id"];
+        jQuery.post('/api/1/task/create', task, (newTaskJson: string) => {
             this.state.tasks.push(JSON.parse(newTaskJson));
             this.setState(this.state)
         });
@@ -129,8 +130,14 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     renderCreateTask() {
-        return <CreateTaskComponent meUser={this.props.meUser}
-                                    createTask={this.createTask.bind(this)} />
+        return <EditTaskComponent
+            meUser={this.props.meUser}
+            tagsById={this.state.tagsById}
+            createMode={true}
+            createTask={this.createTask.bind(this)}
+            updateTask={(task: Task) => {}}
+            deleteTask={(task: Task) => {}}
+        />
     }
 
     renderCreateTag() {

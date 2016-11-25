@@ -400,6 +400,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return <EditTaskComponent meUser={this.props.meUser}
                                   task={this.state.editingTask}
                                   tagsById={this.props.tagsById}
+                                  createMode={false}
+                                  createTask={(task: Task) => {}}
                                   updateTask={this.props.updateTask}
                                   deleteTask={this.props.deleteTask} />
     }
