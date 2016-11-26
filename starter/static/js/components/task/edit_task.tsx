@@ -1,6 +1,6 @@
 import * as React from "react";
-import {User, Task, TagsById} from "../models";
-import {TokenizerComponent, Tokenizable} from "./tokenizer";
+import {User, Task, TagsById} from "../../models";
+import {TokenizerComponent, Tokenizable} from "../tokenizer";
 
 export interface EditTaskProps {
     meUser: User,
@@ -86,7 +86,6 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
 
     getAllTagNames(): Array<Tokenizable> {
         // This function is used to determine the set of valid tokens for the tokenizer.
-        // We should think about excluding tokens from here that would cause cycles.
         const allNames: Array<Tokenizable> = [];
         Object.keys(this.props.tagsById).forEach((tagId) => {
             const tag = this.props.tagsById[+tagId];

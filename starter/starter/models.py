@@ -130,3 +130,67 @@ class TaskGlobalId(models.Model):
     local_id = models.IntegerField(db_index=True)
 
     GLOBAL_WLOCK = Lock()
+
+
+class Event(models.Model):
+    name = models.CharField("Name of the event", max_length=128)
+    start_time = models.DateTimeField("Start time of the event")
+    duration_secs = models.IntegerField("Duration of events in seconds")
+
+    author = models.ForeignKey(User, related_name="authored_events",
+                               verbose_name="Original author of the event")
+    owner = models.ForeignKey(User, related_name="owned_events",
+                              verbose_name="Current owner of the event")
+
+    tags = models.ManyToManyField(Tag, verbose_name="The tags for the event")
+
+    @classmethod
+    def get_by_owner_id(cls, user_id):
+        return Event.objects.filter(owner_id=user_id)
+
+    @classmethod
+    def get_by_local_id(cls, local_id, user):
+        event_id = EventGlobalId.objects.get(user_id=user.id, local_id=local_id).event_id
+        return Event.objects.get(id=event_id)
+
+    def create_local_id(self, user):
+        with EventGlobalId.GLOBAL_WLOCK:
+            cur_last = EventGlobalId.objects.filter(user_id=user.id).order_by("local_id").last()
+            last_id = cur_last.local_id if cur_last else 0
+            EventGlobalId.objects.create(
+                event=self,
+                user=user,
+                local_id=last_id + 1,
+            )
+
+    def get_local_id(self):
+        # TODO: Cache this locally since it's immutable?
+        return EventGlobalId.objects.get(event_id=self.id, user_id=self.author_id).local_id
+
+    def get_tag_ids(self):
+        return [x.id for x in self.tags.all()]
+
+    def set_tags(self, new_tags):
+        # TODO: Optimize this
+        self.tags.clear()
+        for tag in new_tags:
+            self.tags.add(tag)
+
+    def to_dict(self):
+        return dict(
+            id=self.get_local_id(),
+            name=self.name,
+            authorId=self.author_id,
+            ownerId=self.owner_id,
+            tagIds=self.get_tag_ids(),
+            startTime=int(self.start_time.timestamp() * 1000),
+            durationSecs=self.duration_secs,
+        )
+
+
+class EventGlobalId(models.Model):
+    user = models.ForeignKey(User, related_name="user_events")
+    event = models.ForeignKey(Event, related_name="event_user")
+    local_id = models.IntegerField(db_index=True)
+
+    GLOBAL_WLOCK = Lock()

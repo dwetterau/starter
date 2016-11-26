@@ -33,6 +33,18 @@ export const stateNameList = [
     ["Blocked", 750], ["Closed", 1000]
 ];
 
+export class Event {
+    [k: string]: any // Needed because of some hacky reflection in edit_event.
+
+    readonly id: number;
+    name: string;
+    readonly authorId: number;
+    ownerId: number;
+    tagIds: Array<number>;
+    startTime: number;
+    durationSecs: number;
+}
+
 export class Tag {
     readonly id: number;
     name: string;

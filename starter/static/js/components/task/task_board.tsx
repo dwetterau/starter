@@ -2,16 +2,17 @@ import * as React from "react";
 import * as jQuery from "jquery";
 
 import {EditTaskComponent} from "./edit_task";
-import {Task, stateNameList, User, priorityNameList, TagsById, Tag} from "../models";
+import {Task, stateNameList, User, priorityNameList, TagsById, Tag} from "../../models";
 import {TaskComponent} from "./task";
-import {TokenizerComponent, Tokenizable} from "./tokenizer";
+import {TokenizerComponent, Tokenizable} from "../tokenizer";
 
 export interface TaskBoardProps {
     meUser: User,
     tasks: Array<Task>,
+    tagsById: TagsById,
+    createTask: (task: Task) => void,
     updateTask: (task: Task) => void,
     deleteTask: (task: Task) => void,
-    tagsById: TagsById,
 }
 export interface TaskBoardState {
     viewType: TaskBoardViewType,
@@ -406,12 +407,24 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                                   deleteTask={this.props.deleteTask} />
     }
 
+    renderCreateTask() {
+        return <EditTaskComponent
+            meUser={this.props.meUser}
+            tagsById={this.props.tagsById}
+            createMode={true}
+            createTask={this.props.createTask}
+            updateTask={(task: Task) => {}}
+            deleteTask={(task: Task) => {}}
+        />
+    }
+
     render() {
         return <div className="task-board">
             {this.renderOptions()}
             {this.renderTagSelector()}
             {this.renderColumns()}
             {this.renderEditingTask()}
+            {this.renderCreateTask()}
         </div>
     }
 }

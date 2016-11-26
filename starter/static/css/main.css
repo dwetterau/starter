@@ -16,30 +16,58 @@ div.card {
     display: block;
 }
 
+/* Header CSS */
+div.header-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+h1.header-title {
+    margin: 0;
+}
+
+div.header-container div.view-mode-selector {
+    display: flex;
+    width: 100%;
+    margin: .5em 0;
+}
+
+div.header-container div.view-mode-selector div.view-mode-option {
+    margin-right: 1em;
+    cursor: pointer;
+}
+
+div.header-container div.view-mode-selector div.view-mode-option.-selected {
+    text-decoration: underline;
+}
+
+/* End of Header CSS */
+
 /* Task Board CSS */
 div.task-board {
     width: 100%;
 }
 
-div.full-column-container {
+div.task-board div.full-column-container {
     display: flex;
     flex-direction: row;
     height: 100%;
     min-height: 768px;
 }
 
-div.column-container {
+div.task-board div.column-container {
     display: flex;
     flex-direction: column;
     width: 25%;
     margin: .5em 1em;
 }
 
-div.column-container.drop-container {
+div.task-board div.column-container.drop-container {
     background-color: rgba(0, 0, 0, .04);
 }
 
-div.draggable-task.-hidden {
+div.task-board div.draggable-task.-hidden {
     display: none;
 }
 

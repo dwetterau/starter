@@ -2,13 +2,19 @@ from collections import defaultdict
 import json
 import urllib
 
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
-from starter.models import Tag, Task, TagEdge
+from starter.models import (
+    Event,
+    Tag,
+    TagEdge,
+    Task,
+)
 from starter.utils import user_to_dict
 
 #
@@ -22,6 +28,7 @@ def index(request):
     props = json.dumps(dict(
         meUser=user_to_dict(request.user),
         tasks=[task.to_dict() for task in Task.get_by_owner_id(request.user.id)],
+        events=[event.to_dict() for event in Event.get_by_owner_id(request.user.id)],
         tags=[tag.to_dict() for tag in Tag.get_all_owned_tags(request.user)],
     ))
     return render(request, 'starter/index.html', dict(props=props))
@@ -178,6 +185,128 @@ def delete_task(request):
         return HttpResponse("Invalid task specified".encode(), status=400)
 
     task.delete()
+    return HttpResponse(json.dumps(dict(id=arguments["id"])), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def create_event(request):
+    arguments = urllib.parse.parse_qsl(request.body)
+    validation_map = {
+        'name': str,
+        'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
+        'durationSecs': int,
+        'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
+        'authorId': lambda user_id: User.objects.get(id=int(user_id)),
+        'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
+    }
+
+    try:
+        arguments = _validate(arguments, validation_map)
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400, )
+
+    # Combine new tags:
+    new_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "tagIds[]"}
+
+    # Now it's safe to squash all the arguments together into a dict
+    arguments = dict(arguments)
+
+    # Business logic checks
+    if arguments["authorId"] != request.user:
+        return HttpResponse("Logged in user not the author".encode(), status=400)
+
+    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
+        return HttpResponse("Tag not found".encode(), status=400)
+
+    # TODO: Ensure no overlapping events?!
+
+    event = Event.objects.create(
+        name=arguments["name"],
+        start_time=arguments["startTime"],
+        duration_secs=arguments["durationSecs"],
+        author=arguments["authorId"],
+        owner=arguments["ownerId"],
+    )
+    event.create_local_id(arguments["authorId"])
+    if new_tags_by_id:
+        event.set_tags(new_tags_by_id.values())
+
+    return HttpResponse(json.dumps(event.to_dict()), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def update_event(request):
+    arguments = urllib.parse.parse_qsl(request.body)
+    validation_map = {
+        'id': int,
+        'name': str,
+        'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
+        'durationSecs': int,
+        'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
+        'authorId': lambda user_id: User.objects.get(id=int(user_id)),
+        'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
+    }
+
+    try:
+        arguments = _validate(arguments, validation_map)
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400)
+
+    # Combine new tags:
+    new_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "tagIds[]"}
+
+    # Now it's safe to squash all the arguments together into a dict
+    arguments = dict(arguments)
+
+    # Business logic checks
+    if request.user not in [arguments["authorId"], arguments["ownerId"]]:
+        return HttpResponse("Must edit as owner or author".encode(), status=400)
+
+    event = Event.get_by_local_id(arguments["id"], request.user)
+    if not event or event.author != arguments["authorId"]:
+        return HttpResponse("Invalid event specified.".encode(), status=400)
+
+    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
+        return HttpResponse("Tag not found".encode(), status=400)
+
+    # TODO: Ensure no overlapping events?!
+
+    # Copy in all the mutable fields
+    event.name = arguments["name"]
+    event.start_time = arguments["startTime"]
+    event.duration_secs = arguments["durationSecs"]
+    event.owner = arguments["ownerId"]
+    event.save()
+
+    if set(new_tags_by_id.keys()) != set(event.get_tag_ids()):
+        event.set_tags(new_tags_by_id.values())
+
+    return HttpResponse(json.dumps(event.to_dict()), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def delete_event(request):
+    arguments = urllib.parse.parse_qsl(request.body)
+    validation_map = {
+        'id': int,
+    }
+    try:
+        arguments = dict(_validate(arguments, validation_map))
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400)
+
+    # Business logic checks
+    event = Event.get_by_local_id(arguments["id"], request.user)
+    if not event or event.author != request.user:
+        return HttpResponse("Invalid event specified".encode(), status=400)
+
+    event.delete()
     return HttpResponse(json.dumps(dict(id=arguments["id"])), status=200)
 
 

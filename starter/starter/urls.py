@@ -37,6 +37,10 @@ urlpatterns = [
     url(r'^api/1/task/update/?$', views.update_task),
     url(r'^api/1/task/delete/?$', views.delete_task),
 
+    url(r'^api/1/event/create/?$', views.create_event),
+    url(r'^api/1/event/update/?$', views.update_event),
+    url(r'^api/1/event/delete/?$', views.delete_event),
+
     url(r'^api/1/tag/create/?$', views.create_tag),
     url(r'^api/1/tag/update/?$', views.update_tag),
 

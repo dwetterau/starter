@@ -1,6 +1,7 @@
 import * as React from "react";
-import {Task, priorityNameList, stateNameList, TagsById} from "../models";
+import {Task, priorityNameList, stateNameList, TagsById} from "../../models";
 import {TaskBoardViewType} from "./task_board";
+import {TagComponent} from "../tag/tag";
 
 export interface TaskProps {
     task: Task,
@@ -56,11 +57,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
 
     renderTag(tagId: number) {
         const tag = this.props.tagsById[tagId];
-        return (
-            <div className="task-tag card" key={tagId}>
-                {tag.name}
-            </div>
-        )
+        return <TagComponent tag={tag} key={tagId}/>
     }
 
     renderTags() {

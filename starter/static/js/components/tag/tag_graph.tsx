@@ -1,10 +1,13 @@
 import * as React from "react";
 
-import {Tag, TagsById} from "../models";
+import {Tag, TagsById, User} from "../../models";
 import {EditTagComponent} from "./edit_tag";
+import {CreateTagComponent} from "./create_tag";
 
 export interface TagGraphProps {
+    meUser: User,
     tagsById: TagsById,
+    createTag: (tag: Tag) => void,
     updateTag: (tag: Tag) => void,
     deleteTag: (tag: Tag) => void,
 }
@@ -122,10 +125,19 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
                                  deleteTag={this.props.deleteTag} />
     }
 
+    renderCreateTag() {
+        return <CreateTagComponent
+            meUser={this.props.meUser}
+            createTag={this.props.createTag}
+            tagsById={this.state.tagsById}
+        />
+    }
+
     render() {
         return <div className="tag-graph">
             {this.renderTags()}
             {this.renderEditingTag()}
+            {this.renderCreateTag()}
         </div>
     }
 }

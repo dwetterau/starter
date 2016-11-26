@@ -1,20 +1,29 @@
 import * as React from "react";
 import * as jQuery from "jquery";
-import {CreateTagComponent} from "./create_tag"
-import {EditTaskComponent} from "./edit_task"
-import {Tag, Task, User, TagsById} from "../models";
-import {TagGraphComponent} from "./tag_graph";
-import {TaskBoardComponent} from "./task_board"
+import {CreateTagComponent} from "./tag/create_tag"
+import {Event, Tag, Task, User, TagsById} from "../models";
+import {TagGraphComponent} from "./tag/tag_graph";
+import {TaskBoardComponent} from "./task/task_board"
+import {CalendarComponent} from "./event/calendar";
 
 export interface AppProps {
-    meUser: User;
-    tasks: Array<Task>;
-    tags: Array<Tag>;
+    meUser: User,
+    tasks: Array<Task>,
+    events: Array<Event>,
+    tags: Array<Tag>,
 }
 export interface AppState {
     tasks: Array<Task>,
+    events: Array<Event>,
     tags: Array<Tag>,
     tagsById: TagsById,
+    viewMode: AppViewMode,
+}
+
+export enum AppViewMode {
+    taskView,
+    eventView,
+    tagView,
 }
 
 export class App extends React.Component<AppProps, AppState> {
@@ -23,11 +32,18 @@ export class App extends React.Component<AppProps, AppState> {
         super(props);
         const newState = {
             tasks: props.tasks,
+            events: props.events,
             tags: props.tags,
             tagsById: {},
+            viewMode: AppViewMode.taskView
         };
         App.updateTagsById(newState);
         this.state = newState;
+    }
+
+    changeViewMode(newViewMode: AppViewMode) {
+        this.state.viewMode = newViewMode;
+        this.setState(this.state);
     }
 
     createTask(task: Task) {
@@ -57,6 +73,38 @@ export class App extends React.Component<AppProps, AppState> {
             const deletedTaskId = JSON.parse(deletedTaskJson).id;
             this.state.tasks = this.state.tasks.filter((task: Task) => {
                 return task.id != deletedTaskId;
+            });
+            this.setState(this.state);
+        })
+    }
+
+    createEvent(event: Event) {
+        delete event["id"];
+        jQuery.post('/api/1/event/create', event, (newEventJson: string) => {
+            this.state.events.push(JSON.parse(newEventJson));
+            this.setState(this.state)
+        });
+    }
+
+    updateEvent(event: Event) {
+        jQuery.post('/api/1/event/update', event, (updatedEventJson: string) => {
+            let updatedEvent: Event = JSON.parse(updatedEventJson);
+            this.state.events = this.state.events.map((event: Event) => {
+                if (event.id == updatedEvent.id) {
+                    return updatedEvent
+                } else {
+                    return event
+                }
+            });
+            this.setState(this.state);
+        });
+    }
+
+    deleteEvent(event: Event) {
+        jQuery.post('/api/1/event/delete', {id: event.id}, (deletedEventJson: string) => {
+            const deletedEventId = JSON.parse(deletedEventJson).id;
+            this.state.events = this.state.events.filter((event: Event) => {
+                return event.id != deletedEventId;
             });
             this.setState(this.state);
         })
@@ -104,10 +152,37 @@ export class App extends React.Component<AppProps, AppState> {
         </div>
     }
 
+    renderViewModeSelector() {
+        const viewModeToName: {[mode: number]: string} = {};
+        viewModeToName[AppViewMode.taskView] = "Task Board";
+        viewModeToName[AppViewMode.eventView] = "Calendar";
+        viewModeToName[AppViewMode.tagView] = "Tag Graph";
+
+        return <div className="view-mode-selector">
+            {Object.keys(AppViewMode).map((viewMode: string) => {
+                if (!viewModeToName.hasOwnProperty(viewMode)) {
+                    return
+                }
+
+                let className = "view-mode-option";
+                if (+viewMode == this.state.viewMode) {
+                    className += " -selected";
+                }
+
+                return <div key={viewMode}
+                            className={className}
+                            onClick={this.changeViewMode.bind(this, viewMode)}>
+                    {viewModeToName[+viewMode]}
+                </div>
+            })}
+        </div>
+    }
+
     renderHeader() {
         return <div className="header-container">
-            <div>Starter</div>
+            <h1 className="header-title">Starter</h1>
             {this.renderAccountInfo()}
+            {this.renderViewModeSelector()}
         </div>
     }
 
@@ -115,46 +190,54 @@ export class App extends React.Component<AppProps, AppState> {
         return <TaskBoardComponent
             meUser={this.props.meUser}
             tasks={this.state.tasks}
+            tagsById={this.state.tagsById}
+            createTask={this.createTask.bind(this)}
             updateTask={this.updateTask.bind(this)}
             deleteTask={this.deleteTask.bind(this)}
+        />
+    }
+
+    renderCalendar() {
+        return <CalendarComponent
+            meUser={this.props.meUser}
+            events={this.state.events}
             tagsById={this.state.tagsById}
+            createEvent={this.createEvent.bind(this)}
+            updateEvent={this.updateEvent.bind(this)}
+            deleteEvent={this.deleteEvent.bind(this)}
         />
     }
 
     renderTagGraph() {
         return <TagGraphComponent
+            meUser={this.props.meUser}
             tagsById={this.state.tagsById}
+            createTag={this.createTag.bind(this)}
             updateTag={this.updateTag.bind(this)}
             deleteTag={this.deleteTag.bind(this)}
         />
     }
 
-    renderCreateTask() {
-        return <EditTaskComponent
-            meUser={this.props.meUser}
-            tagsById={this.state.tagsById}
-            createMode={true}
-            createTask={this.createTask.bind(this)}
-            updateTask={(task: Task) => {}}
-            deleteTask={(task: Task) => {}}
-        />
-    }
-
-    renderCreateTag() {
-        return <CreateTagComponent
-            meUser={this.props.meUser}
-            createTag={this.createTag.bind(this)}
-            tagsById={this.state.tagsById}
-        />
+    renderBoard() {
+        if (this.state.viewMode == AppViewMode.taskView) {
+            return <div className="board-container">
+                {this.renderTaskBoard()}
+            </div>
+        } else if (this.state.viewMode == AppViewMode.eventView) {
+            return <div className="calendar-container">
+                {this.renderCalendar()}
+            </div>
+        }else if (this.state.viewMode == AppViewMode.tagView) {
+            return <div className="board-container">
+                {this.renderTagGraph()}
+            </div>
+        }
     }
 
     render() {
         return <div>
             {this.renderHeader()}
-            {this.renderTaskBoard()}
-            {this.renderTagGraph()}
-            {this.renderCreateTask()}
-            {this.renderCreateTag()}
+            {this.renderBoard()}
         </div>
     }
 }

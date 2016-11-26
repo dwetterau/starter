@@ -134,7 +134,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.task-tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
+	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option {\n    margin-right: 1em;\n    cursor: pointer;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.task-board div.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.task-tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
 	
 	// exports
 
@@ -477,22 +477,33 @@
 	};
 	var React = __webpack_require__(5);
 	var jQuery = __webpack_require__(7);
-	var create_tag_1 = __webpack_require__(9);
-	var edit_task_1 = __webpack_require__(11);
-	var tag_graph_1 = __webpack_require__(12);
-	var task_board_1 = __webpack_require__(14);
+	var tag_graph_1 = __webpack_require__(9);
+	var task_board_1 = __webpack_require__(13);
+	var calendar_1 = __webpack_require__(18);
+	(function (AppViewMode) {
+	    AppViewMode[AppViewMode["taskView"] = 0] = "taskView";
+	    AppViewMode[AppViewMode["eventView"] = 1] = "eventView";
+	    AppViewMode[AppViewMode["tagView"] = 2] = "tagView";
+	})(exports.AppViewMode || (exports.AppViewMode = {}));
+	var AppViewMode = exports.AppViewMode;
 	var App = (function (_super) {
 	    __extends(App, _super);
 	    function App(props) {
 	        _super.call(this, props);
 	        var newState = {
 	            tasks: props.tasks,
+	            events: props.events,
 	            tags: props.tags,
 	            tagsById: {},
+	            viewMode: AppViewMode.taskView
 	        };
 	        App.updateTagsById(newState);
 	        this.state = newState;
 	    }
+	    App.prototype.changeViewMode = function (newViewMode) {
+	        this.state.viewMode = newViewMode;
+	        this.setState(this.state);
+	    };
 	    App.prototype.createTask = function (task) {
 	        var _this = this;
 	        delete task["id"];
@@ -522,6 +533,39 @@
 	            var deletedTaskId = JSON.parse(deletedTaskJson).id;
 	            _this.state.tasks = _this.state.tasks.filter(function (task) {
 	                return task.id != deletedTaskId;
+	            });
+	            _this.setState(_this.state);
+	        });
+	    };
+	    App.prototype.createEvent = function (event) {
+	        var _this = this;
+	        delete event["id"];
+	        jQuery.post('/api/1/event/create', event, function (newEventJson) {
+	            _this.state.events.push(JSON.parse(newEventJson));
+	            _this.setState(_this.state);
+	        });
+	    };
+	    App.prototype.updateEvent = function (event) {
+	        var _this = this;
+	        jQuery.post('/api/1/event/update', event, function (updatedEventJson) {
+	            var updatedEvent = JSON.parse(updatedEventJson);
+	            _this.state.events = _this.state.events.map(function (event) {
+	                if (event.id == updatedEvent.id) {
+	                    return updatedEvent;
+	                }
+	                else {
+	                    return event;
+	                }
+	            });
+	            _this.setState(_this.state);
+	        });
+	    };
+	    App.prototype.deleteEvent = function (event) {
+	        var _this = this;
+	        jQuery.post('/api/1/event/delete', { id: event.id }, function (deletedEventJson) {
+	            var deletedEventId = JSON.parse(deletedEventJson).id;
+	            _this.state.events = _this.state.events.filter(function (event) {
+	                return event.id != deletedEventId;
 	            });
 	            _this.setState(_this.state);
 	        });
@@ -565,30 +609,53 @@
 	    App.prototype.renderAccountInfo = function () {
 	        return React.createElement("div", {className: "profile-container"}, "Logged in as: " + this.props.meUser.username);
 	    };
+	    App.prototype.renderViewModeSelector = function () {
+	        var _this = this;
+	        var viewModeToName = {};
+	        viewModeToName[AppViewMode.taskView] = "Task Board";
+	        viewModeToName[AppViewMode.eventView] = "Calendar";
+	        viewModeToName[AppViewMode.tagView] = "Tag Graph";
+	        return React.createElement("div", {className: "view-mode-selector"}, Object.keys(AppViewMode).map(function (viewMode) {
+	            if (!viewModeToName.hasOwnProperty(viewMode)) {
+	                return;
+	            }
+	            var className = "view-mode-option";
+	            if (+viewMode == _this.state.viewMode) {
+	                className += " -selected";
+	            }
+	            return React.createElement("div", {key: viewMode, className: className, onClick: _this.changeViewMode.bind(_this, viewMode)}, viewModeToName[+viewMode]);
+	        }));
+	    };
 	    App.prototype.renderHeader = function () {
 	        return React.createElement("div", {className: "header-container"}, 
-	            React.createElement("div", null, "Starter"), 
-	            this.renderAccountInfo());
+	            React.createElement("h1", {className: "header-title"}, "Starter"), 
+	            this.renderAccountInfo(), 
+	            this.renderViewModeSelector());
 	    };
 	    App.prototype.renderTaskBoard = function () {
-	        return React.createElement(task_board_1.TaskBoardComponent, {meUser: this.props.meUser, tasks: this.state.tasks, updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this), tagsById: this.state.tagsById});
+	        return React.createElement(task_board_1.TaskBoardComponent, {meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this)});
+	    };
+	    App.prototype.renderCalendar = function () {
+	        return React.createElement(calendar_1.CalendarComponent, {meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this)});
 	    };
 	    App.prototype.renderTagGraph = function () {
-	        return React.createElement(tag_graph_1.TagGraphComponent, {tagsById: this.state.tagsById, updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this)});
+	        return React.createElement(tag_graph_1.TagGraphComponent, {meUser: this.props.meUser, tagsById: this.state.tagsById, createTag: this.createTag.bind(this), updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this)});
 	    };
-	    App.prototype.renderCreateTask = function () {
-	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, tagsById: this.state.tagsById, createMode: true, createTask: this.createTask.bind(this), updateTask: function (task) { }, deleteTask: function (task) { }});
-	    };
-	    App.prototype.renderCreateTag = function () {
-	        return React.createElement(create_tag_1.CreateTagComponent, {meUser: this.props.meUser, createTag: this.createTag.bind(this), tagsById: this.state.tagsById});
+	    App.prototype.renderBoard = function () {
+	        if (this.state.viewMode == AppViewMode.taskView) {
+	            return React.createElement("div", {className: "board-container"}, this.renderTaskBoard());
+	        }
+	        else if (this.state.viewMode == AppViewMode.eventView) {
+	            return React.createElement("div", {className: "calendar-container"}, this.renderCalendar());
+	        }
+	        else if (this.state.viewMode == AppViewMode.tagView) {
+	            return React.createElement("div", {className: "board-container"}, this.renderTagGraph());
+	        }
 	    };
 	    App.prototype.render = function () {
 	        return React.createElement("div", null, 
 	            this.renderHeader(), 
-	            this.renderTaskBoard(), 
-	            this.renderTagGraph(), 
-	            this.renderCreateTask(), 
-	            this.renderCreateTag());
+	            this.renderBoard());
 	    };
 	    return App;
 	}(React.Component));
@@ -606,32 +673,143 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(10);
-	var CreateTagComponent = (function (_super) {
-	    __extends(CreateTagComponent, _super);
-	    function CreateTagComponent(props) {
+	var edit_tag_1 = __webpack_require__(10);
+	var create_tag_1 = __webpack_require__(12);
+	var TagGraphComponent = (function (_super) {
+	    __extends(TagGraphComponent, _super);
+	    function TagGraphComponent(props) {
+	        _super.call(this, props);
+	        this.state = this.getState(props);
+	    }
+	    TagGraphComponent.prototype.componentWillReceiveProps = function (props) {
+	        this.setState(this.getState(props));
+	    };
+	    TagGraphComponent.prototype.getState = function (props) {
+	        var _a = this.computeTagGraph(props.tagsById), tagGraph = _a[0], rootTagIds = _a[1];
+	        return {
+	            tagGraph: tagGraph,
+	            rootTagIds: rootTagIds,
+	            tagsById: props.tagsById,
+	            editingTag: null,
+	        };
+	    };
+	    TagGraphComponent.prototype.computeTagGraph = function (tagsById) {
+	        var tagGraph = {};
+	        // Initially we think that all tags are root tags.
+	        var rootTagIds = {};
+	        Object.keys(tagsById).forEach(function (tagId) {
+	            rootTagIds[tagId] = true;
+	        });
+	        Object.keys(tagsById).forEach(function (tagId) {
+	            var tag = tagsById[+tagId];
+	            var childTagIds = [];
+	            for (var _i = 0, _a = tag.childTagIds; _i < _a.length; _i++) {
+	                var childTagId = _a[_i];
+	                childTagIds.push(childTagId);
+	                if (rootTagIds.hasOwnProperty("" + childTagId)) {
+	                    delete rootTagIds[childTagId];
+	                }
+	            }
+	            tagGraph[tag.id] = childTagIds;
+	        });
+	        var rootTagIdList = [];
+	        Object.keys(rootTagIds).forEach(function (rootTagId) {
+	            rootTagIdList.push(+rootTagId);
+	        });
+	        return [tagGraph, rootTagIdList];
+	    };
+	    TagGraphComponent.prototype.onDoubleClick = function (tag, event) {
+	        // Idk, open an editor modal or something
+	        this.state.editingTag = tag;
+	        this.setState(this.state);
+	        // Don't let this keep going to the parent element.
+	        event.preventDefault();
+	        event.stopPropagation();
+	    };
+	    TagGraphComponent.prototype.renderTagById = function (tagId) {
+	        var _this = this;
+	        var tag = this.state.tagsById[tagId];
+	        var renderChildren = function () {
+	            if (tag.childTagIds.length == 0) {
+	                return;
+	            }
+	            return (React.createElement("div", {className: "tag-children-container"}, tag.childTagIds.map(_this.renderTagById.bind(_this))));
+	        };
+	        return React.createElement("div", {className: "tag-container", key: tag.id, onDoubleClick: this.onDoubleClick.bind(this, tag)}, 
+	            "Name: ", 
+	            tag.name, 
+	            renderChildren());
+	    };
+	    TagGraphComponent.prototype.renderFromRootTagId = function (rootTagId) {
+	        return React.createElement("div", {className: "tags-root-container", key: rootTagId}, this.renderTagById(rootTagId));
+	    };
+	    TagGraphComponent.prototype.renderTags = function () {
+	        return React.createElement("div", {className: "tags-container"}, this.state.rootTagIds.map(this.renderFromRootTagId.bind(this)));
+	    };
+	    TagGraphComponent.prototype.renderEditingTag = function () {
+	        if (!this.state.editingTag) {
+	            return;
+	        }
+	        return React.createElement(edit_tag_1.EditTagComponent, {tag: this.state.editingTag, tagsById: this.state.tagsById, updateTag: this.props.updateTag, deleteTag: this.props.deleteTag});
+	    };
+	    TagGraphComponent.prototype.renderCreateTag = function () {
+	        return React.createElement(create_tag_1.CreateTagComponent, {meUser: this.props.meUser, createTag: this.props.createTag, tagsById: this.state.tagsById});
+	    };
+	    TagGraphComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "tag-graph"}, 
+	            this.renderTags(), 
+	            this.renderEditingTag(), 
+	            this.renderCreateTag());
+	    };
+	    return TagGraphComponent;
+	}(React.Component));
+	exports.TagGraphComponent = TagGraphComponent;
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var tokenizer_1 = __webpack_require__(11);
+	var EditTagComponent = (function (_super) {
+	    __extends(EditTagComponent, _super);
+	    function EditTagComponent(props) {
 	        _super.call(this, props);
 	        this.state = {
-	            tag: {
-	                id: 0,
-	                name: '',
-	                childTagIds: [],
-	                ownerId: this.props.meUser.id,
-	            },
+	            tag: props.tag,
+	            tagsById: props.tagsById,
 	        };
 	    }
-	    CreateTagComponent.prototype.submitForm = function () {
-	        this.props.createTag(this.state.tag);
+	    EditTagComponent.prototype.componentWillReceiveProps = function (newProps) {
+	        this.setState({
+	            tag: newProps.tag,
+	            tagsById: newProps.tagsById
+	        });
 	    };
-	    CreateTagComponent.prototype.updateName = function (event) {
+	    EditTagComponent.prototype.submitForm = function (eventType) {
+	        if (eventType == "save") {
+	            this.props.updateTag(this.state.tag);
+	        }
+	        else {
+	            this.props.deleteTag(this.state.tag);
+	        }
+	    };
+	    EditTagComponent.prototype.updateName = function (event) {
 	        this.state.tag.name = event.target.value;
 	        this.setState(this.state);
 	    };
-	    CreateTagComponent.prototype.getCurrentChildren = function () {
+	    EditTagComponent.prototype.getCurrentChildren = function () {
 	        var _this = this;
 	        var childrenNames = [];
 	        this.state.tag.childTagIds.forEach(function (tagId) {
-	            var tag = _this.props.tagsById[tagId];
+	            var tag = _this.state.tagsById[tagId];
 	            childrenNames.push({
 	                label: tag.name,
 	                value: tag.id
@@ -639,13 +817,13 @@
 	        });
 	        return childrenNames;
 	    };
-	    CreateTagComponent.prototype.getAllTagNames = function () {
+	    EditTagComponent.prototype.getAllTagNames = function () {
 	        var _this = this;
 	        // This function is used to determine the set of valid tokens for the tokenizer.
 	        // We should think about excluding tokens from here that would cause cycles.
 	        var allNames = [];
-	        Object.keys(this.props.tagsById).forEach(function (tagId) {
-	            var tag = _this.props.tagsById[+tagId];
+	        Object.keys(this.state.tagsById).forEach(function (tagId) {
+	            var tag = _this.state.tagsById[+tagId];
 	            allNames.push({
 	                label: tag.name,
 	                value: tag.id
@@ -653,13 +831,13 @@
 	        });
 	        return allNames;
 	    };
-	    CreateTagComponent.prototype.retrieveChildNames = function (tokens) {
+	    EditTagComponent.prototype.retrieveChildNames = function (tokens) {
 	        this.state.tag.childTagIds = tokens.map(function (token) {
 	            return token.value;
 	        });
 	        this.setState(this.state);
 	    };
-	    CreateTagComponent.prototype.renderForm = function () {
+	    EditTagComponent.prototype.renderForm = function () {
 	        return React.createElement("div", null, 
 	            React.createElement("div", {className: "name-container"}, 
 	                React.createElement("label", {htmlFor: "name"}, "Name: "), 
@@ -667,20 +845,21 @@
 	            React.createElement("div", {className: "children-container"}, 
 	                React.createElement("label", {htmlFor: "children"}, "Children: "), 
 	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveChildNames.bind(this), initialValues: this.getCurrentChildren(), possibleTokens: this.getAllTagNames()})), 
-	            React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this)}));
+	            React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
+	            React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")}));
 	    };
-	    CreateTagComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "create-tag-container"}, 
-	            React.createElement("h3", null, "Create Tag Form:"), 
+	    EditTagComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "edit-tag-container"}, 
+	            React.createElement("h3", null, "Tag Edit Form:"), 
 	            this.renderForm());
 	    };
-	    return CreateTagComponent;
+	    return EditTagComponent;
 	}(React.Component));
-	exports.CreateTagComponent = CreateTagComponent;
+	exports.EditTagComponent = EditTagComponent;
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -800,7 +979,7 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -810,77 +989,40 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(10);
-	var EditTaskComponent = (function (_super) {
-	    __extends(EditTaskComponent, _super);
-	    function EditTaskComponent(props) {
+	var tokenizer_1 = __webpack_require__(11);
+	var CreateTagComponent = (function (_super) {
+	    __extends(CreateTagComponent, _super);
+	    function CreateTagComponent(props) {
 	        _super.call(this, props);
-	        if (props.createMode) {
-	            this.state = {
-	                task: this._getEmptyTask(props.meUser)
-	            };
-	        }
-	        else {
-	            this.state = {
-	                task: props.task,
-	            };
-	        }
-	    }
-	    EditTaskComponent.prototype.componentWillReceiveProps = function (newProps) {
-	        if (newProps.createMode) {
-	            this.setState({
-	                task: this._getEmptyTask(newProps.meUser),
-	            });
-	        }
-	        else {
-	            this.setState({
-	                task: newProps.task,
-	            });
-	        }
-	    };
-	    EditTaskComponent.prototype._getEmptyTask = function (user) {
-	        return {
-	            id: 0,
-	            title: '',
-	            description: '',
-	            authorId: user.id,
-	            ownerId: user.id,
-	            tagIds: [],
-	            priority: 300,
-	            state: 0,
+	        this.state = {
+	            tag: {
+	                id: 0,
+	                name: '',
+	                childTagIds: [],
+	                ownerId: this.props.meUser.id,
+	            },
 	        };
+	    }
+	    CreateTagComponent.prototype.submitForm = function () {
+	        this.props.createTag(this.state.tag);
 	    };
-	    EditTaskComponent.prototype.submitForm = function (eventType) {
-	        if (eventType == "save") {
-	            this.props.updateTask(this.state.task);
-	        }
-	        else if (eventType == "delete") {
-	            this.props.deleteTask(this.state.task);
-	        }
-	        else if (eventType == "create") {
-	            this.props.createTask(this.state.task);
-	        }
-	        else {
-	            throw Error("Unknown submit type!");
-	        }
-	    };
-	    EditTaskComponent.prototype.updateAttr = function (attrName, event) {
-	        this.state.task[attrName] = event.target.value;
+	    CreateTagComponent.prototype.updateName = function (event) {
+	        this.state.tag.name = event.target.value;
 	        this.setState(this.state);
 	    };
-	    EditTaskComponent.prototype.getCurrentTags = function () {
+	    CreateTagComponent.prototype.getCurrentChildren = function () {
 	        var _this = this;
-	        var tagNames = [];
-	        this.state.task.tagIds.forEach(function (tagId) {
+	        var childrenNames = [];
+	        this.state.tag.childTagIds.forEach(function (tagId) {
 	            var tag = _this.props.tagsById[tagId];
-	            tagNames.push({
+	            childrenNames.push({
 	                label: tag.name,
 	                value: tag.id
 	            });
 	        });
-	        return tagNames;
+	        return childrenNames;
 	    };
-	    EditTaskComponent.prototype.getAllTagNames = function () {
+	    CreateTagComponent.prototype.getAllTagNames = function () {
 	        var _this = this;
 	        // This function is used to determine the set of valid tokens for the tokenizer.
 	        // We should think about excluding tokens from here that would cause cycles.
@@ -894,168 +1036,30 @@
 	        });
 	        return allNames;
 	    };
-	    EditTaskComponent.prototype.retrieveTagNames = function (tokens) {
-	        this.state.task.tagIds = tokens.map(function (token) {
+	    CreateTagComponent.prototype.retrieveChildNames = function (tokens) {
+	        this.state.tag.childTagIds = tokens.map(function (token) {
 	            return token.value;
 	        });
 	        this.setState(this.state);
 	    };
-	    EditTaskComponent.prototype.renderFormTitle = function () {
-	        if (this.props.createMode) {
-	            return React.createElement("h3", null, "Create Task Form:");
-	        }
-	        else {
-	            return React.createElement("h3", null, "Task Edit Form:");
-	        }
-	    };
-	    EditTaskComponent.prototype.renderButtons = function () {
-	        if (this.props.createMode) {
-	            return (React.createElement("div", {className: "edit-task-button-container"}, 
-	                React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this, "create")})
-	            ));
-	        }
-	        else {
-	            return (React.createElement("div", {className: "edit-task-button-container"}, 
-	                React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
-	                React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")})));
-	        }
-	    };
-	    EditTaskComponent.prototype.renderForm = function () {
+	    CreateTagComponent.prototype.renderForm = function () {
 	        return React.createElement("div", null, 
-	            React.createElement("div", {className: "title-container"}, 
-	                React.createElement("label", {htmlFor: "title"}, "Title: "), 
-	                React.createElement("input", {type: "text", name: "title", value: this.state.task.title, onChange: this.updateAttr.bind(this, "title")})), 
-	            React.createElement("div", {className: "description-container"}, 
-	                React.createElement("label", {htmlFor: "description"}, "Description: "), 
-	                React.createElement("textarea", {type: "text", name: "description", value: this.state.task.description, onChange: this.updateAttr.bind(this, "description")})), 
-	            React.createElement("div", {className: "priority-selector"}, 
-	                React.createElement("label", {htmlFor: "priority"}, "Priority: "), 
-	                React.createElement("select", {name: "priority", value: this.state.task.priority, onChange: this.updateAttr.bind(this, "priority")}, 
-	                    React.createElement("option", {value: "0"}, "Unknown"), 
-	                    React.createElement("option", {value: "100"}, "Lowest"), 
-	                    React.createElement("option", {value: "200"}, "Low"), 
-	                    React.createElement("option", {value: "300"}, "Normal"), 
-	                    React.createElement("option", {value: "400"}, "High"), 
-	                    React.createElement("option", {value: "500"}, "Highest"))), 
-	            React.createElement("div", {className: "state-selector"}, 
-	                React.createElement("label", {htmlFor: "state"}, "Status: "), 
-	                React.createElement("select", {name: "state", value: this.state.task.state, onChange: this.updateAttr.bind(this, "state")}, 
-	                    React.createElement("option", {value: "0"}, "Open"), 
-	                    React.createElement("option", {value: "500"}, "In Progress"), 
-	                    React.createElement("option", {value: "750"}, "Blocked"), 
-	                    React.createElement("option", {value: "1000"}, "Closed"))), 
-	            React.createElement("div", {className: "tag-tokenizer-container"}, 
-	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames()})
-	            ), 
-	            this.renderButtons());
+	            React.createElement("div", {className: "name-container"}, 
+	                React.createElement("label", {htmlFor: "name"}, "Name: "), 
+	                React.createElement("input", {type: "text", name: "name", value: this.state.tag.name, onChange: this.updateName.bind(this)})), 
+	            React.createElement("div", {className: "children-container"}, 
+	                React.createElement("label", {htmlFor: "children"}, "Children: "), 
+	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveChildNames.bind(this), initialValues: this.getCurrentChildren(), possibleTokens: this.getAllTagNames()})), 
+	            React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this)}));
 	    };
-	    EditTaskComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "edit-task-container"}, 
-	            this.renderFormTitle(), 
+	    CreateTagComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "create-tag-container"}, 
+	            React.createElement("h3", null, "Create Tag Form:"), 
 	            this.renderForm());
 	    };
-	    return EditTaskComponent;
+	    return CreateTagComponent;
 	}(React.Component));
-	exports.EditTaskComponent = EditTaskComponent;
-
-
-/***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(5);
-	var edit_tag_1 = __webpack_require__(13);
-	var TagGraphComponent = (function (_super) {
-	    __extends(TagGraphComponent, _super);
-	    function TagGraphComponent(props) {
-	        _super.call(this, props);
-	        this.state = this.getState(props);
-	    }
-	    TagGraphComponent.prototype.componentWillReceiveProps = function (props) {
-	        this.setState(this.getState(props));
-	    };
-	    TagGraphComponent.prototype.getState = function (props) {
-	        var _a = this.computeTagGraph(props.tagsById), tagGraph = _a[0], rootTagIds = _a[1];
-	        return {
-	            tagGraph: tagGraph,
-	            rootTagIds: rootTagIds,
-	            tagsById: props.tagsById,
-	            editingTag: null,
-	        };
-	    };
-	    TagGraphComponent.prototype.computeTagGraph = function (tagsById) {
-	        var tagGraph = {};
-	        // Initially we think that all tags are root tags.
-	        var rootTagIds = {};
-	        Object.keys(tagsById).forEach(function (tagId) {
-	            rootTagIds[tagId] = true;
-	        });
-	        Object.keys(tagsById).forEach(function (tagId) {
-	            var tag = tagsById[+tagId];
-	            var childTagIds = [];
-	            for (var _i = 0, _a = tag.childTagIds; _i < _a.length; _i++) {
-	                var childTagId = _a[_i];
-	                childTagIds.push(childTagId);
-	                if (rootTagIds.hasOwnProperty("" + childTagId)) {
-	                    delete rootTagIds[childTagId];
-	                }
-	            }
-	            tagGraph[tag.id] = childTagIds;
-	        });
-	        var rootTagIdList = [];
-	        Object.keys(rootTagIds).forEach(function (rootTagId) {
-	            rootTagIdList.push(+rootTagId);
-	        });
-	        return [tagGraph, rootTagIdList];
-	    };
-	    TagGraphComponent.prototype.onDoubleClick = function (tag, event) {
-	        // Idk, open an editor modal or something
-	        this.state.editingTag = tag;
-	        this.setState(this.state);
-	        // Don't let this keep going to the parent element.
-	        event.preventDefault();
-	        event.stopPropagation();
-	    };
-	    TagGraphComponent.prototype.renderTagById = function (tagId) {
-	        var _this = this;
-	        var tag = this.state.tagsById[tagId];
-	        var renderChildren = function () {
-	            if (tag.childTagIds.length == 0) {
-	                return;
-	            }
-	            return (React.createElement("div", {className: "tag-children-container"}, tag.childTagIds.map(_this.renderTagById.bind(_this))));
-	        };
-	        return React.createElement("div", {className: "tag-container", key: tag.id, onDoubleClick: this.onDoubleClick.bind(this, tag)}, 
-	            "Name: ", 
-	            tag.name, 
-	            renderChildren());
-	    };
-	    TagGraphComponent.prototype.renderFromRootTagId = function (rootTagId) {
-	        return React.createElement("div", {className: "tags-root-container", key: rootTagId}, this.renderTagById(rootTagId));
-	    };
-	    TagGraphComponent.prototype.renderTags = function () {
-	        return React.createElement("div", {className: "tags-container"}, this.state.rootTagIds.map(this.renderFromRootTagId.bind(this)));
-	    };
-	    TagGraphComponent.prototype.renderEditingTag = function () {
-	        if (!this.state.editingTag) {
-	            return;
-	        }
-	        return React.createElement(edit_tag_1.EditTagComponent, {tag: this.state.editingTag, tagsById: this.state.tagsById, updateTag: this.props.updateTag, deleteTag: this.props.deleteTag});
-	    };
-	    TagGraphComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "tag-graph"}, 
-	            this.renderTags(), 
-	            this.renderEditingTag());
-	    };
-	    return TagGraphComponent;
-	}(React.Component));
-	exports.TagGraphComponent = TagGraphComponent;
+	exports.CreateTagComponent = CreateTagComponent;
 
 
 /***/ },
@@ -1069,103 +1073,11 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(10);
-	var EditTagComponent = (function (_super) {
-	    __extends(EditTagComponent, _super);
-	    function EditTagComponent(props) {
-	        _super.call(this, props);
-	        this.state = {
-	            tag: props.tag,
-	            tagsById: props.tagsById,
-	        };
-	    }
-	    EditTagComponent.prototype.componentWillReceiveProps = function (newProps) {
-	        this.setState({
-	            tag: newProps.tag,
-	            tagsById: newProps.tagsById
-	        });
-	    };
-	    EditTagComponent.prototype.submitForm = function (eventType) {
-	        if (eventType == "save") {
-	            this.props.updateTag(this.state.tag);
-	        }
-	        else {
-	            this.props.deleteTag(this.state.tag);
-	        }
-	    };
-	    EditTagComponent.prototype.updateName = function (event) {
-	        this.state.tag.name = event.target.value;
-	        this.setState(this.state);
-	    };
-	    EditTagComponent.prototype.getCurrentChildren = function () {
-	        var _this = this;
-	        var childrenNames = [];
-	        this.state.tag.childTagIds.forEach(function (tagId) {
-	            var tag = _this.state.tagsById[tagId];
-	            childrenNames.push({
-	                label: tag.name,
-	                value: tag.id
-	            });
-	        });
-	        return childrenNames;
-	    };
-	    EditTagComponent.prototype.getAllTagNames = function () {
-	        var _this = this;
-	        // This function is used to determine the set of valid tokens for the tokenizer.
-	        // We should think about excluding tokens from here that would cause cycles.
-	        var allNames = [];
-	        Object.keys(this.state.tagsById).forEach(function (tagId) {
-	            var tag = _this.state.tagsById[+tagId];
-	            allNames.push({
-	                label: tag.name,
-	                value: tag.id
-	            });
-	        });
-	        return allNames;
-	    };
-	    EditTagComponent.prototype.retrieveChildNames = function (tokens) {
-	        this.state.tag.childTagIds = tokens.map(function (token) {
-	            return token.value;
-	        });
-	        this.setState(this.state);
-	    };
-	    EditTagComponent.prototype.renderForm = function () {
-	        return React.createElement("div", null, 
-	            React.createElement("div", {className: "name-container"}, 
-	                React.createElement("label", {htmlFor: "name"}, "Name: "), 
-	                React.createElement("input", {type: "text", name: "name", value: this.state.tag.name, onChange: this.updateName.bind(this)})), 
-	            React.createElement("div", {className: "children-container"}, 
-	                React.createElement("label", {htmlFor: "children"}, "Children: "), 
-	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveChildNames.bind(this), initialValues: this.getCurrentChildren(), possibleTokens: this.getAllTagNames()})), 
-	            React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
-	            React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")}));
-	    };
-	    EditTagComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "edit-tag-container"}, 
-	            React.createElement("h3", null, "Tag Edit Form:"), 
-	            this.renderForm());
-	    };
-	    return EditTagComponent;
-	}(React.Component));
-	exports.EditTagComponent = EditTagComponent;
-
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(5);
 	var jQuery = __webpack_require__(7);
-	var edit_task_1 = __webpack_require__(11);
+	var edit_task_1 = __webpack_require__(14);
 	var models_1 = __webpack_require__(15);
 	var task_1 = __webpack_require__(16);
-	var tokenizer_1 = __webpack_require__(10);
+	var tokenizer_1 = __webpack_require__(11);
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
 	    TaskBoardViewType[TaskBoardViewType["priority"] = 1] = "priority";
@@ -1452,16 +1364,179 @@
 	        }
 	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, task: this.state.editingTask, tagsById: this.props.tagsById, createMode: false, createTask: function (task) { }, updateTask: this.props.updateTask, deleteTask: this.props.deleteTask});
 	    };
+	    TaskBoardComponent.prototype.renderCreateTask = function () {
+	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, createTask: this.props.createTask, updateTask: function (task) { }, deleteTask: function (task) { }});
+	    };
 	    TaskBoardComponent.prototype.render = function () {
 	        return React.createElement("div", {className: "task-board"}, 
 	            this.renderOptions(), 
 	            this.renderTagSelector(), 
 	            this.renderColumns(), 
-	            this.renderEditingTask());
+	            this.renderEditingTask(), 
+	            this.renderCreateTask());
 	    };
 	    return TaskBoardComponent;
 	}(React.Component));
 	exports.TaskBoardComponent = TaskBoardComponent;
+
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var tokenizer_1 = __webpack_require__(11);
+	var EditTaskComponent = (function (_super) {
+	    __extends(EditTaskComponent, _super);
+	    function EditTaskComponent(props) {
+	        _super.call(this, props);
+	        if (props.createMode) {
+	            this.state = {
+	                task: this._getEmptyTask(props.meUser)
+	            };
+	        }
+	        else {
+	            this.state = {
+	                task: props.task,
+	            };
+	        }
+	    }
+	    EditTaskComponent.prototype.componentWillReceiveProps = function (newProps) {
+	        if (newProps.createMode) {
+	            this.setState({
+	                task: this._getEmptyTask(newProps.meUser),
+	            });
+	        }
+	        else {
+	            this.setState({
+	                task: newProps.task,
+	            });
+	        }
+	    };
+	    EditTaskComponent.prototype._getEmptyTask = function (user) {
+	        return {
+	            id: 0,
+	            title: '',
+	            description: '',
+	            authorId: user.id,
+	            ownerId: user.id,
+	            tagIds: [],
+	            priority: 300,
+	            state: 0,
+	        };
+	    };
+	    EditTaskComponent.prototype.submitForm = function (eventType) {
+	        if (eventType == "save") {
+	            this.props.updateTask(this.state.task);
+	        }
+	        else if (eventType == "delete") {
+	            this.props.deleteTask(this.state.task);
+	        }
+	        else if (eventType == "create") {
+	            this.props.createTask(this.state.task);
+	        }
+	        else {
+	            throw Error("Unknown submit type!");
+	        }
+	    };
+	    EditTaskComponent.prototype.updateAttr = function (attrName, event) {
+	        this.state.task[attrName] = event.target.value;
+	        this.setState(this.state);
+	    };
+	    EditTaskComponent.prototype.getCurrentTags = function () {
+	        var _this = this;
+	        var tagNames = [];
+	        this.state.task.tagIds.forEach(function (tagId) {
+	            var tag = _this.props.tagsById[tagId];
+	            tagNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return tagNames;
+	    };
+	    EditTaskComponent.prototype.getAllTagNames = function () {
+	        var _this = this;
+	        // This function is used to determine the set of valid tokens for the tokenizer.
+	        var allNames = [];
+	        Object.keys(this.props.tagsById).forEach(function (tagId) {
+	            var tag = _this.props.tagsById[+tagId];
+	            allNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return allNames;
+	    };
+	    EditTaskComponent.prototype.retrieveTagNames = function (tokens) {
+	        this.state.task.tagIds = tokens.map(function (token) {
+	            return token.value;
+	        });
+	        this.setState(this.state);
+	    };
+	    EditTaskComponent.prototype.renderFormTitle = function () {
+	        if (this.props.createMode) {
+	            return React.createElement("h3", null, "Create Task Form:");
+	        }
+	        else {
+	            return React.createElement("h3", null, "Task Edit Form:");
+	        }
+	    };
+	    EditTaskComponent.prototype.renderButtons = function () {
+	        if (this.props.createMode) {
+	            return (React.createElement("div", {className: "edit-task-button-container"}, 
+	                React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this, "create")})
+	            ));
+	        }
+	        else {
+	            return (React.createElement("div", {className: "edit-task-button-container"}, 
+	                React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
+	                React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")})));
+	        }
+	    };
+	    EditTaskComponent.prototype.renderForm = function () {
+	        return React.createElement("div", null, 
+	            React.createElement("div", {className: "title-container"}, 
+	                React.createElement("label", {htmlFor: "title"}, "Title: "), 
+	                React.createElement("input", {type: "text", name: "title", value: this.state.task.title, onChange: this.updateAttr.bind(this, "title")})), 
+	            React.createElement("div", {className: "description-container"}, 
+	                React.createElement("label", {htmlFor: "description"}, "Description: "), 
+	                React.createElement("textarea", {type: "text", name: "description", value: this.state.task.description, onChange: this.updateAttr.bind(this, "description")})), 
+	            React.createElement("div", {className: "priority-selector"}, 
+	                React.createElement("label", {htmlFor: "priority"}, "Priority: "), 
+	                React.createElement("select", {name: "priority", value: this.state.task.priority, onChange: this.updateAttr.bind(this, "priority")}, 
+	                    React.createElement("option", {value: "0"}, "Unknown"), 
+	                    React.createElement("option", {value: "100"}, "Lowest"), 
+	                    React.createElement("option", {value: "200"}, "Low"), 
+	                    React.createElement("option", {value: "300"}, "Normal"), 
+	                    React.createElement("option", {value: "400"}, "High"), 
+	                    React.createElement("option", {value: "500"}, "Highest"))), 
+	            React.createElement("div", {className: "state-selector"}, 
+	                React.createElement("label", {htmlFor: "state"}, "Status: "), 
+	                React.createElement("select", {name: "state", value: this.state.task.state, onChange: this.updateAttr.bind(this, "state")}, 
+	                    React.createElement("option", {value: "0"}, "Open"), 
+	                    React.createElement("option", {value: "500"}, "In Progress"), 
+	                    React.createElement("option", {value: "750"}, "Blocked"), 
+	                    React.createElement("option", {value: "1000"}, "Closed"))), 
+	            React.createElement("div", {className: "tag-tokenizer-container"}, 
+	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames()})
+	            ), 
+	            this.renderButtons());
+	    };
+	    EditTaskComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "edit-task-container"}, 
+	            this.renderFormTitle(), 
+	            this.renderForm());
+	    };
+	    return EditTaskComponent;
+	}(React.Component));
+	exports.EditTaskComponent = EditTaskComponent;
 
 
 /***/ },
@@ -1493,6 +1568,12 @@
 	    ["Open", 0], ["In Progress", 500],
 	    ["Blocked", 750], ["Closed", 1000]
 	];
+	var Event = (function () {
+	    function Event() {
+	    }
+	    return Event;
+	}());
+	exports.Event = Event;
 	var Tag = (function () {
 	    function Tag() {
 	    }
@@ -1513,7 +1594,8 @@
 	};
 	var React = __webpack_require__(5);
 	var models_1 = __webpack_require__(15);
-	var task_board_1 = __webpack_require__(14);
+	var task_board_1 = __webpack_require__(13);
+	var tag_1 = __webpack_require__(17);
 	var TaskComponent = (function (_super) {
 	    __extends(TaskComponent, _super);
 	    function TaskComponent() {
@@ -1560,7 +1642,7 @@
 	    };
 	    TaskComponent.prototype.renderTag = function (tagId) {
 	        var tag = this.props.tagsById[tagId];
-	        return (React.createElement("div", {className: "task-tag card", key: tagId}, tag.name));
+	        return React.createElement(tag_1.TagComponent, {tag: tag, key: tagId});
 	    };
 	    TaskComponent.prototype.renderTags = function () {
 	        if (!this.props.task.tagIds.length) {
@@ -1582,6 +1664,278 @@
 	    return TaskComponent;
 	}(React.Component));
 	exports.TaskComponent = TaskComponent;
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var TagComponent = (function (_super) {
+	    __extends(TagComponent, _super);
+	    function TagComponent() {
+	        _super.apply(this, arguments);
+	    }
+	    TagComponent.prototype.render = function () {
+	        return (React.createElement("div", {className: "task-tag card"}, this.props.tag.name));
+	    };
+	    return TagComponent;
+	}(React.Component));
+	exports.TagComponent = TagComponent;
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var moment = __webpack_require__(19);
+	var edit_event_1 = __webpack_require__(20);
+	var CalendarComponent = (function (_super) {
+	    __extends(CalendarComponent, _super);
+	    function CalendarComponent(props) {
+	        _super.call(this, props);
+	        this.state = this.getState(props);
+	    }
+	    CalendarComponent.prototype.componentWillReceiveProps = function (props) {
+	        this.setState(this.getState(props));
+	    };
+	    CalendarComponent.prototype.getState = function (props) {
+	        var startDayTimestamp = moment().startOf("week").add(1, "days").unix() * 1000;
+	        var columns = this.divideAndSort(startDayTimestamp, props.events);
+	        var newState = {
+	            startDayTimestamp: startDayTimestamp,
+	            columns: columns,
+	            editingEvent: null,
+	        };
+	        if (this.state) {
+	            newState.startDayTimestamp = this.state.startDayTimestamp;
+	            newState.editingEvent = this.state.editingEvent;
+	        }
+	        return newState;
+	    };
+	    CalendarComponent.prototype.divideAndSort = function (startTimestamp, events) {
+	        // Note that the columns will be ordered with the weekend at the end.
+	        var columnList = [[], [], [], [], [], [], []];
+	        var dayStart = moment(startTimestamp); // From seconds back into moment
+	        // Divide the events by start day
+	        events.forEach(function (event) {
+	            var days = moment(event.startTime).diff(dayStart, "days");
+	            if (days < 0 || days >= 7) {
+	                return;
+	            }
+	            columnList[days].push(event);
+	        });
+	        // TODO: Sort the events
+	        return columnList;
+	    };
+	    CalendarComponent.prototype.onDoubleClick = function (event) {
+	        this.state.editingEvent = event;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.changeWeek = function () {
+	        // TODO: implement pagination
+	    };
+	    CalendarComponent.prototype.renderColumn = function (columnName, column) {
+	        var _this = this;
+	        return React.createElement("div", {key: columnName, className: "column-container"}, 
+	            columnName, 
+	            column.map(function (event) {
+	                return React.createElement("div", {key: event.id, className: "rendered-event card", onDoubleClick: _this.onDoubleClick.bind(_this, event)}, 
+	                    React.createElement("div", {className: "event-id-container"}, 
+	                        "E", 
+	                        event.id), 
+	                    event.name);
+	            }));
+	    };
+	    CalendarComponent.prototype.renderColumns = function () {
+	        var _this = this;
+	        var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+	        return React.createElement("div", {className: "full-column-container"}, days.map(function (dayName, i) {
+	            return _this.renderColumn(days[i], _this.state.columns[i]);
+	        }));
+	    };
+	    CalendarComponent.prototype.renderEditingEvent = function () {
+	        if (!this.state.editingEvent) {
+	            return;
+	        }
+	        return React.createElement(edit_event_1.EditEventComponent, {meUser: this.props.meUser, event: this.state.editingEvent, tagsById: this.props.tagsById, createMode: false, createEvent: function (event) { }, updateEvent: this.props.updateEvent, deleteEvent: this.props.deleteEvent});
+	    };
+	    CalendarComponent.prototype.renderCreateEvent = function () {
+	        return React.createElement(edit_event_1.EditEventComponent, {meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, createEvent: this.props.createEvent, updateEvent: function (event) { }, deleteEvent: function (event) { }});
+	    };
+	    CalendarComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "calendar"}, 
+	            this.renderColumns(), 
+	            this.renderEditingEvent(), 
+	            this.renderCreateEvent());
+	    };
+	    return CalendarComponent;
+	}(React.Component));
+	exports.CalendarComponent = CalendarComponent;
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	module.exports = moment;
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var tokenizer_1 = __webpack_require__(11);
+	var EditEventComponent = (function (_super) {
+	    __extends(EditEventComponent, _super);
+	    function EditEventComponent(props) {
+	        _super.call(this, props);
+	        if (props.createMode) {
+	            this.state = {
+	                event: this._getEmptyEvent(props.meUser)
+	            };
+	        }
+	        else {
+	            this.state = {
+	                event: props.event,
+	            };
+	        }
+	    }
+	    EditEventComponent.prototype.componentWillReceiveProps = function (newProps) {
+	        if (newProps.createMode) {
+	            this.setState({
+	                event: this._getEmptyEvent(newProps.meUser),
+	            });
+	        }
+	        else {
+	            this.setState({
+	                event: newProps.event,
+	            });
+	        }
+	    };
+	    EditEventComponent.prototype._getEmptyEvent = function (user) {
+	        return {
+	            id: 0,
+	            name: '',
+	            authorId: user.id,
+	            ownerId: user.id,
+	            tagIds: [],
+	            startTime: 0,
+	            durationSecs: 900,
+	        };
+	    };
+	    EditEventComponent.prototype.submitForm = function (eventType) {
+	        if (eventType == "save") {
+	            this.props.updateEvent(this.state.event);
+	        }
+	        else if (eventType == "delete") {
+	            this.props.deleteEvent(this.state.event);
+	        }
+	        else if (eventType == "create") {
+	            this.props.createEvent(this.state.event);
+	        }
+	        else {
+	            throw Error("Unknown submit type!");
+	        }
+	    };
+	    EditEventComponent.prototype.updateAttr = function (attrName, event) {
+	        this.state.event[attrName] = event.target.value;
+	        this.setState(this.state);
+	    };
+	    EditEventComponent.prototype.getCurrentTags = function () {
+	        var _this = this;
+	        var tagNames = [];
+	        this.state.event.tagIds.forEach(function (tagId) {
+	            var tag = _this.props.tagsById[tagId];
+	            tagNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return tagNames;
+	    };
+	    EditEventComponent.prototype.getAllTagNames = function () {
+	        var _this = this;
+	        // This function is used to determine the set of valid tokens for the tokenizer.
+	        var allNames = [];
+	        Object.keys(this.props.tagsById).forEach(function (tagId) {
+	            var tag = _this.props.tagsById[+tagId];
+	            allNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return allNames;
+	    };
+	    EditEventComponent.prototype.retrieveTagNames = function (tokens) {
+	        this.state.event.tagIds = tokens.map(function (token) {
+	            return token.value;
+	        });
+	        this.setState(this.state);
+	    };
+	    EditEventComponent.prototype.renderFormTitle = function () {
+	        if (this.props.createMode) {
+	            return React.createElement("h3", null, "Create Event Form:");
+	        }
+	        else {
+	            return React.createElement("h3", null, "Event Edit Form:");
+	        }
+	    };
+	    EditEventComponent.prototype.renderButtons = function () {
+	        if (this.props.createMode) {
+	            return (React.createElement("div", {className: "edit-event-button-container"}, 
+	                React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this, "create")})
+	            ));
+	        }
+	        else {
+	            return (React.createElement("div", {className: "edit-event-button-container"}, 
+	                React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
+	                React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")})));
+	        }
+	    };
+	    EditEventComponent.prototype.renderForm = function () {
+	        return React.createElement("div", null, 
+	            React.createElement("div", {className: "title-container"}, 
+	                React.createElement("label", {htmlFor: "name"}, "Name: "), 
+	                React.createElement("input", {type: "text", name: "name", value: this.state.event.name, onChange: this.updateAttr.bind(this, "name")})), 
+	            React.createElement("div", {className: "start-time-container"}, 
+	                React.createElement("label", {htmlFor: "start-time"}, "Start time: "), 
+	                React.createElement("input", {type: "number", name: "start-time", value: this.state.event.startTime, onChange: this.updateAttr.bind(this, "startTime")})), 
+	            React.createElement("div", {className: "duration-secs-container"}, 
+	                React.createElement("label", {htmlFor: "duration-secs"}, "Duration (s): "), 
+	                React.createElement("input", {type: "number", name: "duration-secs", value: this.state.event.durationSecs, onChange: this.updateAttr.bind(this, "durationSecs")})), 
+	            React.createElement("div", {className: "tag-tokenizer-container"}, 
+	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames()})
+	            ), 
+	            this.renderButtons());
+	    };
+	    EditEventComponent.prototype.render = function () {
+	        return React.createElement("div", {className: "edit-event-container"}, 
+	            this.renderFormTitle(), 
+	            this.renderForm());
+	    };
+	    return EditEventComponent;
+	}(React.Component));
+	exports.EditEventComponent = EditEventComponent;
 
 
 /***/ }

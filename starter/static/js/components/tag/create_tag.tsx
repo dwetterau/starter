@@ -1,6 +1,6 @@
 import * as React from "react";
-import {Tag, TagsById, User} from "../models";
-import {TokenizerComponent, Tokenizable} from "./tokenizer";
+import {Tag, TagsById, User} from "../../models";
+import {TokenizerComponent, Tokenizable} from "../tokenizer";
 
 export interface CreateTagProps {
     meUser: User;
