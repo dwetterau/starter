@@ -22,6 +22,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'node_modules/react/dist/'),
     os.path.join(BASE_DIR, 'node_modules/react-dom/dist/'),
     os.path.join(BASE_DIR, 'node_modules/jquery/dist/'),
+    os.path.join(BASE_DIR, 'node_modules/moment/min/'),
 )
 STATIC_ROOT = '/www/starter/static'
 
