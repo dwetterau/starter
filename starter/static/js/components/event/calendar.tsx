@@ -255,6 +255,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 dayOffset /= (900 * 1000 * (4 * 24));
                 dayOffset *= 20 * 4 * 24; // Total height of a column
                 const style = {
+                    "height": (event.durationSecs / 900) * 20,
                     "maxHeight": (event.durationSecs / 900) * 20,
                     "top": `${dayOffset}px`
                 };

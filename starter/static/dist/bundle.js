@@ -1893,6 +1893,7 @@
 	                dayOffset /= (900 * 1000 * (4 * 24));
 	                dayOffset *= 20 * 4 * 24; // Total height of a column
 	                var style = {
+	                    "height": (event.durationSecs / 900) * 20,
 	                    "maxHeight": (event.durationSecs / 900) * 20,
 	                    "top": dayOffset + "px"
 	                };
