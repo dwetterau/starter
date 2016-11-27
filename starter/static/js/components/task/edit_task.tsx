@@ -7,6 +7,7 @@ export interface EditTaskProps {
     task?: Task,
     tagsById: TagsById,
     createMode: boolean,
+    initialTags?: Array<number>,
     createTask: (task: Task) => void,
     updateTask: (task: Task) => void,
     deleteTask: (task: Task) => void,
@@ -21,7 +22,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
         super(props);
         if (props.createMode) {
             this.state = {
-                task: this._getEmptyTask(props.meUser)
+                task: this._getEmptyTask(props.meUser, props.initialTags)
             }
         } else {
             this.state = {
@@ -33,7 +34,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
     componentWillReceiveProps(newProps: EditTaskProps) {
         if (newProps.createMode) {
             this.setState({
-                task: this._getEmptyTask(newProps.meUser),
+                task: this._getEmptyTask(newProps.meUser, newProps.initialTags),
             })
         } else {
             this.setState({
@@ -42,14 +43,14 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
         }
     }
 
-    _getEmptyTask(user: User): Task {
+    _getEmptyTask(user: User, initialTags?: Array<number>): Task {
         return {
             id: 0,
             title: '',
             description: '',
             authorId: user.id,
             ownerId: user.id,
-            tagIds: [],
+            tagIds: (initialTags) ? initialTags : [],
             priority: 300,
             state: 0,
         }

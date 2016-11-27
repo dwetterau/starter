@@ -52,7 +52,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             draggingTask: null,
             editingTask: null,
             selectedTag: null,
-            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : false,
+            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : true,
         };
         if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
             // Copy over the previous selectedTag
@@ -115,12 +115,13 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
 
         const shouldHideTask = (task: Task) => {
-            if (!this.state) {
-                // This is the initial call where we are defining state...
-                return false
-            }
-            if (this.state.shouldHideClosedTasks && task.state == 1000) {
+            if (task.state == 1000 && (!this.state || this.state.shouldHideClosedTasks)) {
                 return true;
+            }
+
+            if (!this.state) {
+                // Other checks can only return true if state is defined.
+                return false;
             }
 
             if (this.state.selectedTag) {
@@ -294,11 +295,15 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         if (type == this.state.viewType) {
             className += " -selected"
         }
+        const typeToName: {[type: number]: string} = {};
+        typeToName[TaskBoardViewType.priority] = "Priority";
+        typeToName[TaskBoardViewType.status] = "Status";
+
         return (
             <div className={className} key={type}
                  onClick={this.changeViewType.bind(this, type)}
             >
-                {TaskBoardViewType[type]}
+                {typeToName[type]}
             </div>
         )
     }
@@ -315,8 +320,9 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     renderHideClosedTasks() {
         return (
             <div className="hide-closed-tasks">
-                Hide closed?
+                <label htmlFor="hide-closed">Hide closed?</label>
                 <input
+                    id="hide-closed"
                     type="checkbox"
                     onChange={this.changeHideClosedTasks.bind(this)}
                     checked={this.state.shouldHideClosedTasks}
@@ -325,17 +331,12 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         )
     }
 
-    renderTypeBasedOptions() {
-        if (this.state.viewType == TaskBoardViewType.priority) {
-            return this.renderHideClosedTasks()
-        }
-    }
-
     renderOptions() {
         return (
             <div className="task-board-options">
                 {this.renderTypeSelector()}
-                {this.renderTypeBasedOptions()}
+                {this.renderHideClosedTasks()}
+                {this.renderTagSelector()}
             </div>
         )
     }
@@ -343,6 +344,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     renderTagSelector() {
         return (
             <div className="task-board-tag-selector-container">
+                <div className="tag-selector-label">Filter Tag:</div>
                 <TokenizerComponent
                     onChange={this.changeCurrentTagToken.bind(this)}
                     initialValues={this.getCurrentTagToken()}
@@ -408,11 +410,16 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     renderCreateTask() {
+        const initialTags: Array<number> = [];
+        if (this.state.selectedTag) {
+            initialTags.push(this.state.selectedTag.id);
+        }
         return <EditTaskComponent
             meUser={this.props.meUser}
             tagsById={this.props.tagsById}
             createMode={true}
             createTask={this.props.createTask}
+            initialTags={initialTags}
             updateTask={(task: Task) => {}}
             deleteTask={(task: Task) => {}}
         />
@@ -421,7 +428,6 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     render() {
         return <div className="task-board">
             {this.renderOptions()}
-            {this.renderTagSelector()}
             {this.renderColumns()}
             {this.renderEditingTask()}
             {this.renderCreateTask()}

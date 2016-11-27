@@ -49,6 +49,36 @@ div.task-board {
     width: 100%;
 }
 
+div.task-board div.task-board-options {
+    display: flex;
+}
+
+div.task-board div.task-board-options div.view-type-selector {
+    display: flex;
+}
+
+div.task-board div.task-board-options div.view-type-selector div.view-type-choice {
+    margin-right: .5em;
+    cursor: pointer;
+}
+
+div.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {
+    text-decoration: underline;
+}
+
+div.task-board div.hide-closed-tasks {
+    margin-left: .5em;
+}
+
+div.task-board div.task-board-tag-selector-container {
+    display: flex;
+    margin-left: 1em;
+}
+
+div.task-board div.task-board-tag-selector-container div.tokenizer-container {
+    margin-left: .5em;
+}
+
 div.task-board div.full-column-container {
     display: flex;
     flex-direction: row;

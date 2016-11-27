@@ -134,7 +134,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option {\n    margin-right: 1em;\n    cursor: pointer;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.task-board div.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.task-tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
+	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option {\n    margin-right: 1em;\n    cursor: pointer;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.task-tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
 	
 	// exports
 
@@ -1103,7 +1103,7 @@
 	            draggingTask: null,
 	            editingTask: null,
 	            selectedTag: null,
-	            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : false,
+	            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : true,
 	        };
 	        if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
 	            // Copy over the previous selectedTag
@@ -1154,12 +1154,12 @@
 	            }
 	        }
 	        var shouldHideTask = function (task) {
-	            if (!_this.state) {
-	                // This is the initial call where we are defining state...
-	                return false;
-	            }
-	            if (_this.state.shouldHideClosedTasks && task.state == 1000) {
+	            if (task.state == 1000 && (!_this.state || _this.state.shouldHideClosedTasks)) {
 	                return true;
+	            }
+	            if (!_this.state) {
+	                // Other checks can only return true if state is defined.
+	                return false;
 	            }
 	            if (_this.state.selectedTag) {
 	                // See if the task has the right tag
@@ -1312,7 +1312,10 @@
 	        if (type == this.state.viewType) {
 	            className += " -selected";
 	        }
-	        return (React.createElement("div", {className: className, key: type, onClick: this.changeViewType.bind(this, type)}, TaskBoardViewType[type]));
+	        var typeToName = {};
+	        typeToName[TaskBoardViewType.priority] = "Priority";
+	        typeToName[TaskBoardViewType.status] = "Status";
+	        return (React.createElement("div", {className: className, key: type, onClick: this.changeViewType.bind(this, type)}, typeToName[type]));
 	    };
 	    TaskBoardComponent.prototype.renderTypeSelector = function () {
 	        return (React.createElement("div", {className: "view-type-selector"}, 
@@ -1321,23 +1324,19 @@
 	    };
 	    TaskBoardComponent.prototype.renderHideClosedTasks = function () {
 	        return (React.createElement("div", {className: "hide-closed-tasks"}, 
-	            "Hide closed?", 
-	            React.createElement("input", {type: "checkbox", onChange: this.changeHideClosedTasks.bind(this), checked: this.state.shouldHideClosedTasks})));
-	    };
-	    TaskBoardComponent.prototype.renderTypeBasedOptions = function () {
-	        if (this.state.viewType == TaskBoardViewType.priority) {
-	            return this.renderHideClosedTasks();
-	        }
+	            React.createElement("label", {htmlFor: "hide-closed"}, "Hide closed?"), 
+	            React.createElement("input", {id: "hide-closed", type: "checkbox", onChange: this.changeHideClosedTasks.bind(this), checked: this.state.shouldHideClosedTasks})));
 	    };
 	    TaskBoardComponent.prototype.renderOptions = function () {
 	        return (React.createElement("div", {className: "task-board-options"}, 
 	            this.renderTypeSelector(), 
-	            this.renderTypeBasedOptions()));
+	            this.renderHideClosedTasks(), 
+	            this.renderTagSelector()));
 	    };
 	    TaskBoardComponent.prototype.renderTagSelector = function () {
 	        return (React.createElement("div", {className: "task-board-tag-selector-container"}, 
-	            React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1})
-	        ));
+	            React.createElement("div", {className: "tag-selector-label"}, "Filter Tag:"), 
+	            React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1})));
 	    };
 	    TaskBoardComponent.prototype.renderColumn = function (column, header, columnType) {
 	        var _this = this;
@@ -1365,12 +1364,15 @@
 	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, task: this.state.editingTask, tagsById: this.props.tagsById, createMode: false, createTask: function (task) { }, updateTask: this.props.updateTask, deleteTask: this.props.deleteTask});
 	    };
 	    TaskBoardComponent.prototype.renderCreateTask = function () {
-	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, createTask: this.props.createTask, updateTask: function (task) { }, deleteTask: function (task) { }});
+	        var initialTags = [];
+	        if (this.state.selectedTag) {
+	            initialTags.push(this.state.selectedTag.id);
+	        }
+	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, createTask: this.props.createTask, initialTags: initialTags, updateTask: function (task) { }, deleteTask: function (task) { }});
 	    };
 	    TaskBoardComponent.prototype.render = function () {
 	        return React.createElement("div", {className: "task-board"}, 
 	            this.renderOptions(), 
-	            this.renderTagSelector(), 
 	            this.renderColumns(), 
 	            this.renderEditingTask(), 
 	            this.renderCreateTask());
@@ -1398,7 +1400,7 @@
 	        _super.call(this, props);
 	        if (props.createMode) {
 	            this.state = {
-	                task: this._getEmptyTask(props.meUser)
+	                task: this._getEmptyTask(props.meUser, props.initialTags)
 	            };
 	        }
 	        else {
@@ -1410,7 +1412,7 @@
 	    EditTaskComponent.prototype.componentWillReceiveProps = function (newProps) {
 	        if (newProps.createMode) {
 	            this.setState({
-	                task: this._getEmptyTask(newProps.meUser),
+	                task: this._getEmptyTask(newProps.meUser, newProps.initialTags),
 	            });
 	        }
 	        else {
@@ -1419,14 +1421,14 @@
 	            });
 	        }
 	    };
-	    EditTaskComponent.prototype._getEmptyTask = function (user) {
+	    EditTaskComponent.prototype._getEmptyTask = function (user, initialTags) {
 	        return {
 	            id: 0,
 	            title: '',
 	            description: '',
 	            authorId: user.id,
 	            ownerId: user.id,
-	            tagIds: [],
+	            tagIds: (initialTags) ? initialTags : [],
 	            priority: 300,
 	            state: 0,
 	        };
@@ -1811,7 +1813,7 @@
 	        _super.call(this, props);
 	        if (props.createMode) {
 	            this.state = {
-	                event: this._getEmptyEvent(props.meUser)
+	                event: this._getEmptyEvent(props.meUser, props.initialTags)
 	            };
 	        }
 	        else {
@@ -1823,7 +1825,7 @@
 	    EditEventComponent.prototype.componentWillReceiveProps = function (newProps) {
 	        if (newProps.createMode) {
 	            this.setState({
-	                event: this._getEmptyEvent(newProps.meUser),
+	                event: this._getEmptyEvent(newProps.meUser, newProps.initialTags),
 	            });
 	        }
 	        else {
@@ -1832,13 +1834,13 @@
 	            });
 	        }
 	    };
-	    EditEventComponent.prototype._getEmptyEvent = function (user) {
+	    EditEventComponent.prototype._getEmptyEvent = function (user, initialTags) {
 	        return {
 	            id: 0,
 	            name: '',
 	            authorId: user.id,
 	            ownerId: user.id,
-	            tagIds: [],
+	            tagIds: (initialTags) ? initialTags : [],
 	            startTime: 0,
 	            durationSecs: 900,
 	        };

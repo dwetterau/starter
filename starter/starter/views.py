@@ -65,12 +65,18 @@ def _validate(args, validation_map):
     return converted_args
 
 
+def _required_string(x):
+    x = str(x)
+    assert len(x) > 0
+    return x
+
+
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def create_task(request):
-    arguments = urllib.parse.parse_qsl(request.body)
+    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
-        'title': str,
+        'title': _required_string,
         'description': str,
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
@@ -117,10 +123,10 @@ def create_task(request):
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def update_task(request):
-    arguments = urllib.parse.parse_qsl(request.body)
+    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
         'id': int,
-        'title': str,
+        'title': _required_string,
         'description': str,
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
@@ -169,7 +175,7 @@ def update_task(request):
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def delete_task(request):
-    arguments = urllib.parse.parse_qsl(request.body)
+    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
         'id': int,
     }
@@ -191,9 +197,9 @@ def delete_task(request):
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def create_event(request):
-    arguments = urllib.parse.parse_qsl(request.body)
+    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
-        'name': str,
+        'name': _required_string,
         'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
         'durationSecs': int,
         'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
@@ -239,10 +245,10 @@ def create_event(request):
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def update_event(request):
-    arguments = urllib.parse.parse_qsl(request.body)
+    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
         'id': int,
-        'name': str,
+        'name': _required_string,
         'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
         'durationSecs': int,
         'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
@@ -291,7 +297,7 @@ def update_event(request):
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def delete_event(request):
-    arguments = urllib.parse.parse_qsl(request.body)
+    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
         'id': int,
     }
@@ -313,9 +319,9 @@ def delete_event(request):
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def create_tag(request):
-    arguments = urllib.parse.parse_qsl(request.body)
+    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
-        'name': str,
+        'name': _required_string,
         'childTagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
@@ -356,10 +362,10 @@ def create_tag(request):
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def update_tag(request):
-    arguments = urllib.parse.parse_qsl(request.body)
+    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
         'id': int,
-        'name': str,
+        'name': _required_string,
         'childTagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
