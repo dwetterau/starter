@@ -123,6 +123,67 @@ div.task-tags-container div.task-tag {
 }
 /* End of Task view CSS */
 
+/* Calendar CSS */
+div.calendar div.full-column-container {
+    display: flex;
+    flex-direction: column;
+}
+
+div.calendar div.column-header-container {
+    display: flex;
+}
+
+div.calendar div.column-header {
+    min-width: 120px;
+    width: 120px;
+    max-width: 120px;
+    height: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+}
+
+div.calendar div.all-columns-container {
+    display: flex;
+    max-height: 720px; /* 18 hours + 20 for header */
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+div.calendar div.column-container {
+    max-width: 120px;
+    width: 120px;
+    min-width: 120px;
+    position: relative;
+}
+
+div.calendar div.column-container td {
+    border-right: 1px solid rgba(0, 0, 0, .2);
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+    font-size: 14px;
+    min-width: 120px;
+    width: 100px;
+    max-width: 120px;
+    cursor: pointer;
+}
+
+div.calendar div.column-container:first-child td {
+    border-left: 1px solid rgba(0, 0, 0, .2);
+    cursor: default; /* Prevents times from being click-able */
+}
+
+div.calendar div.column-container table tbody tr:first-child td {
+    border-top: 1px solid rgba(0, 0, 0, .2);
+}
+
+div.calendar div.rendered-event.card {
+    position: absolute;
+    padding: 1px;
+    margin-left: 1px;
+    overflow-y: scroll;
+    width: 119px;
+}
+
+/* End of Calendar CSS */
+
 /* Tag graph CSS */
 .tag-graph {
     margin: 1em 0;

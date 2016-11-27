@@ -7,6 +7,7 @@ export interface EditEventProps {
     event?: Event,
     tagsById: TagsById,
     createMode: boolean,
+    initialCreationTime?: number,
     initialTags?: Array<number>,
     createEvent: (event: Event) => void,
     updateEvent: (event: Event) => void,
@@ -22,7 +23,11 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         super(props);
         if (props.createMode) {
             this.state = {
-                event: this._getEmptyEvent(props.meUser, props.initialTags)
+                event: this._getEmptyEvent(
+                    props.meUser,
+                    props.initialCreationTime,
+                    props.initialTags
+                )
             }
         } else {
             this.state = {
@@ -34,7 +39,11 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
     componentWillReceiveProps(newProps: EditEventProps) {
         if (newProps.createMode) {
             this.setState({
-                event: this._getEmptyEvent(newProps.meUser, newProps.initialTags),
+                event: this._getEmptyEvent(
+                    newProps.meUser,
+                    newProps.initialCreationTime,
+                    newProps.initialTags
+                ),
             })
         } else {
             this.setState({
@@ -43,14 +52,14 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         }
     }
 
-    _getEmptyEvent(user: User, initialTags?: Array<number>): Event {
+    _getEmptyEvent(user: User, initialCreationTime?: number, initialTags?: Array<number>): Event {
         return {
             id: 0,
             name: '',
             authorId: user.id,
             ownerId: user.id,
             tagIds: (initialTags) ? initialTags : [],
-            startTime: 0,
+            startTime: (initialCreationTime) ? initialCreationTime: 0,
             durationSecs: 900, // TODO: Find out how these will be passed in
         }
     }
