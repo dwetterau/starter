@@ -146,6 +146,7 @@ div.calendar div.all-columns-container {
     max-height: 720px; /* 18 hours + 20 for header */
     overflow-x: hidden;
     overflow-y: scroll;
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
 }
 
 div.calendar div.column-container {
@@ -165,6 +166,10 @@ div.calendar div.column-container td {
     cursor: pointer;
 }
 
+div.calendar div.column-container tr:nth-child(odd) td {
+    border-bottom-style: dashed;
+}
+
 div.calendar div.column-container:first-child td {
     border-left: 1px solid rgba(0, 0, 0, .2);
     cursor: default; /* Prevents times from being click-able */
@@ -180,6 +185,15 @@ div.calendar div.rendered-event.card {
     margin-left: 1px;
     overflow-y: scroll;
     width: 119px;
+}
+
+div.calendar div.current-time-cursor {
+    position: absolute;
+    height: 3px;
+    background-color: #dc322f;
+    max-width: 120px;
+    width: 120px;
+    min-width: 120px;
 }
 
 /* End of Calendar CSS */

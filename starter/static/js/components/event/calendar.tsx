@@ -62,6 +62,13 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return newState;
     }
 
+    componentDidMount() {
+        const cursor = document.getElementsByClassName("current-time-cursor");
+        if (cursor.length) {
+            cursor[0].scrollIntoView();
+        }
+    }
+
     divideAndSort(startTimestamp: number, events: Array<Event>): Array<Array<Event>> {
         // Note that the columns will be ordered with the weekend at the end.
         const columnList: Array<Array<Event>> = [[], [], [], [], [], [], []];
@@ -243,10 +250,28 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         )
     }
 
+    renderCurrentTimeCursor(index: number) {
+        const columnTimeRange = 24 * 60 * 60 * 1000;
+        let columnStartTimestamp = this.state.startDayTimestamp + index * columnTimeRange;
+        const currentTime = moment().unix() * 1000;
+        if (currentTime >= columnStartTimestamp &&
+            currentTime < columnStartTimestamp + columnTimeRange) {
+            // Okay we can actually render it here.
+            let offset = (currentTime - columnStartTimestamp) / columnTimeRange;
+            offset *= 20 * 4 * 24; // Total height of a column
+            offset -= 2; // Draw it 2 pixels higher because it's width 3.
+            const style = {
+                "top": `${offset}px`,
+            };
+            return <div className="current-time-cursor" style={style}></div>
+        }
+    }
+
     renderColumn(columnIndex: number, column: Array<Event>) {
         const day = DAYS[columnIndex];
         return <div key={day} className="column-container">
             {this.renderCells(day)}
+            {this.renderCurrentTimeCursor(columnIndex)}
             {column.map((event: Event) => {
                 // TODO: Handle days that go off the end or wrap multiple days better
 
@@ -255,8 +280,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 dayOffset /= (900 * 1000 * (4 * 24));
                 dayOffset *= 20 * 4 * 24; // Total height of a column
                 const style = {
-                    "height": (event.durationSecs / 900) * 20,
-                    "maxHeight": (event.durationSecs / 900) * 20,
+                    "height": (event.durationSecs / 900) * 20 - 1,
+                    "maxHeight": (event.durationSecs / 900) * 20 - 1,
                     "top": `${dayOffset}px`
                 };
                 return <div
