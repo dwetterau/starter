@@ -1774,10 +1774,7 @@
 	                }
 	            }
 	        }
-	        var shouldHide = function (event, day) {
-	            if (day < 0 || day >= 7) {
-	                return true;
-	            }
+	        var shouldHide = function (event) {
 	            if (_this.state && _this.state.selectedTag) {
 	                // See if the task has the right tag
 	                var matches_1 = false;
@@ -1792,13 +1789,29 @@
 	        };
 	        // Divide the events by start day
 	        events.forEach(function (event) {
-	            var day = moment(event.startTime).diff(dayStart, "days");
-	            if (shouldHide(event, day)) {
-	                return;
-	            }
-	            columnList[day].push(event);
+	            var startTimestamp = event.startTime;
+	            var endTimestamp = startTimestamp + event.durationSecs * 1000;
+	            DAYS.forEach(function (day, index) {
+	                if (shouldHide(event)) {
+	                    return;
+	                }
+	                var curTimestamp = moment(dayStart).add(index, "days").unix() * 1000;
+	                // See if any part of the event falls within this day. If the part that does does
+	                // not include the beginning, we need to make a fake event. There should only
+	                // be at most one event in each column for the same event.
+	                if (curTimestamp < endTimestamp) {
+	                    if (curTimestamp >= startTimestamp) {
+	                        // We are in a partial day, create a fake event.
+	                        columnList[index].push(event);
+	                    }
+	                    else if (curTimestamp + 24 * 60 * 60 * 1000 > startTimestamp) {
+	                        // This day contains the start timestamp, push it on as normal.
+	                        columnList[index].push(event);
+	                    }
+	                }
+	            });
 	        });
-	        // TODO: Sort the events
+	        // TODO: Sort the events ?
 	        return columnList;
 	    };
 	    CalendarComponent.prototype.resort = function () {
@@ -1985,13 +1998,22 @@
 	            this.renderCells(day), 
 	            this.renderCurrentTimeCursor(columnIndex), 
 	            column.map(function (event) {
-	                // TODO: Handle days that go off the end or wrap multiple days better
 	                var dayOffset = event.startTime - (_this.state.startDayTimestamp + columnIndex * 24 * 60 * 60 * 1000);
 	                dayOffset /= (900 * 1000 * (4 * 24));
 	                dayOffset *= 20 * 4 * 24; // Total height of a column
+	                var multiDayAdjustment = 0;
+	                if (dayOffset < 0) {
+	                    multiDayAdjustment = -dayOffset;
+	                    dayOffset = 0;
+	                }
+	                var height = (event.durationSecs / 900) * 20 - multiDayAdjustment;
+	                var bottomOverflow = (20 * 4 * 24) - (dayOffset + height);
+	                if (bottomOverflow < 0) {
+	                    height += bottomOverflow;
+	                }
 	                var style = {
-	                    "height": (event.durationSecs / 900) * 20 - 1,
-	                    "maxHeight": (event.durationSecs / 900) * 20 - 1,
+	                    "height": height,
+	                    "maxHeight": height,
 	                    "top": dayOffset + "px"
 	                };
 	                return React.createElement("div", {key: event.id, className: "rendered-event card", onDoubleClick: _this.onDoubleClick.bind(_this, event), style: style}, 
