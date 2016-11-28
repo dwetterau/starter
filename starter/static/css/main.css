@@ -195,6 +195,7 @@ div.calendar div.current-time-cursor {
     max-width: 120px;
     width: 120px;
     min-width: 120px;
+    z-index: 2;
 }
 
 div.calendar div.column-container tr td.-selected {

@@ -80,7 +80,7 @@ def create_task(request):
         'description': str,
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
-        'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
+        'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
@@ -92,7 +92,7 @@ def create_task(request):
         return HttpResponse(str(e.args).encode(), status=400, )
 
     # Combine new tags:
-    new_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "tagIds[]"}
+    new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
     arguments = dict(arguments)
@@ -130,7 +130,7 @@ def update_task(request):
         'description': str,
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
-        'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
+        'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
@@ -142,7 +142,7 @@ def update_task(request):
         return HttpResponse(str(e.args).encode(), status=400)
 
     # Combine new tags:
-    new_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "tagIds[]"}
+    new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
     arguments = dict(arguments)
@@ -202,7 +202,7 @@ def create_event(request):
         'name': _required_string,
         'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
         'durationSecs': int,
-        'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
+        'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
@@ -214,7 +214,7 @@ def create_event(request):
         return HttpResponse(str(e.args).encode(), status=400, )
 
     # Combine new tags:
-    new_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "tagIds[]"}
+    new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
     arguments = dict(arguments)
@@ -251,7 +251,7 @@ def update_event(request):
         'name': _required_string,
         'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
         'durationSecs': int,
-        'tagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
+        'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
@@ -263,7 +263,7 @@ def update_event(request):
         return HttpResponse(str(e.args).encode(), status=400)
 
     # Combine new tags:
-    new_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "tagIds[]"}
+    new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
     arguments = dict(arguments)
@@ -322,7 +322,7 @@ def create_tag(request):
     arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
         'name': _required_string,
-        'childTagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
+        'childTagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
 
@@ -333,7 +333,7 @@ def create_tag(request):
         return HttpResponse(str(e.args).encode(), status=400)
 
     # Combine child tags:
-    child_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "childTagIds[]"}
+    child_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "childTagIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
     arguments = dict(arguments)
@@ -366,7 +366,7 @@ def update_tag(request):
     validation_map = {
         'id': int,
         'name': _required_string,
-        'childTagIds[]': lambda x: Tag.objects.filter(id__in=x).all(),
+        'childTagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
 
@@ -377,7 +377,7 @@ def update_tag(request):
         return HttpResponse(str(e.args).encode(), status=400)
 
     # Combine child tags:
-    child_tags_by_id = {tags[0].id: tags[0] for arg, tags in arguments if arg == "childTagIds[]"}
+    child_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "childTagIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
     arguments = dict(arguments)
