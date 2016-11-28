@@ -4,6 +4,7 @@ import * as moment from "moment";
 import {EditEventComponent} from "./edit_event"
 import {Event, User, TagsById, Tag} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
+import {EventComponent} from "./event";
 
 export interface CalendarProps {
     meUser: User,
@@ -380,8 +381,10 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     onDoubleClick={this.onDoubleClick.bind(this, event)}
                     style={style}
                 >
-                    <div className="event-id-container">E{event.id}</div>
-                    {event.name}
+                    <EventComponent
+                        event={event}
+                        tagsById={this.props.tagsById}
+                    />
                 </div>
             })}
         </div>

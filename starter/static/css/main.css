@@ -117,7 +117,7 @@ div.task-tags-container {
     display: flex;
 }
 
-div.task-tags-container div.task-tag {
+div.task-tags-container div.tag {
     margin-left: .25em;
     padding: .1em .25em;
 }
@@ -202,6 +202,22 @@ div.calendar div.column-container tr td.-selected {
 }
 
 /* End of Calendar CSS */
+
+/* Event view CSS */
+.event-id {
+    font-weight: bolder;
+    text-decoration: underline;
+}
+
+div.event-tags-container {
+    display: flex;
+}
+
+div.event-tags-container div.tag {
+    margin-left: .25em;
+    padding: .1em .25em;
+}
+/* End of Event view CSS */
 
 /* Tag graph CSS */
 .tag-graph {

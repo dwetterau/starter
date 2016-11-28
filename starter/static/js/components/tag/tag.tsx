@@ -9,7 +9,7 @@ export class TagComponent extends React.Component<TagProps, {}> {
 
     render() {
         return (
-            <div className="task-tag card">
+            <div className="tag card">
                 {this.props.tag.name}
             </div>
         )
