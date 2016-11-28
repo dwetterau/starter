@@ -8,6 +8,7 @@ export interface EditEventProps {
     tagsById: TagsById,
     createMode: boolean,
     initialCreationTime?: number,
+    initialDurationSecs?: number,
     initialTags?: Array<number>,
     createEvent: (event: Event) => void,
     updateEvent: (event: Event) => void,
@@ -26,6 +27,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 event: this._getEmptyEvent(
                     props.meUser,
                     props.initialCreationTime,
+                    props.initialDurationSecs,
                     props.initialTags
                 )
             }
@@ -42,6 +44,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 event: this._getEmptyEvent(
                     newProps.meUser,
                     newProps.initialCreationTime,
+                    newProps.initialDurationSecs,
                     newProps.initialTags
                 ),
             })
@@ -52,7 +55,12 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         }
     }
 
-    _getEmptyEvent(user: User, initialCreationTime?: number, initialTags?: Array<number>): Event {
+    _getEmptyEvent(
+        user: User,
+        initialCreationTime?: number,
+        initialDurationSecs?: number,
+        initialTags?: Array<number>
+    ): Event {
         return {
             id: 0,
             name: '',
@@ -60,7 +68,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
             ownerId: user.id,
             tagIds: (initialTags) ? initialTags : [],
             startTime: (initialCreationTime) ? initialCreationTime: 0,
-            durationSecs: 900, // TODO: Find out how these will be passed in
+            durationSecs: (initialDurationSecs) ? initialDurationSecs: 900,
         }
     }
 

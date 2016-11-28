@@ -196,6 +196,11 @@ div.calendar div.current-time-cursor {
     min-width: 120px;
 }
 
+div.calendar div.column-container tr td.-selected {
+    background-color: rgba(255, 255, 255, .84);
+    border: none;
+}
+
 /* End of Calendar CSS */
 
 /* Tag graph CSS */
