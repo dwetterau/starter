@@ -126,6 +126,7 @@ div.task-tags-container div.tag {
 /* Calendar CSS */
 div.calendar div.full-column-container {
     display: flex;
+    align-items: center;
     flex-direction: column;
 }
 
@@ -134,18 +135,18 @@ div.calendar div.column-header-container {
 }
 
 div.calendar div.column-header {
-    min-width: 120px;
-    width: 120px;
-    max-width: 120px;
+    min-width: 122px;
+    width: 122px;
+    max-width: 122px;
     height: 20px;
     border-bottom: 1px solid rgba(0, 0, 0, .2);
 }
 
 div.calendar div.all-columns-container {
     display: flex;
-    max-height: 720px; /* 18 hours + 20 for header */
+    max-height: 720px; /* ~9 hours + 20 for header */
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     border-bottom: 1px solid rgba(0, 0, 0, .2);
 }
 
@@ -173,6 +174,8 @@ div.calendar div.column-container tr:nth-child(odd) td {
 div.calendar div.column-container:first-child td {
     border-left: 1px solid rgba(0, 0, 0, .2);
     cursor: default; /* Prevents times from being click-able */
+    vertical-align: top;
+    text-align: right;
 }
 
 div.calendar div.column-container table tbody tr:first-child td {
@@ -181,10 +184,10 @@ div.calendar div.column-container table tbody tr:first-child td {
 
 div.calendar div.rendered-event.card {
     position: absolute;
-    padding: 1px;
+    padding: 1px .25em;
     margin-left: 1px;
     margin-bottom: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
     width: 119px;
 }
 
@@ -206,9 +209,8 @@ div.calendar div.column-container tr td.-selected {
 /* End of Calendar CSS */
 
 /* Event view CSS */
-.event-id {
-    font-weight: bolder;
-    text-decoration: underline;
+div.event-container {
+    font-size: 13px;
 }
 
 div.event-tags-container {
@@ -216,7 +218,7 @@ div.event-tags-container {
 }
 
 div.event-tags-container div.tag {
-    margin-left: .25em;
+    margin: 0 0 0 .25em;
     padding: .1em .25em;
 }
 /* End of Event view CSS */

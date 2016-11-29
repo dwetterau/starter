@@ -9,14 +9,6 @@ export interface EventProps {
 
 export class EventComponent extends React.Component<EventProps, {}> {
 
-    renderEventId() {
-        return (
-            <div className="event-id">
-                E{this.props.event.id}
-            </div>
-        )
-    }
-
     renderTag(tagId: number) {
         const tag = this.props.tagsById[tagId];
         return <TagComponent tag={tag} key={tagId}/>
@@ -28,7 +20,6 @@ export class EventComponent extends React.Component<EventProps, {}> {
         }
         return (
             <div className="event-tags-container">
-                Tags:
                 {this.props.event.tagIds.map(this.renderTag.bind(this))}
             </div>
         )
@@ -36,7 +27,6 @@ export class EventComponent extends React.Component<EventProps, {}> {
 
     render() {
         return <div className="event-container">
-            {this.renderEventId()}
             {this.props.event.name}
             {this.renderTags()}
         </div>

@@ -15,6 +15,7 @@ export interface CalendarProps {
     deleteEvent: (event: Event) => void,
 }
 export interface CalendarState {
+    viewType: CalendarViewType,
     startDayTimestamp: number,
     columns: Array<Array<Event>>,
     editingEvent?: Event,
@@ -24,7 +25,13 @@ export interface CalendarState {
     draggingStartTimestamp?: number,
     draggingEndTimestamp?: number,
 }
+enum CalendarViewType {
+    week,
+    day,
+}
+
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const CELL_HEIGHT = 20;
 
 export class CalendarComponent extends React.Component<CalendarProps, CalendarState> {
 
@@ -48,6 +55,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         const columns = this.divideAndSort(startDayTimestamp, props.events);
         const newState: CalendarState = {
+            viewType: CalendarViewType.week,
             startDayTimestamp,
             columns,
             editingEvent: null,
@@ -58,17 +66,16 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             draggingEndTimestamp: null,
         };
         if (this.state) {
-            newState.startDayTimestamp = this.state.startDayTimestamp;
-            newState.editingEvent = this.state.editingEvent;
-            newState.createEventTimestamp = this.state.createEventTimestamp;
-            newState.createEventDurationSecs = this.state.createEventDurationSecs;
+            // Needed to preserve view
+            newState.viewType = this.state.viewType;
 
+            // Needed for pagination
+            newState.startDayTimestamp = this.state.startDayTimestamp;
+
+            // Want to persist tag between event creations
             if (this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
                 newState.selectedTag = this.state.selectedTag;
             }
-
-            newState.draggingStartTimestamp = this.state.draggingStartTimestamp;
-            newState.draggingEndTimestamp = this.state.draggingEndTimestamp;
         }
         return newState;
     }
@@ -294,7 +301,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     renderCells(day: string) {
         const getColumnRow = (index: number) => {
             const key = "" + index;
-            const style = {height: 20};
+            const style = {height: CELL_HEIGHT};
             const timestamp = this.computeTimestamp(day, index);
             let className = "";
             if (this.state.draggingStartTimestamp && this.state.draggingEndTimestamp) {
@@ -360,7 +367,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             currentTime < columnStartTimestamp + columnTimeRange) {
             // Okay we can actually render it here.
             let offset = (currentTime - columnStartTimestamp) / columnTimeRange;
-            offset *= 20 * 4 * 24; // Total height of a column
+            offset *= CELL_HEIGHT * 4 * 24; // Total height of a column
             offset -= 2; // Draw it 2 pixels higher because it's width 3.
             const style = {
                 "top": `${offset}px`,
@@ -378,14 +385,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 let dayOffset = event.startTime - (
                     this.state.startDayTimestamp + columnIndex * 24 * 60 * 60 * 1000);
                 dayOffset /= (900 * 1000 * (4 * 24));
-                dayOffset *= 20 * 4 * 24; // Total height of a column
+                dayOffset *= CELL_HEIGHT * 4 * 24; // Total height of a column
                 let multiDayAdjustment = 0;
                 if (dayOffset < 0) {
                     multiDayAdjustment = -dayOffset;
                     dayOffset = 0;
                 }
-                let height = (event.durationSecs / 900) * 20 - multiDayAdjustment;
-                let bottomOverflow = (20 * 4 * 24) - (dayOffset + height);
+                let height = (event.durationSecs / 900) * CELL_HEIGHT - multiDayAdjustment;
+                let bottomOverflow = (CELL_HEIGHT * 4 * 24) - (dayOffset + height);
                 if (bottomOverflow < 0) {
                     height += bottomOverflow;
                 }
@@ -445,10 +452,15 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     renderCreateEvent() {
+        const initialTags: Array<number> = [];
+        if (this.state.selectedTag) {
+            initialTags.push(this.state.selectedTag.id)
+        }
         return <EditEventComponent
             meUser={this.props.meUser}
             tagsById={this.props.tagsById}
             createMode={true}
+            initialTags={initialTags}
             initialCreationTime={this.state.createEventTimestamp}
             initialDurationSecs={this.state.createEventDurationSecs}
             createEvent={this.props.createEvent}
