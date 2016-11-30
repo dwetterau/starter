@@ -188,7 +188,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     onDrop(columnType: number, event: DragEvent) {
         if (!this.state.draggingTask) {
-            // No event was being dragged
+            // No task was being dragged
             return
         }
         event.preventDefault();
@@ -211,7 +211,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     onDragOver(event: any) {
         if (!this.state.draggingTask) {
-            // No event was being dragged
+            // No task was being dragged
             return
         }
         event.preventDefault();

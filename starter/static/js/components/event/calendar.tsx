@@ -1,3 +1,4 @@
+import * as jQuery from "jquery";
 import * as React from "react";
 import * as moment from "moment";
 
@@ -24,6 +25,7 @@ export interface CalendarState {
     selectedTag?: Tag,
     draggingStartTimestamp?: number,
     draggingEndTimestamp?: number,
+    draggingEvent?: Event,
 }
 enum CalendarViewType {
     week,
@@ -64,6 +66,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             selectedTag: null,
             draggingStartTimestamp: null,
             draggingEndTimestamp: null,
+            draggingEvent: null,
         };
         if (this.state) {
             // Needed to preserve view
@@ -241,6 +244,72 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.setState(this.state);
     }
 
+    _dragTargetEventElement: any = null;
+    onDrop(day: string, index: number, dragEvent: DragEvent) {
+        if (!this.state.draggingEvent) {
+            // No event was being dragged
+            return
+        }
+        // Update the event with the new timestamp
+        this.state.draggingEvent.startTime = this.computeTimestamp(day, index);
+        this.props.updateEvent(this.state.draggingEvent);
+
+        this.state.draggingEvent = null;
+        this.setState(this.state);
+        this._dragTargetEventElement.show();
+    }
+
+    onDragStart(event: Event, dragEvent: DragEvent) {
+        if (this.state.draggingEvent) {
+            throw Error("Already was dragging an event...")
+        }
+        this.state.draggingEvent = event;
+        this.setState(this.state);
+        this._dragTargetEventElement = jQuery(dragEvent.target)
+    }
+
+    onDragEnd(event: Event) {
+        if (this.state.draggingEvent != event) {
+            return
+        }
+
+        this.state.draggingEvent = null;
+        this.setState(this.state);
+        this._dragTargetEventElement.show();
+    }
+
+    onDragOver(day: string, index: number, event: any) {
+        if (!this.state.draggingEvent) {
+            // No event was being dragged
+            return
+        }
+        event.preventDefault();
+        this._dragTargetEventElement.hide();
+
+        const timestamp = this.computeTimestamp(day, index);
+        const endTimestamp = timestamp + this.state.draggingEvent.durationSecs * 1000;
+
+        if (this.state.draggingStartTimestamp != timestamp ||
+                this.state.draggingEndTimestamp != endTimestamp) {
+
+            this.state.draggingStartTimestamp = timestamp;
+            this.state.draggingEndTimestamp = endTimestamp;
+            this.setState(this.state);
+        }
+    }
+
+    onDragLeave(day: string, index: number, event: any) {
+        if (this.state.draggingStartTimestamp) {
+            const timestamp = this.computeTimestamp(day, index);
+            // Clear out the dragging info if we were the last one that was dragged over.
+            if (timestamp == this.state.draggingStartTimestamp) {
+                this.state.draggingStartTimestamp = null;
+                this.state.draggingEndTimestamp = null;
+                this.setState(this.state);
+            }
+        }
+    }
+
     getCurrentTagToken(): Array<Tokenizable> {
         if (!this.state.selectedTag) {
             return [];
@@ -337,6 +406,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                             onMouseDown={this.cellMouseDown.bind(this, day, index)}
                             onMouseOver={this.cellMouseOver.bind(this, day, index)}
                             onMouseUp={this.cellMouseUp.bind(this, day, index)}
+                            onDrop={this.onDrop.bind(this, day, index)}
+                            onDragOver={this.onDragOver.bind(this, day, index)}
+                            onDragLeave={this.onDragLeave.bind(this, day, index)}
                         >
                             {" "}
                         </td>
@@ -405,6 +477,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 return <div
                     key={event.id}
                     className="rendered-event card"
+                    draggable={true}
+                    onDragStart={this.onDragStart.bind(this, event)}
+                    onDragEnd={this.onDragEnd.bind(this, event)}
                     onDoubleClick={this.onDoubleClick.bind(this, event)}
                     style={style}
                 >
