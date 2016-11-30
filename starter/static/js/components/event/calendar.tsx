@@ -26,6 +26,7 @@ export interface CalendarState {
     draggingStartTimestamp?: number,
     draggingEndTimestamp?: number,
     draggingEvent?: Event,
+    endDraggingEvent?: Event,
 }
 enum CalendarViewType {
     week,
@@ -67,6 +68,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             draggingStartTimestamp: null,
             draggingEndTimestamp: null,
             draggingEvent: null,
+            endDraggingEvent: null,
         };
         if (this.state) {
             // Needed to preserve view
@@ -245,22 +247,34 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     _dragTargetEventElement: any = null;
-    onDrop(day: string, index: number, dragEvent: DragEvent) {
-        if (!this.state.draggingEvent) {
+    onDrop(day: string, index: number) {
+        if (this.state.draggingEvent) {
+            // Update the event with the new timestamp
+            this.state.draggingEvent.startTime = this.computeTimestamp(day, index);
+            this.props.updateEvent(this.state.draggingEvent);
+
+            this.state.draggingEvent = null;
+            this.setState(this.state);
+            this._dragTargetEventElement.show();
+        } else if (this.state.endDraggingEvent) {
+
+            const timestamp = this.computeTimestamp(day, index);
+            let newDuration = timestamp - this.state.endDraggingEvent.startTime;
+            newDuration = Math.max(Math.round(newDuration / 1000) + 900, 900);
+            this.state.endDraggingEvent.durationSecs = newDuration;
+            this.props.updateEvent(this.state.endDraggingEvent);
+
+            this.state.endDraggingEvent = null;
+            this.setState(this.state)
+
+        } else {
             // No event was being dragged
             return
         }
-        // Update the event with the new timestamp
-        this.state.draggingEvent.startTime = this.computeTimestamp(day, index);
-        this.props.updateEvent(this.state.draggingEvent);
-
-        this.state.draggingEvent = null;
-        this.setState(this.state);
-        this._dragTargetEventElement.show();
     }
 
     onDragStart(event: Event, dragEvent: DragEvent) {
-        if (this.state.draggingEvent) {
+        if (this.state.endDraggingEvent || this.state.draggingEvent) {
             throw Error("Already was dragging an event...")
         }
         this.state.draggingEvent = event;
@@ -278,34 +292,73 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this._dragTargetEventElement.show();
     }
 
-    onDragOver(day: string, index: number, event: any) {
-        if (!this.state.draggingEvent) {
-            // No event was being dragged
+    onEventEndDragStart(event: Event) {
+        if (this.state.endDraggingEvent || this.state.draggingEvent) {
+            throw Error("Already dragging an event...");
+        }
+        this.state.endDraggingEvent = event;
+        this.setState(this.state);
+    }
+
+    onEventEndDragEnd(event: Event) {
+        if (this.state.endDraggingEvent != event) {
             return
         }
-        event.preventDefault();
-        this._dragTargetEventElement.hide();
+        this.state.endDraggingEvent = null;
+        this.setState(this.state);
+    }
 
-        const timestamp = this.computeTimestamp(day, index);
-        const endTimestamp = timestamp + this.state.draggingEvent.durationSecs * 1000;
+    onDragOver(day: string, index: number, event: any) {
+        if (this.state.draggingEvent) {
+            this._dragTargetEventElement.hide();
 
-        if (this.state.draggingStartTimestamp != timestamp ||
-                this.state.draggingEndTimestamp != endTimestamp) {
+            const timestamp = this.computeTimestamp(day, index);
+            const endTimestamp = timestamp + this.state.draggingEvent.durationSecs * 1000;
 
-            this.state.draggingStartTimestamp = timestamp;
-            this.state.draggingEndTimestamp = endTimestamp;
-            this.setState(this.state);
+            if (this.state.draggingStartTimestamp != timestamp ||
+                    this.state.draggingEndTimestamp != endTimestamp) {
+
+                this.state.draggingStartTimestamp = timestamp;
+                this.state.draggingEndTimestamp = endTimestamp;
+                this.setState(this.state);
+            }
+        } else if (this.state.endDraggingEvent) {
+            const timestamp = this.computeTimestamp(day, index);
+            this.state.draggingEndTimestamp = timestamp;
+
+            if (this.state.draggingStartTimestamp !=  this.state.endDraggingEvent.startTime ||
+                    this.state.draggingEndTimestamp != timestamp) {
+
+                this.state.draggingStartTimestamp = this.state.endDraggingEvent.startTime;
+                this.state.draggingEndTimestamp = timestamp;
+                this.setState(this.state);
+            }
+        } else {
+            // Nothing being dragged
+            return
         }
+        event.preventDefault()
     }
 
     onDragLeave(day: string, index: number, event: any) {
-        if (this.state.draggingStartTimestamp) {
-            const timestamp = this.computeTimestamp(day, index);
-            // Clear out the dragging info if we were the last one that was dragged over.
-            if (timestamp == this.state.draggingStartTimestamp) {
-                this.state.draggingStartTimestamp = null;
-                this.state.draggingEndTimestamp = null;
-                this.setState(this.state);
+        if (this.state.draggingEvent) {
+            if (this.state.draggingStartTimestamp) {
+                const timestamp = this.computeTimestamp(day, index);
+                // Clear out the dragging info if we were the last one that was dragged over.
+                if (timestamp == this.state.draggingStartTimestamp) {
+                    this.state.draggingStartTimestamp = null;
+                    this.state.draggingEndTimestamp = null;
+                    this.setState(this.state);
+                }
+            }
+        } else if (this.state.endDraggingEvent) {
+            if (this.state.draggingEndTimestamp) {
+                const timestamp = this.computeTimestamp(day, index);
+                if (timestamp == this.state.draggingEndTimestamp) {
+                    this.state.draggingStartTimestamp = null;
+                    this.state.draggingEndTimestamp = null;
+                    this.setState(this.state);
+                }
             }
         }
     }
@@ -474,20 +527,31 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     "maxHeight": height,
                     "top": `${dayOffset}px`
                 };
-                return <div
-                    key={event.id}
-                    className="rendered-event card"
-                    draggable={true}
-                    onDragStart={this.onDragStart.bind(this, event)}
-                    onDragEnd={this.onDragEnd.bind(this, event)}
-                    onDoubleClick={this.onDoubleClick.bind(this, event)}
-                    style={style}
-                >
-                    <EventComponent
-                        event={event}
-                        tagsById={this.props.tagsById}
-                    />
-                </div>
+                return (
+                    <div
+                        className="rendered-event-container"
+                        key={event.id}
+                        style={style}
+                    >
+                        <div
+                            className="rendered-event card"
+                            draggable={true}
+                            onDragStart={this.onDragStart.bind(this, event)}
+                            onDragEnd={this.onDragEnd.bind(this, event)}
+                            onDoubleClick={this.onDoubleClick.bind(this, event)}
+                        >
+                            <EventComponent
+                                event={event}
+                                tagsById={this.props.tagsById}
+                            />
+                        </div>
+                        <div className="draggable-event-end"
+                             draggable={true}
+                             onDragStart={this.onEventEndDragStart.bind(this, event)}
+                             onDragEnd={this.onEventEndDragEnd.bind(this, event)}
+                        />
+                    </div>
+                );
             })}
         </div>
     }

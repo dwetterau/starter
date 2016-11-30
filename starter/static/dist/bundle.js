@@ -134,7 +134,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option {\n    margin-right: 1em;\n    cursor: pointer;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Calendar CSS */\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n}\n\ndiv.calendar div.column-header {\n    min-width: 122px;\n    width: 122px;\n    max-width: 122px;\n    height: 20px;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    max-height: 720px; /* ~9 hours + 20 for header */\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    position: relative;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    width: 100px;\n    max-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event.card {\n    position: absolute;\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    width: 119px;\n}\n\ndiv.calendar div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(255, 255, 255, .84);\n    border: none;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n}\n\ndiv.event-tags-container {\n    display: flex;\n}\n\ndiv.event-tags-container div.tag {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
+	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option {\n    margin-right: 1em;\n    cursor: pointer;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Calendar CSS */\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n}\n\ndiv.calendar div.column-header {\n    min-width: 122px;\n    width: 122px;\n    max-width: 122px;\n    height: 20px;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    max-height: 720px; /* ~9 hours + 20 for header */\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    position: relative;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    width: 100px;\n    max-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 118px;\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(255, 255, 255, .84);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n}\n\ndiv.event-tags-container {\n    display: flex;\n}\n\ndiv.event-tags-container div.tag {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
 	
 	// exports
 
@@ -1744,6 +1744,7 @@
 	            draggingStartTimestamp: null,
 	            draggingEndTimestamp: null,
 	            draggingEvent: null,
+	            endDraggingEvent: null,
 	        };
 	        if (this.state) {
 	            // Needed to preserve view
@@ -1899,20 +1900,31 @@
 	        this.state.draggingEndTimestamp = null;
 	        this.setState(this.state);
 	    };
-	    CalendarComponent.prototype.onDrop = function (day, index, dragEvent) {
-	        if (!this.state.draggingEvent) {
+	    CalendarComponent.prototype.onDrop = function (day, index) {
+	        if (this.state.draggingEvent) {
+	            // Update the event with the new timestamp
+	            this.state.draggingEvent.startTime = this.computeTimestamp(day, index);
+	            this.props.updateEvent(this.state.draggingEvent);
+	            this.state.draggingEvent = null;
+	            this.setState(this.state);
+	            this._dragTargetEventElement.show();
+	        }
+	        else if (this.state.endDraggingEvent) {
+	            var timestamp = this.computeTimestamp(day, index);
+	            var newDuration = timestamp - this.state.endDraggingEvent.startTime;
+	            newDuration = Math.max(Math.round(newDuration / 1000) + 900, 900);
+	            this.state.endDraggingEvent.durationSecs = newDuration;
+	            this.props.updateEvent(this.state.endDraggingEvent);
+	            this.state.endDraggingEvent = null;
+	            this.setState(this.state);
+	        }
+	        else {
 	            // No event was being dragged
 	            return;
 	        }
-	        // Update the event with the new timestamp
-	        this.state.draggingEvent.startTime = this.computeTimestamp(day, index);
-	        this.props.updateEvent(this.state.draggingEvent);
-	        this.state.draggingEvent = null;
-	        this.setState(this.state);
-	        this._dragTargetEventElement.show();
 	    };
 	    CalendarComponent.prototype.onDragStart = function (event, dragEvent) {
-	        if (this.state.draggingEvent) {
+	        if (this.state.endDraggingEvent || this.state.draggingEvent) {
 	            throw Error("Already was dragging an event...");
 	        }
 	        this.state.draggingEvent = event;
@@ -1927,30 +1939,68 @@
 	        this.setState(this.state);
 	        this._dragTargetEventElement.show();
 	    };
+	    CalendarComponent.prototype.onEventEndDragStart = function (event) {
+	        if (this.state.endDraggingEvent || this.state.draggingEvent) {
+	            throw Error("Already dragging an event...");
+	        }
+	        this.state.endDraggingEvent = event;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.onEventEndDragEnd = function (event) {
+	        if (this.state.endDraggingEvent != event) {
+	            return;
+	        }
+	        this.state.endDraggingEvent = null;
+	        this.setState(this.state);
+	    };
 	    CalendarComponent.prototype.onDragOver = function (day, index, event) {
-	        if (!this.state.draggingEvent) {
-	            // No event was being dragged
+	        if (this.state.draggingEvent) {
+	            this._dragTargetEventElement.hide();
+	            var timestamp = this.computeTimestamp(day, index);
+	            var endTimestamp = timestamp + this.state.draggingEvent.durationSecs * 1000;
+	            if (this.state.draggingStartTimestamp != timestamp ||
+	                this.state.draggingEndTimestamp != endTimestamp) {
+	                this.state.draggingStartTimestamp = timestamp;
+	                this.state.draggingEndTimestamp = endTimestamp;
+	                this.setState(this.state);
+	            }
+	        }
+	        else if (this.state.endDraggingEvent) {
+	            var timestamp = this.computeTimestamp(day, index);
+	            this.state.draggingEndTimestamp = timestamp;
+	            if (this.state.draggingStartTimestamp != this.state.endDraggingEvent.startTime ||
+	                this.state.draggingEndTimestamp != timestamp) {
+	                this.state.draggingStartTimestamp = this.state.endDraggingEvent.startTime;
+	                this.state.draggingEndTimestamp = timestamp;
+	                this.setState(this.state);
+	            }
+	        }
+	        else {
+	            // Nothing being dragged
 	            return;
 	        }
 	        event.preventDefault();
-	        this._dragTargetEventElement.hide();
-	        var timestamp = this.computeTimestamp(day, index);
-	        var endTimestamp = timestamp + this.state.draggingEvent.durationSecs * 1000;
-	        if (this.state.draggingStartTimestamp != timestamp ||
-	            this.state.draggingEndTimestamp != endTimestamp) {
-	            this.state.draggingStartTimestamp = timestamp;
-	            this.state.draggingEndTimestamp = endTimestamp;
-	            this.setState(this.state);
-	        }
 	    };
 	    CalendarComponent.prototype.onDragLeave = function (day, index, event) {
-	        if (this.state.draggingStartTimestamp) {
-	            var timestamp = this.computeTimestamp(day, index);
-	            // Clear out the dragging info if we were the last one that was dragged over.
-	            if (timestamp == this.state.draggingStartTimestamp) {
-	                this.state.draggingStartTimestamp = null;
-	                this.state.draggingEndTimestamp = null;
-	                this.setState(this.state);
+	        if (this.state.draggingEvent) {
+	            if (this.state.draggingStartTimestamp) {
+	                var timestamp = this.computeTimestamp(day, index);
+	                // Clear out the dragging info if we were the last one that was dragged over.
+	                if (timestamp == this.state.draggingStartTimestamp) {
+	                    this.state.draggingStartTimestamp = null;
+	                    this.state.draggingEndTimestamp = null;
+	                    this.setState(this.state);
+	                }
+	            }
+	        }
+	        else if (this.state.endDraggingEvent) {
+	            if (this.state.draggingEndTimestamp) {
+	                var timestamp = this.computeTimestamp(day, index);
+	                if (timestamp == this.state.draggingEndTimestamp) {
+	                    this.state.draggingStartTimestamp = null;
+	                    this.state.draggingEndTimestamp = null;
+	                    this.setState(this.state);
+	                }
 	            }
 	        }
 	    };
@@ -2080,9 +2130,11 @@
 	                    "maxHeight": height,
 	                    "top": dayOffset + "px"
 	                };
-	                return React.createElement("div", {key: event.id, className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event), style: style}, 
-	                    React.createElement(event_1.EventComponent, {event: event, tagsById: _this.props.tagsById})
-	                );
+	                return (React.createElement("div", {className: "rendered-event-container", key: event.id, style: style}, 
+	                    React.createElement("div", {className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event)}, 
+	                        React.createElement(event_1.EventComponent, {event: event, tagsById: _this.props.tagsById})
+	                    ), 
+	                    React.createElement("div", {className: "draggable-event-end", draggable: true, onDragStart: _this.onEventEndDragStart.bind(_this, event), onDragEnd: _this.onEventEndDragEnd.bind(_this, event)})));
 	            }));
 	    };
 	    CalendarComponent.prototype.renderColumns = function () {
