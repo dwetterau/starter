@@ -244,6 +244,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.state.draggingStartTimestamp = null;
         this.state.draggingEndTimestamp = null;
         this.setState(this.state);
+
+        // Move focus to the event name field
+        jQuery("input#event-name").focus();
     }
 
     _dragTargetEventElement: any = null;
@@ -271,6 +274,32 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             // No event was being dragged
             return
         }
+    }
+
+    onDropPassThrough(event: any) {
+        const xPos = event.clientX;
+        const yPos = event.clientY;
+
+        // Hide the element
+        jQuery(event.currentTarget).hide();
+        const dropTargetBelow = jQuery(document.elementFromPoint(xPos, yPos));
+        if (dropTargetBelow.prop("tagName") == "TD") {
+            // Great, we found a cell that we can actually finish dropping into
+            const data = dropTargetBelow.data();
+            this.onDrop(data.day, data.index)
+        } else {
+            // TODO: Try again? Could have many stacked divs here.
+        }
+
+        // Show the element again
+        jQuery(event.currentTarget).show();
+        event.preventDefault();
+        event.stopPropagation();
+    }
+
+    onDragOverPassThrough(event: any) {
+        event.preventDefault();
+        event.stopPropagation();
     }
 
     onDragStart(event: Event, dragEvent: DragEvent) {
@@ -456,6 +485,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 return (
                     <tr key={key} style={style}>
                         <td className={className}
+                            data-day={day}
+                            data-index={index}
                             onMouseDown={this.cellMouseDown.bind(this, day, index)}
                             onMouseOver={this.cellMouseOver.bind(this, day, index)}
                             onMouseUp={this.cellMouseUp.bind(this, day, index)}
@@ -532,6 +563,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         className="rendered-event-container"
                         key={event.id}
                         style={style}
+                        onDrop={this.onDropPassThrough.bind(this)}
+                        onDragOver={this.onDragOverPassThrough}
                     >
                         <div
                             className="rendered-event card"

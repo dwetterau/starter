@@ -1899,6 +1899,8 @@
 	        this.state.draggingStartTimestamp = null;
 	        this.state.draggingEndTimestamp = null;
 	        this.setState(this.state);
+	        // Move focus to the event name field
+	        jQuery("input#event-name").focus();
 	    };
 	    CalendarComponent.prototype.onDrop = function (day, index) {
 	        if (this.state.draggingEvent) {
@@ -1922,6 +1924,28 @@
 	            // No event was being dragged
 	            return;
 	        }
+	    };
+	    CalendarComponent.prototype.onDropPassThrough = function (event) {
+	        var xPos = event.clientX;
+	        var yPos = event.clientY;
+	        // Hide the element
+	        jQuery(event.currentTarget).hide();
+	        var dropTargetBelow = jQuery(document.elementFromPoint(xPos, yPos));
+	        if (dropTargetBelow.prop("tagName") == "TD") {
+	            // Great, we found a cell that we can actually finish dropping into
+	            var data = dropTargetBelow.data();
+	            this.onDrop(data.day, data.index);
+	        }
+	        else {
+	        }
+	        // Show the element again
+	        jQuery(event.currentTarget).show();
+	        event.preventDefault();
+	        event.stopPropagation();
+	    };
+	    CalendarComponent.prototype.onDragOverPassThrough = function (event) {
+	        event.preventDefault();
+	        event.stopPropagation();
 	    };
 	    CalendarComponent.prototype.onDragStart = function (event, dragEvent) {
 	        if (this.state.endDraggingEvent || this.state.draggingEvent) {
@@ -2076,7 +2100,7 @@
 	            }
 	            else {
 	                return (React.createElement("tr", {key: key, style: style}, 
-	                    React.createElement("td", {className: className, onMouseDown: _this.cellMouseDown.bind(_this, day, index), onMouseOver: _this.cellMouseOver.bind(_this, day, index), onMouseUp: _this.cellMouseUp.bind(_this, day, index), onDrop: _this.onDrop.bind(_this, day, index), onDragOver: _this.onDragOver.bind(_this, day, index), onDragLeave: _this.onDragLeave.bind(_this, day, index)}, " ")
+	                    React.createElement("td", {className: className, "data-day": day, "data-index": index, onMouseDown: _this.cellMouseDown.bind(_this, day, index), onMouseOver: _this.cellMouseOver.bind(_this, day, index), onMouseUp: _this.cellMouseUp.bind(_this, day, index), onDrop: _this.onDrop.bind(_this, day, index), onDragOver: _this.onDragOver.bind(_this, day, index), onDragLeave: _this.onDragLeave.bind(_this, day, index)}, " ")
 	                ));
 	            }
 	        };
@@ -2130,7 +2154,7 @@
 	                    "maxHeight": height,
 	                    "top": dayOffset + "px"
 	                };
-	                return (React.createElement("div", {className: "rendered-event-container", key: event.id, style: style}, 
+	                return (React.createElement("div", {className: "rendered-event-container", key: event.id, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough}, 
 	                    React.createElement("div", {className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event)}, 
 	                        React.createElement(event_1.EventComponent, {event: event, tagsById: _this.props.tagsById})
 	                    ), 
@@ -2246,6 +2270,11 @@
 	            throw Error("Unknown submit type!");
 	        }
 	    };
+	    EditEventComponent.prototype.onKeyDown = function (event) {
+	        if (event.key == "Enter" && this.props.createMode) {
+	            this.submitForm("create");
+	        }
+	    };
 	    EditEventComponent.prototype.updateAttr = function (attrName, event) {
 	        this.state.event[attrName] = event.target.value;
 	        this.setState(this.state);
@@ -2303,9 +2332,9 @@
 	    };
 	    EditEventComponent.prototype.renderForm = function () {
 	        return React.createElement("div", null, 
-	            React.createElement("div", {className: "title-container"}, 
+	            React.createElement("div", {className: "name-container"}, 
 	                React.createElement("label", {htmlFor: "name"}, "Name: "), 
-	                React.createElement("input", {type: "text", name: "name", value: this.state.event.name, onChange: this.updateAttr.bind(this, "name")})), 
+	                React.createElement("input", {id: "event-name", type: "text", name: "name", value: this.state.event.name, onKeyDown: this.onKeyDown.bind(this), onChange: this.updateAttr.bind(this, "name")})), 
 	            React.createElement("div", {className: "start-time-container"}, 
 	                React.createElement("label", {htmlFor: "start-time"}, "Start time: "), 
 	                React.createElement("input", {type: "number", name: "start-time", value: this.state.event.startTime, onChange: this.updateAttr.bind(this, "startTime")})), 

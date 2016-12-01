@@ -84,6 +84,12 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         }
     }
 
+    onKeyDown(event: any) {
+        if (event.key == "Enter" && this.props.createMode) {
+            this.submitForm("create");
+        }
+    }
+
     updateAttr(attrName: string, event: any) {
         this.state.event[attrName] = event.target.value;
         this.setState(this.state);
@@ -151,11 +157,13 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
 
     renderForm() {
         return <div>
-            <div className="title-container">
+            <div className="name-container">
                 <label htmlFor="name">Name: </label>
                 <input
+                    id="event-name"
                     type="text" name="name"
                     value={this.state.event.name}
+                    onKeyDown={this.onKeyDown.bind(this)}
                     onChange={this.updateAttr.bind(this, "name")}
                 />
             </div>
