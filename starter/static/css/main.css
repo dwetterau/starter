@@ -235,6 +235,11 @@ div.calendar div.rendered-event-container div.draggable-event-end {
     margin-top: -3px;
 }
 
+div.calendar div.rendered-event-container div.tag.card {
+    height: 0;
+    overflow-y: hidden;
+}
+
 /* End of Calendar CSS */
 
 /* Event view CSS */
