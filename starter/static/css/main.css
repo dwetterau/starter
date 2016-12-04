@@ -135,11 +135,14 @@ div.calendar div.column-header-container {
 }
 
 div.calendar div.column-header {
-    min-width: 122px;
-    width: 122px;
-    max-width: 122px;
+    min-width: 120px;
+    max-width: 120px;
     height: 20px;
-    border-bottom: 1px solid rgba(0, 0, 0, .2);
+}
+
+div.calendar div.column-header.single-day {
+    min-width: 360px;
+    max-width: 360px;
 }
 
 div.calendar div.all-columns-container {
@@ -148,6 +151,7 @@ div.calendar div.all-columns-container {
     overflow-x: hidden;
     overflow-y: auto;
     border-bottom: 1px solid rgba(0, 0, 0, .2);
+    border-top: 1px solid rgba(0, 0, 0, .2);
 }
 
 div.calendar div.column-container {
@@ -157,14 +161,23 @@ div.calendar div.column-container {
     position: relative;
 }
 
+div.calendar div.column-container.single-day {
+    max-width: 360px;
+    min-width: 360px;
+}
+
 div.calendar div.column-container td {
     border-right: 1px solid rgba(0, 0, 0, .2);
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     font-size: 14px;
     min-width: 120px;
-    width: 100px;
     max-width: 120px;
     cursor: pointer;
+}
+
+div.calendar div.column-container.single-day td {
+    min-width: 360px;
+    max-width: 360px;
 }
 
 div.calendar div.column-container tr:nth-child(odd) td {
@@ -184,7 +197,7 @@ div.calendar div.column-container table tbody tr:first-child td {
 
 div.calendar div.rendered-event-container {
     position: absolute;
-    width: 118px;
+    width: 100%; /* Will need to change when we start overlaying */
 }
 
 div.calendar div.rendered-event-container div.card {
@@ -195,7 +208,7 @@ div.calendar div.rendered-event-container div.card {
     height: 100%;
 }
 
-div.calendar div.current-time-cursor {
+div.calendar div.column-container div.current-time-cursor {
     position: absolute;
     height: 3px;
     background-color: #dc322f;
@@ -203,6 +216,11 @@ div.calendar div.current-time-cursor {
     width: 120px;
     min-width: 120px;
     z-index: 2;
+}
+
+div.calendar div.column-container.single-day div.current-time-cursor {
+    min-width: 360px;
+    max-width: 360px;
 }
 
 div.calendar div.column-container tr td.-selected {
@@ -222,6 +240,7 @@ div.calendar div.rendered-event-container div.draggable-event-end {
 /* Event view CSS */
 div.event-container {
     font-size: 13px;
+    display: flex;
 }
 
 div.event-tags-container {

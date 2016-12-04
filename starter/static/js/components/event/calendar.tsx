@@ -49,14 +49,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     getState(props: CalendarProps) {
-        let startDayMoment = moment().startOf("week").add(1, "days");
-        if (startDayMoment > moment()) {
-            // It must be Sunday, handle the edge case by subtracting off a week.
-            startDayMoment = startDayMoment.subtract(1, "week");
+        let viewType = CalendarViewType.week;
+        if (this.state) {
+            viewType = this.state.viewType;
         }
-        const startDayTimestamp = startDayMoment.unix() * 1000;
-
-        const columns = this.divideAndSort(startDayTimestamp, props.events);
+        const startDayTimestamp = this.computeStartTime(viewType);
+        const columns = this.divideAndSort(startDayTimestamp, viewType, props.events);
         const newState: CalendarState = {
             viewType: CalendarViewType.week,
             startDayTimestamp,
@@ -77,9 +75,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             // Needed to preserve view
             newState.viewType = this.state.viewType;
 
-            // Needed for pagination
-            newState.startDayTimestamp = this.state.startDayTimestamp;
-
             // Want to persist tag between event creations
             if (this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
                 newState.selectedTag = this.state.selectedTag;
@@ -95,9 +90,33 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
     }
 
-    divideAndSort(startTimestamp: number, events: Array<Event>): Array<Array<Event>> {
-        // Note that the columns will be ordered with the weekend at the end.
-        const columnList: Array<Array<Event>> = [[], [], [], [], [], [], []];
+    computeStartTime(viewType: CalendarViewType): number {
+        let startDayMoment: moment.Moment;
+        if (viewType == CalendarViewType.week) {
+            startDayMoment = moment().startOf("week").add(1, "days");
+            if (startDayMoment > moment()) {
+                // It must be Sunday, handle the edge case by subtracting off a week.
+                startDayMoment = startDayMoment.subtract(1, "week");
+            }
+        } else {
+            startDayMoment = moment().startOf("day")
+        }
+        return startDayMoment.unix() * 1000;
+    }
+
+    divideAndSort(
+        startTimestamp: number,
+        viewType: CalendarViewType,
+        events: Array<Event>
+    ): Array<Array<Event>> {
+
+        let columnList: Array<Array<Event>>;
+        if (viewType == CalendarViewType.week) {
+            // Note that the columns will be ordered with the weekend at the end.
+             columnList = [[], [], [], [], [], [], []];
+        } else {
+            columnList = [[]]
+        }
 
         let dayStart = moment(startTimestamp); // From seconds back into moment
 
@@ -135,7 +154,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         events.forEach((event: Event) => {
             const startTimestamp = event.startTime;
             const endTimestamp = startTimestamp + event.durationSecs * 1000;
-            DAYS.forEach((day: string, index: number) => {
+            for (let index in DAYS) {
                 if (shouldHide(event)) {
                     return;
                 }
@@ -153,7 +172,13 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         columnList[index].push(event)
                     }
                 }
-            });
+
+                // This is pretty hacky, make this cleaner later
+                if (viewType == CalendarViewType.day) {
+                    // We only want to iterate once if we're in day view
+                    break;
+                }
+            }
         });
 
         // TODO: Sort the events ?
@@ -163,7 +188,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     resort() {
         // Recompute all the events and where to render them:
-        this.state.columns = this.divideAndSort(this.state.startDayTimestamp, this.props.events);
+        this.state.columns = this.divideAndSort(
+            this.state.startDayTimestamp,
+            this.state.viewType,
+            this.props.events
+        );
         this.setState(this.state);
     }
 
@@ -178,12 +207,16 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     computeTimestamp(day: string, index: number): number {
         let offset = index;
-        DAYS.forEach((curDay: string, i: number) => {
-            if (curDay != day) {
-                return
-            }
-            offset += i * (60 * 60 * 24);
-        });
+
+        if (this.state.viewType == CalendarViewType.week) {
+            DAYS.forEach((curDay: string, i: number) => {
+                if (curDay != day) {
+                    return
+                }
+                offset += i * (60 * 60 * 24);
+            });
+        }
+
         return moment(this.state.startDayTimestamp).add(offset, "seconds").unix() * 1000;
     }
 
@@ -445,7 +478,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     changeCellHeight(event: any) {
-        this.state.cellHeight = (event.target.value);
+        this.state.cellHeight = event.target.value;
         this.setState(this.state)
     }
 
@@ -463,11 +496,45 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         )
     }
 
+    changeViewType(type: CalendarViewType) {
+        this.state.viewType = type;
+        this.state.startDayTimestamp = this.computeStartTime(type);
+        this.resort();
+    }
+
+    renderViewChoice(type: CalendarViewType) {
+        let className = "view-type-choice";
+        if (type == this.state.viewType) {
+            className += " -selected"
+        }
+        const typeToName: {[type: number]: string} = {};
+        typeToName[CalendarViewType.day] = "Day";
+        typeToName[CalendarViewType.week] = "Week";
+
+        return (
+            <div className={className} key={type}
+                 onClick={this.changeViewType.bind(this, type)}
+            >
+                {typeToName[type]}
+            </div>
+        )
+    }
+
+    renderChangeViewType() {
+        return (
+            <div className="view-type-selector">
+                {this.renderViewChoice(CalendarViewType.week)}
+                {this.renderViewChoice(CalendarViewType.day)}
+            </div>
+        )
+    }
+
     renderOptions() {
         return (
             <div className="options">
                 {this.renderCellSizeSlider()}
                 {this.renderTagSelector()}
+                {this.renderChangeViewType()}
             </div>
         )
     }
@@ -555,9 +622,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
     }
 
-    renderColumn(columnIndex: number, column: Array<Event>) {
+    renderColumn(columnIndex: number, column: Array<Event>, singleDay?: boolean) {
         const day = DAYS[columnIndex];
-        return <div key={day} className="column-container">
+        let className = "column-container";
+        if (singleDay) {
+            className += " single-day"
+        }
+
+        return <div key={day} className={className}>
             {this.renderCells(day)}
             {this.renderCurrentTimeCursor(columnIndex)}
             {column.map((event: Event) => {
@@ -613,7 +685,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         </div>
     }
 
-    renderColumns() {
+    renderWeekViewColumns() {
         return <div className="full-column-container">
             <div className="column-header-container">
                 <div className="column-header">Time</div>
@@ -630,6 +702,31 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 })}
             </div>
         </div>
+    }
+
+    renderDayViewColumns() {
+        return <div className="full-column-container">
+            <div className="column-header-container">
+                <div className="column-header">Time</div>
+                    <div className="column-header single-day">Today</div>
+            </div>
+            <div className="all-columns-container">
+                <div className="column-container -times">
+                    {this.renderCells("times")}
+                </div>
+                {[0].map((index: number, i: number) => {
+                    return this.renderColumn(index, this.state.columns[i], true)
+                })}
+            </div>
+        </div>
+    }
+
+    renderColumns() {
+        if (this.state.viewType == CalendarViewType.week) {
+            return this.renderWeekViewColumns()
+        } else if (this.state.viewType == CalendarViewType.day) {
+            return this.renderDayViewColumns()
+        }
     }
 
     renderEditingEvent() {
