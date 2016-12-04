@@ -1726,13 +1726,17 @@
 	    };
 	    CalendarComponent.prototype.getState = function (props) {
 	        var viewType = CalendarViewType.week;
+	        var startDayTimestamp;
 	        if (this.state) {
 	            viewType = this.state.viewType;
+	            startDayTimestamp = this.state.startDayTimestamp;
 	        }
-	        var startDayTimestamp = this.computeStartTime(viewType);
+	        else {
+	            startDayTimestamp = this.computeTodayStartTime(viewType);
+	        }
 	        var columns = this.divideAndSort(startDayTimestamp, viewType, props.events);
 	        var newState = {
-	            viewType: CalendarViewType.week,
+	            viewType: viewType,
 	            startDayTimestamp: startDayTimestamp,
 	            columns: columns,
 	            cellHeight: 20,
@@ -1747,8 +1751,6 @@
 	        };
 	        if (this.state) {
 	            newState.cellHeight = this.state.cellHeight;
-	            // Needed to preserve view
-	            newState.viewType = this.state.viewType;
 	            // Want to persist tag between event creations
 	            if (this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
 	                newState.selectedTag = this.state.selectedTag;
@@ -1762,19 +1764,23 @@
 	            cursor[0].scrollIntoView();
 	        }
 	    };
-	    CalendarComponent.prototype.computeStartTime = function (viewType) {
+	    CalendarComponent.prototype.computeTodayStartTime = function (viewType) {
 	        var startDayMoment;
 	        if (viewType == CalendarViewType.week) {
-	            startDayMoment = moment().startOf("week").add(1, "days");
-	            if (startDayMoment > moment()) {
-	                // It must be Sunday, handle the edge case by subtracting off a week.
-	                startDayMoment = startDayMoment.subtract(1, "week");
-	            }
+	            startDayMoment = this.computeClosestMonday(moment());
 	        }
 	        else {
 	            startDayMoment = moment().startOf("day");
 	        }
 	        return startDayMoment.unix() * 1000;
+	    };
+	    CalendarComponent.prototype.computeClosestMonday = function (m) {
+	        var startDayMoment = moment().startOf("week").add(1, "days");
+	        if (startDayMoment > moment()) {
+	            // It must be Sunday, handle the edge case by subtracting off a week.
+	            startDayMoment = startDayMoment.subtract(1, "week");
+	        }
+	        return startDayMoment;
 	    };
 	    CalendarComponent.prototype.divideAndSort = function (startTimestamp, viewType, events) {
 	        var _this = this;
@@ -2100,8 +2106,31 @@
 	        ));
 	    };
 	    CalendarComponent.prototype.changeViewType = function (type) {
+	        if (this.state.viewType == type) {
+	            // No transition needed
+	            return;
+	        }
+	        var startDayMoment;
+	        if (this.state.viewType == CalendarViewType.week && type == CalendarViewType.day) {
+	            // Week to day transition, need to either pick today or Monday
+	            var monday = moment(this.state.startDayTimestamp);
+	            var now = moment();
+	            if (now.unix() - monday.unix() > 0 && monday.add(1, "week").unix() - now.unix() > 0) {
+	                // Current week view contains today, we will use today as the answer.
+	                this.state.startDayTimestamp = this.computeTodayStartTime(type);
+	            }
+	            else {
+	            }
+	        }
+	        else if (this.state.viewType == CalendarViewType.day && type == CalendarViewType.week) {
+	            // Day to week transition, need to find the nearest Monday
+	            startDayMoment = this.computeClosestMonday(moment(this.state.startDayTimestamp));
+	            this.state.startDayTimestamp = startDayMoment.unix() * 1000;
+	        }
+	        else {
+	            throw Error("Unknown view type transition");
+	        }
 	        this.state.viewType = type;
-	        this.state.startDayTimestamp = this.computeStartTime(type);
 	        this.resort();
 	    };
 	    CalendarComponent.prototype.renderViewChoice = function (type) {
@@ -2119,11 +2148,32 @@
 	            this.renderViewChoice(CalendarViewType.week), 
 	            this.renderViewChoice(CalendarViewType.day)));
 	    };
+	    CalendarComponent.prototype.changePage = function (diff) {
+	        if (this.state.viewType == CalendarViewType.week) {
+	            diff *= 7;
+	        }
+	        // Diff is the difference in days to add to the current time. If it's 0, we reset back
+	        // to the current day.
+	        if (diff == 0) {
+	            this.state.startDayTimestamp = this.computeTodayStartTime(this.state.viewType);
+	        }
+	        else {
+	            this.state.startDayTimestamp = moment(this.state.startDayTimestamp).add(diff, "days").unix() * 1000;
+	        }
+	        this.resort();
+	    };
+	    CalendarComponent.prototype.renderPagination = function () {
+	        return (React.createElement("div", {className: "pagination-container"}, 
+	            React.createElement("div", {className: "pagination-option", onClick: this.changePage.bind(this, -1)}, "Previous"), 
+	            React.createElement("div", {className: "pagination-option", onClick: this.changePage.bind(this, 1)}, "Next"), 
+	            React.createElement("div", {className: "pagination-option", onClick: this.changePage.bind(this, 0)}, "Today")));
+	    };
 	    CalendarComponent.prototype.renderOptions = function () {
 	        return (React.createElement("div", {className: "options"}, 
 	            this.renderCellSizeSlider(), 
 	            this.renderTagSelector(), 
-	            this.renderChangeViewType()));
+	            this.renderChangeViewType(), 
+	            this.renderPagination()));
 	    };
 	    CalendarComponent.prototype.renderCells = function (day) {
 	        var _this = this;
@@ -2228,8 +2278,9 @@
 	        return React.createElement("div", {className: "full-column-container"}, 
 	            React.createElement("div", {className: "column-header-container"}, 
 	                React.createElement("div", {className: "column-header"}, "Time"), 
-	                DAYS.map(function (day) {
-	                    return React.createElement("div", {key: day, className: "column-header"}, day);
+	                DAYS.map(function (day, index) {
+	                    var m = moment(_this.state.startDayTimestamp).add(index, "days");
+	                    return React.createElement("div", {key: day, className: "column-header"}, m.format("ddd M/D"));
 	                })), 
 	            React.createElement("div", {className: "all-columns-container"}, 
 	                React.createElement("div", {className: "column-container -times"}, this.renderCells("times")), 
@@ -2237,12 +2288,15 @@
 	                    return _this.renderColumn(index, _this.state.columns[i]);
 	                })));
 	    };
+	    CalendarComponent.prototype.renderTodayString = function () {
+	        return moment(this.state.startDayTimestamp).format("LL");
+	    };
 	    CalendarComponent.prototype.renderDayViewColumns = function () {
 	        var _this = this;
 	        return React.createElement("div", {className: "full-column-container"}, 
 	            React.createElement("div", {className: "column-header-container"}, 
 	                React.createElement("div", {className: "column-header"}, "Time"), 
-	                React.createElement("div", {className: "column-header single-day"}, "Today")), 
+	                React.createElement("div", {className: "column-header single-day"}, this.renderTodayString())), 
 	            React.createElement("div", {className: "all-columns-container"}, 
 	                React.createElement("div", {className: "column-container -times"}, this.renderCells("times")), 
 	                [0].map(function (index, i) {

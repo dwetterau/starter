@@ -50,13 +50,16 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     getState(props: CalendarProps) {
         let viewType = CalendarViewType.week;
+        let startDayTimestamp: number;
         if (this.state) {
             viewType = this.state.viewType;
+            startDayTimestamp = this.state.startDayTimestamp;
+        } else {
+            startDayTimestamp = this.computeTodayStartTime(viewType);
         }
-        const startDayTimestamp = this.computeStartTime(viewType);
         const columns = this.divideAndSort(startDayTimestamp, viewType, props.events);
         const newState: CalendarState = {
-            viewType: CalendarViewType.week,
+            viewType,
             startDayTimestamp,
             columns,
             cellHeight: 20,
@@ -71,9 +74,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         };
         if (this.state) {
             newState.cellHeight = this.state.cellHeight;
-
-            // Needed to preserve view
-            newState.viewType = this.state.viewType;
 
             // Want to persist tag between event creations
             if (this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
@@ -90,18 +90,23 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
     }
 
-    computeStartTime(viewType: CalendarViewType): number {
+    computeTodayStartTime(viewType: CalendarViewType): number {
         let startDayMoment: moment.Moment;
         if (viewType == CalendarViewType.week) {
-            startDayMoment = moment().startOf("week").add(1, "days");
-            if (startDayMoment > moment()) {
-                // It must be Sunday, handle the edge case by subtracting off a week.
-                startDayMoment = startDayMoment.subtract(1, "week");
-            }
+            startDayMoment = this.computeClosestMonday(moment())
         } else {
             startDayMoment = moment().startOf("day")
         }
         return startDayMoment.unix() * 1000;
+    }
+
+    computeClosestMonday(m: moment.Moment): moment.Moment {
+        let startDayMoment = moment().startOf("week").add(1, "days");
+        if (startDayMoment > moment()) {
+            // It must be Sunday, handle the edge case by subtracting off a week.
+            startDayMoment = startDayMoment.subtract(1, "week");
+        }
+        return startDayMoment
     }
 
     divideAndSort(
@@ -497,8 +502,29 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     changeViewType(type: CalendarViewType) {
+        if (this.state.viewType == type) {
+            // No transition needed
+            return
+        }
+        let startDayMoment: moment.Moment;
+        if (this.state.viewType == CalendarViewType.week && type == CalendarViewType.day) {
+            // Week to day transition, need to either pick today or Monday
+            const monday = moment(this.state.startDayTimestamp);
+            const now = moment();
+            if (now.unix() - monday.unix() > 0 && monday.add(1, "week").unix() - now.unix() > 0) {
+                // Current week view contains today, we will use today as the answer.
+                this.state.startDayTimestamp = this.computeTodayStartTime(type);
+            } else {
+                // Current week does not contain today, we will stay with Monday and no-op.
+            }
+        } else if (this.state.viewType == CalendarViewType.day && type == CalendarViewType.week) {
+            // Day to week transition, need to find the nearest Monday
+            startDayMoment = this.computeClosestMonday(moment(this.state.startDayTimestamp));
+            this.state.startDayTimestamp = startDayMoment.unix() * 1000;
+        } else {
+            throw Error("Unknown view type transition");
+        }
         this.state.viewType = type;
-        this.state.startDayTimestamp = this.computeStartTime(type);
         this.resort();
     }
 
@@ -529,12 +555,53 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         )
     }
 
+    changePage(diff: number) {
+        if (this.state.viewType == CalendarViewType.week) {
+            diff *= 7;
+        }
+        // Diff is the difference in days to add to the current time. If it's 0, we reset back
+        // to the current day.
+        if (diff == 0) {
+            this.state.startDayTimestamp = this.computeTodayStartTime(this.state.viewType)
+        } else {
+            this.state.startDayTimestamp = moment(
+                this.state.startDayTimestamp).add(diff, "days").unix() * 1000;
+        }
+        this.resort()
+    }
+
+    renderPagination() {
+        return (
+            <div className="pagination-container">
+                <div
+                    className="pagination-option"
+                    onClick={this.changePage.bind(this, -1)}
+                >
+                    Previous
+                </div>
+                <div
+                    className="pagination-option"
+                    onClick={this.changePage.bind(this, 1)}
+                >
+                    Next
+                </div>
+                <div
+                    className="pagination-option"
+                    onClick={this.changePage.bind(this, 0)}
+                >
+                    Today
+                </div>
+            </div>
+        )
+    }
+
     renderOptions() {
         return (
             <div className="options">
                 {this.renderCellSizeSlider()}
                 {this.renderTagSelector()}
                 {this.renderChangeViewType()}
+                {this.renderPagination()}
             </div>
         )
     }
@@ -689,8 +756,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return <div className="full-column-container">
             <div className="column-header-container">
                 <div className="column-header">Time</div>
-                {DAYS.map((day: string) => {
-                    return <div key={day} className="column-header">{day}</div>
+                {DAYS.map((day: string, index: number) => {
+                    let m = moment(this.state.startDayTimestamp).add(index, "days");
+                    return <div key={day} className="column-header">
+                        {m.format("ddd M/D")}
+                    </div>
                 })}
             </div>
             <div className="all-columns-container">
@@ -704,11 +774,15 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         </div>
     }
 
+    renderTodayString(): string {
+        return moment(this.state.startDayTimestamp).format("LL")
+    }
+
     renderDayViewColumns() {
         return <div className="full-column-container">
             <div className="column-header-container">
                 <div className="column-header">Time</div>
-                    <div className="column-header single-day">Today</div>
+                    <div className="column-header single-day">{this.renderTodayString()}</div>
             </div>
             <div className="all-columns-container">
                 <div className="column-container -times">
