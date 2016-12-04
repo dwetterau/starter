@@ -1714,7 +1714,6 @@
 	    CalendarViewType[CalendarViewType["day"] = 1] = "day";
 	})(CalendarViewType || (CalendarViewType = {}));
 	var DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-	var CELL_HEIGHT = 20;
 	var CalendarComponent = (function (_super) {
 	    __extends(CalendarComponent, _super);
 	    function CalendarComponent(props) {
@@ -1737,6 +1736,7 @@
 	            viewType: CalendarViewType.week,
 	            startDayTimestamp: startDayTimestamp,
 	            columns: columns,
+	            cellHeight: 20,
 	            editingEvent: null,
 	            createEventTimestamp: null,
 	            createEventDurationSecs: null,
@@ -1747,6 +1747,7 @@
 	            endDraggingEvent: null,
 	        };
 	        if (this.state) {
+	            newState.cellHeight = this.state.cellHeight;
 	            // Needed to preserve view
 	            newState.viewType = this.state.viewType;
 	            // Needed for pagination
@@ -2065,14 +2066,25 @@
 	            React.createElement("div", {className: "tag-selector-label"}, "Filter Tag:"), 
 	            React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1})));
 	    };
+	    CalendarComponent.prototype.changeCellHeight = function (event) {
+	        this.state.cellHeight = (event.target.value);
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.renderCellSizeSlider = function () {
+	        return (React.createElement("div", {className: "cell-size-slider"}, 
+	            React.createElement("input", {type: "range", min: "20", max: "100", value: this.state.cellHeight, onChange: this.changeCellHeight.bind(this)})
+	        ));
+	    };
 	    CalendarComponent.prototype.renderOptions = function () {
-	        return (React.createElement("div", {className: "options"}, this.renderTagSelector()));
+	        return (React.createElement("div", {className: "options"}, 
+	            this.renderCellSizeSlider(), 
+	            this.renderTagSelector()));
 	    };
 	    CalendarComponent.prototype.renderCells = function (day) {
 	        var _this = this;
 	        var getColumnRow = function (index) {
 	            var key = "" + index;
-	            var style = { height: CELL_HEIGHT };
+	            var style = { height: _this.state.cellHeight + "px" };
 	            var timestamp = _this.computeTimestamp(day, index);
 	            var className = "";
 	            if (_this.state.draggingStartTimestamp && _this.state.draggingEndTimestamp) {
@@ -2121,7 +2133,7 @@
 	            currentTime < columnStartTimestamp + columnTimeRange) {
 	            // Okay we can actually render it here.
 	            var offset = (currentTime - columnStartTimestamp) / columnTimeRange;
-	            offset *= CELL_HEIGHT * 4 * 24; // Total height of a column
+	            offset *= this.state.cellHeight * 4 * 24; // Total height of a column
 	            offset -= 2; // Draw it 2 pixels higher because it's width 3.
 	            var style = {
 	                "top": offset + "px",
@@ -2138,20 +2150,21 @@
 	            column.map(function (event) {
 	                var dayOffset = event.startTime - (_this.state.startDayTimestamp + columnIndex * 24 * 60 * 60 * 1000);
 	                dayOffset /= (900 * 1000 * (4 * 24));
-	                dayOffset *= CELL_HEIGHT * 4 * 24; // Total height of a column
+	                dayOffset *= _this.state.cellHeight * 4 * 24; // Total height of a column
 	                var multiDayAdjustment = 0;
 	                if (dayOffset < 0) {
 	                    multiDayAdjustment = -dayOffset;
 	                    dayOffset = 0;
 	                }
-	                var height = (event.durationSecs / 900) * CELL_HEIGHT - multiDayAdjustment;
-	                var bottomOverflow = (CELL_HEIGHT * 4 * 24) - (dayOffset + height);
+	                var height = (event.durationSecs / 900) * _this.state.cellHeight;
+	                height -= multiDayAdjustment;
+	                var bottomOverflow = (_this.state.cellHeight * 4 * 24) - (dayOffset + height);
 	                if (bottomOverflow < 0) {
 	                    height += bottomOverflow;
 	                }
 	                var style = {
-	                    "height": height,
-	                    "maxHeight": height,
+	                    "height": height + "px",
+	                    "maxHeight": height + "px",
 	                    "top": dayOffset + "px"
 	                };
 	                return (React.createElement("div", {className: "rendered-event-container", key: event.id, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough}, 

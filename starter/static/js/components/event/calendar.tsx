@@ -19,6 +19,7 @@ export interface CalendarState {
     viewType: CalendarViewType,
     startDayTimestamp: number,
     columns: Array<Array<Event>>,
+    cellHeight: number,
     editingEvent?: Event,
     createEventTimestamp?: number,
     createEventDurationSecs?: number,
@@ -34,7 +35,6 @@ enum CalendarViewType {
 }
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const CELL_HEIGHT = 20;
 
 export class CalendarComponent extends React.Component<CalendarProps, CalendarState> {
 
@@ -61,6 +61,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             viewType: CalendarViewType.week,
             startDayTimestamp,
             columns,
+            cellHeight: 20,
             editingEvent: null,
             createEventTimestamp: null,
             createEventDurationSecs: null,
@@ -71,6 +72,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             endDraggingEvent: null,
         };
         if (this.state) {
+            newState.cellHeight = this.state.cellHeight;
+
             // Needed to preserve view
             newState.viewType = this.state.viewType;
 
@@ -441,9 +444,29 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         )
     }
 
+    changeCellHeight(event: any) {
+        this.state.cellHeight = (event.target.value);
+        this.setState(this.state)
+    }
+
+    renderCellSizeSlider() {
+        return (
+            <div className="cell-size-slider">
+                <input
+                    type="range"
+                    min="20"
+                    max="100"
+                    value={this.state.cellHeight}
+                    onChange={this.changeCellHeight.bind(this)}
+                />
+            </div>
+        )
+    }
+
     renderOptions() {
         return (
             <div className="options">
+                {this.renderCellSizeSlider()}
                 {this.renderTagSelector()}
             </div>
         )
@@ -452,7 +475,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     renderCells(day: string) {
         const getColumnRow = (index: number) => {
             const key = "" + index;
-            const style = {height: CELL_HEIGHT};
+            const style = {height: `${this.state.cellHeight}px`};
             const timestamp = this.computeTimestamp(day, index);
             let className = "";
             if (this.state.draggingStartTimestamp && this.state.draggingEndTimestamp) {
@@ -523,7 +546,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             currentTime < columnStartTimestamp + columnTimeRange) {
             // Okay we can actually render it here.
             let offset = (currentTime - columnStartTimestamp) / columnTimeRange;
-            offset *= CELL_HEIGHT * 4 * 24; // Total height of a column
+            offset *=  this.state.cellHeight * 4 * 24; // Total height of a column
             offset -= 2; // Draw it 2 pixels higher because it's width 3.
             const style = {
                 "top": `${offset}px`,
@@ -541,21 +564,22 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 let dayOffset = event.startTime - (
                     this.state.startDayTimestamp + columnIndex * 24 * 60 * 60 * 1000);
                 dayOffset /= (900 * 1000 * (4 * 24));
-                dayOffset *= CELL_HEIGHT * 4 * 24; // Total height of a column
+                dayOffset *= this.state.cellHeight * 4 * 24; // Total height of a column
                 let multiDayAdjustment = 0;
                 if (dayOffset < 0) {
                     multiDayAdjustment = -dayOffset;
                     dayOffset = 0;
                 }
-                let height = (event.durationSecs / 900) * CELL_HEIGHT - multiDayAdjustment;
-                let bottomOverflow = (CELL_HEIGHT * 4 * 24) - (dayOffset + height);
+                let height = (event.durationSecs / 900) * this.state.cellHeight;
+                height -= multiDayAdjustment;
+                let bottomOverflow = (this.state.cellHeight * 4 * 24) - (dayOffset + height);
                 if (bottomOverflow < 0) {
                     height += bottomOverflow;
                 }
 
                 const style = {
-                    "height": height,
-                    "maxHeight": height,
+                    "height": `${height}px`,
+                    "maxHeight": `${height}px`,
                     "top": `${dayOffset}px`
                 };
                 return (
