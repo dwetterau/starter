@@ -1,23 +1,24 @@
 import * as React from "react";
 import * as jQuery from "jquery";
-import {CreateTagComponent} from "./tag/create_tag"
+
 import {Event, Tag, Task, User, TagsById} from "../models";
 import {TagGraphComponent} from "./tag/tag_graph";
 import {TaskBoardComponent} from "./task/task_board"
 import {CalendarComponent} from "./event/calendar";
+import {AppHeader} from "./app_header";
 
 export interface AppProps {
     meUser: User,
     tasks: Array<Task>,
     events: Array<Event>,
     tags: Array<Tag>,
+    viewMode: AppViewMode,
 }
 export interface AppState {
     tasks: Array<Task>,
     events: Array<Event>,
     tags: Array<Tag>,
     tagsById: TagsById,
-    viewMode: AppViewMode,
 }
 
 export enum AppViewMode {
@@ -35,15 +36,9 @@ export class App extends React.Component<AppProps, AppState> {
             events: props.events,
             tags: props.tags,
             tagsById: {},
-            viewMode: AppViewMode.taskView
         };
         App.updateTagsById(newState);
         this.state = newState;
-    }
-
-    changeViewMode(newViewMode: AppViewMode) {
-        this.state.viewMode = newViewMode;
-        this.setState(this.state);
     }
 
     createTask(task: Task) {
@@ -146,46 +141,6 @@ export class App extends React.Component<AppProps, AppState> {
         // TODO: Filter out all tags and children or something
     }
 
-    renderAccountInfo() {
-        return <div className="profile-container">
-            {"Logged in as: " + this.props.meUser.username}
-        </div>
-    }
-
-    renderViewModeSelector() {
-        const viewModeToName: {[mode: number]: string} = {};
-        viewModeToName[AppViewMode.taskView] = "Task Board";
-        viewModeToName[AppViewMode.eventView] = "Calendar";
-        viewModeToName[AppViewMode.tagView] = "Tag Graph";
-
-        return <div className="view-mode-selector">
-            {Object.keys(AppViewMode).map((viewMode: string) => {
-                if (!viewModeToName.hasOwnProperty(viewMode)) {
-                    return
-                }
-
-                let className = "view-mode-option";
-                if (+viewMode == this.state.viewMode) {
-                    className += " -selected";
-                }
-
-                return <div key={viewMode}
-                            className={className}
-                            onClick={this.changeViewMode.bind(this, viewMode)}>
-                    {viewModeToName[+viewMode]}
-                </div>
-            })}
-        </div>
-    }
-
-    renderHeader() {
-        return <div className="header-container">
-            <h1 className="header-title">Starter</h1>
-            {this.renderAccountInfo()}
-            {this.renderViewModeSelector()}
-        </div>
-    }
-
     renderTaskBoard() {
         return <TaskBoardComponent
             meUser={this.props.meUser}
@@ -219,16 +174,16 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     renderBoard() {
-        if (this.state.viewMode == AppViewMode.taskView) {
+        if (this.props.viewMode == AppViewMode.taskView) {
             return <div className="board-container">
                 {this.renderTaskBoard()}
             </div>
-        } else if (this.state.viewMode == AppViewMode.eventView) {
+        } else if (this.props.viewMode == AppViewMode.eventView) {
             return <div className="calendar-container">
                 {this.renderCalendar()}
             </div>
-        }else if (this.state.viewMode == AppViewMode.tagView) {
-            return <div className="board-container">
+        } else if (this.props.viewMode == AppViewMode.tagView) {
+            return <div className="tag-graph-container">
                 {this.renderTagGraph()}
             </div>
         }
@@ -236,7 +191,7 @@ export class App extends React.Component<AppProps, AppState> {
 
     render() {
         return <div>
-            {this.renderHeader()}
+            <AppHeader meUser={this.props.meUser} viewMode={this.props.viewMode} />
             {this.renderBoard()}
         </div>
     }

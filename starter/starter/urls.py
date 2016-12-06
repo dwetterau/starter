@@ -25,6 +25,12 @@ from starter import views
 urlpatterns = [
     url(r'^$', views.index),
 
+    # Other urls that are resolved with react-router
+    url(r'^tasks/?$', views.index),
+    url(r'^cal/?$', views.index),
+    url(r'^tags/?$', views.index),
+
+
     # Auth urls
     # TODO: User creation as well
     url(r'^auth/login/?$', auth_views.login),

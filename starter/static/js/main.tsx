@@ -1,16 +1,35 @@
 import "../css/main.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import {Router, Route, browserHistory} from "react-router"
 import * as jQuery from "jquery";
 
-import {App, AppProps} from "./components/app";
+import {App, AppProps, AppViewMode} from "./components/app";
 
 export default class AppRenderer {
     constructor(props: AppProps) {
         ReactDOM.render(
-            <App {...props} />,
+            <Router history={browserHistory}>
+                <Route path="/" component={AppRenderer.renderTaskBoard(props)} />
+                <Route path="/tasks" component={AppRenderer.renderTaskBoard(props)} />
+                <Route path="/cal" component={AppRenderer.renderCalendar(props)} />
+                <Route path="/tags" component={AppRenderer.renderTagGraph(props)} />
+            </Router>,
             document.getElementById("render-target")
         );
+    }
+
+    static renderTaskBoard(props: AppProps) {
+        return () => {return <App {...props} viewMode={AppViewMode.taskView} />}
+    }
+
+    static renderCalendar(props: AppProps) {
+        return () => {return <App {...props} viewMode={AppViewMode.eventView} />}
+    }
+
+
+    static renderTagGraph(props: AppProps) {
+        return () => {return <App {...props} viewMode={AppViewMode.tagView} />}
     }
 }
 

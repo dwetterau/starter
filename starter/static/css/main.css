@@ -33,12 +33,13 @@ div.header-container div.view-mode-selector {
     margin: .5em 0;
 }
 
-div.header-container div.view-mode-selector div.view-mode-option {
+div.header-container div.view-mode-selector a.view-mode-option {
     margin-right: 1em;
-    cursor: pointer;
+    text-decoration: none;
+    color: black;
 }
 
-div.header-container div.view-mode-selector div.view-mode-option.-selected {
+div.header-container div.view-mode-selector a.view-mode-option.-selected {
     text-decoration: underline;
 }
 
@@ -124,6 +125,48 @@ div.task-tags-container div.tag {
 /* End of Task view CSS */
 
 /* Calendar CSS */
+div.calendar {
+    width: 100%;
+}
+
+div.calendar div.options {
+    display: flex;
+}
+
+div.calendar div.options div.view-type-selector {
+    display: flex;
+    margin-left: .5em;
+}
+
+div.calendar div.options div.view-type-selector div.view-type-choice {
+    margin-right: .5em;
+    cursor: pointer;
+}
+
+div.calendar div.options div.view-type-selector div.view-type-choice.-selected {
+    text-decoration: underline;
+}
+
+div.calendar div.options div.pagination-container {
+    display: flex;
+    margin-left: .5em;
+}
+
+div.calendar div.options div.pagination-container div.pagination-option {
+    margin-right: .5em;
+    cursor: pointer;
+}
+
+div.calendar div.tag-selector-container {
+    display: flex;
+    margin-left: 1em;
+}
+
+div.calendar div.tag-selector-container div.tokenizer-container {
+    margin-left: .5em;
+}
+
+
 div.calendar div.full-column-container {
     display: flex;
     align-items: center;
@@ -147,7 +190,7 @@ div.calendar div.column-header.single-day {
 
 div.calendar div.all-columns-container {
     display: flex;
-    max-height: 720px; /* ~9 hours + 20 for header */
+    max-height: 640px;
     overflow-x: hidden;
     overflow-y: auto;
     border-bottom: 1px solid rgba(0, 0, 0, .2);

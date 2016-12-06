@@ -56,12 +56,26 @@
 	__webpack_require__(1);
 	var React = __webpack_require__(5);
 	var ReactDOM = __webpack_require__(6);
+	var react_router_1 = __webpack_require__(9);
 	var jQuery = __webpack_require__(7);
 	var app_1 = __webpack_require__(8);
 	var AppRenderer = (function () {
 	    function AppRenderer(props) {
-	        ReactDOM.render(React.createElement(app_1.App, __assign({}, props)), document.getElementById("render-target"));
+	        ReactDOM.render(React.createElement(react_router_1.Router, {history: react_router_1.browserHistory}, 
+	            React.createElement(react_router_1.Route, {path: "/", component: AppRenderer.renderTaskBoard(props)}), 
+	            React.createElement(react_router_1.Route, {path: "/tasks", component: AppRenderer.renderTaskBoard(props)}), 
+	            React.createElement(react_router_1.Route, {path: "/cal", component: AppRenderer.renderCalendar(props)}), 
+	            React.createElement(react_router_1.Route, {path: "/tags", component: AppRenderer.renderTagGraph(props)})), document.getElementById("render-target"));
 	    }
+	    AppRenderer.renderTaskBoard = function (props) {
+	        return function () { return React.createElement(app_1.App, __assign({}, props, {viewMode: app_1.AppViewMode.taskView})); };
+	    };
+	    AppRenderer.renderCalendar = function (props) {
+	        return function () { return React.createElement(app_1.App, __assign({}, props, {viewMode: app_1.AppViewMode.eventView})); };
+	    };
+	    AppRenderer.renderTagGraph = function (props) {
+	        return function () { return React.createElement(app_1.App, __assign({}, props, {viewMode: app_1.AppViewMode.tagView})); };
+	    };
 	    return AppRenderer;
 	}());
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -134,7 +148,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option {\n    margin-right: 1em;\n    cursor: pointer;\n}\n\ndiv.header-container div.view-mode-selector div.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Calendar CSS */\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    max-width: 120px;\n    height: 20px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    max-height: 720px; /* ~9 hours + 20 for header */\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    position: relative;\n}\n\ndiv.calendar div.column-container.single-day {\n    max-width: 360px;\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    max-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(255, 255, 255, .84);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    height: 0;\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n}\n\ndiv.event-tags-container {\n    display: flex;\n}\n\ndiv.event-tags-container div.tag {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
+	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option {\n    margin-right: 1em;\n    text-decoration: none;\n    color: black;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Calendar CSS */\ndiv.calendar {\n    width: 100%;\n}\n\ndiv.calendar div.options {\n    display: flex;\n}\n\ndiv.calendar div.options div.view-type-selector {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.calendar div.options div.pagination-container {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.pagination-container div.pagination-option {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.calendar div.tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\n\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    max-width: 120px;\n    height: 20px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    max-height: 640px;\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    position: relative;\n}\n\ndiv.calendar div.column-container.single-day {\n    max-width: 360px;\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    max-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(255, 255, 255, .84);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    height: 0;\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n}\n\ndiv.event-tags-container {\n    display: flex;\n}\n\ndiv.event-tags-container div.tag {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
 	
 	// exports
 
@@ -477,9 +491,10 @@
 	};
 	var React = __webpack_require__(5);
 	var jQuery = __webpack_require__(7);
-	var tag_graph_1 = __webpack_require__(9);
-	var task_board_1 = __webpack_require__(13);
-	var calendar_1 = __webpack_require__(18);
+	var tag_graph_1 = __webpack_require__(10);
+	var task_board_1 = __webpack_require__(14);
+	var calendar_1 = __webpack_require__(19);
+	var app_header_1 = __webpack_require__(23);
 	(function (AppViewMode) {
 	    AppViewMode[AppViewMode["taskView"] = 0] = "taskView";
 	    AppViewMode[AppViewMode["eventView"] = 1] = "eventView";
@@ -495,15 +510,10 @@
 	            events: props.events,
 	            tags: props.tags,
 	            tagsById: {},
-	            viewMode: AppViewMode.taskView
 	        };
 	        App.updateTagsById(newState);
 	        this.state = newState;
 	    }
-	    App.prototype.changeViewMode = function (newViewMode) {
-	        this.state.viewMode = newViewMode;
-	        this.setState(this.state);
-	    };
 	    App.prototype.createTask = function (task) {
 	        var _this = this;
 	        delete task["id"];
@@ -606,32 +616,6 @@
 	    App.prototype.deleteTag = function (tag) {
 	        // TODO: Filter out all tags and children or something
 	    };
-	    App.prototype.renderAccountInfo = function () {
-	        return React.createElement("div", {className: "profile-container"}, "Logged in as: " + this.props.meUser.username);
-	    };
-	    App.prototype.renderViewModeSelector = function () {
-	        var _this = this;
-	        var viewModeToName = {};
-	        viewModeToName[AppViewMode.taskView] = "Task Board";
-	        viewModeToName[AppViewMode.eventView] = "Calendar";
-	        viewModeToName[AppViewMode.tagView] = "Tag Graph";
-	        return React.createElement("div", {className: "view-mode-selector"}, Object.keys(AppViewMode).map(function (viewMode) {
-	            if (!viewModeToName.hasOwnProperty(viewMode)) {
-	                return;
-	            }
-	            var className = "view-mode-option";
-	            if (+viewMode == _this.state.viewMode) {
-	                className += " -selected";
-	            }
-	            return React.createElement("div", {key: viewMode, className: className, onClick: _this.changeViewMode.bind(_this, viewMode)}, viewModeToName[+viewMode]);
-	        }));
-	    };
-	    App.prototype.renderHeader = function () {
-	        return React.createElement("div", {className: "header-container"}, 
-	            React.createElement("h1", {className: "header-title"}, "Starter"), 
-	            this.renderAccountInfo(), 
-	            this.renderViewModeSelector());
-	    };
 	    App.prototype.renderTaskBoard = function () {
 	        return React.createElement(task_board_1.TaskBoardComponent, {meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this)});
 	    };
@@ -642,19 +626,19 @@
 	        return React.createElement(tag_graph_1.TagGraphComponent, {meUser: this.props.meUser, tagsById: this.state.tagsById, createTag: this.createTag.bind(this), updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this)});
 	    };
 	    App.prototype.renderBoard = function () {
-	        if (this.state.viewMode == AppViewMode.taskView) {
+	        if (this.props.viewMode == AppViewMode.taskView) {
 	            return React.createElement("div", {className: "board-container"}, this.renderTaskBoard());
 	        }
-	        else if (this.state.viewMode == AppViewMode.eventView) {
+	        else if (this.props.viewMode == AppViewMode.eventView) {
 	            return React.createElement("div", {className: "calendar-container"}, this.renderCalendar());
 	        }
-	        else if (this.state.viewMode == AppViewMode.tagView) {
-	            return React.createElement("div", {className: "board-container"}, this.renderTagGraph());
+	        else if (this.props.viewMode == AppViewMode.tagView) {
+	            return React.createElement("div", {className: "tag-graph-container"}, this.renderTagGraph());
 	        }
 	    };
 	    App.prototype.render = function () {
 	        return React.createElement("div", null, 
-	            this.renderHeader(), 
+	            React.createElement(app_header_1.AppHeader, {meUser: this.props.meUser, viewMode: this.props.viewMode}), 
 	            this.renderBoard());
 	    };
 	    return App;
@@ -664,6 +648,12 @@
 
 /***/ },
 /* 9 */
+/***/ function(module, exports) {
+
+	module.exports = ReactRouter;
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -673,8 +663,8 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var edit_tag_1 = __webpack_require__(10);
-	var create_tag_1 = __webpack_require__(12);
+	var edit_tag_1 = __webpack_require__(11);
+	var create_tag_1 = __webpack_require__(13);
 	var TagGraphComponent = (function (_super) {
 	    __extends(TagGraphComponent, _super);
 	    function TagGraphComponent(props) {
@@ -767,7 +757,7 @@
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -777,7 +767,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(11);
+	var tokenizer_1 = __webpack_require__(12);
 	var EditTagComponent = (function (_super) {
 	    __extends(EditTagComponent, _super);
 	    function EditTagComponent(props) {
@@ -859,7 +849,7 @@
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -979,7 +969,7 @@
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -989,7 +979,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(11);
+	var tokenizer_1 = __webpack_require__(12);
 	var CreateTagComponent = (function (_super) {
 	    __extends(CreateTagComponent, _super);
 	    function CreateTagComponent(props) {
@@ -1063,7 +1053,7 @@
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1074,10 +1064,10 @@
 	};
 	var React = __webpack_require__(5);
 	var jQuery = __webpack_require__(7);
-	var edit_task_1 = __webpack_require__(14);
-	var models_1 = __webpack_require__(15);
-	var task_1 = __webpack_require__(16);
-	var tokenizer_1 = __webpack_require__(11);
+	var edit_task_1 = __webpack_require__(15);
+	var models_1 = __webpack_require__(16);
+	var task_1 = __webpack_require__(17);
+	var tokenizer_1 = __webpack_require__(12);
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
 	    TaskBoardViewType[TaskBoardViewType["priority"] = 1] = "priority";
@@ -1383,7 +1373,7 @@
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1393,7 +1383,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(11);
+	var tokenizer_1 = __webpack_require__(12);
 	var EditTaskComponent = (function (_super) {
 	    __extends(EditTaskComponent, _super);
 	    function EditTaskComponent(props) {
@@ -1542,7 +1532,7 @@
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1585,7 +1575,7 @@
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1595,9 +1585,9 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var models_1 = __webpack_require__(15);
-	var task_board_1 = __webpack_require__(13);
-	var tag_1 = __webpack_require__(17);
+	var models_1 = __webpack_require__(16);
+	var task_board_1 = __webpack_require__(14);
+	var tag_1 = __webpack_require__(18);
 	var TaskComponent = (function (_super) {
 	    __extends(TaskComponent, _super);
 	    function TaskComponent() {
@@ -1669,7 +1659,7 @@
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1693,7 +1683,7 @@
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1704,10 +1694,10 @@
 	};
 	var jQuery = __webpack_require__(7);
 	var React = __webpack_require__(5);
-	var moment = __webpack_require__(19);
-	var edit_event_1 = __webpack_require__(20);
-	var tokenizer_1 = __webpack_require__(11);
-	var event_1 = __webpack_require__(21);
+	var moment = __webpack_require__(20);
+	var edit_event_1 = __webpack_require__(21);
+	var tokenizer_1 = __webpack_require__(12);
+	var event_1 = __webpack_require__(22);
 	var CalendarViewType;
 	(function (CalendarViewType) {
 	    CalendarViewType[CalendarViewType["week"] = 0] = "week";
@@ -2337,13 +2327,13 @@
 
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports) {
 
 	module.exports = moment;
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2353,7 +2343,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(11);
+	var tokenizer_1 = __webpack_require__(12);
 	var EditEventComponent = (function (_super) {
 	    __extends(EditEventComponent, _super);
 	    function EditEventComponent(props) {
@@ -2493,7 +2483,7 @@
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2503,7 +2493,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var tag_1 = __webpack_require__(17);
+	var tag_1 = __webpack_require__(18);
 	var EventComponent = (function (_super) {
 	    __extends(EventComponent, _super);
 	    function EventComponent() {
@@ -2527,6 +2517,59 @@
 	    return EventComponent;
 	}(React.Component));
 	exports.EventComponent = EventComponent;
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var react_router_1 = __webpack_require__(9);
+	var app_1 = __webpack_require__(8);
+	var AppHeader = (function (_super) {
+	    __extends(AppHeader, _super);
+	    function AppHeader() {
+	        _super.apply(this, arguments);
+	    }
+	    AppHeader.prototype.renderAccountInfo = function () {
+	        return React.createElement("div", {className: "profile-container"}, "Logged in as: " + this.props.meUser.username);
+	    };
+	    AppHeader.prototype.renderViewModeSelector = function () {
+	        var _this = this;
+	        var viewModeToName = {};
+	        viewModeToName[app_1.AppViewMode.taskView] = "Task Board";
+	        viewModeToName[app_1.AppViewMode.eventView] = "Calendar";
+	        viewModeToName[app_1.AppViewMode.tagView] = "Tag Graph";
+	        var linkMap = {};
+	        linkMap[app_1.AppViewMode.taskView] = "/tasks";
+	        linkMap[app_1.AppViewMode.eventView] = "/cal";
+	        linkMap[app_1.AppViewMode.tagView] = "/tags";
+	        return React.createElement("div", {className: "view-mode-selector"}, Object.keys(app_1.AppViewMode).map(function (viewMode) {
+	            if (!viewModeToName.hasOwnProperty(viewMode)) {
+	                return;
+	            }
+	            var className = "view-mode-option";
+	            if (+viewMode == _this.props.viewMode) {
+	                className += " -selected";
+	            }
+	            return React.createElement(react_router_1.Link, {key: viewMode, className: className, to: linkMap[+viewMode]}, viewModeToName[+viewMode]);
+	        }));
+	    };
+	    AppHeader.prototype.render = function () {
+	        return React.createElement("div", {className: "header-container"}, 
+	            React.createElement("h1", {className: "header-title"}, "Starter"), 
+	            this.renderAccountInfo(), 
+	            this.renderViewModeSelector());
+	    };
+	    return AppHeader;
+	}(React.Component));
+	exports.AppHeader = AppHeader;
 
 
 /***/ }

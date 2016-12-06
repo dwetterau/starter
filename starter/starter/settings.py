@@ -22,6 +22,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'node_modules/react-dom/dist/'),
     os.path.join(BASE_DIR, 'node_modules/jquery/dist/'),
     os.path.join(BASE_DIR, 'node_modules/moment/min/'),
+    os.path.join(BASE_DIR, 'node_modules/react-router/umd/'),
     # WARNING: Don't forget to also update the prod settings!
 )
 
