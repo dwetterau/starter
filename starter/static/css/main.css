@@ -292,6 +292,7 @@ div.event-container {
     flex-wrap: wrap;
     align-content: space-between;
     overflow-x: hidden;
+    height: 100%;
 }
 
 div.event-container div.name {
@@ -300,8 +301,9 @@ div.event-container div.name {
 
 div.event-tags-container {
     align-self: flex-end;
-    flex-grow: 0;
+    flex-grow: 1;
     display: flex;
+    justify-content: flex-end;
     padding-bottom: .25em;
 }
 

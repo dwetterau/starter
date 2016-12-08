@@ -16,6 +16,7 @@ export interface EditEventProps {
 }
 export interface EditEventState {
     event: Event,
+    submitted: boolean,
 }
 
 export class EditEventComponent extends React.Component<EditEventProps, EditEventState> {
@@ -29,11 +30,13 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                     props.initialCreationTime,
                     props.initialDurationSecs,
                     props.initialTags
-                )
+                ),
+                submitted: false,
             }
         } else {
             this.state = {
                 event: props.event,
+                submitted: false,
             }
         }
     }
@@ -46,7 +49,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 newProps.initialDurationSecs,
                 newProps.initialTags
             );
-            if (this.state) {
+            if (this.state && !this.state.submitted) {
                 // Copy over the name field so it doesn't get cleared out. As well as all fields
                 // that weren't set in the new props.
                 if (newProps.initialCreationTime == null) {
@@ -60,9 +63,9 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 }
                 newEvent.name = this.state.event.name
             }
-            this.setState({event: newEvent})
+            this.setState({event: newEvent, submitted: false})
         } else {
-            this.setState({event: newProps.event})
+            this.setState({event: newProps.event, submitted: false})
         }
     }
 
@@ -93,6 +96,10 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         } else {
             throw Error("Unknown submit type!");
         }
+        // Reset the form after a submission. We don't clear anything out in case the
+        // request fails. We wait for the new props to actually clear it out.
+        this.state.submitted = true;
+        this.setState(this.state)
     }
 
     onKeyDown(event: any) {
