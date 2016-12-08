@@ -2371,7 +2371,7 @@
 	                if (newProps.initialDurationSecs == null) {
 	                    newEvent.durationSecs = this.state.event.durationSecs;
 	                }
-	                if (newProps.initialTags == null) {
+	                if (!(newProps.initialTags && newProps.initialTags.length)) {
 	                    newEvent.tagIds = this.state.event.tagIds;
 	                }
 	                newEvent.name = this.state.event.name;
