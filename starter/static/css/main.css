@@ -289,10 +289,20 @@ div.calendar div.rendered-event-container div.tag.card {
 div.event-container {
     font-size: 13px;
     display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
+    overflow-x: hidden;
+}
+
+div.event-container div.name {
+    flex-grow: 1;
 }
 
 div.event-tags-container {
+    align-self: flex-end;
+    flex-grow: 0;
     display: flex;
+    padding-bottom: .25em;
 }
 
 div.event-tags-container div.tag {

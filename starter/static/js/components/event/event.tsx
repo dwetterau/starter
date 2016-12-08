@@ -14,6 +14,12 @@ export class EventComponent extends React.Component<EventProps, {}> {
         return <TagComponent tag={tag} key={tagId}/>
     }
 
+    renderName() {
+        return <div className="name">
+            {this.props.event.name}
+        </div>
+    };
+
     renderTags() {
         if (!this.props.event.tagIds.length) {
             return;
@@ -27,7 +33,7 @@ export class EventComponent extends React.Component<EventProps, {}> {
 
     render() {
         return <div className="event-container">
-            {this.props.event.name}
+            {this.renderName()}
             {this.renderTags()}
         </div>
     }

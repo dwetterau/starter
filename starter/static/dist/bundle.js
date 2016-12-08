@@ -56,25 +56,25 @@
 	__webpack_require__(1);
 	var React = __webpack_require__(5);
 	var ReactDOM = __webpack_require__(6);
-	var react_router_1 = __webpack_require__(9);
-	var jQuery = __webpack_require__(7);
-	var app_1 = __webpack_require__(8);
+	var react_router_1 = __webpack_require__(7);
+	var jQuery = __webpack_require__(8);
+	var app_1 = __webpack_require__(9);
 	var AppRenderer = (function () {
 	    function AppRenderer(props) {
-	        ReactDOM.render(React.createElement(react_router_1.Router, {history: react_router_1.browserHistory}, 
-	            React.createElement(react_router_1.Route, {path: "/", component: AppRenderer.renderTaskBoard(props)}), 
-	            React.createElement(react_router_1.Route, {path: "/tasks", component: AppRenderer.renderTaskBoard(props)}), 
-	            React.createElement(react_router_1.Route, {path: "/cal", component: AppRenderer.renderCalendar(props)}), 
-	            React.createElement(react_router_1.Route, {path: "/tags", component: AppRenderer.renderTagGraph(props)})), document.getElementById("render-target"));
+	        ReactDOM.render(React.createElement(react_router_1.Router, { history: react_router_1.browserHistory },
+	            React.createElement(react_router_1.Route, { path: "/", component: AppRenderer.renderTaskBoard(props) }),
+	            React.createElement(react_router_1.Route, { path: "/tasks", component: AppRenderer.renderTaskBoard(props) }),
+	            React.createElement(react_router_1.Route, { path: "/cal", component: AppRenderer.renderCalendar(props) }),
+	            React.createElement(react_router_1.Route, { path: "/tags", component: AppRenderer.renderTagGraph(props) })), document.getElementById("render-target"));
 	    }
 	    AppRenderer.renderTaskBoard = function (props) {
-	        return function () { return React.createElement(app_1.App, __assign({}, props, {viewMode: app_1.AppViewMode.taskView})); };
+	        return function () { return React.createElement(app_1.App, __assign({}, props, { viewMode: app_1.AppViewMode.taskView })); };
 	    };
 	    AppRenderer.renderCalendar = function (props) {
-	        return function () { return React.createElement(app_1.App, __assign({}, props, {viewMode: app_1.AppViewMode.eventView})); };
+	        return function () { return React.createElement(app_1.App, __assign({}, props, { viewMode: app_1.AppViewMode.eventView })); };
 	    };
 	    AppRenderer.renderTagGraph = function (props) {
-	        return function () { return React.createElement(app_1.App, __assign({}, props, {viewMode: app_1.AppViewMode.tagView})); };
+	        return function () { return React.createElement(app_1.App, __assign({}, props, { viewMode: app_1.AppViewMode.tagView })); };
 	    };
 	    return AppRenderer;
 	}());
@@ -148,7 +148,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option {\n    margin-right: 1em;\n    text-decoration: none;\n    color: black;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Calendar CSS */\ndiv.calendar {\n    width: 100%;\n}\n\ndiv.calendar div.options {\n    display: flex;\n}\n\ndiv.calendar div.options div.view-type-selector {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.calendar div.options div.pagination-container {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.pagination-container div.pagination-option {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.calendar div.tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\n\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    max-width: 120px;\n    height: 20px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    max-height: 640px;\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    position: relative;\n}\n\ndiv.calendar div.column-container.single-day {\n    max-width: 360px;\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    max-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(255, 255, 255, .84);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    height: 0;\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n}\n\ndiv.event-tags-container {\n    display: flex;\n}\n\ndiv.event-tags-container div.tag {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
+	exports.push([module.id, "body {\n    background: rgb(250, 250, 250);\n}\n\ndiv.card {\n    background: #fff;\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    color: rgba(0, 0, 0, .84);\n    min-height: 20px;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option {\n    margin-right: 1em;\n    text-decoration: none;\n    color: black;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container {\n    display: flex;\n    flex-direction: row;\n    height: 100%;\n    min-height: 768px;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    margin: .5em 1em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Calendar CSS */\ndiv.calendar {\n    width: 100%;\n}\n\ndiv.calendar div.options {\n    display: flex;\n}\n\ndiv.calendar div.options div.view-type-selector {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.calendar div.options div.pagination-container {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.pagination-container div.pagination-option {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.calendar div.tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\n\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    max-width: 120px;\n    height: 20px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    max-height: 640px;\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    position: relative;\n}\n\ndiv.calendar div.column-container.single-day {\n    max-width: 360px;\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    max-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    max-width: 120px;\n    width: 120px;\n    min-width: 120px;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n    max-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(255, 255, 255, .84);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    height: 0;\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n    flex-wrap: wrap;\n    align-content: space-between;\n    overflow-x: hidden;\n}\n\ndiv.event-container div.name {\n    flex-grow: 1;\n}\n\ndiv.event-tags-container {\n    align-self: flex-end;\n    flex-grow: 0;\n    display: flex;\n    padding-bottom: .25em;\n}\n\ndiv.event-tags-container div.tag {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n/* End of Tokenizer CSS */", ""]);
 	
 	// exports
 
@@ -477,10 +477,16 @@
 /* 7 */
 /***/ function(module, exports) {
 
-	module.exports = jQuery;
+	module.exports = ReactRouter;
 
 /***/ },
 /* 8 */
+/***/ function(module, exports) {
+
+	module.exports = jQuery;
+
+/***/ },
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -490,21 +496,21 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var jQuery = __webpack_require__(7);
+	var jQuery = __webpack_require__(8);
 	var tag_graph_1 = __webpack_require__(10);
 	var task_board_1 = __webpack_require__(14);
 	var calendar_1 = __webpack_require__(19);
 	var app_header_1 = __webpack_require__(23);
+	var AppViewMode;
 	(function (AppViewMode) {
 	    AppViewMode[AppViewMode["taskView"] = 0] = "taskView";
 	    AppViewMode[AppViewMode["eventView"] = 1] = "eventView";
 	    AppViewMode[AppViewMode["tagView"] = 2] = "tagView";
-	})(exports.AppViewMode || (exports.AppViewMode = {}));
-	var AppViewMode = exports.AppViewMode;
+	})(AppViewMode = exports.AppViewMode || (exports.AppViewMode = {}));
 	var App = (function (_super) {
 	    __extends(App, _super);
 	    function App(props) {
-	        _super.call(this, props);
+	        var _this = _super.call(this, props) || this;
 	        var newState = {
 	            tasks: props.tasks,
 	            events: props.events,
@@ -512,7 +518,8 @@
 	            tagsById: {},
 	        };
 	        App.updateTagsById(newState);
-	        this.state = newState;
+	        _this.state = newState;
+	        return _this;
 	    }
 	    App.prototype.createTask = function (task) {
 	        var _this = this;
@@ -617,40 +624,34 @@
 	        // TODO: Filter out all tags and children or something
 	    };
 	    App.prototype.renderTaskBoard = function () {
-	        return React.createElement(task_board_1.TaskBoardComponent, {meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this)});
+	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
 	    };
 	    App.prototype.renderCalendar = function () {
-	        return React.createElement(calendar_1.CalendarComponent, {meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this)});
+	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this) });
 	    };
 	    App.prototype.renderTagGraph = function () {
-	        return React.createElement(tag_graph_1.TagGraphComponent, {meUser: this.props.meUser, tagsById: this.state.tagsById, createTag: this.createTag.bind(this), updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this)});
+	        return React.createElement(tag_graph_1.TagGraphComponent, { meUser: this.props.meUser, tagsById: this.state.tagsById, createTag: this.createTag.bind(this), updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this) });
 	    };
 	    App.prototype.renderBoard = function () {
 	        if (this.props.viewMode == AppViewMode.taskView) {
-	            return React.createElement("div", {className: "board-container"}, this.renderTaskBoard());
+	            return React.createElement("div", { className: "board-container" }, this.renderTaskBoard());
 	        }
 	        else if (this.props.viewMode == AppViewMode.eventView) {
-	            return React.createElement("div", {className: "calendar-container"}, this.renderCalendar());
+	            return React.createElement("div", { className: "calendar-container" }, this.renderCalendar());
 	        }
 	        else if (this.props.viewMode == AppViewMode.tagView) {
-	            return React.createElement("div", {className: "tag-graph-container"}, this.renderTagGraph());
+	            return React.createElement("div", { className: "tag-graph-container" }, this.renderTagGraph());
 	        }
 	    };
 	    App.prototype.render = function () {
-	        return React.createElement("div", null, 
-	            React.createElement(app_header_1.AppHeader, {meUser: this.props.meUser, viewMode: this.props.viewMode}), 
+	        return React.createElement("div", null,
+	            React.createElement(app_header_1.AppHeader, { meUser: this.props.meUser, viewMode: this.props.viewMode }),
 	            this.renderBoard());
 	    };
 	    return App;
 	}(React.Component));
 	exports.App = App;
 
-
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	module.exports = ReactRouter;
 
 /***/ },
 /* 10 */
@@ -668,8 +669,9 @@
 	var TagGraphComponent = (function (_super) {
 	    __extends(TagGraphComponent, _super);
 	    function TagGraphComponent(props) {
-	        _super.call(this, props);
-	        this.state = this.getState(props);
+	        var _this = _super.call(this, props) || this;
+	        _this.state = _this.getState(props);
+	        return _this;
 	    }
 	    TagGraphComponent.prototype.componentWillReceiveProps = function (props) {
 	        this.setState(this.getState(props));
@@ -723,32 +725,32 @@
 	            if (tag.childTagIds.length == 0) {
 	                return;
 	            }
-	            return (React.createElement("div", {className: "tag-children-container"}, tag.childTagIds.map(_this.renderTagById.bind(_this))));
+	            return (React.createElement("div", { className: "tag-children-container" }, tag.childTagIds.map(_this.renderTagById.bind(_this))));
 	        };
-	        return React.createElement("div", {className: "tag-container", key: tag.id, onDoubleClick: this.onDoubleClick.bind(this, tag)}, 
-	            "Name: ", 
-	            tag.name, 
+	        return React.createElement("div", { className: "tag-container", key: tag.id, onDoubleClick: this.onDoubleClick.bind(this, tag) },
+	            "Name: ",
+	            tag.name,
 	            renderChildren());
 	    };
 	    TagGraphComponent.prototype.renderFromRootTagId = function (rootTagId) {
-	        return React.createElement("div", {className: "tags-root-container", key: rootTagId}, this.renderTagById(rootTagId));
+	        return React.createElement("div", { className: "tags-root-container", key: rootTagId }, this.renderTagById(rootTagId));
 	    };
 	    TagGraphComponent.prototype.renderTags = function () {
-	        return React.createElement("div", {className: "tags-container"}, this.state.rootTagIds.map(this.renderFromRootTagId.bind(this)));
+	        return React.createElement("div", { className: "tags-container" }, this.state.rootTagIds.map(this.renderFromRootTagId.bind(this)));
 	    };
 	    TagGraphComponent.prototype.renderEditingTag = function () {
 	        if (!this.state.editingTag) {
 	            return;
 	        }
-	        return React.createElement(edit_tag_1.EditTagComponent, {tag: this.state.editingTag, tagsById: this.state.tagsById, updateTag: this.props.updateTag, deleteTag: this.props.deleteTag});
+	        return React.createElement(edit_tag_1.EditTagComponent, { tag: this.state.editingTag, tagsById: this.state.tagsById, updateTag: this.props.updateTag, deleteTag: this.props.deleteTag });
 	    };
 	    TagGraphComponent.prototype.renderCreateTag = function () {
-	        return React.createElement(create_tag_1.CreateTagComponent, {meUser: this.props.meUser, createTag: this.props.createTag, tagsById: this.state.tagsById});
+	        return React.createElement(create_tag_1.CreateTagComponent, { meUser: this.props.meUser, createTag: this.props.createTag, tagsById: this.state.tagsById });
 	    };
 	    TagGraphComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "tag-graph"}, 
-	            this.renderTags(), 
-	            this.renderEditingTag(), 
+	        return React.createElement("div", { className: "tag-graph" },
+	            this.renderTags(),
+	            this.renderEditingTag(),
 	            this.renderCreateTag());
 	    };
 	    return TagGraphComponent;
@@ -771,11 +773,12 @@
 	var EditTagComponent = (function (_super) {
 	    __extends(EditTagComponent, _super);
 	    function EditTagComponent(props) {
-	        _super.call(this, props);
-	        this.state = {
+	        var _this = _super.call(this, props) || this;
+	        _this.state = {
 	            tag: props.tag,
 	            tagsById: props.tagsById,
 	        };
+	        return _this;
 	    }
 	    EditTagComponent.prototype.componentWillReceiveProps = function (newProps) {
 	        this.setState({
@@ -828,19 +831,19 @@
 	        this.setState(this.state);
 	    };
 	    EditTagComponent.prototype.renderForm = function () {
-	        return React.createElement("div", null, 
-	            React.createElement("div", {className: "name-container"}, 
-	                React.createElement("label", {htmlFor: "name"}, "Name: "), 
-	                React.createElement("input", {type: "text", name: "name", value: this.state.tag.name, onChange: this.updateName.bind(this)})), 
-	            React.createElement("div", {className: "children-container"}, 
-	                React.createElement("label", {htmlFor: "children"}, "Children: "), 
-	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveChildNames.bind(this), initialValues: this.getCurrentChildren(), possibleTokens: this.getAllTagNames()})), 
-	            React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
-	            React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")}));
+	        return React.createElement("div", null,
+	            React.createElement("div", { className: "name-container" },
+	                React.createElement("label", { htmlFor: "name" }, "Name: "),
+	                React.createElement("input", { type: "text", name: "name", value: this.state.tag.name, onChange: this.updateName.bind(this) })),
+	            React.createElement("div", { className: "children-container" },
+	                React.createElement("label", { htmlFor: "children" }, "Children: "),
+	                React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.retrieveChildNames.bind(this), initialValues: this.getCurrentChildren(), possibleTokens: this.getAllTagNames() })),
+	            React.createElement("input", { type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete") }),
+	            React.createElement("input", { type: "button", value: "save", onClick: this.submitForm.bind(this, "save") }));
 	    };
 	    EditTagComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "edit-tag-container"}, 
-	            React.createElement("h3", null, "Tag Edit Form:"), 
+	        return React.createElement("div", { className: "edit-tag-container" },
+	            React.createElement("h3", null, "Tag Edit Form:"),
 	            this.renderForm());
 	    };
 	    return EditTagComponent;
@@ -862,8 +865,9 @@
 	var TokenizerComponent = (function (_super) {
 	    __extends(TokenizerComponent, _super);
 	    function TokenizerComponent(props) {
-	        _super.call(this, props);
-	        this.state = this.getState(props);
+	        var _this = _super.call(this, props) || this;
+	        _this.state = _this.getState(props);
+	        return _this;
 	    }
 	    TokenizerComponent.prototype.componentWillReceiveProps = function (newProps) {
 	        this.setState(this.getState(newProps));
@@ -939,28 +943,27 @@
 	        return this.state.tokens;
 	    };
 	    TokenizerComponent.prototype.renderToken = function (token, index) {
-	        return (React.createElement("div", {className: "card rendered-token", key: index}, 
-	            token.label, 
-	            React.createElement("div", {className: "remove-token", onClick: this.removeToken.bind(this, token)}, "x")));
+	        return (React.createElement("div", { className: "card rendered-token", key: index },
+	            token.label,
+	            React.createElement("div", { className: "remove-token", onClick: this.removeToken.bind(this, token) }, "x")));
 	    };
 	    TokenizerComponent.prototype.renderTokens = function () {
 	        if (!this.state.tokens.length) {
 	            return;
 	        }
-	        return (React.createElement("div", {className: "tokens-container"}, this.state.tokens.map(this.renderToken.bind(this))));
+	        return (React.createElement("div", { className: "tokens-container" }, this.state.tokens.map(this.renderToken.bind(this))));
 	    };
 	    TokenizerComponent.prototype.renderPendingToken = function () {
 	        // If we are at the maximum number of tokens, don't render the container
 	        if (this.props.tokenLimit && this.state.tokens.length >= this.props.tokenLimit) {
 	            return;
 	        }
-	        return (React.createElement("div", {className: "pending-token-container"}, 
-	            React.createElement("input", {type: "text", value: this.state.pendingToken, onChange: this.updatePendingToken.bind(this), onKeyPress: this.onKeyPress.bind(this)})
-	        ));
+	        return (React.createElement("div", { className: "pending-token-container" },
+	            React.createElement("input", { type: "text", value: this.state.pendingToken, onChange: this.updatePendingToken.bind(this), onKeyPress: this.onKeyPress.bind(this) })));
 	    };
 	    TokenizerComponent.prototype.render = function () {
-	        return (React.createElement("div", {className: "tokenizer-container"}, 
-	            this.renderTokens(), 
+	        return (React.createElement("div", { className: "tokenizer-container" },
+	            this.renderTokens(),
 	            this.renderPendingToken()));
 	    };
 	    return TokenizerComponent;
@@ -983,15 +986,16 @@
 	var CreateTagComponent = (function (_super) {
 	    __extends(CreateTagComponent, _super);
 	    function CreateTagComponent(props) {
-	        _super.call(this, props);
-	        this.state = {
+	        var _this = _super.call(this, props) || this;
+	        _this.state = {
 	            tag: {
 	                id: 0,
 	                name: '',
 	                childTagIds: [],
-	                ownerId: this.props.meUser.id,
+	                ownerId: _this.props.meUser.id,
 	            },
 	        };
+	        return _this;
 	    }
 	    CreateTagComponent.prototype.submitForm = function () {
 	        this.props.createTag(this.state.tag);
@@ -1033,18 +1037,18 @@
 	        this.setState(this.state);
 	    };
 	    CreateTagComponent.prototype.renderForm = function () {
-	        return React.createElement("div", null, 
-	            React.createElement("div", {className: "name-container"}, 
-	                React.createElement("label", {htmlFor: "name"}, "Name: "), 
-	                React.createElement("input", {type: "text", name: "name", value: this.state.tag.name, onChange: this.updateName.bind(this)})), 
-	            React.createElement("div", {className: "children-container"}, 
-	                React.createElement("label", {htmlFor: "children"}, "Children: "), 
-	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveChildNames.bind(this), initialValues: this.getCurrentChildren(), possibleTokens: this.getAllTagNames()})), 
-	            React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this)}));
+	        return React.createElement("div", null,
+	            React.createElement("div", { className: "name-container" },
+	                React.createElement("label", { htmlFor: "name" }, "Name: "),
+	                React.createElement("input", { type: "text", name: "name", value: this.state.tag.name, onChange: this.updateName.bind(this) })),
+	            React.createElement("div", { className: "children-container" },
+	                React.createElement("label", { htmlFor: "children" }, "Children: "),
+	                React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.retrieveChildNames.bind(this), initialValues: this.getCurrentChildren(), possibleTokens: this.getAllTagNames() })),
+	            React.createElement("input", { type: "button", value: "create", onClick: this.submitForm.bind(this) }));
 	    };
 	    CreateTagComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "create-tag-container"}, 
-	            React.createElement("h3", null, "Create Tag Form:"), 
+	        return React.createElement("div", { className: "create-tag-container" },
+	            React.createElement("h3", null, "Create Tag Form:"),
 	            this.renderForm());
 	    };
 	    return CreateTagComponent;
@@ -1063,22 +1067,23 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var jQuery = __webpack_require__(7);
+	var jQuery = __webpack_require__(8);
 	var edit_task_1 = __webpack_require__(15);
 	var models_1 = __webpack_require__(16);
 	var task_1 = __webpack_require__(17);
 	var tokenizer_1 = __webpack_require__(12);
+	var TaskBoardViewType;
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
 	    TaskBoardViewType[TaskBoardViewType["priority"] = 1] = "priority";
-	})(exports.TaskBoardViewType || (exports.TaskBoardViewType = {}));
-	var TaskBoardViewType = exports.TaskBoardViewType;
+	})(TaskBoardViewType = exports.TaskBoardViewType || (exports.TaskBoardViewType = {}));
 	var TaskBoardComponent = (function (_super) {
 	    __extends(TaskBoardComponent, _super);
 	    function TaskBoardComponent(props) {
-	        _super.call(this, props);
-	        this._dragTargetElement = null;
-	        this.state = this.getState(props, TaskBoardViewType.status);
+	        var _this = _super.call(this, props) || this;
+	        _this._dragTargetElement = null;
+	        _this.state = _this.getState(props, TaskBoardViewType.status);
+	        return _this;
 	    }
 	    TaskBoardComponent.prototype.componentWillReceiveProps = function (props) {
 	        this.setState(this.getState(props, this.state.viewType));
@@ -1305,38 +1310,37 @@
 	        var typeToName = {};
 	        typeToName[TaskBoardViewType.priority] = "Priority";
 	        typeToName[TaskBoardViewType.status] = "Status";
-	        return (React.createElement("div", {className: className, key: type, onClick: this.changeViewType.bind(this, type)}, typeToName[type]));
+	        return (React.createElement("div", { className: className, key: type, onClick: this.changeViewType.bind(this, type) }, typeToName[type]));
 	    };
 	    TaskBoardComponent.prototype.renderTypeSelector = function () {
-	        return (React.createElement("div", {className: "view-type-selector"}, 
-	            this.renderTypeChoice(TaskBoardViewType.priority), 
+	        return (React.createElement("div", { className: "view-type-selector" },
+	            this.renderTypeChoice(TaskBoardViewType.priority),
 	            this.renderTypeChoice(TaskBoardViewType.status)));
 	    };
 	    TaskBoardComponent.prototype.renderHideClosedTasks = function () {
-	        return (React.createElement("div", {className: "hide-closed-tasks"}, 
-	            React.createElement("label", {htmlFor: "hide-closed"}, "Hide closed?"), 
-	            React.createElement("input", {id: "hide-closed", type: "checkbox", onChange: this.changeHideClosedTasks.bind(this), checked: this.state.shouldHideClosedTasks})));
+	        return (React.createElement("div", { className: "hide-closed-tasks" },
+	            React.createElement("label", { htmlFor: "hide-closed" }, "Hide closed?"),
+	            React.createElement("input", { id: "hide-closed", type: "checkbox", onChange: this.changeHideClosedTasks.bind(this), checked: this.state.shouldHideClosedTasks })));
 	    };
 	    TaskBoardComponent.prototype.renderOptions = function () {
-	        return (React.createElement("div", {className: "task-board-options"}, 
-	            this.renderTypeSelector(), 
-	            this.renderHideClosedTasks(), 
+	        return (React.createElement("div", { className: "task-board-options" },
+	            this.renderTypeSelector(),
+	            this.renderHideClosedTasks(),
 	            this.renderTagSelector()));
 	    };
 	    TaskBoardComponent.prototype.renderTagSelector = function () {
-	        return (React.createElement("div", {className: "task-board-tag-selector-container"}, 
-	            React.createElement("div", {className: "tag-selector-label"}, "Filter Tag:"), 
-	            React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1})));
+	        return (React.createElement("div", { className: "task-board-tag-selector-container" },
+	            React.createElement("div", { className: "tag-selector-label" }, "Filter Tag:"),
+	            React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1 })));
 	    };
 	    TaskBoardComponent.prototype.renderColumn = function (column, header, columnType) {
 	        var _this = this;
-	        return React.createElement("div", {className: "column-container", key: header, onDrop: this.onDrop.bind(this, columnType), onDragOver: this.onDragOver.bind(this), onDragLeave: this.onDragLeave.bind(this)}, 
-	            React.createElement("div", {className: "column-header"}, header), 
+	        return React.createElement("div", { className: "column-container", key: header, onDrop: this.onDrop.bind(this, columnType), onDragOver: this.onDragOver.bind(this), onDragLeave: this.onDragLeave.bind(this) },
+	            React.createElement("div", { className: "column-header" }, header),
 	            column.map(function (task) {
 	                // TODO: determine draggability programatically
-	                return React.createElement("div", {key: task.id, className: "draggable-task", draggable: true, onDragStart: _this.onDragStart.bind(_this, task), onDragEnd: _this.onDragEnd.bind(_this, task), onDoubleClick: _this.onDoubleClick.bind(_this, task)}, 
-	                    React.createElement(task_1.TaskComponent, {task: task, viewType: _this.state.viewType, tagsById: _this.props.tagsById})
-	                );
+	                return React.createElement("div", { key: task.id, className: "draggable-task", draggable: true, onDragStart: _this.onDragStart.bind(_this, task), onDragEnd: _this.onDragEnd.bind(_this, task), onDoubleClick: _this.onDoubleClick.bind(_this, task) },
+	                    React.createElement(task_1.TaskComponent, { task: task, viewType: _this.state.viewType, tagsById: _this.props.tagsById }));
 	            }));
 	    };
 	    TaskBoardComponent.prototype.renderColumns = function () {
@@ -1345,26 +1349,26 @@
 	        for (; i < this.state.columns.length; i++) {
 	            renderedColumns.push(this.renderColumn(this.state.columns[i], this.state.headers[i], this.state.columnTypes[i]));
 	        }
-	        return React.createElement("div", {className: "full-column-container"}, renderedColumns);
+	        return React.createElement("div", { className: "full-column-container" }, renderedColumns);
 	    };
 	    TaskBoardComponent.prototype.renderEditingTask = function () {
 	        if (!this.state.editingTask) {
 	            return;
 	        }
-	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, task: this.state.editingTask, tagsById: this.props.tagsById, createMode: false, createTask: function (task) { }, updateTask: this.props.updateTask, deleteTask: this.props.deleteTask});
+	        return React.createElement(edit_task_1.EditTaskComponent, { meUser: this.props.meUser, task: this.state.editingTask, tagsById: this.props.tagsById, createMode: false, createTask: function (task) { }, updateTask: this.props.updateTask, deleteTask: this.props.deleteTask });
 	    };
 	    TaskBoardComponent.prototype.renderCreateTask = function () {
 	        var initialTags = [];
 	        if (this.state.selectedTag) {
 	            initialTags.push(this.state.selectedTag.id);
 	        }
-	        return React.createElement(edit_task_1.EditTaskComponent, {meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, createTask: this.props.createTask, initialTags: initialTags, updateTask: function (task) { }, deleteTask: function (task) { }});
+	        return React.createElement(edit_task_1.EditTaskComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, createTask: this.props.createTask, initialTags: initialTags, updateTask: function (task) { }, deleteTask: function (task) { } });
 	    };
 	    TaskBoardComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "task-board"}, 
-	            this.renderOptions(), 
-	            this.renderColumns(), 
-	            this.renderEditingTask(), 
+	        return React.createElement("div", { className: "task-board" },
+	            this.renderOptions(),
+	            this.renderColumns(),
+	            this.renderEditingTask(),
 	            this.renderCreateTask());
 	    };
 	    return TaskBoardComponent;
@@ -1387,17 +1391,18 @@
 	var EditTaskComponent = (function (_super) {
 	    __extends(EditTaskComponent, _super);
 	    function EditTaskComponent(props) {
-	        _super.call(this, props);
+	        var _this = _super.call(this, props) || this;
 	        if (props.createMode) {
-	            this.state = {
-	                task: this._getEmptyTask(props.meUser, props.initialTags)
+	            _this.state = {
+	                task: _this._getEmptyTask(props.meUser, props.initialTags)
 	            };
 	        }
 	        else {
-	            this.state = {
+	            _this.state = {
 	                task: props.task,
 	            };
 	        }
+	        return _this;
 	    }
 	    EditTaskComponent.prototype.componentWillReceiveProps = function (newProps) {
 	        if (newProps.createMode) {
@@ -1482,48 +1487,46 @@
 	    };
 	    EditTaskComponent.prototype.renderButtons = function () {
 	        if (this.props.createMode) {
-	            return (React.createElement("div", {className: "edit-task-button-container"}, 
-	                React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this, "create")})
-	            ));
+	            return (React.createElement("div", { className: "edit-task-button-container" },
+	                React.createElement("input", { type: "button", value: "create", onClick: this.submitForm.bind(this, "create") })));
 	        }
 	        else {
-	            return (React.createElement("div", {className: "edit-task-button-container"}, 
-	                React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
-	                React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")})));
+	            return (React.createElement("div", { className: "edit-task-button-container" },
+	                React.createElement("input", { type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete") }),
+	                React.createElement("input", { type: "button", value: "save", onClick: this.submitForm.bind(this, "save") })));
 	        }
 	    };
 	    EditTaskComponent.prototype.renderForm = function () {
-	        return React.createElement("div", null, 
-	            React.createElement("div", {className: "title-container"}, 
-	                React.createElement("label", {htmlFor: "title"}, "Title: "), 
-	                React.createElement("input", {type: "text", name: "title", value: this.state.task.title, onChange: this.updateAttr.bind(this, "title")})), 
-	            React.createElement("div", {className: "description-container"}, 
-	                React.createElement("label", {htmlFor: "description"}, "Description: "), 
-	                React.createElement("textarea", {type: "text", name: "description", value: this.state.task.description, onChange: this.updateAttr.bind(this, "description")})), 
-	            React.createElement("div", {className: "priority-selector"}, 
-	                React.createElement("label", {htmlFor: "priority"}, "Priority: "), 
-	                React.createElement("select", {name: "priority", value: this.state.task.priority, onChange: this.updateAttr.bind(this, "priority")}, 
-	                    React.createElement("option", {value: "0"}, "Unknown"), 
-	                    React.createElement("option", {value: "100"}, "Lowest"), 
-	                    React.createElement("option", {value: "200"}, "Low"), 
-	                    React.createElement("option", {value: "300"}, "Normal"), 
-	                    React.createElement("option", {value: "400"}, "High"), 
-	                    React.createElement("option", {value: "500"}, "Highest"))), 
-	            React.createElement("div", {className: "state-selector"}, 
-	                React.createElement("label", {htmlFor: "state"}, "Status: "), 
-	                React.createElement("select", {name: "state", value: this.state.task.state, onChange: this.updateAttr.bind(this, "state")}, 
-	                    React.createElement("option", {value: "0"}, "Open"), 
-	                    React.createElement("option", {value: "500"}, "In Progress"), 
-	                    React.createElement("option", {value: "750"}, "Blocked"), 
-	                    React.createElement("option", {value: "1000"}, "Closed"))), 
-	            React.createElement("div", {className: "tag-tokenizer-container"}, 
-	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames()})
-	            ), 
+	        return React.createElement("div", null,
+	            React.createElement("div", { className: "title-container" },
+	                React.createElement("label", { htmlFor: "title" }, "Title: "),
+	                React.createElement("input", { type: "text", name: "title", value: this.state.task.title, onChange: this.updateAttr.bind(this, "title") })),
+	            React.createElement("div", { className: "description-container" },
+	                React.createElement("label", { htmlFor: "description" }, "Description: "),
+	                React.createElement("textarea", { type: "text", name: "description", value: this.state.task.description, onChange: this.updateAttr.bind(this, "description") })),
+	            React.createElement("div", { className: "priority-selector" },
+	                React.createElement("label", { htmlFor: "priority" }, "Priority: "),
+	                React.createElement("select", { name: "priority", value: this.state.task.priority, onChange: this.updateAttr.bind(this, "priority") },
+	                    React.createElement("option", { value: "0" }, "Unknown"),
+	                    React.createElement("option", { value: "100" }, "Lowest"),
+	                    React.createElement("option", { value: "200" }, "Low"),
+	                    React.createElement("option", { value: "300" }, "Normal"),
+	                    React.createElement("option", { value: "400" }, "High"),
+	                    React.createElement("option", { value: "500" }, "Highest"))),
+	            React.createElement("div", { className: "state-selector" },
+	                React.createElement("label", { htmlFor: "state" }, "Status: "),
+	                React.createElement("select", { name: "state", value: this.state.task.state, onChange: this.updateAttr.bind(this, "state") },
+	                    React.createElement("option", { value: "0" }, "Open"),
+	                    React.createElement("option", { value: "500" }, "In Progress"),
+	                    React.createElement("option", { value: "750" }, "Blocked"),
+	                    React.createElement("option", { value: "1000" }, "Closed"))),
+	            React.createElement("div", { className: "tag-tokenizer-container" },
+	                React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames() })),
 	            this.renderButtons());
 	    };
 	    EditTaskComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "edit-task-container"}, 
-	            this.renderFormTitle(), 
+	        return React.createElement("div", { className: "edit-task-container" },
+	            this.renderFormTitle(),
 	            this.renderForm());
 	    };
 	    return EditTaskComponent;
@@ -1591,11 +1594,11 @@
 	var TaskComponent = (function (_super) {
 	    __extends(TaskComponent, _super);
 	    function TaskComponent() {
-	        _super.apply(this, arguments);
+	        return _super.apply(this, arguments) || this;
 	    }
 	    TaskComponent.prototype.renderTaskId = function () {
-	        return (React.createElement("div", {className: "task-id"}, 
-	            "T", 
+	        return (React.createElement("div", { className: "task-id" },
+	            "T",
 	            this.props.task.id));
 	    };
 	    TaskComponent.prototype.renderPriority = function () {
@@ -1611,8 +1614,8 @@
 	                name = n;
 	            }
 	        });
-	        return (React.createElement("div", {className: "task-priority"}, 
-	            "Priority: ", 
+	        return (React.createElement("div", { className: "task-priority" },
+	            "Priority: ",
 	            name));
 	    };
 	    TaskComponent.prototype.renderState = function () {
@@ -1628,29 +1631,29 @@
 	                name = n;
 	            }
 	        });
-	        return (React.createElement("div", {className: "task-state"}, 
-	            "State: ", 
+	        return (React.createElement("div", { className: "task-state" },
+	            "State: ",
 	            name));
 	    };
 	    TaskComponent.prototype.renderTag = function (tagId) {
 	        var tag = this.props.tagsById[tagId];
-	        return React.createElement(tag_1.TagComponent, {tag: tag, key: tagId});
+	        return React.createElement(tag_1.TagComponent, { tag: tag, key: tagId });
 	    };
 	    TaskComponent.prototype.renderTags = function () {
 	        if (!this.props.task.tagIds.length) {
 	            return;
 	        }
-	        return (React.createElement("div", {className: "task-tags-container"}, 
-	            "Tags:", 
+	        return (React.createElement("div", { className: "task-tags-container" },
+	            "Tags:",
 	            this.props.task.tagIds.map(this.renderTag.bind(this))));
 	    };
 	    TaskComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "task card"}, 
-	            this.renderTaskId(), 
-	            React.createElement("div", {className: "task-title"}, this.props.task.title), 
-	            React.createElement("div", {className: "task-description"}, this.props.task.description), 
-	            this.renderPriority(), 
-	            this.renderState(), 
+	        return React.createElement("div", { className: "task card" },
+	            this.renderTaskId(),
+	            React.createElement("div", { className: "task-title" }, this.props.task.title),
+	            React.createElement("div", { className: "task-description" }, this.props.task.description),
+	            this.renderPriority(),
+	            this.renderState(),
 	            this.renderTags());
 	    };
 	    return TaskComponent;
@@ -1672,10 +1675,10 @@
 	var TagComponent = (function (_super) {
 	    __extends(TagComponent, _super);
 	    function TagComponent() {
-	        _super.apply(this, arguments);
+	        return _super.apply(this, arguments) || this;
 	    }
 	    TagComponent.prototype.render = function () {
-	        return (React.createElement("div", {className: "tag card"}, this.props.tag.name));
+	        return (React.createElement("div", { className: "tag card" }, this.props.tag.name));
 	    };
 	    return TagComponent;
 	}(React.Component));
@@ -1692,7 +1695,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var jQuery = __webpack_require__(7);
+	var jQuery = __webpack_require__(8);
 	var React = __webpack_require__(5);
 	var moment = __webpack_require__(20);
 	var edit_event_1 = __webpack_require__(21);
@@ -1707,9 +1710,10 @@
 	var CalendarComponent = (function (_super) {
 	    __extends(CalendarComponent, _super);
 	    function CalendarComponent(props) {
-	        _super.call(this, props);
-	        this._dragTargetEventElement = null;
-	        this.state = this.getState(props);
+	        var _this = _super.call(this, props) || this;
+	        _this._dragTargetEventElement = null;
+	        _this.state = _this.getState(props);
+	        return _this;
 	    }
 	    CalendarComponent.prototype.componentWillReceiveProps = function (props) {
 	        this.setState(this.getState(props));
@@ -2082,18 +2086,17 @@
 	        return allNames;
 	    };
 	    CalendarComponent.prototype.renderTagSelector = function () {
-	        return (React.createElement("div", {className: "tag-selector-container"}, 
-	            React.createElement("div", {className: "tag-selector-label"}, "Filter Tag:"), 
-	            React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1})));
+	        return (React.createElement("div", { className: "tag-selector-container" },
+	            React.createElement("div", { className: "tag-selector-label" }, "Filter Tag:"),
+	            React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1 })));
 	    };
 	    CalendarComponent.prototype.changeCellHeight = function (event) {
 	        this.state.cellHeight = event.target.value;
 	        this.setState(this.state);
 	    };
 	    CalendarComponent.prototype.renderCellSizeSlider = function () {
-	        return (React.createElement("div", {className: "cell-size-slider"}, 
-	            React.createElement("input", {type: "range", min: "20", max: "100", value: this.state.cellHeight, onChange: this.changeCellHeight.bind(this)})
-	        ));
+	        return (React.createElement("div", { className: "cell-size-slider" },
+	            React.createElement("input", { type: "range", min: "20", max: "100", value: this.state.cellHeight, onChange: this.changeCellHeight.bind(this) })));
 	    };
 	    CalendarComponent.prototype.changeViewType = function (type) {
 	        if (this.state.viewType == type) {
@@ -2131,11 +2134,11 @@
 	        var typeToName = {};
 	        typeToName[CalendarViewType.day] = "Day";
 	        typeToName[CalendarViewType.week] = "Week";
-	        return (React.createElement("div", {className: className, key: type, onClick: this.changeViewType.bind(this, type)}, typeToName[type]));
+	        return (React.createElement("div", { className: className, key: type, onClick: this.changeViewType.bind(this, type) }, typeToName[type]));
 	    };
 	    CalendarComponent.prototype.renderChangeViewType = function () {
-	        return (React.createElement("div", {className: "view-type-selector"}, 
-	            this.renderViewChoice(CalendarViewType.week), 
+	        return (React.createElement("div", { className: "view-type-selector" },
+	            this.renderViewChoice(CalendarViewType.week),
 	            this.renderViewChoice(CalendarViewType.day)));
 	    };
 	    CalendarComponent.prototype.changePage = function (diff) {
@@ -2153,16 +2156,16 @@
 	        this.resort();
 	    };
 	    CalendarComponent.prototype.renderPagination = function () {
-	        return (React.createElement("div", {className: "pagination-container"}, 
-	            React.createElement("div", {className: "pagination-option", onClick: this.changePage.bind(this, -1)}, "Previous"), 
-	            React.createElement("div", {className: "pagination-option", onClick: this.changePage.bind(this, 1)}, "Next"), 
-	            React.createElement("div", {className: "pagination-option", onClick: this.changePage.bind(this, 0)}, "Today")));
+	        return (React.createElement("div", { className: "pagination-container" },
+	            React.createElement("div", { className: "pagination-option", onClick: this.changePage.bind(this, -1) }, "Previous"),
+	            React.createElement("div", { className: "pagination-option", onClick: this.changePage.bind(this, 1) }, "Next"),
+	            React.createElement("div", { className: "pagination-option", onClick: this.changePage.bind(this, 0) }, "Today")));
 	    };
 	    CalendarComponent.prototype.renderOptions = function () {
-	        return (React.createElement("div", {className: "options"}, 
-	            this.renderCellSizeSlider(), 
-	            this.renderTagSelector(), 
-	            this.renderChangeViewType(), 
+	        return (React.createElement("div", { className: "options" },
+	            this.renderCellSizeSlider(),
+	            this.renderTagSelector(),
+	            this.renderChangeViewType(),
 	            this.renderPagination()));
 	    };
 	    CalendarComponent.prototype.renderCells = function (day) {
@@ -2191,14 +2194,12 @@
 	                    timeHeader = moment(_this.state.startDayTimestamp)
 	                        .add(index, "seconds").format("h:mm a");
 	                }
-	                return (React.createElement("tr", {key: key, style: style}, 
-	                    React.createElement("td", null, timeHeader)
-	                ));
+	                return (React.createElement("tr", { key: key, style: style },
+	                    React.createElement("td", null, timeHeader)));
 	            }
 	            else {
-	                return (React.createElement("tr", {key: key, style: style}, 
-	                    React.createElement("td", {className: className, "data-day": day, "data-index": index, onMouseDown: _this.cellMouseDown.bind(_this, day, index), onMouseOver: _this.cellMouseOver.bind(_this, day, index), onMouseUp: _this.cellMouseUp.bind(_this, day, index), onDrop: _this.onDrop.bind(_this, day, index), onDragOver: _this.onDragOver.bind(_this, day, index), onDragLeave: _this.onDragLeave.bind(_this, day, index)}, " ")
-	                ));
+	                return (React.createElement("tr", { key: key, style: style },
+	                    React.createElement("td", { className: className, "data-day": day, "data-index": index, onMouseDown: _this.cellMouseDown.bind(_this, day, index), onMouseOver: _this.cellMouseOver.bind(_this, day, index), onMouseUp: _this.cellMouseUp.bind(_this, day, index), onDrop: _this.onDrop.bind(_this, day, index), onDragOver: _this.onDragOver.bind(_this, day, index), onDragLeave: _this.onDragLeave.bind(_this, day, index) }, " ")));
 	            }
 	        };
 	        var i = 0; // midnight
@@ -2206,9 +2207,8 @@
 	        for (; i < 60 * 60 * 24; i += 60 * 15) {
 	            tableRows.push(getColumnRow(i));
 	        }
-	        return (React.createElement("table", {cellPadding: "0", cellSpacing: "0"}, 
-	            React.createElement("tbody", null, tableRows)
-	        ));
+	        return (React.createElement("table", { cellPadding: "0", cellSpacing: "0" },
+	            React.createElement("tbody", null, tableRows)));
 	    };
 	    CalendarComponent.prototype.renderCurrentTimeCursor = function (index) {
 	        var columnTimeRange = 24 * 60 * 60 * 1000;
@@ -2223,7 +2223,7 @@
 	            var style = {
 	                "top": offset + "px",
 	            };
-	            return React.createElement("div", {className: "current-time-cursor", style: style});
+	            return React.createElement("div", { className: "current-time-cursor", style: style });
 	        }
 	    };
 	    CalendarComponent.prototype.renderColumn = function (columnIndex, column, singleDay) {
@@ -2233,9 +2233,9 @@
 	        if (singleDay) {
 	            className += " single-day";
 	        }
-	        return React.createElement("div", {key: day, className: className}, 
-	            this.renderCells(day), 
-	            this.renderCurrentTimeCursor(columnIndex), 
+	        return React.createElement("div", { key: day, className: className },
+	            this.renderCells(day),
+	            this.renderCurrentTimeCursor(columnIndex),
 	            column.map(function (event) {
 	                var dayOffset = event.startTime - (_this.state.startDayTimestamp + columnIndex * 24 * 60 * 60 * 1000);
 	                dayOffset /= (900 * 1000 * (4 * 24));
@@ -2256,24 +2256,23 @@
 	                    "maxHeight": height + "px",
 	                    "top": dayOffset + "px"
 	                };
-	                return (React.createElement("div", {className: "rendered-event-container", key: event.id, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough}, 
-	                    React.createElement("div", {className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event)}, 
-	                        React.createElement(event_1.EventComponent, {event: event, tagsById: _this.props.tagsById})
-	                    ), 
-	                    React.createElement("div", {className: "draggable-event-end", draggable: true, onDragStart: _this.onEventEndDragStart.bind(_this, event), onDragEnd: _this.onEventEndDragEnd.bind(_this, event)})));
+	                return (React.createElement("div", { className: "rendered-event-container", key: event.id, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough },
+	                    React.createElement("div", { className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event) },
+	                        React.createElement(event_1.EventComponent, { event: event, tagsById: _this.props.tagsById })),
+	                    React.createElement("div", { className: "draggable-event-end", draggable: true, onDragStart: _this.onEventEndDragStart.bind(_this, event), onDragEnd: _this.onEventEndDragEnd.bind(_this, event) })));
 	            }));
 	    };
 	    CalendarComponent.prototype.renderWeekViewColumns = function () {
 	        var _this = this;
-	        return React.createElement("div", {className: "full-column-container"}, 
-	            React.createElement("div", {className: "column-header-container"}, 
-	                React.createElement("div", {className: "column-header"}, "Time"), 
+	        return React.createElement("div", { className: "full-column-container" },
+	            React.createElement("div", { className: "column-header-container" },
+	                React.createElement("div", { className: "column-header" }, "Time"),
 	                DAYS.map(function (day, index) {
 	                    var m = moment(_this.state.startDayTimestamp).add(index, "days");
-	                    return React.createElement("div", {key: day, className: "column-header"}, m.format("ddd M/D"));
-	                })), 
-	            React.createElement("div", {className: "all-columns-container"}, 
-	                React.createElement("div", {className: "column-container -times"}, this.renderCells("times")), 
+	                    return React.createElement("div", { key: day, className: "column-header" }, m.format("ddd M/D"));
+	                })),
+	            React.createElement("div", { className: "all-columns-container" },
+	                React.createElement("div", { className: "column-container -times" }, this.renderCells("times")),
 	                [0, 1, 2, 3, 4, 5, 6].map(function (index, i) {
 	                    return _this.renderColumn(index, _this.state.columns[i]);
 	                })));
@@ -2283,12 +2282,12 @@
 	    };
 	    CalendarComponent.prototype.renderDayViewColumns = function () {
 	        var _this = this;
-	        return React.createElement("div", {className: "full-column-container"}, 
-	            React.createElement("div", {className: "column-header-container"}, 
-	                React.createElement("div", {className: "column-header"}, "Time"), 
-	                React.createElement("div", {className: "column-header single-day"}, this.renderTodayString())), 
-	            React.createElement("div", {className: "all-columns-container"}, 
-	                React.createElement("div", {className: "column-container -times"}, this.renderCells("times")), 
+	        return React.createElement("div", { className: "full-column-container" },
+	            React.createElement("div", { className: "column-header-container" },
+	                React.createElement("div", { className: "column-header" }, "Time"),
+	                React.createElement("div", { className: "column-header single-day" }, this.renderTodayString())),
+	            React.createElement("div", { className: "all-columns-container" },
+	                React.createElement("div", { className: "column-container -times" }, this.renderCells("times")),
 	                [0].map(function (index, i) {
 	                    return _this.renderColumn(index, _this.state.columns[i], true);
 	                })));
@@ -2305,20 +2304,20 @@
 	        if (!this.state.editingEvent) {
 	            return;
 	        }
-	        return React.createElement(edit_event_1.EditEventComponent, {meUser: this.props.meUser, event: this.state.editingEvent, tagsById: this.props.tagsById, createMode: false, createEvent: function (event) { }, updateEvent: this.props.updateEvent, deleteEvent: this.props.deleteEvent});
+	        return React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, event: this.state.editingEvent, tagsById: this.props.tagsById, createMode: false, createEvent: function (event) { }, updateEvent: this.props.updateEvent, deleteEvent: this.props.deleteEvent });
 	    };
 	    CalendarComponent.prototype.renderCreateEvent = function () {
 	        var initialTags = [];
 	        if (this.state.selectedTag) {
 	            initialTags.push(this.state.selectedTag.id);
 	        }
-	        return React.createElement(edit_event_1.EditEventComponent, {meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, initialTags: initialTags, initialCreationTime: this.state.createEventTimestamp, initialDurationSecs: this.state.createEventDurationSecs, createEvent: this.props.createEvent, updateEvent: function (event) { }, deleteEvent: function (event) { }});
+	        return React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, initialTags: initialTags, initialCreationTime: this.state.createEventTimestamp, initialDurationSecs: this.state.createEventDurationSecs, createEvent: this.props.createEvent, updateEvent: function (event) { }, deleteEvent: function (event) { } });
 	    };
 	    CalendarComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "calendar"}, 
-	            this.renderOptions(), 
-	            this.renderColumns(), 
-	            this.renderEditingEvent(), 
+	        return React.createElement("div", { className: "calendar" },
+	            this.renderOptions(),
+	            this.renderColumns(),
+	            this.renderEditingEvent(),
 	            this.renderCreateEvent());
 	    };
 	    return CalendarComponent;
@@ -2347,28 +2346,40 @@
 	var EditEventComponent = (function (_super) {
 	    __extends(EditEventComponent, _super);
 	    function EditEventComponent(props) {
-	        _super.call(this, props);
+	        var _this = _super.call(this, props) || this;
 	        if (props.createMode) {
-	            this.state = {
-	                event: this._getEmptyEvent(props.meUser, props.initialCreationTime, props.initialDurationSecs, props.initialTags)
+	            _this.state = {
+	                event: _this._getEmptyEvent(props.meUser, props.initialCreationTime, props.initialDurationSecs, props.initialTags)
 	            };
 	        }
 	        else {
-	            this.state = {
+	            _this.state = {
 	                event: props.event,
 	            };
 	        }
+	        return _this;
 	    }
 	    EditEventComponent.prototype.componentWillReceiveProps = function (newProps) {
 	        if (newProps.createMode) {
-	            this.setState({
-	                event: this._getEmptyEvent(newProps.meUser, newProps.initialCreationTime, newProps.initialDurationSecs, newProps.initialTags),
-	            });
+	            var newEvent = this._getEmptyEvent(newProps.meUser, newProps.initialCreationTime, newProps.initialDurationSecs, newProps.initialTags);
+	            if (this.state) {
+	                // Copy over the name field so it doesn't get cleared out. As well as all fields
+	                // that weren't set in the new props.
+	                if (newProps.initialCreationTime == null) {
+	                    newEvent.startTime = this.state.event.startTime;
+	                }
+	                if (newProps.initialDurationSecs == null) {
+	                    newEvent.durationSecs = this.state.event.durationSecs;
+	                }
+	                if (newProps.initialTags == null) {
+	                    newEvent.tagIds = this.state.event.tagIds;
+	                }
+	                newEvent.name = this.state.event.name;
+	            }
+	            this.setState({ event: newEvent });
 	        }
 	        else {
-	            this.setState({
-	                event: newProps.event,
-	            });
+	            this.setState({ event: newProps.event });
 	        }
 	    };
 	    EditEventComponent.prototype._getEmptyEvent = function (user, initialCreationTime, initialDurationSecs, initialTags) {
@@ -2446,35 +2457,33 @@
 	    };
 	    EditEventComponent.prototype.renderButtons = function () {
 	        if (this.props.createMode) {
-	            return (React.createElement("div", {className: "edit-event-button-container"}, 
-	                React.createElement("input", {type: "button", value: "create", onClick: this.submitForm.bind(this, "create")})
-	            ));
+	            return (React.createElement("div", { className: "edit-event-button-container" },
+	                React.createElement("input", { type: "button", value: "create", onClick: this.submitForm.bind(this, "create") })));
 	        }
 	        else {
-	            return (React.createElement("div", {className: "edit-event-button-container"}, 
-	                React.createElement("input", {type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete")}), 
-	                React.createElement("input", {type: "button", value: "save", onClick: this.submitForm.bind(this, "save")})));
+	            return (React.createElement("div", { className: "edit-event-button-container" },
+	                React.createElement("input", { type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete") }),
+	                React.createElement("input", { type: "button", value: "save", onClick: this.submitForm.bind(this, "save") })));
 	        }
 	    };
 	    EditEventComponent.prototype.renderForm = function () {
-	        return React.createElement("div", null, 
-	            React.createElement("div", {className: "name-container"}, 
-	                React.createElement("label", {htmlFor: "name"}, "Name: "), 
-	                React.createElement("input", {id: "event-name", type: "text", name: "name", value: this.state.event.name, onKeyDown: this.onKeyDown.bind(this), onChange: this.updateAttr.bind(this, "name")})), 
-	            React.createElement("div", {className: "start-time-container"}, 
-	                React.createElement("label", {htmlFor: "start-time"}, "Start time: "), 
-	                React.createElement("input", {type: "number", name: "start-time", value: this.state.event.startTime, onChange: this.updateAttr.bind(this, "startTime")})), 
-	            React.createElement("div", {className: "duration-secs-container"}, 
-	                React.createElement("label", {htmlFor: "duration-secs"}, "Duration (s): "), 
-	                React.createElement("input", {type: "number", name: "duration-secs", value: this.state.event.durationSecs, onChange: this.updateAttr.bind(this, "durationSecs")})), 
-	            React.createElement("div", {className: "tag-tokenizer-container"}, 
-	                React.createElement(tokenizer_1.TokenizerComponent, {onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames()})
-	            ), 
+	        return React.createElement("div", null,
+	            React.createElement("div", { className: "name-container" },
+	                React.createElement("label", { htmlFor: "name" }, "Name: "),
+	                React.createElement("input", { id: "event-name", type: "text", name: "name", value: this.state.event.name, onKeyDown: this.onKeyDown.bind(this), onChange: this.updateAttr.bind(this, "name") })),
+	            React.createElement("div", { className: "tag-tokenizer-container" },
+	                React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames() })),
+	            React.createElement("div", { className: "start-time-container" },
+	                React.createElement("label", { htmlFor: "start-time" }, "Start time: "),
+	                React.createElement("input", { type: "number", name: "start-time", value: this.state.event.startTime, onChange: this.updateAttr.bind(this, "startTime") })),
+	            React.createElement("div", { className: "duration-secs-container" },
+	                React.createElement("label", { htmlFor: "duration-secs" }, "Duration (s): "),
+	                React.createElement("input", { type: "number", name: "duration-secs", value: this.state.event.durationSecs, onChange: this.updateAttr.bind(this, "durationSecs") })),
 	            this.renderButtons());
 	    };
 	    EditEventComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "edit-event-container"}, 
-	            this.renderFormTitle(), 
+	        return React.createElement("div", { className: "edit-event-container" },
+	            this.renderFormTitle(),
 	            this.renderForm());
 	    };
 	    return EditEventComponent;
@@ -2497,21 +2506,25 @@
 	var EventComponent = (function (_super) {
 	    __extends(EventComponent, _super);
 	    function EventComponent() {
-	        _super.apply(this, arguments);
+	        return _super.apply(this, arguments) || this;
 	    }
 	    EventComponent.prototype.renderTag = function (tagId) {
 	        var tag = this.props.tagsById[tagId];
-	        return React.createElement(tag_1.TagComponent, {tag: tag, key: tagId});
+	        return React.createElement(tag_1.TagComponent, { tag: tag, key: tagId });
 	    };
+	    EventComponent.prototype.renderName = function () {
+	        return React.createElement("div", { className: "name" }, this.props.event.name);
+	    };
+	    ;
 	    EventComponent.prototype.renderTags = function () {
 	        if (!this.props.event.tagIds.length) {
 	            return;
 	        }
-	        return (React.createElement("div", {className: "event-tags-container"}, this.props.event.tagIds.map(this.renderTag.bind(this))));
+	        return (React.createElement("div", { className: "event-tags-container" }, this.props.event.tagIds.map(this.renderTag.bind(this))));
 	    };
 	    EventComponent.prototype.render = function () {
-	        return React.createElement("div", {className: "event-container"}, 
-	            this.props.event.name, 
+	        return React.createElement("div", { className: "event-container" },
+	            this.renderName(),
 	            this.renderTags());
 	    };
 	    return EventComponent;
@@ -2530,15 +2543,15 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var react_router_1 = __webpack_require__(9);
-	var app_1 = __webpack_require__(8);
+	var react_router_1 = __webpack_require__(7);
+	var app_1 = __webpack_require__(9);
 	var AppHeader = (function (_super) {
 	    __extends(AppHeader, _super);
 	    function AppHeader() {
-	        _super.apply(this, arguments);
+	        return _super.apply(this, arguments) || this;
 	    }
 	    AppHeader.prototype.renderAccountInfo = function () {
-	        return React.createElement("div", {className: "profile-container"}, "Logged in as: " + this.props.meUser.username);
+	        return React.createElement("div", { className: "profile-container" }, "Logged in as: " + this.props.meUser.username);
 	    };
 	    AppHeader.prototype.renderViewModeSelector = function () {
 	        var _this = this;
@@ -2550,7 +2563,7 @@
 	        linkMap[app_1.AppViewMode.taskView] = "/tasks";
 	        linkMap[app_1.AppViewMode.eventView] = "/cal";
 	        linkMap[app_1.AppViewMode.tagView] = "/tags";
-	        return React.createElement("div", {className: "view-mode-selector"}, Object.keys(app_1.AppViewMode).map(function (viewMode) {
+	        return React.createElement("div", { className: "view-mode-selector" }, Object.keys(app_1.AppViewMode).map(function (viewMode) {
 	            if (!viewModeToName.hasOwnProperty(viewMode)) {
 	                return;
 	            }
@@ -2558,13 +2571,13 @@
 	            if (+viewMode == _this.props.viewMode) {
 	                className += " -selected";
 	            }
-	            return React.createElement(react_router_1.Link, {key: viewMode, className: className, to: linkMap[+viewMode]}, viewModeToName[+viewMode]);
+	            return React.createElement(react_router_1.Link, { key: viewMode, className: className, to: linkMap[+viewMode] }, viewModeToName[+viewMode]);
 	        }));
 	    };
 	    AppHeader.prototype.render = function () {
-	        return React.createElement("div", {className: "header-container"}, 
-	            React.createElement("h1", {className: "header-title"}, "Starter"), 
-	            this.renderAccountInfo(), 
+	        return React.createElement("div", { className: "header-container" },
+	            React.createElement("h1", { className: "header-title" }, "Starter"),
+	            this.renderAccountInfo(),
 	            this.renderViewModeSelector());
 	    };
 	    return AppHeader;

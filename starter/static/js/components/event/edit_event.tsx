@@ -40,18 +40,29 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
 
     componentWillReceiveProps(newProps: EditEventProps) {
         if (newProps.createMode) {
-            this.setState({
-                event: this._getEmptyEvent(
-                    newProps.meUser,
-                    newProps.initialCreationTime,
-                    newProps.initialDurationSecs,
-                    newProps.initialTags
-                ),
-            })
+            const newEvent = this._getEmptyEvent(
+                newProps.meUser,
+                newProps.initialCreationTime,
+                newProps.initialDurationSecs,
+                newProps.initialTags
+            );
+            if (this.state) {
+                // Copy over the name field so it doesn't get cleared out. As well as all fields
+                // that weren't set in the new props.
+                if (newProps.initialCreationTime == null) {
+                    newEvent.startTime = this.state.event.startTime
+                }
+                if (newProps.initialDurationSecs == null) {
+                    newEvent.durationSecs = this.state.event.durationSecs
+                }
+                if (newProps.initialTags == null) {
+                    newEvent.tagIds = this.state.event.tagIds
+                }
+                newEvent.name = this.state.event.name
+            }
+            this.setState({event: newEvent})
         } else {
-            this.setState({
-                event: newProps.event,
-            })
+            this.setState({event: newProps.event})
         }
     }
 
@@ -168,6 +179,14 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 />
             </div>
 
+            <div className="tag-tokenizer-container">
+                <TokenizerComponent
+                    onChange={this.retrieveTagNames.bind(this)}
+                    initialValues={this.getCurrentTags()}
+                    possibleTokens={this.getAllTagNames()}
+                />
+            </div>
+
              <div className="start-time-container">
                 <label htmlFor="start-time">Start time: </label>
                 <input
@@ -185,15 +204,6 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                     onChange={this.updateAttr.bind(this, "durationSecs")}
                 />
             </div>
-
-            <div className="tag-tokenizer-container">
-                <TokenizerComponent
-                    onChange={this.retrieveTagNames.bind(this)}
-                    initialValues={this.getCurrentTags()}
-                    possibleTokens={this.getAllTagNames()}
-                />
-            </div>
-
             {this.renderButtons()}
         </div>
     }
