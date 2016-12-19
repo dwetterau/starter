@@ -62,7 +62,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             viewType,
             startDayTimestamp,
             columns,
-            cellHeight: 20,
+            cellHeight: 22,
             editingEvent: null,
             createEventTimestamp: null,
             createEventDurationSecs: null,
@@ -383,7 +383,10 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             this._dragTargetEventElement.hide();
 
             const timestamp = this.computeTimestamp(day, index);
-            const endTimestamp = timestamp + this.state.draggingEvent.durationSecs * 1000;
+            // Conceptually this is needed because short events should register only a single cell
+            // to be highlighted.
+            const truncatedDuration = Math.max(0, this.state.draggingEvent.durationSecs - 900);
+            const endTimestamp = timestamp + truncatedDuration * 1000;
 
             if (this.state.draggingStartTimestamp != timestamp ||
                     this.state.draggingEndTimestamp != endTimestamp) {
@@ -716,8 +719,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     height += bottomOverflow;
                 }
 
+                // We subtract 2 from the height purely for stylistic reasons.
                 const style = {
-                    "height": `${height}px`,
+                    "height": `${height - 2}px`,
                     "maxHeight": `${height}px`,
                     "top": `${dayOffset}px`
                 };
@@ -754,22 +758,24 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     renderWeekViewColumns() {
         return <div className="full-column-container">
-            <div className="column-header-container">
-                <div className="column-header">Time</div>
-                {DAYS.map((day: string, index: number) => {
-                    let m = moment(this.state.startDayTimestamp).add(index, "days");
-                    return <div key={day} className="column-header">
-                        {m.format("ddd M/D")}
-                    </div>
-                })}
-            </div>
-            <div className="all-columns-container">
-                <div className="column-container -times">
-                    {this.renderCells("times")}
+            <div className="header-and-content-container">
+                <div className="column-header-container">
+                    <div className="column-header -times">Time</div>
+                    {DAYS.map((day: string, index: number) => {
+                        let m = moment(this.state.startDayTimestamp).add(index, "days");
+                        return <div key={day} className="column-header">
+                            {m.format("ddd M/D")}
+                        </div>
+                    })}
                 </div>
-                {[0, 1, 2, 3, 4, 5, 6].map((index: number, i: number) => {
-                    return this.renderColumn(index, this.state.columns[i])
-                })}
+                <div className="all-columns-container">
+                    <div className="column-container -times">
+                        {this.renderCells("times")}
+                    </div>
+                    {[0, 1, 2, 3, 4, 5, 6].map((index: number, i: number) => {
+                        return this.renderColumn(index, this.state.columns[i])
+                    })}
+                </div>
             </div>
         </div>
     }
@@ -780,17 +786,19 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     renderDayViewColumns() {
         return <div className="full-column-container">
-            <div className="column-header-container">
-                <div className="column-header">Time</div>
-                    <div className="column-header single-day">{this.renderTodayString()}</div>
-            </div>
-            <div className="all-columns-container">
-                <div className="column-container -times">
-                    {this.renderCells("times")}
+            <div className="header-and-content-container">
+                <div className="column-header-container">
+                    <div className="column-header -times">Time</div>
+                        <div className="column-header single-day">{this.renderTodayString()}</div>
                 </div>
-                {[0].map((index: number, i: number) => {
-                    return this.renderColumn(index, this.state.columns[i], true)
-                })}
+                <div className="all-columns-container">
+                    <div className="column-container -times">
+                        {this.renderCells("times")}
+                    </div>
+                    {[0].map((index: number, i: number) => {
+                        return this.renderColumn(index, this.state.columns[i], true)
+                    })}
+                </div>
             </div>
         </div>
     }

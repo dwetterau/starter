@@ -1,16 +1,16 @@
 body {
-    background: rgb(250, 250, 250);
+    background: #fbf6e3;
+    color: #586e75;
 }
 
 div.card {
-    background: #fff;
     border: 1px solid rgba(0, 0, 0, .04);
     box-shadow: 0 1px 4px rgba(0, 0, 0, .03);
     margin: 0 0 10px 0;
     padding: 20px;
     border-radius: 3px;
-    color: rgba(0, 0, 0, .84);
-    min-height: 20px;
+    background: #073642;
+    color: #93a1a1;
     -webkit-tap-highlight-color: transparent;
     box-sizing: border-box;
     display: block;
@@ -36,7 +36,7 @@ div.header-container div.view-mode-selector {
 div.header-container div.view-mode-selector a.view-mode-option {
     margin-right: 1em;
     text-decoration: none;
-    color: black;
+    color: #586e75;
 }
 
 div.header-container div.view-mode-selector a.view-mode-option.-selected {
@@ -173,39 +173,61 @@ div.calendar div.full-column-container {
     flex-direction: column;
 }
 
+div.calendar div.full-column-container div.header-and-content-container {
+    resize: both;
+    overflow: hidden;
+    height: 660px;
+    display: flex;
+    flex-direction: column;
+}
+
 div.calendar div.column-header-container {
     display: flex;
+    margin-top: 20px;
+    margin-right: 15px;
+    text-align: center;
 }
 
 div.calendar div.column-header {
     min-width: 120px;
-    max-width: 120px;
+    flex-grow: 1;
     height: 20px;
+}
+
+div.calendar div.column-header.-times {
+    max-width: 120px;
 }
 
 div.calendar div.column-header.single-day {
     min-width: 360px;
-    max-width: 360px;
 }
 
 div.calendar div.all-columns-container {
     display: flex;
-    max-height: 640px;
+    height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     border-top: 1px solid rgba(0, 0, 0, .2);
+    margin-bottom: .5em;
 }
 
 div.calendar div.column-container {
-    max-width: 120px;
-    width: 120px;
+    flex-grow: 1;
     min-width: 120px;
     position: relative;
 }
 
+
+div.calendar div.column-container.-times {
+    max-width: 120px;
+}
+
+div.calendar div.column-container table {
+    width: 100%;
+}
+
 div.calendar div.column-container.single-day {
-    max-width: 360px;
     min-width: 360px;
 }
 
@@ -214,13 +236,11 @@ div.calendar div.column-container td {
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     font-size: 14px;
     min-width: 120px;
-    max-width: 120px;
     cursor: pointer;
 }
 
 div.calendar div.column-container.single-day td {
     min-width: 360px;
-    max-width: 360px;
 }
 
 div.calendar div.column-container tr:nth-child(odd) td {
@@ -246,6 +266,7 @@ div.calendar div.rendered-event-container {
 div.calendar div.rendered-event-container div.card {
     padding: 1px .25em;
     margin-left: 1px;
+    margin-right: 2px;
     margin-bottom: 0;
     overflow-y: auto;
     height: 100%;
@@ -255,19 +276,17 @@ div.calendar div.column-container div.current-time-cursor {
     position: absolute;
     height: 3px;
     background-color: #dc322f;
-    max-width: 120px;
-    width: 120px;
     min-width: 120px;
+    width: 100%;
     z-index: 2;
 }
 
 div.calendar div.column-container.single-day div.current-time-cursor {
     min-width: 360px;
-    max-width: 360px;
 }
 
 div.calendar div.column-container tr td.-selected {
-    background-color: rgba(255, 255, 255, .84);
+    background-color: #eee8d5;
     border: none;
 }
 
@@ -279,8 +298,9 @@ div.calendar div.rendered-event-container div.draggable-event-end {
 }
 
 div.calendar div.rendered-event-container div.tag.card {
-    height: 0;
     overflow-y: hidden;
+    background: #fbf6e3;
+    color: #586e75;
 }
 
 /* End of Calendar CSS */
