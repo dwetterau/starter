@@ -36,6 +36,8 @@ enum CalendarViewType {
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+const GRANULARITY = 1800; // Each cell is 30 minutes (unit in seconds)
+
 export class CalendarComponent extends React.Component<CalendarProps, CalendarState> {
 
     constructor(props: CalendarProps) {
@@ -256,7 +258,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         let duration = (end - start);
         duration /= 1000; // convert to seconds
-        duration += 900; // dragging to the same cell means 15 minutes, so we always add 900 seconds
+        duration += GRANULARITY; // dragging to the same cell means to make duration equal to GRANULARITY
 
         this.state.createEventDurationSecs = duration;
     }
@@ -304,7 +306,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
             const timestamp = this.computeTimestamp(day, index);
             let newDuration = timestamp - this.state.endDraggingEvent.startTime;
-            newDuration = Math.max(Math.round(newDuration / 1000) + 900, 900);
+            newDuration = Math.max(Math.round(newDuration / 1000) + GRANULARITY, GRANULARITY);
             this.state.endDraggingEvent.durationSecs = newDuration;
             this.props.updateEvent(this.state.endDraggingEvent);
 
@@ -385,7 +387,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             const timestamp = this.computeTimestamp(day, index);
             // Conceptually this is needed because short events should register only a single cell
             // to be highlighted.
-            const truncatedDuration = Math.max(0, this.state.draggingEvent.durationSecs - 900);
+            const truncatedDuration = Math.max(0, this.state.draggingEvent.durationSecs - GRANULARITY);
             const endTimestamp = timestamp + truncatedDuration * 1000;
 
             if (this.state.draggingStartTimestamp != timestamp ||
@@ -624,15 +626,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     end = this.state.draggingStartTimestamp;
                 }
 
-                if (timestamp >= start && timestamp < end + (900 * 1000)) {
+                if (timestamp >= start && timestamp < end + (GRANULARITY * 1000)) {
                     className = "-selected";
                 }
             }
 
             if (day == "times") {
                 let timeHeader = "";
-                if (index % 1800 == 0) {
-                    // Only print every 30 minutes
+                if (index % (GRANULARITY * 2) == 0) {
                     timeHeader = moment(this.state.startDayTimestamp)
                         .add(index, "seconds").format("h:mm a");
                 }
@@ -663,7 +664,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         let i = 0; // midnight
         const tableRows: Array<any> = [];
-        for ( ; i < 60 * 60  * 24; i += 60 * 15) {
+        for ( ; i < 60 * 60 * 24; i += GRANULARITY) {
             tableRows.push(getColumnRow(i));
         }
         return (
@@ -683,7 +684,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             currentTime < columnStartTimestamp + columnTimeRange) {
             // Okay we can actually render it here.
             let offset = (currentTime - columnStartTimestamp) / columnTimeRange;
-            offset *=  this.state.cellHeight * 4 * 24; // Total height of a column
+            offset *=  this.state.cellHeight * (86400 / GRANULARITY); // Total height of a column
             offset -= 2; // Draw it 2 pixels higher because it's width 3.
             const style = {
                 "top": `${offset}px`,
@@ -705,16 +706,16 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             {column.map((event: Event) => {
                 let dayOffset = event.startTime - (
                     this.state.startDayTimestamp + columnIndex * 24 * 60 * 60 * 1000);
-                dayOffset /= (900 * 1000 * (4 * 24));
-                dayOffset *= this.state.cellHeight * 4 * 24; // Total height of a column
+                dayOffset /= 1000 * 86400;
+                dayOffset *= this.state.cellHeight * (86400 / GRANULARITY); // Total height of a column
                 let multiDayAdjustment = 0;
                 if (dayOffset < 0) {
                     multiDayAdjustment = -dayOffset;
                     dayOffset = 0;
                 }
-                let height = (event.durationSecs / 900) * this.state.cellHeight;
+                let height = (event.durationSecs / GRANULARITY) * this.state.cellHeight;
                 height -= multiDayAdjustment;
-                let bottomOverflow = (this.state.cellHeight * 4 * 24) - (dayOffset + height);
+                let bottomOverflow = (this.state.cellHeight * (86400 / GRANULARITY)) - (dayOffset + height);
                 if (bottomOverflow < 0) {
                     height += bottomOverflow;
                 }

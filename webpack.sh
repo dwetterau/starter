@@ -1,3 +1,3 @@
 #!/bin/bash
-cd /home/david/projects/django_starter/starter
+cd ~/projects/starter/starter
 webpack --progress --colors --watch
