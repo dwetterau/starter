@@ -6,6 +6,7 @@ import {EditEventComponent} from "./edit_event"
 import {Event, User, TagsById, Tag} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
+import {ModalComponent} from "../modal";
 
 export interface CalendarProps {
     meUser: User,
@@ -20,6 +21,7 @@ export interface CalendarState {
     startDayTimestamp: number,
     columns: Array<Array<Event>>,
     cellHeight: number,
+    showCreate: boolean,
     editingEvent?: Event,
     createEventTimestamp?: number,
     createEventDurationSecs?: number,
@@ -65,6 +67,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             startDayTimestamp,
             columns,
             cellHeight: 22,
+            showCreate: false,
             editingEvent: null,
             createEventTimestamp: null,
             createEventDurationSecs: null,
@@ -286,6 +289,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         this.state.draggingStartTimestamp = null;
         this.state.draggingEndTimestamp = null;
+        this.state.showCreate = true;
         this.setState(this.state);
 
         // Move focus to the event name field
@@ -812,37 +816,61 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
     }
 
+    clearEditingEvent() {
+        this.state.editingEvent = null;
+        this.setState(this.state);
+    }
+
     renderEditingEvent() {
         if (!this.state.editingEvent) {
             return
         }
-        return <EditEventComponent
-            meUser={this.props.meUser}
-            event={this.state.editingEvent}
-            tagsById={this.props.tagsById}
-            createMode={false}
-            createEvent={(event: Event) => {}}
-            updateEvent={this.props.updateEvent}
-            deleteEvent={this.props.deleteEvent}
-        />
+        return <ModalComponent cancelFunc={this.clearEditingEvent.bind(this)}>
+            <EditEventComponent
+                meUser={this.props.meUser}
+                event={this.state.editingEvent}
+                tagsById={this.props.tagsById}
+                createMode={false}
+                createEvent={(event: Event) => {}}
+                updateEvent={this.props.updateEvent}
+                deleteEvent={this.props.deleteEvent}
+            />
+        </ModalComponent>
+    }
+
+    closeCreateEvent() {
+        this.state.showCreate = false;
+        this.setState(this.state);
+
+    }
+
+    createEvent(event: Event) {
+        this.closeCreateEvent();
+        this.props.createEvent(event);
     }
 
     renderCreateEvent() {
+        if (!this.state.showCreate) {
+            return;
+        }
+
         const initialTags: Array<number> = [];
         if (this.state.selectedTag) {
             initialTags.push(this.state.selectedTag.id)
         }
-        return <EditEventComponent
-            meUser={this.props.meUser}
-            tagsById={this.props.tagsById}
-            createMode={true}
-            initialTags={initialTags}
-            initialCreationTime={this.state.createEventTimestamp}
-            initialDurationSecs={this.state.createEventDurationSecs}
-            createEvent={this.props.createEvent}
-            updateEvent={(event: Event) => {}}
-            deleteEvent={(event: Event) => {}}
-        />
+        return <ModalComponent cancelFunc={this.closeCreateEvent.bind(this)}>
+            <EditEventComponent
+                meUser={this.props.meUser}
+                tagsById={this.props.tagsById}
+                createMode={true}
+                initialTags={initialTags}
+                initialCreationTime={this.state.createEventTimestamp}
+                initialDurationSecs={this.state.createEventDurationSecs}
+                createEvent={this.createEvent.bind(this)}
+                updateEvent={(event: Event) => {}}
+                deleteEvent={(event: Event) => {}}
+            />
+        </ModalComponent>
     }
 
     render() {

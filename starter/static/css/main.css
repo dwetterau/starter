@@ -368,3 +368,23 @@ div.rendered-token div.remove-token {
     cursor: pointer;
 }
 /* End of Tokenizer CSS */
+
+/* Modal CSS */
+div.modal-container div.background {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .2);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.modal-container div.cancel-button-container {
+    cursor: pointer;
+    float: right;
+}
+/* End of Modal CSS */
