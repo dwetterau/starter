@@ -1072,6 +1072,7 @@
 	var models_1 = __webpack_require__(16);
 	var task_1 = __webpack_require__(17);
 	var tokenizer_1 = __webpack_require__(12);
+	var modal_1 = __webpack_require__(24);
 	var TaskBoardViewType;
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
@@ -1095,6 +1096,7 @@
 	            columns: columns,
 	            headers: headers,
 	            columnTypes: columnTypes,
+	            createColumnType: null,
 	            draggingTask: null,
 	            editingTask: null,
 	            selectedTag: null,
@@ -1254,13 +1256,11 @@
 	    };
 	    TaskBoardComponent.prototype.changeViewType = function (type) {
 	        var _a = this.divideByType(this.props.tasks, type), headers = _a[0], columnTypes = _a[1], columns = _a[2];
-	        this.setState({
-	            viewType: type,
-	            headers: headers,
-	            columnTypes: columnTypes,
-	            columns: columns,
-	            shouldHideClosedTasks: this.state.shouldHideClosedTasks
-	        });
+	        this.state.viewType = type;
+	        this.state.headers = headers;
+	        this.state.columnTypes = columnTypes;
+	        this.state.columns = columns;
+	        this.setState(this.state);
 	    };
 	    TaskBoardComponent.prototype.changeHideClosedTasks = function () {
 	        this.state.shouldHideClosedTasks = !this.state.shouldHideClosedTasks;
@@ -1302,6 +1302,22 @@
 	        });
 	        return allNames;
 	    };
+	    TaskBoardComponent.prototype.clearCreateColumnType = function () {
+	        this.state.createColumnType = null;
+	        this.setState(this.state);
+	    };
+	    TaskBoardComponent.prototype.createTask = function (columnType) {
+	        if (this.state.createColumnType != null) {
+	            // Already creating... cancel this request
+	            return;
+	        }
+	        this.state.createColumnType = columnType;
+	        this.setState(this.state);
+	    };
+	    TaskBoardComponent.prototype.clearEditingTask = function () {
+	        this.state.editingTask = null;
+	        this.setState(this.state);
+	    };
 	    TaskBoardComponent.prototype.renderTypeChoice = function (type) {
 	        var className = "view-type-choice";
 	        if (type == this.state.viewType) {
@@ -1335,11 +1351,11 @@
 	    };
 	    TaskBoardComponent.prototype.renderColumn = function (column, header, columnType) {
 	        var _this = this;
-	        return React.createElement("div", { className: "column-container", key: header, onDrop: this.onDrop.bind(this, columnType), onDragOver: this.onDragOver.bind(this), onDragLeave: this.onDragLeave.bind(this) },
+	        return React.createElement("div", { className: "column-container", key: header, onDrop: this.onDrop.bind(this, columnType), onDragOver: this.onDragOver.bind(this), onDragLeave: this.onDragLeave.bind(this), onClick: this.createTask.bind(this, columnType) },
 	            React.createElement("div", { className: "column-header" }, header),
 	            column.map(function (task) {
 	                // TODO: determine draggability programatically
-	                return React.createElement("div", { key: task.id, className: "draggable-task", draggable: true, onDragStart: _this.onDragStart.bind(_this, task), onDragEnd: _this.onDragEnd.bind(_this, task), onDoubleClick: _this.onDoubleClick.bind(_this, task) },
+	                return React.createElement("div", { key: task.id, className: "draggable-task", draggable: true, onDragStart: _this.onDragStart.bind(_this, task), onDragEnd: _this.onDragEnd.bind(_this, task), onClick: function (e) { e.stopPropagation(); return false; }, onDoubleClick: _this.onDoubleClick.bind(_this, task) },
 	                    React.createElement(task_1.TaskComponent, { task: task, viewType: _this.state.viewType, tagsById: _this.props.tagsById }));
 	            }));
 	    };
@@ -1355,14 +1371,19 @@
 	        if (!this.state.editingTask) {
 	            return;
 	        }
-	        return React.createElement(edit_task_1.EditTaskComponent, { meUser: this.props.meUser, task: this.state.editingTask, tagsById: this.props.tagsById, createMode: false, createTask: function (task) { }, updateTask: this.props.updateTask, deleteTask: this.props.deleteTask });
+	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.clearEditingTask.bind(this) },
+	            React.createElement(edit_task_1.EditTaskComponent, { meUser: this.props.meUser, task: this.state.editingTask, tagsById: this.props.tagsById, createMode: false, createTask: function (task) { }, updateTask: this.props.updateTask, deleteTask: this.props.deleteTask }));
 	    };
 	    TaskBoardComponent.prototype.renderCreateTask = function () {
+	        if (this.state.createColumnType == null) {
+	            return;
+	        }
 	        var initialTags = [];
 	        if (this.state.selectedTag) {
 	            initialTags.push(this.state.selectedTag.id);
 	        }
-	        return React.createElement(edit_task_1.EditTaskComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, createTask: this.props.createTask, initialTags: initialTags, updateTask: function (task) { }, deleteTask: function (task) { } });
+	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.clearCreateColumnType.bind(this) },
+	            React.createElement(edit_task_1.EditTaskComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, createTask: this.props.createTask, initialTags: initialTags, updateTask: function (task) { }, deleteTask: function (task) { } }));
 	    };
 	    TaskBoardComponent.prototype.render = function () {
 	        return React.createElement("div", { className: "task-board" },

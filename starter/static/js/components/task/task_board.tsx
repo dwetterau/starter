@@ -5,6 +5,7 @@ import {EditTaskComponent} from "./edit_task";
 import {Task, stateNameList, User, priorityNameList, TagsById, Tag} from "../../models";
 import {TaskComponent} from "./task";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
+import {ModalComponent} from "../modal";
 
 export interface TaskBoardProps {
     meUser: User,
@@ -19,6 +20,7 @@ export interface TaskBoardState {
     columns: Array<Array<Task>>,
     headers: Array<string>,
     columnTypes: Array<number>,
+    createColumnType?: number,
     draggingTask?: Task,
     editingTask?: Task,
     shouldHideClosedTasks: boolean,
@@ -49,6 +51,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             columns,
             headers,
             columnTypes,
+            createColumnType: null,
             draggingTask: null,
             editingTask: null,
             selectedTag: null,
@@ -235,13 +238,12 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     changeViewType(type: TaskBoardViewType) {
         const [headers, columnTypes, columns] = this.divideByType(this.props.tasks, type);
-        this.setState({
-            viewType: type,
-            headers,
-            columnTypes,
-            columns,
-            shouldHideClosedTasks: this.state.shouldHideClosedTasks
-        });
+        this.state.viewType = type;
+        this.state.headers = headers;
+        this.state.columnTypes = columnTypes;
+        this.state.columns = columns;
+
+        this.setState(this.state);
     }
 
     changeHideClosedTasks() {
@@ -288,6 +290,25 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             })
         });
         return allNames;
+    }
+
+    clearCreateColumnType() {
+        this.state.createColumnType = null;
+        this.setState(this.state);
+    }
+
+    createTask(columnType: number) {
+        if (this.state.createColumnType != null) {
+            // Already creating... cancel this request
+            return
+        }
+        this.state.createColumnType = columnType;
+        this.setState(this.state);
+    }
+
+    clearEditingTask() {
+        this.state.editingTask = null;
+        this.setState(this.state);
     }
 
     renderTypeChoice(type: TaskBoardViewType) {
@@ -357,10 +378,13 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     renderColumn(column: Array<Task>, header: string, columnType: number) {
 
-        return <div className="column-container" key={header}
-                    onDrop={this.onDrop.bind(this, columnType)}
-                    onDragOver={this.onDragOver.bind(this)}
-                    onDragLeave={this.onDragLeave.bind(this)} >
+        return <div
+            className="column-container" key={header}
+            onDrop={this.onDrop.bind(this, columnType)}
+            onDragOver={this.onDragOver.bind(this)}
+            onDragLeave={this.onDragLeave.bind(this)}
+            onClick={this.createTask.bind(this, columnType)}
+        >
             <div className="column-header">{header}</div>
             {column.map((task) => {
                 // TODO: determine draggability programatically
@@ -368,6 +392,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                             draggable={true}
                             onDragStart={this.onDragStart.bind(this, task)}
                             onDragEnd={this.onDragEnd.bind(this, task)}
+                            onClick={(e) => {e.stopPropagation(); return false}}
                             onDoubleClick={this.onDoubleClick.bind(this, task)} >
                     <TaskComponent
                         task={task}
@@ -400,29 +425,38 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         if (!this.state.editingTask) {
             return
         }
-        return <EditTaskComponent meUser={this.props.meUser}
-                                  task={this.state.editingTask}
-                                  tagsById={this.props.tagsById}
-                                  createMode={false}
-                                  createTask={(task: Task) => {}}
-                                  updateTask={this.props.updateTask}
-                                  deleteTask={this.props.deleteTask} />
+        return <ModalComponent cancelFunc={this.clearEditingTask.bind(this)}>
+            <EditTaskComponent
+                meUser={this.props.meUser}
+                task={this.state.editingTask}
+                tagsById={this.props.tagsById}
+                createMode={false}
+                createTask={(task: Task) => {}}
+                updateTask={this.props.updateTask}
+                deleteTask={this.props.deleteTask} />
+        </ModalComponent>
     }
 
     renderCreateTask() {
+        if (this.state.createColumnType == null) {
+            return;
+        }
+
         const initialTags: Array<number> = [];
         if (this.state.selectedTag) {
             initialTags.push(this.state.selectedTag.id);
         }
-        return <EditTaskComponent
-            meUser={this.props.meUser}
-            tagsById={this.props.tagsById}
-            createMode={true}
-            createTask={this.props.createTask}
-            initialTags={initialTags}
-            updateTask={(task: Task) => {}}
-            deleteTask={(task: Task) => {}}
-        />
+        return <ModalComponent cancelFunc={this.clearCreateColumnType.bind(this)}>
+            <EditTaskComponent
+                meUser={this.props.meUser}
+                tagsById={this.props.tagsById}
+                createMode={true}
+                createTask={this.props.createTask}
+                initialTags={initialTags}
+                updateTask={(task: Task) => {}}
+                deleteTask={(task: Task) => {}}
+            />
+        </ModalComponent>
     }
 
     render() {
