@@ -22,6 +22,7 @@ export interface CalendarState {
     columns: Array<Array<Event>>,
     cellHeight: number,
     showCreate: boolean,
+    eventToRenderingInfo: {[eventId: string]: EventRenderingInfo},
     editingEvent?: Event,
     createEventTimestamp?: number,
     createEventDurationSecs?: number,
@@ -39,6 +40,11 @@ enum CalendarViewType {
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const GRANULARITY = 1800; // Each cell is 30 minutes (unit in seconds)
+
+interface EventRenderingInfo {
+    index: number
+    columnWidth: number
+}
 
 export class CalendarComponent extends React.Component<CalendarProps, CalendarState> {
 
@@ -61,13 +67,15 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         } else {
             startDayTimestamp = this.computeTodayStartTime(viewType);
         }
-        const columns = this.divideAndSort(startDayTimestamp, viewType, props.events);
+        const [columns, eventToRenderingInfo] = this.divideAndSort(
+            startDayTimestamp, viewType, props.events);
         const newState: CalendarState = {
             viewType,
             startDayTimestamp,
             columns,
             cellHeight: 22,
             showCreate: false,
+            eventToRenderingInfo: eventToRenderingInfo,
             editingEvent: null,
             createEventTimestamp: null,
             createEventDurationSecs: null,
@@ -118,7 +126,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         startTimestamp: number,
         viewType: CalendarViewType,
         events: Array<Event>
-    ): Array<Array<Event>> {
+    ): [Array<Array<Event>>, {[eventId: string]: EventRenderingInfo}] {
 
         let columnList: Array<Array<Event>>;
         if (viewType == CalendarViewType.week) {
@@ -191,18 +199,91 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             }
         });
 
-        // TODO: Sort the events ?
+        columnList.forEach((column) => {
+            column.sort((event1, event2) => {
+                const diff = event1.startTime - event2.startTime;
+                if (diff != 0) {
+                    return diff;
+                }
 
-        return columnList;
+                // We want the larger events to be sorted first if they have the same start time
+                return event2.durationSecs - event1.durationSecs;
+            })
+        });
+
+        // After sorting the events, run the division alg on each column
+        const eventToRenderingInfo: {[eventId: string]: EventRenderingInfo} = {};
+
+        columnList.forEach((column) => {
+            let aux: Array<Event> = [];
+            column.forEach((event) => {
+                // Base case for the initial element
+                if (!aux.length) {
+                    aux.push(event);
+                    eventToRenderingInfo[event.id] = {
+                        index: 0,
+                        columnWidth: 1,
+                    };
+                    return
+                }
+
+                let slotUsed = false;
+                // If this event doesn't overlap with an element in the array, replace it.
+                // During the replace, we need to calculate what the max width was for the element.
+                aux.forEach((auxEvent, index) => {
+                    if (event.startTime < auxEvent.startTime + (auxEvent.durationSecs * 1000)) {
+                        // Overlap case, we keep looking for a free spot.
+                    } else {
+                        // Doesn't overlap, will use this slot (if it's the first) and evict
+                        if (!slotUsed) {
+                            slotUsed = true;
+                            // Replace out this element
+                            aux[index] = event;
+                            eventToRenderingInfo[event.id] = {
+                                index,
+                                columnWidth: aux.length, // This will probably just be resized.
+                            }
+                        } else {
+                            aux[index] = null;
+                        }
+                    }
+                });
+
+
+                // If this event overlaps with whatever is in aux, we must append
+                if (!slotUsed) {
+                    // Append to the end
+                    aux.forEach((auxEvent) => {
+                        eventToRenderingInfo[auxEvent.id].columnWidth = aux.length + 1;
+                    });
+                    eventToRenderingInfo[event.id] = {
+                        columnWidth: aux.length + 1,
+                        index: aux.length,
+                    };
+                    aux.push(event);
+                } else {
+                    // See if we need to resize aux
+                    while (aux.length && aux[aux.length - 1] == null) {
+                        aux.pop()
+                    }
+                    aux.forEach((auxEvent) => {
+                        eventToRenderingInfo[auxEvent.id].columnWidth = aux.length
+                    })
+                }
+            })
+        });
+        return [columnList, eventToRenderingInfo];
     }
 
     resort() {
         // Recompute all the events and where to render them:
-        this.state.columns = this.divideAndSort(
+        const [columns, eventToRenderingInfo] = this.divideAndSort(
             this.state.startDayTimestamp,
             this.state.viewType,
             this.props.events
         );
+        this.state.columns = columns;
+        this.state.eventToRenderingInfo = eventToRenderingInfo;
         this.setState(this.state);
     }
 
@@ -724,11 +805,18 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     height += bottomOverflow;
                 }
 
+                // calculate the width change
+                const renderingInfo = this.state.eventToRenderingInfo[event.id];
+                const widthPercentage = 100.0 / renderingInfo.columnWidth;
+                const marginLeft = widthPercentage * renderingInfo.index;
+
                 // We subtract 2 from the height purely for stylistic reasons.
                 const style = {
                     "height": `${height - 2}px`,
                     "maxHeight": `${height}px`,
-                    "top": `${dayOffset}px`
+                    "top": `${dayOffset}px`,
+                    "marginLeft": `${marginLeft}%`,
+                    "width": `${widthPercentage}%`,
                 };
                 return (
                     <div

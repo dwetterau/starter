@@ -499,8 +499,8 @@
 	var jQuery = __webpack_require__(8);
 	var tag_graph_1 = __webpack_require__(10);
 	var task_board_1 = __webpack_require__(14);
-	var calendar_1 = __webpack_require__(19);
-	var app_header_1 = __webpack_require__(23);
+	var calendar_1 = __webpack_require__(20);
+	var app_header_1 = __webpack_require__(24);
 	var AppViewMode;
 	(function (AppViewMode) {
 	    AppViewMode[AppViewMode["taskView"] = 0] = "taskView";
@@ -1072,7 +1072,7 @@
 	var models_1 = __webpack_require__(16);
 	var task_1 = __webpack_require__(17);
 	var tokenizer_1 = __webpack_require__(12);
-	var modal_1 = __webpack_require__(24);
+	var modal_1 = __webpack_require__(19);
 	var TaskBoardViewType;
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
@@ -1716,13 +1716,44 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
+	var React = __webpack_require__(5);
+	var ModalComponent = (function (_super) {
+	    __extends(ModalComponent, _super);
+	    function ModalComponent() {
+	        return _super.apply(this, arguments) || this;
+	    }
+	    ModalComponent.prototype.renderCancelButton = function () {
+	        return React.createElement("div", { className: "cancel-button-container", onClick: this.props.cancelFunc }, "x");
+	    };
+	    ModalComponent.prototype.render = function () {
+	        return React.createElement("div", { className: "modal-container" },
+	            React.createElement("div", { className: "background" },
+	                React.createElement("div", { className: "modal card" },
+	                    this.renderCancelButton(),
+	                    this.props.children)));
+	    };
+	    return ModalComponent;
+	}(React.Component));
+	exports.ModalComponent = ModalComponent;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
 	var jQuery = __webpack_require__(8);
 	var React = __webpack_require__(5);
-	var moment = __webpack_require__(20);
-	var edit_event_1 = __webpack_require__(21);
+	var moment = __webpack_require__(21);
+	var edit_event_1 = __webpack_require__(22);
 	var tokenizer_1 = __webpack_require__(12);
-	var event_1 = __webpack_require__(22);
-	var modal_1 = __webpack_require__(24);
+	var event_1 = __webpack_require__(23);
+	var modal_1 = __webpack_require__(19);
 	var CalendarViewType;
 	(function (CalendarViewType) {
 	    CalendarViewType[CalendarViewType["week"] = 0] = "week";
@@ -1751,13 +1782,14 @@
 	        else {
 	            startDayTimestamp = this.computeTodayStartTime(viewType);
 	        }
-	        var columns = this.divideAndSort(startDayTimestamp, viewType, props.events);
+	        var _a = this.divideAndSort(startDayTimestamp, viewType, props.events), columns = _a[0], eventToRenderingInfo = _a[1];
 	        var newState = {
 	            viewType: viewType,
 	            startDayTimestamp: startDayTimestamp,
 	            columns: columns,
 	            cellHeight: 22,
 	            showCreate: false,
+	            eventToRenderingInfo: eventToRenderingInfo,
 	            editingEvent: null,
 	            createEventTimestamp: null,
 	            createEventDurationSecs: null,
@@ -1868,12 +1900,82 @@
 	                }
 	            }
 	        });
-	        // TODO: Sort the events ?
-	        return columnList;
+	        columnList.forEach(function (column) {
+	            column.sort(function (event1, event2) {
+	                var diff = event1.startTime - event2.startTime;
+	                if (diff != 0) {
+	                    return diff;
+	                }
+	                // We want the larger events to be sorted first if they have the same start time
+	                return event2.durationSecs - event1.durationSecs;
+	            });
+	        });
+	        // After sorting the events, run the division alg on each column
+	        var eventToRenderingInfo = {};
+	        columnList.forEach(function (column) {
+	            var aux = [];
+	            column.forEach(function (event) {
+	                // Base case for the initial element
+	                if (!aux.length) {
+	                    aux.push(event);
+	                    eventToRenderingInfo[event.id] = {
+	                        index: 0,
+	                        columnWidth: 1,
+	                    };
+	                    return;
+	                }
+	                var slotUsed = false;
+	                // If this event doesn't overlap with an element in the array, replace it.
+	                // During the replace, we need to calculate what the max width was for the element.
+	                aux.forEach(function (auxEvent, index) {
+	                    if (event.startTime < auxEvent.startTime + (auxEvent.durationSecs * 1000)) {
+	                    }
+	                    else {
+	                        // Doesn't overlap, will use this slot (if it's the first) and evict
+	                        if (!slotUsed) {
+	                            slotUsed = true;
+	                            // Replace out this element
+	                            aux[index] = event;
+	                            eventToRenderingInfo[event.id] = {
+	                                index: index,
+	                                columnWidth: aux.length,
+	                            };
+	                        }
+	                        else {
+	                            aux[index] = null;
+	                        }
+	                    }
+	                });
+	                // If this event overlaps with whatever is in aux, we must append
+	                if (!slotUsed) {
+	                    // Append to the end
+	                    aux.forEach(function (auxEvent) {
+	                        eventToRenderingInfo[auxEvent.id].columnWidth = aux.length + 1;
+	                    });
+	                    eventToRenderingInfo[event.id] = {
+	                        columnWidth: aux.length + 1,
+	                        index: aux.length,
+	                    };
+	                    aux.push(event);
+	                }
+	                else {
+	                    // See if we need to resize aux
+	                    while (aux.length && aux[aux.length - 1] == null) {
+	                        aux.pop();
+	                    }
+	                    aux.forEach(function (auxEvent) {
+	                        eventToRenderingInfo[auxEvent.id].columnWidth = aux.length;
+	                    });
+	                }
+	            });
+	        });
+	        return [columnList, eventToRenderingInfo];
 	    };
 	    CalendarComponent.prototype.resort = function () {
 	        // Recompute all the events and where to render them:
-	        this.state.columns = this.divideAndSort(this.state.startDayTimestamp, this.state.viewType, this.props.events);
+	        var _a = this.divideAndSort(this.state.startDayTimestamp, this.state.viewType, this.props.events), columns = _a[0], eventToRenderingInfo = _a[1];
+	        this.state.columns = columns;
+	        this.state.eventToRenderingInfo = eventToRenderingInfo;
 	        this.setState(this.state);
 	    };
 	    CalendarComponent.prototype.onDoubleClick = function (event) {
@@ -2278,11 +2380,17 @@
 	                if (bottomOverflow < 0) {
 	                    height += bottomOverflow;
 	                }
+	                // calculate the width change
+	                var renderingInfo = _this.state.eventToRenderingInfo[event.id];
+	                var widthPercentage = 100.0 / renderingInfo.columnWidth;
+	                var marginLeft = widthPercentage * renderingInfo.index;
 	                // We subtract 2 from the height purely for stylistic reasons.
 	                var style = {
 	                    "height": height - 2 + "px",
 	                    "maxHeight": height + "px",
-	                    "top": dayOffset + "px"
+	                    "top": dayOffset + "px",
+	                    "marginLeft": marginLeft + "%",
+	                    "width": widthPercentage + "%",
 	                };
 	                return (React.createElement("div", { className: "rendered-event-container", key: event.id, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough },
 	                    React.createElement("div", { className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event) },
@@ -2373,13 +2481,13 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	module.exports = moment;
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2545,7 +2653,7 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2586,7 +2694,7 @@
 
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2636,37 +2744,6 @@
 	    return AppHeader;
 	}(React.Component));
 	exports.AppHeader = AppHeader;
-
-
-/***/ },
-/* 24 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(5);
-	var ModalComponent = (function (_super) {
-	    __extends(ModalComponent, _super);
-	    function ModalComponent() {
-	        return _super.apply(this, arguments) || this;
-	    }
-	    ModalComponent.prototype.renderCancelButton = function () {
-	        return React.createElement("div", { className: "cancel-button-container", onClick: this.props.cancelFunc }, "x");
-	    };
-	    ModalComponent.prototype.render = function () {
-	        return React.createElement("div", { className: "modal-container" },
-	            React.createElement("div", { className: "background" },
-	                React.createElement("div", { className: "modal card" },
-	                    this.renderCancelButton(),
-	                    this.props.children)));
-	    };
-	    return ModalComponent;
-	}(React.Component));
-	exports.ModalComponent = ModalComponent;
 
 
 /***/ }
