@@ -1928,9 +1928,7 @@
 	                // If this event doesn't overlap with an element in the array, replace it.
 	                // During the replace, we need to calculate what the max width was for the element.
 	                aux.forEach(function (auxEvent, index) {
-	                    if (event.startTime < auxEvent.startTime + (auxEvent.durationSecs * 1000)) {
-	                    }
-	                    else {
+	                    if (!auxEvent || event.startTime >= auxEvent.startTime + (auxEvent.durationSecs * 1000)) {
 	                        // Doesn't overlap, will use this slot (if it's the first) and evict
 	                        if (!slotUsed) {
 	                            slotUsed = true;
@@ -1950,6 +1948,9 @@
 	                if (!slotUsed) {
 	                    // Append to the end
 	                    aux.forEach(function (auxEvent) {
+	                        if (!auxEvent) {
+	                            return;
+	                        }
 	                        eventToRenderingInfo[auxEvent.id].columnWidth = aux.length + 1;
 	                    });
 	                    eventToRenderingInfo[event.id] = {
@@ -1963,8 +1964,19 @@
 	                    while (aux.length && aux[aux.length - 1] == null) {
 	                        aux.pop();
 	                    }
+	                    // Everything left in the aux array at this point must be overlapping at some point
+	                    var maxWidth_1 = aux.length;
 	                    aux.forEach(function (auxEvent) {
-	                        eventToRenderingInfo[auxEvent.id].columnWidth = aux.length;
+	                        if (!auxEvent) {
+	                            return;
+	                        }
+	                        maxWidth_1 = Math.max(maxWidth_1, eventToRenderingInfo[auxEvent.id].columnWidth);
+	                    });
+	                    aux.forEach(function (auxEvent) {
+	                        if (!auxEvent) {
+	                            return;
+	                        }
+	                        eventToRenderingInfo[auxEvent.id].columnWidth = maxWidth_1;
 	                    });
 	                }
 	            });

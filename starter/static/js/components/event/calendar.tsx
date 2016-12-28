@@ -231,9 +231,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 // If this event doesn't overlap with an element in the array, replace it.
                 // During the replace, we need to calculate what the max width was for the element.
                 aux.forEach((auxEvent, index) => {
-                    if (event.startTime < auxEvent.startTime + (auxEvent.durationSecs * 1000)) {
-                        // Overlap case, we keep looking for a free spot.
-                    } else {
+                    if (!auxEvent || event.startTime >= auxEvent.startTime + (auxEvent.durationSecs * 1000)) {
                         // Doesn't overlap, will use this slot (if it's the first) and evict
                         if (!slotUsed) {
                             slotUsed = true;
@@ -254,6 +252,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 if (!slotUsed) {
                     // Append to the end
                     aux.forEach((auxEvent) => {
+                        if (!auxEvent) {
+                            return
+                        }
                         eventToRenderingInfo[auxEvent.id].columnWidth = aux.length + 1;
                     });
                     eventToRenderingInfo[event.id] = {
@@ -266,9 +267,21 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     while (aux.length && aux[aux.length - 1] == null) {
                         aux.pop()
                     }
+                    // Everything left in the aux array at this point must be overlapping at some point
+                    let maxWidth = aux.length;
                     aux.forEach((auxEvent) => {
-                        eventToRenderingInfo[auxEvent.id].columnWidth = aux.length
-                    })
+                        if (!auxEvent) {
+                            return
+                        }
+                        maxWidth = Math.max(maxWidth, eventToRenderingInfo[auxEvent.id].columnWidth);
+                    });
+
+                    aux.forEach((auxEvent) => {
+                        if (!auxEvent) {
+                            return
+                        }
+                        eventToRenderingInfo[auxEvent.id].columnWidth = maxWidth;
+                    });
                 }
             })
         });
