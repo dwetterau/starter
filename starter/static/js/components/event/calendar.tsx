@@ -44,6 +44,7 @@ const GRANULARITY = 1800; // Each cell is 30 minutes (unit in seconds)
 interface EventRenderingInfo {
     index: number
     columnWidth: number
+    extraCols: number
 }
 
 export class CalendarComponent extends React.Component<CalendarProps, CalendarState> {
@@ -215,6 +216,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         const eventToRenderingInfo: {[eventId: string]: EventRenderingInfo} = {};
 
         columnList.forEach((column) => {
+
+            // TODO: precompute the max size of aux in order to calculate extra space later.
+
             let aux: Array<Event> = [];
             column.forEach((event) => {
                 // Base case for the initial element
@@ -223,6 +227,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     eventToRenderingInfo[event.id] = {
                         index: 0,
                         columnWidth: 1,
+                        extraCols: 0,
                     };
                     return
                 }
@@ -239,7 +244,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                             aux[index] = event;
                             eventToRenderingInfo[event.id] = {
                                 index,
-                                columnWidth: aux.length, // This will probably just be resized.
+                                columnWidth: 0, // This will be resized later.
+                                extraCols: 0, // This is determined later.
                             }
                         } else {
                             aux[index] = null;
@@ -260,6 +266,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     eventToRenderingInfo[event.id] = {
                         columnWidth: aux.length + 1,
                         index: aux.length,
+                        extraCols: 0,
                     };
                     aux.push(event);
                 } else {
@@ -268,19 +275,25 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         aux.pop()
                     }
                     // Everything left in the aux array at this point must be overlapping at some point
+                    let numNotNull = 0;
                     let maxWidth = aux.length;
                     aux.forEach((auxEvent) => {
-                        if (!auxEvent) {
-                            return
+                        if (auxEvent) {
+                            numNotNull++;
+                            maxWidth = Math.max(maxWidth, eventToRenderingInfo[auxEvent.id].columnWidth);
                         }
-                        maxWidth = Math.max(maxWidth, eventToRenderingInfo[auxEvent.id].columnWidth);
                     });
 
                     aux.forEach((auxEvent) => {
                         if (!auxEvent) {
                             return
                         }
-                        eventToRenderingInfo[auxEvent.id].columnWidth = maxWidth;
+                        const newWidth = Math.max(
+                            numNotNull,
+                            eventToRenderingInfo[auxEvent.id].columnWidth
+                        );
+                        eventToRenderingInfo[auxEvent.id].columnWidth = newWidth;
+                        eventToRenderingInfo[auxEvent.id].extraCols = maxWidth - newWidth;
                     });
                 }
             })
@@ -819,8 +832,13 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 }
 
                 // calculate the width change
+                // TODO: The extra cols only work right now with the expand-to-the-right case
                 const renderingInfo = this.state.eventToRenderingInfo[event.id];
-                const widthPercentage = 100.0 / renderingInfo.columnWidth;
+                let width = renderingInfo.columnWidth;
+                if (renderingInfo.extraCols) {
+                    width += renderingInfo.extraCols;
+                }
+                const widthPercentage = (100.0 / width) * (1 + renderingInfo.extraCols);
                 const marginLeft = widthPercentage * renderingInfo.index;
 
                 // We subtract 2 from the height purely for stylistic reasons.

@@ -1913,6 +1913,7 @@
 	        // After sorting the events, run the division alg on each column
 	        var eventToRenderingInfo = {};
 	        columnList.forEach(function (column) {
+	            // TODO: precompute the max size of aux in order to calculate extra space later.
 	            var aux = [];
 	            column.forEach(function (event) {
 	                // Base case for the initial element
@@ -1921,6 +1922,7 @@
 	                    eventToRenderingInfo[event.id] = {
 	                        index: 0,
 	                        columnWidth: 1,
+	                        extraCols: 0,
 	                    };
 	                    return;
 	                }
@@ -1936,7 +1938,8 @@
 	                            aux[index] = event;
 	                            eventToRenderingInfo[event.id] = {
 	                                index: index,
-	                                columnWidth: aux.length,
+	                                columnWidth: 0,
+	                                extraCols: 0,
 	                            };
 	                        }
 	                        else {
@@ -1956,6 +1959,7 @@
 	                    eventToRenderingInfo[event.id] = {
 	                        columnWidth: aux.length + 1,
 	                        index: aux.length,
+	                        extraCols: 0,
 	                    };
 	                    aux.push(event);
 	                }
@@ -1965,18 +1969,21 @@
 	                        aux.pop();
 	                    }
 	                    // Everything left in the aux array at this point must be overlapping at some point
+	                    var numNotNull_1 = 0;
 	                    var maxWidth_1 = aux.length;
 	                    aux.forEach(function (auxEvent) {
-	                        if (!auxEvent) {
-	                            return;
+	                        if (auxEvent) {
+	                            numNotNull_1++;
+	                            maxWidth_1 = Math.max(maxWidth_1, eventToRenderingInfo[auxEvent.id].columnWidth);
 	                        }
-	                        maxWidth_1 = Math.max(maxWidth_1, eventToRenderingInfo[auxEvent.id].columnWidth);
 	                    });
 	                    aux.forEach(function (auxEvent) {
 	                        if (!auxEvent) {
 	                            return;
 	                        }
-	                        eventToRenderingInfo[auxEvent.id].columnWidth = maxWidth_1;
+	                        var newWidth = Math.max(numNotNull_1, eventToRenderingInfo[auxEvent.id].columnWidth);
+	                        eventToRenderingInfo[auxEvent.id].columnWidth = newWidth;
+	                        eventToRenderingInfo[auxEvent.id].extraCols = maxWidth_1 - newWidth;
 	                    });
 	                }
 	            });
@@ -2393,8 +2400,13 @@
 	                    height += bottomOverflow;
 	                }
 	                // calculate the width change
+	                // TODO: The extra cols only work right now with the expand-to-the-right case
 	                var renderingInfo = _this.state.eventToRenderingInfo[event.id];
-	                var widthPercentage = 100.0 / renderingInfo.columnWidth;
+	                var width = renderingInfo.columnWidth;
+	                if (renderingInfo.extraCols) {
+	                    width += renderingInfo.extraCols;
+	                }
+	                var widthPercentage = (100.0 / width) * (1 + renderingInfo.extraCols);
 	                var marginLeft = widthPercentage * renderingInfo.index;
 	                // We subtract 2 from the height purely for stylistic reasons.
 	                var style = {
@@ -2686,7 +2698,10 @@
 	        return React.createElement(tag_1.TagComponent, { tag: tag, key: tagId });
 	    };
 	    EventComponent.prototype.renderName = function () {
-	        return React.createElement("div", { className: "name" }, this.props.event.name);
+	        return React.createElement("div", { className: "name" },
+	            this.props.event.name,
+	            " - ",
+	            this.props.event.id);
 	    };
 	    ;
 	    EventComponent.prototype.renderTags = function () {
