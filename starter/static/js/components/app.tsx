@@ -4,7 +4,7 @@ import * as jQuery from "jquery";
 import {Event, Tag, Task, User, TagsById} from "../models";
 import {TagGraphComponent} from "./tag/tag_graph";
 import {TaskBoardComponent} from "./task/task_board"
-import {CalendarComponent} from "./event/calendar";
+import {CalendarComponent, CalendarViewType} from "./event/calendar";
 import {AppHeader} from "./app_header";
 
 export interface AppProps {
@@ -13,6 +13,7 @@ export interface AppProps {
     events: Array<Event>,
     tags: Array<Tag>,
     viewMode: AppViewMode,
+    calendarDayView?: boolean,
 }
 export interface AppState {
     tasks: Array<Task>,
@@ -153,10 +154,15 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     renderCalendar() {
+        let viewType = CalendarViewType.week;
+        if (this.props.calendarDayView) {
+            viewType = CalendarViewType.day;
+        }
         return <CalendarComponent
             meUser={this.props.meUser}
             events={this.state.events}
             tagsById={this.state.tagsById}
+            initialViewType={viewType}
             createEvent={this.createEvent.bind(this)}
             updateEvent={this.updateEvent.bind(this)}
             deleteEvent={this.deleteEvent.bind(this)}

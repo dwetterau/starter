@@ -1,6 +1,13 @@
+* {
+    font-family: "Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,sans-serif!important;
+    letter-spacing: .3px;
+    color: #47525d;
+    font-weight: 100;
+}
+
 body {
-    background: #fbf6e3;
-    color: #657b83;
+    background: #f6f9fc;
+    margin: 0;
 }
 
 div.card {
@@ -9,8 +16,7 @@ div.card {
     margin: 0 0 10px 0;
     padding: 20px;
     border-radius: 3px;
-    background: #eee8d5;
-    color: #586e75;
+    background: #fff;
     -webkit-tap-highlight-color: transparent;
     box-sizing: border-box;
     display: block;
@@ -21,6 +27,8 @@ div.header-container {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    padding: 1em 1em 0;
+    background-color: #fff;
 }
 
 h1.header-title {
@@ -36,7 +44,6 @@ div.header-container div.view-mode-selector {
 div.header-container div.view-mode-selector a.view-mode-option {
     margin-right: 1em;
     text-decoration: none;
-    color: #657b83;
 }
 
 div.header-container div.view-mode-selector a.view-mode-option.-selected {
@@ -52,6 +59,8 @@ div.task-board {
 
 div.task-board div.task-board-options {
     display: flex;
+    background-color: #fff;
+    padding: 0 1em .5em;
 }
 
 div.task-board div.task-board-options div.view-type-selector {
@@ -131,6 +140,8 @@ div.calendar {
 
 div.calendar div.options {
     display: flex;
+    background-color: #fff;
+    padding: 0 1em .5em;
 }
 
 div.calendar div.options div.view-type-selector {
@@ -286,7 +297,7 @@ div.calendar div.column-container.single-day div.current-time-cursor {
 }
 
 div.calendar div.column-container tr td.-selected {
-    background-color: #eee8d5;
+    background-color: rgba(0, 0, 0, .2);
     border: none;
 }
 
@@ -299,8 +310,6 @@ div.calendar div.rendered-event-container div.draggable-event-end {
 
 div.calendar div.rendered-event-container div.tag.card {
     overflow-y: hidden;
-    background: #fbf6e3;
-    color: #657b83;
 }
 
 /* End of Calendar CSS */
@@ -377,6 +386,7 @@ div.modal-container div.background {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, .2);
+    z-index: 3;
 
     display: flex;
     align-items: center;

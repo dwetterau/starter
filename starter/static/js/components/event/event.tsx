@@ -16,7 +16,7 @@ export class EventComponent extends React.Component<EventProps, {}> {
 
     renderName() {
         return <div className="name">
-            {this.props.event.name} - {this.props.event.id}
+            {this.props.event.name}
         </div>
     };
 

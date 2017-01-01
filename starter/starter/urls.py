@@ -28,6 +28,8 @@ urlpatterns = [
     # Other urls that are resolved with react-router
     url(r'^tasks/?$', views.index),
     url(r'^cal/?$', views.index),
+    url(r'^cal/day?$', views.index),
+    url(r'^cal/week?$', views.index),
     url(r'^tags/?$', views.index),
 
 

@@ -12,7 +12,9 @@ export default class AppRenderer {
             <Router history={browserHistory}>
                 <Route path="/" component={AppRenderer.renderTaskBoard(props)} />
                 <Route path="/tasks" component={AppRenderer.renderTaskBoard(props)} />
-                <Route path="/cal" component={AppRenderer.renderCalendar(props)} />
+                <Route path="/cal" component={AppRenderer.renderCalendar(props, false)} />
+                <Route path="/cal/day" component={AppRenderer.renderCalendar(props, true)} />
+                <Route path="/cal/week" component={AppRenderer.renderCalendar(props, false)} />
                 <Route path="/tags" component={AppRenderer.renderTagGraph(props)} />
             </Router>,
             document.getElementById("render-target")
@@ -23,8 +25,15 @@ export default class AppRenderer {
         return () => {return <App {...props} viewMode={AppViewMode.taskView} />}
     }
 
-    static renderCalendar(props: AppProps) {
-        return () => {return <App {...props} viewMode={AppViewMode.eventView} />}
+    static renderCalendar(props: AppProps, isDayView: boolean) {
+        if (isDayView) {
+            return () => {
+                return <App {...props} viewMode={AppViewMode.eventView} calendarDayView={true}/>
+            }
+        }
+        return () => {
+            return <App {...props} viewMode={AppViewMode.eventView} calendarDayView={false}/>
+        }
     }
 
 
