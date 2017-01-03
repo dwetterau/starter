@@ -6,6 +6,18 @@ export interface ModalProps {
 
 export class ModalComponent extends React.Component<ModalProps, {}> {
 
+
+    componentDidMount() {
+        // Focus the first input element after the modal appears.
+        let modalElements = document.getElementsByClassName("modal");
+        if (modalElements.length > 0) {
+            let inputElements = modalElements[0].getElementsByTagName("input");
+            if (inputElements.length > 0) {
+                inputElements[0].focus();
+            }
+        }
+    }
+
     renderCancelButton() {
         return <div
             className="cancel-button-container"

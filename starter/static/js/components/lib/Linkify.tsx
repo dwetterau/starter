@@ -5,16 +5,15 @@ import * as tlds from 'tlds';
 const linkify: any = new LinkifyIt();
 linkify.tlds(tlds);
 
-
 interface LinkifyProps {
-     className: any,
-     component: any,
-     properties: any,
-     urlRegex: any,
-     emailRegex: any
+     className: string,
+     component?: any,
+     properties?: {},
+     urlRegex?: {},
+     emailRegex?: {},
 }
 
-export class Linkify extends React.Component<LinkifyProps, {}> {
+export class Linkify extends React.Component<LinkifyProps, any> {
     static MATCH = 'LINKIFY_MATCH';
 
     static defaultProps = {
@@ -71,16 +70,20 @@ export class Linkify extends React.Component<LinkifyProps, {}> {
         return (elements.length === 1) ? elements[0] : elements;
     }
 
-    parse(children) {
+    parse(children: any): any {
         let parsed = children;
 
         if (typeof children === 'string') {
             parsed = this.parseString(children);
-        } else if (React.isValidElement(children) && (children.type !== 'a') && (children.type !== 'button')) {
+        } else if (
+            React.isValidElement(children) && (children.type !== 'a') &&
+            (children.type !== 'button')
+        ) {
+            let c: any = children;
             parsed = React.cloneElement(
-                children,
+                c,
                 {key: `parse${++this.parseCounter}`},
-                this.parse(children.props.children)
+                this.parse(c.props.children)
             );
         } else if (children instanceof Array) {
             parsed = children.map(child => {

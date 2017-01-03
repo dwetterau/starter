@@ -7,7 +7,7 @@ import {EditEventComponent} from "./edit_event"
 import {Event, User, TagsById, Tag} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
-import {ModalComponent} from "../modal";
+import {ModalComponent} from "../lib/modal";
 
 export interface CalendarProps {
     meUser: User,

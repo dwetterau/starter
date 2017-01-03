@@ -5,7 +5,7 @@ import {EditTaskComponent} from "./edit_task";
 import {Task, stateNameList, User, priorityNameList, TagsById, Tag} from "../../models";
 import {TaskComponent} from "./task";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
-import {ModalComponent} from "../modal";
+import {ModalComponent} from "../lib/modal";
 
 export interface TaskBoardProps {
     meUser: User,
