@@ -2,6 +2,7 @@ import * as React from "react";
 import {Task, priorityNameList, stateNameList, TagsById} from "../../models";
 import {TaskBoardViewType} from "./task_board";
 import {TagComponent} from "../tag/tag";
+import {Linkify} from "../lib/Linkify";
 
 export interface TaskProps {
     task: Task,
@@ -76,7 +77,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         return <div className="task card">
             {this.renderTaskId()}
             <div className="task-title">{this.props.task.title}</div>
-            <div className="task-description">{this.props.task.description}</div>
+            <Linkify className="task-description">{this.props.task.description}</Linkify>
             {this.renderPriority()}
             {this.renderState()}
             {this.renderTags()}

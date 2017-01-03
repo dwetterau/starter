@@ -34,6 +34,7 @@ module.exports = {
         "react-dom": "ReactDOM",
         "jquery": "jQuery",
         "moment": "moment",
-        "react-router": "ReactRouter"
+        "react-router": "ReactRouter",
+        "react-linkify": "ReactLinkify"
     }
 };
