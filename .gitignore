@@ -4,3 +4,4 @@ node_modules/
 .idea/
 *.pyc
 site.db
+npm-debug.log
