@@ -1,3 +1,4 @@
+import * as jQuery from "jquery";
 import * as React from "react";
 
 export interface ModalProps {
@@ -16,6 +17,17 @@ export class ModalComponent extends React.Component<ModalProps, {}> {
                 inputElements[0].focus();
             }
         }
+
+        // Add an escape handler to close the modal
+        jQuery(document).bind("keyup.modalComponent", (e) => {
+            if (e.which == 27) {
+                this.props.cancelFunc();
+            }
+        })
+    }
+
+    componentWillUnmount() {
+        jQuery(document).unbind("keyup.modalComponent");
     }
 
     renderCancelButton() {

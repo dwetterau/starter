@@ -41,7 +41,7 @@ export enum CalendarViewType {
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-const GRANULARITY = 1800; // Each cell is 30 minutes (unit in seconds)
+const GRANULARITY = 900; // Each cell is 15 minutes (unit in seconds)
 
 interface EventRenderingInfo {
     index: number

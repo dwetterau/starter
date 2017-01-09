@@ -118,13 +118,15 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
 
         const shouldHideTask = (task: Task) => {
-            if (task.state == 1000 && (!this.state || this.state.shouldHideClosedTasks)) {
-                return true;
-            }
-
             if (!this.state) {
                 // Other checks can only return true if state is defined.
                 return false;
+            }
+
+            if (task.state == 1000) {
+                if (type == TaskBoardViewType.priority && this.state.shouldHideClosedTasks) {
+                    return true;
+                }
             }
 
             if (this.state.selectedTag) {
@@ -235,7 +237,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         this.state.editingTask = task;
         this.setState(this.state)
     }
-
+t
     changeViewType(type: TaskBoardViewType) {
         const [headers, columnTypes, columns] = this.divideByType(this.props.tasks, type);
         this.state.viewType = type;
@@ -339,6 +341,11 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     renderHideClosedTasks() {
+        if (this.state.viewType == TaskBoardViewType.status) {
+            // Don't show an empty column...
+            return
+        }
+
         return (
             <div className="hide-closed-tasks">
                 <label htmlFor="hide-closed">Hide closed?</label>
@@ -356,8 +363,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return (
             <div className="task-board-options">
                 {this.renderTypeSelector()}
-                {this.renderHideClosedTasks()}
                 {this.renderTagSelector()}
+                {this.renderHideClosedTasks()}
             </div>
         )
     }

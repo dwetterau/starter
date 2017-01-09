@@ -68,6 +68,12 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
         }
     }
 
+    onKeyDownCreate(event: any) {
+        if (event.key == "Enter" && this.props.createMode) {
+            this.submitForm("create");
+        }
+    }
+
     updateAttr(attrName: string, event: any) {
         this.state.task[attrName] = event.target.value;
         this.setState(this.state);
@@ -107,9 +113,9 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
 
     renderFormTitle() {
         if (this.props.createMode) {
-            return <h3>Create Task Form:</h3>
+            return <h3>Create Task</h3>
         } else {
-            return <h3>Task Edit Form:</h3>
+            return <h3>Editing T{this.state.task.id}</h3>
         }
     }
 
@@ -140,6 +146,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
                 <input
                     type="text" name="title"
                     value={this.state.task.title}
+                    onKeyDown={this.onKeyDownCreate.bind(this)}
                     onChange={this.updateAttr.bind(this, "title")}
                 />
             </div>
@@ -178,6 +185,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
             </div>
 
             <div className="tag-tokenizer-container">
+                <label>Tags:</label>
                 <TokenizerComponent
                     onChange={this.retrieveTagNames.bind(this)}
                     initialValues={this.getCurrentTags()}

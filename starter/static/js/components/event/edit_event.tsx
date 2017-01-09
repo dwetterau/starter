@@ -102,7 +102,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         this.setState(this.state)
     }
 
-    onKeyDown(event: any) {
+    onKeyDownCreate(event: any) {
         if (event.key == "Enter" && this.props.createMode) {
             this.submitForm("create");
         }
@@ -147,9 +147,9 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
 
     renderFormTitle() {
         if (this.props.createMode) {
-            return <h3>Create Event Form:</h3>
+            return <h3>Create Event</h3>
         } else {
-            return <h3>Event Edit Form:</h3>
+            return <h3>Editing E{this.state.event.id}</h3>
         }
     }
 
@@ -181,12 +181,13 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                     id="event-name"
                     type="text" name="name"
                     value={this.state.event.name}
-                    onKeyDown={this.onKeyDown.bind(this)}
+                    onKeyDown={this.onKeyDownCreate.bind(this)}
                     onChange={this.updateAttr.bind(this, "name")}
                 />
             </div>
 
             <div className="tag-tokenizer-container">
+                <label>Tags:</label>
                 <TokenizerComponent
                     onChange={this.retrieveTagNames.bind(this)}
                     initialValues={this.getCurrentTags()}
