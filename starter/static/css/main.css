@@ -413,6 +413,10 @@ div.tokenizer-container div.autocomplete-token-container div.autocomplete-token:
     cursor: pointer;
     background-color: #f6f9fc;
 }
+
+div.tokenizer-container div.autocomplete-token-container div.autocomplete-token.-selected {
+    background-color: #f6f9fc;
+}
 /* End of Tokenizer CSS */
 
 /* Modal CSS */

@@ -14,6 +14,7 @@ export interface TokenizerState {
     tokens: Array<Tokenizable>,
     pendingToken: string,
     autoCompleteTokens: Array<Tokenizable>,
+    selectedTokenIndex: number,
 }
 
 export class TokenizerComponent extends React.Component<TokenizerProps, TokenizerState> {
@@ -31,6 +32,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
             tokens: [],
             pendingToken: '',
             autoCompleteTokens: [],
+            selectedTokenIndex: -1,
         };
         if (props.initialValues) {
             props.initialValues.forEach((token) => {
@@ -44,6 +46,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         if (this.state) {
             newState.pendingToken = this.state.pendingToken;
             newState.autoCompleteTokens = this.state.autoCompleteTokens;
+            newState.selectedTokenIndex = this.state.selectedTokenIndex;
         }
 
         return newState;
@@ -96,6 +99,13 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         this.state.pendingToken = event.target.value.trim();
         this.state.autoCompleteTokens = this.updateAutoComplete(event.target.value);
 
+        // Update the cursor after the resize
+        if (this.state.selectedTokenIndex == null) {
+            this.state.selectedTokenIndex = -1;
+        } else if (this.state.selectedTokenIndex >= this.state.autoCompleteTokens.length) {
+            this.state.selectedTokenIndex = this.state.autoCompleteTokens.length - 1;
+        }
+
         this.setState(this.state);
     }
 
@@ -116,6 +126,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         });
         this.state.pendingToken = '';
         this.state.autoCompleteTokens = [];
+        this.state.selectedTokenIndex = -1;
         this.setState(this.state);
 
         this.props.onChange(this.state.tokens);
@@ -133,6 +144,13 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
                 return;
             }
 
+            if (this.state.selectedTokenIndex >= 0) {
+                // We just selected a token.
+                this.appendToken(this.state.autoCompleteTokens[this.state.selectedTokenIndex]);
+                return
+            }
+
+            // Otherwise, attempt to form a token out of what's in the text box.
             const newToken = this.state.pendingToken;
             let foundMatch = false;
             let maybeToken: Tokenizable = {label: newToken, value: newToken};
@@ -153,6 +171,28 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
             } else {
                 // TODO: Do something if we didn't find a matching token.
             }
+        }
+    }
+
+    onKeyDown(event: any) {
+        if (event.key == "ArrowDown") {
+            if (!this.state.autoCompleteTokens.length) {
+                return
+            }
+            this.state.selectedTokenIndex = Math.min(
+                this.state.selectedTokenIndex + 1,
+                this.state.autoCompleteTokens.length - 1,
+            );
+            this.setState(this.state);
+        } else if (event.key == "ArrowUp") {
+            if (!this.state.autoCompleteTokens.length) {
+                return
+            }
+            this.state.selectedTokenIndex = Math.max(
+                this.state.selectedTokenIndex - 1,
+                0,
+            );
+            this.setState(this.state);
         }
     }
 
@@ -212,6 +252,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
                        value={this.state.pendingToken}
                        onChange={this.updatePendingToken.bind(this)}
                        onKeyPress={this.onKeyPress.bind(this)}
+                       onKeyDown={this.onKeyDown.bind(this)}
                 />
             </div>
         )
@@ -224,9 +265,14 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
 
         return (
             <div className="autocomplete-token-container">
-                {this.state.autoCompleteTokens.map((token) => {
+                {this.state.autoCompleteTokens.map((token, index) => {
+                    let className = "autocomplete-token";
+                    if (index == this.state.selectedTokenIndex) {
+                        className += " -selected";
+                    }
+
                     return <div
-                        className="autocomplete-token"
+                        className={className}
                         key={token.value}
                         onClick={this.onClick.bind(this, token)}
                     >
