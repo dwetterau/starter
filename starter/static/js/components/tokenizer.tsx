@@ -13,6 +13,7 @@ export interface TokenizerProps {
 export interface TokenizerState {
     tokens: Array<Tokenizable>,
     pendingToken: string,
+    autoCompleteTokens: Array<Tokenizable>,
 }
 
 export class TokenizerComponent extends React.Component<TokenizerProps, TokenizerState> {
@@ -29,6 +30,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         const newState: TokenizerState = {
             tokens: [],
             pendingToken: '',
+            autoCompleteTokens: [],
         };
         if (props.initialValues) {
             props.initialValues.forEach((token) => {
@@ -41,14 +43,87 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         }
         if (this.state) {
             newState.pendingToken = this.state.pendingToken;
+            newState.autoCompleteTokens = this.state.autoCompleteTokens;
         }
 
         return newState;
     }
 
+    updateAutoComplete(newPendingToken): Array<Tokenizable> {
+        newPendingToken = newPendingToken.toLowerCase();
+        if (!this.props.possibleTokens || newPendingToken.length == 0) {
+            // No tokens to autocomplete to.
+            return []
+        }
+
+        // Really dumb linear time search!
+        let rankAndTokens: Array<[number, Tokenizable]> = [];
+        this.props.possibleTokens.forEach((possibleToken) => {
+            let index = possibleToken.label.toLowerCase().indexOf(newPendingToken);
+            if (index >= 0) {
+                // Note: This makes this O(n^2) for now but whatever.
+                if (!this.tokenAlreadyAdded(possibleToken)) {
+                    rankAndTokens.push([index, possibleToken]);
+                }
+            }
+        });
+
+        // Sort by the index, which should put prefix matches first.
+        rankAndTokens.sort((rankAndToken1, rankAndToken2) => {
+            let [rank1, token1] = rankAndToken1;
+            let [rank2, token2] = rankAndToken2;
+            if (rank1 != rank2) {
+                return rank1 - rank2;
+            }
+            if (token1.label < token2.label) {
+                return -1;
+            } else if (token1.label == token2.label) {
+                return 0;
+            } else {
+                return 1;
+            }
+        });
+
+        // Only keep the top 5 matches.
+        rankAndTokens = rankAndTokens.slice(0, 5);
+
+        return rankAndTokens.map((rankAndToken) => {
+            return rankAndToken[1];
+        });
+    }
+
     updatePendingToken(event: any) {
-        this.state.pendingToken = event.target.value;
+        this.state.pendingToken = event.target.value.trim();
+        this.state.autoCompleteTokens = this.updateAutoComplete(event.target.value);
+
         this.setState(this.state);
+    }
+
+    tokenAlreadyAdded(token: Tokenizable) {
+        let found = false;
+        this.state.tokens.forEach((t) => {
+            if (token.value == t.value) {
+                found = true;
+            }
+        });
+        return found;
+    }
+
+    appendToken(token: Tokenizable) {
+        this.state.tokens.push({
+            label: token.label,
+            value: token.value,
+        });
+        this.state.pendingToken = '';
+        this.state.autoCompleteTokens = [];
+        this.setState(this.state);
+
+        this.props.onChange(this.state.tokens);
+    }
+
+    onClick(token: Tokenizable, event: any) {
+        event.preventDefault();
+        this.appendToken(token);
     }
 
     onKeyPress(event: any) {
@@ -58,29 +133,23 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
                 return;
             }
 
-            const newToken = this.state.pendingToken.trim();
+            const newToken = this.state.pendingToken;
             let foundMatch = false;
+            let maybeToken: Tokenizable = {label: newToken, value: newToken};
 
             if (!this.props.possibleTokens) {
                 foundMatch = true;
-                this.state.tokens.push({label: newToken, value: newToken});
             } else {
                 this.props.possibleTokens.forEach((possibleToken: Tokenizable) => {
                     if (possibleToken.label.toLowerCase() == newToken.toLowerCase()) {
                         foundMatch = true;
-                        this.state.tokens.push({
-                            label: possibleToken.label,
-                            value: possibleToken.value,
-                        })
+                        maybeToken = possibleToken;
                     }
                 })
             }
 
-            if (foundMatch) {
-                this.state.pendingToken = '';
-                this.setState(this.state);
-
-                this.props.onChange(this.state.tokens);
+            if (foundMatch && !this.tokenAlreadyAdded(maybeToken)) {
+                this.appendToken(maybeToken);
             } else {
                 // TODO: Do something if we didn't find a matching token.
             }
@@ -127,9 +196,13 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         )
     }
 
+    shouldHidePendingToken() {
+       return this.props.tokenLimit && this.state.tokens.length >= this.props.tokenLimit;
+    }
+
     renderPendingToken() {
         // If we are at the maximum number of tokens, don't render the container
-        if (this.props.tokenLimit && this.state.tokens.length >= this.props.tokenLimit) {
+        if (this.shouldHidePendingToken()) {
             return
         }
 
@@ -144,11 +217,34 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         )
     }
 
+    renderAutoComplete() {
+        if (this.shouldHidePendingToken() || !this.state.autoCompleteTokens.length) {
+            return
+        }
+
+        return (
+            <div className="autocomplete-token-container">
+                {this.state.autoCompleteTokens.map((token) => {
+                    return <div
+                        className="autocomplete-token"
+                        key={token.value}
+                        onClick={this.onClick.bind(this, token)}
+                    >
+                        {token.label}
+                    </div>
+                })}
+            </div>
+        )
+    }
+
     render() {
         return (
             <div className="tokenizer-container">
                 {this.renderTokens()}
-                {this.renderPendingToken()}
+                <div className="pending-state-container">
+                    {this.renderPendingToken()}
+                    {this.renderAutoComplete()}
+                </div>
             </div>
         )
     }

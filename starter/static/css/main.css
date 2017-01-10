@@ -367,6 +367,10 @@ div.tokenizer-container {
     display: flex;
 }
 
+div.tokenizer-container div.pending-token-container {
+    width: 100%;
+}
+
 div.tokens-container {
     display: flex;
     margin-right: .5em;
@@ -382,6 +386,32 @@ div.rendered-token {
 div.rendered-token div.remove-token {
     margin-left: .25em;
     cursor: pointer;
+}
+
+div.tokenizer-container div.pending-state-container {
+    width: 100%;
+}
+
+div.tokenizer-container div.autocomplete-token-container {
+    position: absolute;
+    background: #fff;
+    border-radius: 0 3px 3px;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-top: none;
+}
+
+div.tokenizer-container div.autocomplete-token-container div.autocomplete-token {
+    padding: .5em;
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+}
+
+div.tokenizer-container div.autocomplete-token-container:last-child {
+    border-bottom: none;
+}
+
+div.tokenizer-container div.autocomplete-token-container div.autocomplete-token:hover {
+    cursor: pointer;
+    background-color: #f6f9fc;
 }
 /* End of Tokenizer CSS */
 
@@ -420,6 +450,10 @@ div.modal label {
 
 div.modal input,textarea,select {
     width: 100%;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, .4);
+    margin: 0;
+    padding: 0;
 }
 
 div.modal input[type=button] {
