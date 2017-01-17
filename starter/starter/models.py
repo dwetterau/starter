@@ -194,3 +194,33 @@ class EventGlobalId(models.Model):
     local_id = models.IntegerField(db_index=True)
 
     GLOBAL_WLOCK = Lock()
+
+
+class AuthToken(models.Model):
+
+    @enum.unique
+    class Type(enum.Enum):
+        STRAVA = 1
+
+    user = models.ForeignKey(User, related_name="auth_tokens",
+                             verbose_name="The user authorized by the token")
+    type = models.SmallIntegerField("The type of auth token", db_index=True)
+    token = models.CharField("The token given out by the provider", max_length=128)
+
+
+class StravaActivity(models.Model):
+    strava_id = models.IntegerField("The id of the activity", db_index=True, unique=True)
+    athlete = models.IntegerField("The strava id of the athlete that performed the activity")
+
+    # Connect this to our internal models
+    # Note: Since there is only one importer, we should only import activities by the user.
+    importer = models.ForeignKey(User, related_name="strava_activities",
+                                 verbose_name="The user that imported the data")
+    event = models.ForeignKey(Event, related_name="strava_activity",
+                              verbose_name="The strava activity for this event")
+
+    # Relevant cached fields
+    moving_time = models.IntegerField("The amount of time spent moving")
+    elapsed_time = models.IntegerField("The amount of time the total activity took")
+    distance = models.FloatField("The total distance of the activity")
+    start_date = models.DateTimeField("The time the activity started")
