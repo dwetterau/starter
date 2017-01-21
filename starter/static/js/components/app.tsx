@@ -6,6 +6,7 @@ import {TagGraphComponent} from "./tag/tag_graph";
 import {TaskBoardComponent} from "./task/task_board"
 import {CalendarComponent, CalendarViewType} from "./event/calendar";
 import {AppHeader} from "./app_header";
+import {NotifierComponent} from "./notifier";
 
 export interface AppProps {
     meUser: User,
@@ -142,6 +143,13 @@ export class App extends React.Component<AppProps, AppState> {
         // TODO: Filter out all tags and children or something
     }
 
+    renderNotifier() {
+        return <NotifierComponent
+            tasks={this.state.tasks}
+            events={this.state.events}
+        />
+    }
+
     renderTaskBoard() {
         return <TaskBoardComponent
             meUser={this.props.meUser}
@@ -198,6 +206,7 @@ export class App extends React.Component<AppProps, AppState> {
     render() {
         return <div>
             <AppHeader meUser={this.props.meUser} viewMode={this.props.viewMode} />
+            {this.renderNotifier()}
             {this.renderBoard()}
         </div>
     }

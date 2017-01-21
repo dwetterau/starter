@@ -41,6 +41,7 @@ export class Event {
     readonly authorId: number;
     ownerId: number;
     tagIds: Array<number>;
+    // timestamp in milliseconds
     startTime: number;
     durationSecs: number;
 }

@@ -102,7 +102,10 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     componentDidMount() {
         const cursor = document.getElementsByClassName("current-time-cursor");
         if (cursor.length) {
-            cursor[0].scrollIntoView();
+            // Scroll the calendar view so that the current time is in the middle.
+            const container = document.getElementsByClassName("all-columns-container")[0];
+            const top = jQuery(cursor[0]).data("top");
+            container.scrollTop = top - container.clientHeight / 2;
         }
     }
 
@@ -804,7 +807,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             const style = {
                 "top": `${offset}px`,
             };
-            return <div className="current-time-cursor" style={style}></div>
+            return <div
+                className="current-time-cursor"
+                style={style}
+                data-top={offset}
+            />
         }
     }
 

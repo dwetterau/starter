@@ -510,6 +510,7 @@
 	var task_board_1 = __webpack_require__(14);
 	var calendar_1 = __webpack_require__(28);
 	var app_header_1 = __webpack_require__(32);
+	var notifier_1 = __webpack_require__(33);
 	var AppViewMode;
 	(function (AppViewMode) {
 	    AppViewMode[AppViewMode["taskView"] = 0] = "taskView";
@@ -632,6 +633,9 @@
 	    App.prototype.deleteTag = function (tag) {
 	        // TODO: Filter out all tags and children or something
 	    };
+	    App.prototype.renderNotifier = function () {
+	        return React.createElement(notifier_1.NotifierComponent, { tasks: this.state.tasks, events: this.state.events });
+	    };
 	    App.prototype.renderTaskBoard = function () {
 	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
 	    };
@@ -659,6 +663,7 @@
 	    App.prototype.render = function () {
 	        return React.createElement("div", null,
 	            React.createElement(app_header_1.AppHeader, { meUser: this.props.meUser, viewMode: this.props.viewMode }),
+	            this.renderNotifier(),
 	            this.renderBoard());
 	    };
 	    return App;
@@ -4446,7 +4451,10 @@
 	    CalendarComponent.prototype.componentDidMount = function () {
 	        var cursor = document.getElementsByClassName("current-time-cursor");
 	        if (cursor.length) {
-	            cursor[0].scrollIntoView();
+	            // Scroll the calendar view so that the current time is in the middle.
+	            var container = document.getElementsByClassName("all-columns-container")[0];
+	            var top_1 = jQuery(cursor[0]).data("top");
+	            container.scrollTop = top_1 - container.clientHeight / 2;
 	        }
 	    };
 	    CalendarComponent.prototype.computeTodayStartTime = function (viewType) {
@@ -5008,7 +5016,7 @@
 	            var style = {
 	                "top": offset + "px",
 	            };
-	            return React.createElement("div", { className: "current-time-cursor", style: style });
+	            return React.createElement("div", { className: "current-time-cursor", style: style, "data-top": offset });
 	        }
 	    };
 	    CalendarComponent.prototype.renderColumn = function (columnIndex, column, singleDay) {
@@ -5408,6 +5416,117 @@
 	    return AppHeader;
 	}(React.Component));
 	exports.AppHeader = AppHeader;
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var moment = __webpack_require__(29);
+	var React = __webpack_require__(5);
+	var LOOP_FREQ = 60; // 1 minute
+	var FORCED_INTERVAL = 300; // We will at most send 1 notification every (this) many seconds
+	var LAG_THRESHOLD = 900; // After this many seconds, we will 100% chance send a notification
+	var NotifierComponent = (function (_super) {
+	    __extends(NotifierComponent, _super);
+	    function NotifierComponent(props) {
+	        var _this = _super.call(this, props) || this;
+	        _this.state = {
+	            enabled: false,
+	            // We don't set this to 0 so that we don't immediately spam notifications on startup.
+	            // This is also needed post-redirect, so that we don't keep spamming on the way to
+	            // the user fixing the issue.
+	            lastNotificationTime: moment().unix() - FORCED_INTERVAL,
+	        };
+	        return _this;
+	    }
+	    NotifierComponent.prototype.componentDidMount = function () {
+	        this.requestNotificationPermission();
+	        this.beginLoop();
+	    };
+	    NotifierComponent.prototype.requestNotificationPermission = function () {
+	        var _this = this;
+	        Notification.requestPermission().then(function (result) {
+	            if (result == "granted") {
+	                // mark notifications as enabled
+	                _this.state.enabled = true;
+	                _this.setState(_this.state);
+	            }
+	        });
+	    };
+	    NotifierComponent.prototype.recordSendingNotification = function () {
+	        this.state.lastNotificationTime = moment().unix();
+	        this.setState(this.state);
+	    };
+	    NotifierComponent.prototype.spawnNotification = function (body, onClick) {
+	        var n = new Notification("Starter", { body: body });
+	        // Automatically close the notification after 5 seconds.
+	        n.onclick = onClick;
+	        setTimeout(n.close.bind(n), 5000);
+	    };
+	    NotifierComponent.prototype.sendOutOfEventNotification = function () {
+	        this.recordSendingNotification();
+	        this.spawnNotification("No event info, not tracking time. :(", function (e) {
+	            e.target.close();
+	            window.location.href = "/cal/day";
+	        });
+	    };
+	    NotifierComponent.prototype.timeSinceLastEventSec = function () {
+	        var nowTimestamp = moment().unix() * 1000;
+	        var minTimeSinceLastEvent = Number.MAX_VALUE;
+	        this.props.events.forEach(function (event) {
+	            if (nowTimestamp > event.startTime) {
+	                var endTimestamp = event.startTime + event.durationSecs * 1000;
+	                if (nowTimestamp < endTimestamp) {
+	                    // We are currently in this event, use -1 as a sentinel value
+	                    minTimeSinceLastEvent = -1;
+	                }
+	                else {
+	                    minTimeSinceLastEvent = Math.min(minTimeSinceLastEvent, nowTimestamp - endTimestamp);
+	                }
+	            }
+	        });
+	        return minTimeSinceLastEvent / 1000;
+	    };
+	    NotifierComponent.prototype.beginLoop = function () {
+	        var _this = this;
+	        var loop = function () {
+	            if (!_this.state.enabled) {
+	                return;
+	            }
+	            // If it hasn't been more than FORCED_INTERVAL seconds, we aren't allowed to send
+	            // another notification
+	            if (moment().unix() - _this.state.lastNotificationTime < FORCED_INTERVAL) {
+	                return;
+	            }
+	            var timeSinceLastEvent = _this.timeSinceLastEventSec();
+	            if (timeSinceLastEvent < 0) {
+	                // Currently in event still
+	                return;
+	            }
+	            // Regardless of the loop freq, we want to make the notification progressively more
+	            // likely to happen until we are in an event.
+	            // We will target 100% notification probability after LAG_THRESHOLD seconds and linear
+	            // probability back down.
+	            if (Math.random() < timeSinceLastEvent / LAG_THRESHOLD) {
+	                _this.sendOutOfEventNotification();
+	            }
+	            // TODO: Also notify if we don't have a task in progress?
+	        };
+	        setInterval(loop.bind(this), LOOP_FREQ * 1000);
+	    };
+	    NotifierComponent.prototype.render = function () {
+	        return React.createElement("div", null);
+	    };
+	    return NotifierComponent;
+	}(React.Component));
+	exports.NotifierComponent = NotifierComponent;
 
 
 /***/ }
