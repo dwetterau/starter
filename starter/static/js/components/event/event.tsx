@@ -31,10 +31,28 @@ export class EventComponent extends React.Component<EventProps, {}> {
         )
     }
 
+    renderTasks() {
+        if (!this.props.event.taskIds.length) {
+            return;
+        }
+        return (
+            <div className="event-tasks-container">
+                {this.props.event.taskIds.map((taskId) => {
+                    return <div className="task-id-card card">
+                        {`T${taskId}`}
+                    </div>
+                })}
+            </div>
+        )
+    }
+
     render() {
         return <div className="event-container">
             {this.renderName()}
-            {this.renderTags()}
+            <div className="event-card-container">
+                {this.renderTags()}
+                {this.renderTasks()}
+            </div>
         </div>
     }
 }

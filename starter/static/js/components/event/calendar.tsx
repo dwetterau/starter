@@ -4,7 +4,7 @@ import * as React from "react";
 import { browserHistory } from 'react-router';
 
 import {EditEventComponent} from "./edit_event"
-import {Event, User, TagsById, Tag} from "../../models"
+import {Event, User, TagsById, Tag, Task} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
 import {ModalComponent} from "../lib/modal";
@@ -13,6 +13,7 @@ export interface CalendarProps {
     meUser: User,
     events: Array<Event>,
     tagsById: TagsById,
+    tasks: Array<Task>,
     initialViewType: CalendarViewType,
     createEvent: (event: Event) => void,
     updateEvent: (event: Event) => void,
@@ -56,6 +57,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         this.state = this.getState(props)
     }
+
+    refreshLoopId = 0;
 
     componentWillReceiveProps(props: CalendarProps) {
         this.setState(this.getState(props))
@@ -106,6 +109,18 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             const container = document.getElementsByClassName("all-columns-container")[0];
             const top = jQuery(cursor[0]).data("top");
             container.scrollTop = top - container.clientHeight / 2;
+        }
+
+        // Register a loop to keep refreshing the cursor.
+        let loop = () => {
+            this.setState(this.state);
+        };
+        this.refreshLoopId = setInterval(loop, 60000);
+    }
+
+    componentWillUnmount() {
+        if (this.refreshLoopId) {
+            clearInterval(this.refreshLoopId)
         }
     }
 
@@ -961,6 +976,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 event={this.state.editingEvent}
                 tagsById={this.props.tagsById}
                 createMode={false}
+                tasks={this.props.tasks}
                 createEvent={(event: Event) => {}}
                 updateEvent={this.props.updateEvent}
                 deleteEvent={this.props.deleteEvent}
@@ -993,6 +1009,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 meUser={this.props.meUser}
                 tagsById={this.props.tagsById}
                 createMode={true}
+                tasks={this.props.tasks}
                 initialTags={initialTags}
                 initialCreationTime={this.state.createEventTimestamp}
                 initialDurationSecs={this.state.createEventDurationSecs}

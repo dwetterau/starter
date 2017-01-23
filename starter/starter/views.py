@@ -205,6 +205,7 @@ def create_event(request):
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
+        'taskIds[]': lambda x: Task.get_by_local_id(int(x), request.user),
     }
 
     try:
@@ -216,6 +217,9 @@ def create_event(request):
     # Combine new tags:
     new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
 
+    # Combine new tasks:
+    new_tasks_by_id = {task.id: task for arg, task in arguments if arg == "taskIds[]"}
+
     # Now it's safe to squash all the arguments together into a dict
     arguments = dict(arguments)
 
@@ -226,7 +230,9 @@ def create_event(request):
     if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
         return HttpResponse("Tag not found".encode(), status=400)
 
-    # TODO: Ensure no overlapping events?!
+    print([task.owner_id for task in new_tasks_by_id.values()])
+    if any(task.owner_id != request.user.id for task in new_tasks_by_id.values()):
+        return HttpResponse("Task not found".encode(), status=400)
 
     event = Event.objects.create(
         name=arguments["name"],
@@ -238,6 +244,9 @@ def create_event(request):
     event.create_local_id(arguments["authorId"])
     if new_tags_by_id:
         event.set_tags(new_tags_by_id.values())
+
+    if new_tasks_by_id:
+        event.set_tasks(new_tasks_by_id.values())
 
     return HttpResponse(json.dumps(event.to_dict()), status=200)
 
@@ -254,6 +263,7 @@ def update_event(request):
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
+        'taskIds[]': lambda x: Task.get_by_local_id(int(x), request.user),
     }
 
     try:
@@ -264,6 +274,9 @@ def update_event(request):
 
     # Combine new tags:
     new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
+
+    # Combine new tasks:
+    new_tasks_by_id = {task.id: task for arg, task in arguments if arg == "taskIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
     arguments = dict(arguments)
@@ -279,7 +292,8 @@ def update_event(request):
     if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
         return HttpResponse("Tag not found".encode(), status=400)
 
-    # TODO: Ensure no overlapping events?!
+    if any(task.owner_id != request.user.id for task in new_tasks_by_id.values()):
+        return HttpResponse("Task not found".encode(), status=400)
 
     # Copy in all the mutable fields
     event.name = arguments["name"]
@@ -290,6 +304,9 @@ def update_event(request):
 
     if set(new_tags_by_id.keys()) != set(event.get_tag_ids()):
         event.set_tags(new_tags_by_id.values())
+
+    if set(new_tasks_by_id.keys()) != set(event.get_task_ids()):
+        event.set_tasks(new_tasks_by_id.values())
 
     return HttpResponse(json.dumps(event.to_dict()), status=200)
 

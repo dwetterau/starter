@@ -170,6 +170,7 @@ export class App extends React.Component<AppProps, AppState> {
             meUser={this.props.meUser}
             events={this.state.events}
             tagsById={this.state.tagsById}
+            tasks={this.state.tasks}
             initialViewType={viewType}
             createEvent={this.createEvent.bind(this)}
             updateEvent={this.updateEvent.bind(this)}

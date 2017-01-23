@@ -334,7 +334,7 @@ div.event-container div.name {
     flex-grow: 1;
 }
 
-div.event-tags-container {
+div.event-card-container {
     align-self: flex-end;
     flex-grow: 1;
     display: flex;
@@ -342,7 +342,7 @@ div.event-tags-container {
     padding-bottom: .25em;
 }
 
-div.event-tags-container div.tag {
+div.event-card-container div.card {
     margin: 0 0 0 .25em;
     padding: .1em .25em;
 }
@@ -462,6 +462,7 @@ div.modal input,textarea,select {
 
 div.modal input[type=button] {
     margin-top: .5em;
+    height: 30px;
 }
 
 div.modal div.rendered-token {

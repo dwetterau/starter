@@ -44,6 +44,7 @@ export class Event {
     // timestamp in milliseconds
     startTime: number;
     durationSecs: number;
+    taskIds: Array<number>;
 }
 
 export class Tag {

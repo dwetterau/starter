@@ -1,5 +1,5 @@
 import * as React from "react";
-import {User, Event, TagsById} from "../../models";
+import {User, Event, TagsById, Task} from "../../models";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
 
 export interface EditEventProps {
@@ -7,6 +7,7 @@ export interface EditEventProps {
     event?: Event,
     tagsById: TagsById,
     createMode: boolean,
+    tasks: Array<Task>,
     initialCreationTime?: number,
     initialDurationSecs?: number,
     initialTags?: Array<number>,
@@ -83,6 +84,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
             tagIds: (initialTags) ? initialTags : [],
             startTime: (initialCreationTime) ? initialCreationTime: 0,
             durationSecs: (initialDurationSecs) ? initialDurationSecs: 900,
+            taskIds: [],
         }
     }
 
@@ -145,6 +147,32 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         this.setState(this.state)
     }
 
+    getCurrentTasks(): Array<Tokenizable> {
+        // TODO: Do after we have the format
+        return this.state.event.taskIds.map((taskId) => {
+            return {
+                label: `T${taskId}`,
+                value: taskId,
+            }
+        })
+    }
+
+    getAllTaskNames(): Array<Tokenizable> {
+        return this.props.tasks.map((task) => {
+            return {
+                label: `T${task.id}`,
+                value: task.id
+            }
+        })
+    }
+
+    retrieveTaskNames(tokens: Array<Tokenizable>) {
+        this.state.event.taskIds = tokens.map((token: Tokenizable) => {
+            return token.value;
+        });
+        this.setState(this.state);
+    }
+
     renderFormTitle() {
         if (this.props.createMode) {
             return <h3>Create Event</h3>
@@ -195,17 +223,19 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 />
             </div>
 
-             <div className="start-time-container">
-                <label htmlFor="start-time">Start time: </label>
-                <input
-                    type="number" name="start-time"
-                    value={this.state.event.startTime}
-                    onChange={this.updateAttr.bind(this, "startTime")}
+            <div className="task-tokenizer-container">
+                <label>Tasks:</label>
+                <TokenizerComponent
+                    onChange={this.retrieveTaskNames.bind(this)}
+                    initialValues={this.getCurrentTasks()}
+                    possibleTokens={this.getAllTaskNames()}
                 />
             </div>
 
+            {/*TODO: Add a start time selector dropdown*/}
+
              <div className="duration-secs-container">
-                <label htmlFor="duration-secs">Duration (s): </label>
+                <label htmlFor="duration-secs">Duration (seconds): </label>
                 <input
                     type="number" name="duration-secs"
                     value={this.state.event.durationSecs}

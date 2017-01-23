@@ -78,6 +78,7 @@ class Task(models.Model):
     tags = models.ManyToManyField(Tag, verbose_name="The tags for the task")
     priority = models.SmallIntegerField("The assigned priority of the task")
     state = models.SmallIntegerField("The current state of the task")
+    events = models.ManyToManyField('Event', verbose_name="The events for this task")
 
     @classmethod
     def get_by_owner_id(cls, user_id):
@@ -176,6 +177,15 @@ class Event(models.Model):
         for tag in new_tags:
             self.tags.add(tag)
 
+    def get_task_ids(self):
+        return [x.get_local_id() for x in self.task_set.all()]
+
+    def set_tasks(self, new_tasks):
+        # TODO: Optimize this
+        self.task_set.clear()
+        for task in new_tasks:
+            self.task_set.add(task)
+
     def to_dict(self):
         return dict(
             id=self.get_local_id(),
@@ -185,6 +195,7 @@ class Event(models.Model):
             tagIds=self.get_tag_ids(),
             startTime=int(self.start_time.timestamp() * 1000),
             durationSecs=self.duration_secs,
+            taskIds=self.get_task_ids()
         )
 
 
