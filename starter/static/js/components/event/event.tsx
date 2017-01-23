@@ -38,7 +38,10 @@ export class EventComponent extends React.Component<EventProps, {}> {
         return (
             <div className="event-tasks-container">
                 {this.props.event.taskIds.map((taskId) => {
-                    return <div className="task-id-card card">
+                    return <div
+                        className="task-id-card card"
+                        key={`T${taskId}`}
+                    >
                         {`T${taskId}`}
                     </div>
                 })}

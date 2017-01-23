@@ -72,7 +72,7 @@ export class NotifierComponent extends React.Component<NotifierProps, NotifierSt
         this.recordSendingNotification();
         this.spawnNotification("No event info, not tracking time. :(", (e) => {
             e.target.close();
-            window.location.href = "/cal/day";
+            window.focus()
         })
     }
 

@@ -5396,7 +5396,7 @@
 	            return;
 	        }
 	        return (React.createElement("div", { className: "event-tasks-container" }, this.props.event.taskIds.map(function (taskId) {
-	            return React.createElement("div", { className: "task-id-card card" }, "T" + taskId);
+	            return React.createElement("div", { className: "task-id-card card", key: "T" + taskId }, "T" + taskId);
 	        })));
 	    };
 	    EventComponent.prototype.render = function () {
@@ -5527,7 +5527,7 @@
 	        this.recordSendingNotification();
 	        this.spawnNotification("No event info, not tracking time. :(", function (e) {
 	            e.target.close();
-	            window.location.href = "/cal/day";
+	            window.focus();
 	        });
 	    };
 	    NotifierComponent.prototype.timeSinceLastEventSec = function () {
