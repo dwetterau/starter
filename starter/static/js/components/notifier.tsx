@@ -32,9 +32,18 @@ export class NotifierComponent extends React.Component<NotifierProps, NotifierSt
         }
     }
 
+    loopId = 0;
+
     componentDidMount() {
         this.requestNotificationPermission();
         this.beginLoop();
+    }
+
+    componentWillUnmount() {
+        // Kill our event loop
+        if (this.loopId) {
+            clearInterval(this.loopId);
+        }
     }
 
     requestNotificationPermission() {
@@ -116,7 +125,7 @@ export class NotifierComponent extends React.Component<NotifierProps, NotifierSt
             // TODO: Also notify if we don't have a task in progress?
         };
 
-        setInterval(loop.bind(this), LOOP_FREQ * 1000);
+        this.loopId = setInterval(loop.bind(this), LOOP_FREQ * 1000);
     }
 
     render() {

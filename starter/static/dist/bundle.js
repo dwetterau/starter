@@ -5437,6 +5437,7 @@
 	    __extends(NotifierComponent, _super);
 	    function NotifierComponent(props) {
 	        var _this = _super.call(this, props) || this;
+	        _this.loopId = 0;
 	        _this.state = {
 	            enabled: false,
 	            // We don't set this to 0 so that we don't immediately spam notifications on startup.
@@ -5449,6 +5450,12 @@
 	    NotifierComponent.prototype.componentDidMount = function () {
 	        this.requestNotificationPermission();
 	        this.beginLoop();
+	    };
+	    NotifierComponent.prototype.componentWillUnmount = function () {
+	        // Kill our event loop
+	        if (this.loopId) {
+	            clearInterval(this.loopId);
+	        }
 	    };
 	    NotifierComponent.prototype.requestNotificationPermission = function () {
 	        var _this = this;
@@ -5519,7 +5526,7 @@
 	            }
 	            // TODO: Also notify if we don't have a task in progress?
 	        };
-	        setInterval(loop.bind(this), LOOP_FREQ * 1000);
+	        this.loopId = setInterval(loop.bind(this), LOOP_FREQ * 1000);
 	    };
 	    NotifierComponent.prototype.render = function () {
 	        return React.createElement("div", null);
