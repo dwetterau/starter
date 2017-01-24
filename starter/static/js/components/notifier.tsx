@@ -13,8 +13,8 @@ interface NotifierState {
 }
 
 const LOOP_FREQ = 60; // 1 minute
-const FORCED_INTERVAL = 300; // We will at most send 1 notification every (this) many seconds
-const LAG_THRESHOLD = 900; // After this many seconds, we will 100% chance send a notification
+const FORCED_INTERVAL = 600; // We will at most send 1 notification every (this) many seconds
+const LAG_THRESHOLD = 1800; // After this many seconds, we will 100% chance send a notification
 
 // Typescript doesn't know about the Notification API.
 declare let Notification: any;

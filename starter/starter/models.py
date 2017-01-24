@@ -1,4 +1,5 @@
 import enum
+from collections import defaultdict
 from threading import Lock
 
 from django.contrib.auth.models import User
@@ -80,9 +81,32 @@ class Task(models.Model):
     state = models.SmallIntegerField("The current state of the task")
     events = models.ManyToManyField('Event', verbose_name="The events for this task")
 
+    def __init__(self, *args, **kwargs):
+        super(Task, self).__init__(*args, **kwargs)
+
+        self._cached_local_id = None
+        self._cached_tag_ids = None
+
     @classmethod
     def get_by_owner_id(cls, user_id):
-        return Task.objects.filter(owner_id=user_id)
+        all_tasks = Task.objects.filter(owner_id=user_id)
+
+        # Now, we also want all the local ids so that we can attach them correctly
+        task_id_to_local_id = {
+            tgi.task_id: tgi.local_id for tgi in TaskGlobalId.objects.filter(user_id=user_id)
+        }
+
+        # Also cache in the tag ids
+        task_id_to_tag_ids = defaultdict(list)
+        all_task_tags = TaskTags.objects.filter(task__in=task_id_to_local_id)
+        for task_tag in all_task_tags:
+            task_id_to_tag_ids[task_tag.task_id].append(task_tag.tag_id)
+
+        for task in all_tasks:
+            task._cached_local_id = task_id_to_local_id[task.id]
+            task._cached_tag_ids = task_id_to_tag_ids[task.id]
+
+        return all_tasks
 
     @classmethod
     def get_by_local_id(cls, local_id, user):
@@ -100,14 +124,24 @@ class Task(models.Model):
             )
 
     def get_local_id(self):
-        # TODO: Cache this locally since it's immutable?
-        return TaskGlobalId.objects.get(task_id=self.id, user_id=self.author_id).local_id
+        if self._cached_local_id is not None:
+            return self._cached_local_id
+
+        local_id = TaskGlobalId.objects.get(task_id=self.id, user_id=self.author_id).local_id
+        self._cached_local_id = local_id
+        return local_id
 
     def get_tag_ids(self):
-        return [x.id for x in self.tags.all()]
+        if self._cached_tag_ids is not None:
+            return self._cached_tag_ids
+
+        tag_ids = [x.id for x in self.tags.all()]
+        self._cached_tag_ids = tag_ids
+        return tag_ids
 
     def set_tags(self, new_tags):
         # TODO: Optimize this
+        self._cached_tag_ids = None
         self.tags.clear()
         for tag in new_tags:
             self.tags.add(tag)
@@ -133,6 +167,22 @@ class TaskGlobalId(models.Model):
     GLOBAL_WLOCK = Lock()
 
 
+class TaskTags(models.Model):
+    task = models.ForeignKey(Task, related_name="_tags")
+    tag = models.ForeignKey(Tag, related_name="_tasks")
+
+    class Meta:
+        db_table = "starter_task_tags"
+
+
+class TaskEvents(models.Model):
+    task = models.ForeignKey(Task, related_name="_events")
+    event = models.ForeignKey("Event", related_name="_tasks")
+
+    class Meta:
+        db_table = "starter_task_events"
+
+
 class Event(models.Model):
     name = models.CharField("Name of the event", max_length=128)
     start_time = models.DateTimeField("Start time of the event")
@@ -145,9 +195,37 @@ class Event(models.Model):
 
     tags = models.ManyToManyField(Tag, verbose_name="The tags for the event")
 
+    def __init__(self, *args, **kwargs):
+        super(Event, self).__init__(*args, **kwargs)
+
+        self._cached_local_id = None
+        self._cached_tag_ids = None
+        self._cached_task_ids = None
+
     @classmethod
     def get_by_owner_id(cls, user_id):
-        return Event.objects.filter(owner_id=user_id)
+        all_events = Event.objects.filter(owner_id=user_id)
+
+        event_id_to_local_id = {
+            egi.event_id: egi.local_id for egi in EventGlobalId.objects.filter(user_id=user_id)
+        }
+
+        event_id_to_tag_ids = defaultdict(list)
+        all_event_tags = EventTags.objects.filter(event__in=event_id_to_local_id)
+        for event_tag in all_event_tags:
+            event_id_to_tag_ids[event_tag.event_id].append(event_tag.tag_id)
+
+        event_id_to_task_ids = defaultdict(list)
+        all_task_events = TaskEvents.objects.filter(event__in=event_id_to_local_id)
+        for task_event in all_task_events:
+            event_id_to_task_ids[task_event.event_id].append(task_event.task_id)
+
+        for event in all_events:
+            event._cached_local_id = event_id_to_local_id[event.id]
+            event._cached_tag_ids = event_id_to_tag_ids[event.id]
+            event._cached_task_ids = event_id_to_task_ids[event.id]
+
+        return all_events
 
     @classmethod
     def get_by_local_id(cls, local_id, user):
@@ -165,11 +243,20 @@ class Event(models.Model):
             )
 
     def get_local_id(self):
-        # TODO: Cache this locally since it's immutable?
-        return EventGlobalId.objects.get(event_id=self.id, user_id=self.author_id).local_id
+        if self._cached_local_id is not None:
+            return self._cached_local_id
+
+        local_id = EventGlobalId.objects.get(event_id=self.id, user_id=self.author_id).local_id
+        self._cached_local_id = local_id
+        return local_id
 
     def get_tag_ids(self):
-        return [x.id for x in self.tags.all()]
+        if self._cached_tag_ids is not None:
+            return self._cached_tag_ids
+
+        tag_ids = [x.id for x in self.tags.all()]
+        self._cached_tag_ids = tag_ids
+        return tag_ids
 
     def set_tags(self, new_tags):
         # TODO: Optimize this
@@ -178,7 +265,12 @@ class Event(models.Model):
             self.tags.add(tag)
 
     def get_task_ids(self):
-        return [x.get_local_id() for x in self.task_set.all()]
+        if self._cached_task_ids is not None:
+            return self._cached_task_ids
+
+        task_ids = [x.get_local_id() for x in self.task_set.all()]
+        self._cached_task_ids = task_ids
+        return task_ids
 
     def set_tasks(self, new_tasks):
         # TODO: Optimize this
@@ -205,6 +297,14 @@ class EventGlobalId(models.Model):
     local_id = models.IntegerField(db_index=True)
 
     GLOBAL_WLOCK = Lock()
+
+
+class EventTags(models.Model):
+    event = models.ForeignKey(Event, related_name="_tags")
+    tag = models.ForeignKey(Tag, related_name="_events")
+
+    class Meta:
+        db_table = "starter_event_tags"
 
 
 class AuthToken(models.Model):

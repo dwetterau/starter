@@ -5477,8 +5477,8 @@
 	var moment = __webpack_require__(29);
 	var React = __webpack_require__(5);
 	var LOOP_FREQ = 60; // 1 minute
-	var FORCED_INTERVAL = 300; // We will at most send 1 notification every (this) many seconds
-	var LAG_THRESHOLD = 900; // After this many seconds, we will 100% chance send a notification
+	var FORCED_INTERVAL = 600; // We will at most send 1 notification every (this) many seconds
+	var LAG_THRESHOLD = 1800; // After this many seconds, we will 100% chance send a notification
 	var NotifierComponent = (function (_super) {
 	    __extends(NotifierComponent, _super);
 	    function NotifierComponent(props) {
