@@ -1,5 +1,6 @@
-import * as React from "react";
 import * as jQuery from "jquery";
+import * as React from "react";
+import {Router, Route, browserHistory} from "react-router"
 
 import {Event, Tag, Task, User, TagsById} from "../models";
 import {TagGraphComponent} from "./tag/tag_graph";
@@ -13,8 +14,6 @@ export interface AppProps {
     tasks: Array<Task>,
     events: Array<Event>,
     tags: Array<Tag>,
-    viewMode: AppViewMode,
-    calendarDayView?: boolean,
 }
 export interface AppState {
     tasks: Array<Task>,
@@ -161,11 +160,7 @@ export class App extends React.Component<AppProps, AppState> {
         />
     }
 
-    renderCalendar() {
-        let viewType = CalendarViewType.week;
-        if (this.props.calendarDayView) {
-            viewType = CalendarViewType.day;
-        }
+    renderCalendar(viewType) {
         return <CalendarComponent
             meUser={this.props.meUser}
             events={this.state.events}
@@ -188,27 +183,51 @@ export class App extends React.Component<AppProps, AppState> {
         />
     }
 
-    renderBoard() {
-        if (this.props.viewMode == AppViewMode.taskView) {
-            return <div className="board-container">
-                {this.renderTaskBoard()}
+    renderPageContainer(viewMode: AppViewMode, getBoardFn) {
+        return <div>
+            {this.renderNotifier()}
+            <AppHeader meUser={this.props.meUser} viewMode={viewMode} />
+            <div className="board-container">
+                {getBoardFn()}
             </div>
-        } else if (this.props.viewMode == AppViewMode.eventView) {
-            return <div className="calendar-container">
-                {this.renderCalendar()}
-            </div>
-        } else if (this.props.viewMode == AppViewMode.tagView) {
-            return <div className="tag-graph-container">
-                {this.renderTagGraph()}
-            </div>
-        }
-    }
+        </div>
+    };
 
     render() {
+        let getTaskBoard = () => {
+            return this.renderPageContainer(
+                AppViewMode.taskView,
+                this.renderTaskBoard.bind(this),
+            )
+        };
+        let getCalendarWeek = (viewType) => {
+            return this.renderPageContainer(
+                AppViewMode.eventView,
+                this.renderCalendar.bind(this, viewType)
+            )
+        };
+        let getTagGraph = () => {
+            return this.renderPageContainer(
+                AppViewMode.tagView,
+                this.renderTagGraph.bind(this),
+            )
+        };
+
         return <div>
-            <AppHeader meUser={this.props.meUser} viewMode={this.props.viewMode} />
-            {this.renderNotifier()}
-            {this.renderBoard()}
+            <Router history={browserHistory}>
+                <Route path="/" component={getTaskBoard} />
+                <Route path="/tasks" component={getTaskBoard} />
+                <Route path="/cal" component={getCalendarWeek.bind(this, CalendarViewType.week)} />
+                <Route
+                    path="/cal/week"
+                    component={getCalendarWeek.bind(this, CalendarViewType.week)}
+                />
+                <Route
+                    path="/cal/day"
+                    component={getCalendarWeek.bind(this, CalendarViewType.day)}
+                />
+                <Route path="/tags" component={getTagGraph} />
+            </Router>
         </div>
     }
 }

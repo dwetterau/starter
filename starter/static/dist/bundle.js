@@ -56,35 +56,12 @@
 	__webpack_require__(1);
 	var React = __webpack_require__(5);
 	var ReactDOM = __webpack_require__(6);
-	var react_router_1 = __webpack_require__(7);
-	var jQuery = __webpack_require__(8);
-	var app_1 = __webpack_require__(9);
+	var jQuery = __webpack_require__(7);
+	var app_1 = __webpack_require__(8);
 	var AppRenderer = (function () {
 	    function AppRenderer(props) {
-	        ReactDOM.render(React.createElement(react_router_1.Router, { history: react_router_1.browserHistory },
-	            React.createElement(react_router_1.Route, { path: "/", component: AppRenderer.renderTaskBoard(props) }),
-	            React.createElement(react_router_1.Route, { path: "/tasks", component: AppRenderer.renderTaskBoard(props) }),
-	            React.createElement(react_router_1.Route, { path: "/cal", component: AppRenderer.renderCalendar(props, false) }),
-	            React.createElement(react_router_1.Route, { path: "/cal/day", component: AppRenderer.renderCalendar(props, true) }),
-	            React.createElement(react_router_1.Route, { path: "/cal/week", component: AppRenderer.renderCalendar(props, false) }),
-	            React.createElement(react_router_1.Route, { path: "/tags", component: AppRenderer.renderTagGraph(props) })), document.getElementById("render-target"));
+	        ReactDOM.render(React.createElement(app_1.App, __assign({}, props)), document.getElementById("render-target"));
 	    }
-	    AppRenderer.renderTaskBoard = function (props) {
-	        return function () { return React.createElement(app_1.App, __assign({}, props, { viewMode: app_1.AppViewMode.taskView })); };
-	    };
-	    AppRenderer.renderCalendar = function (props, isDayView) {
-	        if (isDayView) {
-	            return function () {
-	                return React.createElement(app_1.App, __assign({}, props, { viewMode: app_1.AppViewMode.eventView, calendarDayView: true }));
-	            };
-	        }
-	        return function () {
-	            return React.createElement(app_1.App, __assign({}, props, { viewMode: app_1.AppViewMode.eventView, calendarDayView: false }));
-	        };
-	    };
-	    AppRenderer.renderTagGraph = function (props) {
-	        return function () { return React.createElement(app_1.App, __assign({}, props, { viewMode: app_1.AppViewMode.tagView })); };
-	    };
 	    return AppRenderer;
 	}());
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -486,16 +463,10 @@
 /* 7 */
 /***/ function(module, exports) {
 
-	module.exports = ReactRouter;
-
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
-
 	module.exports = jQuery;
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -504,8 +475,9 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
+	var jQuery = __webpack_require__(7);
 	var React = __webpack_require__(5);
-	var jQuery = __webpack_require__(8);
+	var react_router_1 = __webpack_require__(9);
 	var tag_graph_1 = __webpack_require__(10);
 	var task_board_1 = __webpack_require__(14);
 	var calendar_1 = __webpack_require__(28);
@@ -639,37 +611,49 @@
 	    App.prototype.renderTaskBoard = function () {
 	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
 	    };
-	    App.prototype.renderCalendar = function () {
-	        var viewType = calendar_1.CalendarViewType.week;
-	        if (this.props.calendarDayView) {
-	            viewType = calendar_1.CalendarViewType.day;
-	        }
+	    App.prototype.renderCalendar = function (viewType) {
 	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, tasks: this.state.tasks, initialViewType: viewType, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this) });
 	    };
 	    App.prototype.renderTagGraph = function () {
 	        return React.createElement(tag_graph_1.TagGraphComponent, { meUser: this.props.meUser, tagsById: this.state.tagsById, createTag: this.createTag.bind(this), updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this) });
 	    };
-	    App.prototype.renderBoard = function () {
-	        if (this.props.viewMode == AppViewMode.taskView) {
-	            return React.createElement("div", { className: "board-container" }, this.renderTaskBoard());
-	        }
-	        else if (this.props.viewMode == AppViewMode.eventView) {
-	            return React.createElement("div", { className: "calendar-container" }, this.renderCalendar());
-	        }
-	        else if (this.props.viewMode == AppViewMode.tagView) {
-	            return React.createElement("div", { className: "tag-graph-container" }, this.renderTagGraph());
-	        }
-	    };
-	    App.prototype.render = function () {
+	    App.prototype.renderPageContainer = function (viewMode, getBoardFn) {
 	        return React.createElement("div", null,
-	            React.createElement(app_header_1.AppHeader, { meUser: this.props.meUser, viewMode: this.props.viewMode }),
 	            this.renderNotifier(),
-	            this.renderBoard());
+	            React.createElement(app_header_1.AppHeader, { meUser: this.props.meUser, viewMode: viewMode }),
+	            React.createElement("div", { className: "board-container" }, getBoardFn()));
+	    };
+	    ;
+	    App.prototype.render = function () {
+	        var _this = this;
+	        var getTaskBoard = function () {
+	            return _this.renderPageContainer(AppViewMode.taskView, _this.renderTaskBoard.bind(_this));
+	        };
+	        var getCalendarWeek = function (viewType) {
+	            return _this.renderPageContainer(AppViewMode.eventView, _this.renderCalendar.bind(_this, viewType));
+	        };
+	        var getTagGraph = function () {
+	            return _this.renderPageContainer(AppViewMode.tagView, _this.renderTagGraph.bind(_this));
+	        };
+	        return React.createElement("div", null,
+	            React.createElement(react_router_1.Router, { history: react_router_1.browserHistory },
+	                React.createElement(react_router_1.Route, { path: "/", component: getTaskBoard }),
+	                React.createElement(react_router_1.Route, { path: "/tasks", component: getTaskBoard }),
+	                React.createElement(react_router_1.Route, { path: "/cal", component: getCalendarWeek.bind(this, calendar_1.CalendarViewType.week) }),
+	                React.createElement(react_router_1.Route, { path: "/cal/week", component: getCalendarWeek.bind(this, calendar_1.CalendarViewType.week) }),
+	                React.createElement(react_router_1.Route, { path: "/cal/day", component: getCalendarWeek.bind(this, calendar_1.CalendarViewType.day) }),
+	                React.createElement(react_router_1.Route, { path: "/tags", component: getTagGraph })));
 	    };
 	    return App;
 	}(React.Component));
 	exports.App = App;
 
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+	module.exports = ReactRouter;
 
 /***/ },
 /* 10 */
@@ -1196,7 +1180,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var jQuery = __webpack_require__(8);
+	var jQuery = __webpack_require__(7);
 	var edit_task_1 = __webpack_require__(15);
 	var models_1 = __webpack_require__(16);
 	var task_1 = __webpack_require__(17);
@@ -4334,7 +4318,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var jQuery = __webpack_require__(8);
+	var jQuery = __webpack_require__(7);
 	var React = __webpack_require__(5);
 	var ModalComponent = (function (_super) {
 	    __extends(ModalComponent, _super);
@@ -4386,10 +4370,10 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var jQuery = __webpack_require__(8);
+	var jQuery = __webpack_require__(7);
 	var moment = __webpack_require__(29);
 	var React = __webpack_require__(5);
-	var react_router_1 = __webpack_require__(7);
+	var react_router_1 = __webpack_require__(9);
 	var edit_event_1 = __webpack_require__(30);
 	var tokenizer_1 = __webpack_require__(12);
 	var event_1 = __webpack_require__(31);
@@ -5422,8 +5406,8 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var react_router_1 = __webpack_require__(7);
-	var app_1 = __webpack_require__(9);
+	var react_router_1 = __webpack_require__(9);
+	var app_1 = __webpack_require__(8);
 	var AppHeader = (function (_super) {
 	    __extends(AppHeader, _super);
 	    function AppHeader() {
