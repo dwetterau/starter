@@ -338,10 +338,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.setState(this.state);
     }
 
-    changeWeek() {
-        // TODO: implement pagination
-    }
-
     computeTimestamp(day: string, index: number): number {
         let offset = index;
 

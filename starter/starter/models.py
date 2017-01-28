@@ -260,6 +260,7 @@ class Event(models.Model):
 
     def set_tags(self, new_tags):
         # TODO: Optimize this
+        self._cached_tag_ids = None
         self.tags.clear()
         for tag in new_tags:
             self.tags.add(tag)
@@ -274,6 +275,7 @@ class Event(models.Model):
 
     def set_tasks(self, new_tasks):
         # TODO: Optimize this
+        self._cached_task_ids = None
         self.task_set.clear()
         for task in new_tasks:
             self.task_set.add(task)

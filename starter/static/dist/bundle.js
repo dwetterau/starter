@@ -4640,9 +4640,6 @@
 	        this.state.editingEvent = event;
 	        this.setState(this.state);
 	    };
-	    CalendarComponent.prototype.changeWeek = function () {
-	        // TODO: implement pagination
-	    };
 	    CalendarComponent.prototype.computeTimestamp = function (day, index) {
 	        var offset = index;
 	        if (this.state.viewType == CalendarViewType.week) {

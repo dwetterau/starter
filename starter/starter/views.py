@@ -230,7 +230,6 @@ def create_event(request):
     if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
         return HttpResponse("Tag not found".encode(), status=400)
 
-    print([task.owner_id for task in new_tasks_by_id.values()])
     if any(task.owner_id != request.user.id for task in new_tasks_by_id.values()):
         return HttpResponse("Task not found".encode(), status=400)
 
