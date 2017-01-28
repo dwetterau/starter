@@ -23,6 +23,7 @@ export interface AppState {
 }
 
 export enum AppViewMode {
+    mergedView,
     taskView,
     eventView,
     tagView,
@@ -149,6 +150,21 @@ export class App extends React.Component<AppProps, AppState> {
         />
     }
 
+    renderMergedView() {
+        return <div className="merged-container">
+            <div className="main-pane">
+                <div className="merged-task-container">
+                    {this.renderTaskBoard()}
+                </div>
+            </div>
+            <div className="right-pane">
+                <div className="merged-calendar-container">
+                    {this.renderCalendar(CalendarViewType.day, true)}
+                </div>
+            </div>
+        </div>
+    }
+
     renderTaskBoard() {
         return <TaskBoardComponent
             meUser={this.props.meUser}
@@ -160,13 +176,14 @@ export class App extends React.Component<AppProps, AppState> {
         />
     }
 
-    renderCalendar(viewType) {
+    renderCalendar(viewType, simpleOptions) {
         return <CalendarComponent
             meUser={this.props.meUser}
             events={this.state.events}
             tagsById={this.state.tagsById}
             tasks={this.state.tasks}
             initialViewType={viewType}
+            simpleOptions={simpleOptions}
             createEvent={this.createEvent.bind(this)}
             updateEvent={this.updateEvent.bind(this)}
             deleteEvent={this.deleteEvent.bind(this)}
@@ -194,6 +211,12 @@ export class App extends React.Component<AppProps, AppState> {
     };
 
     render() {
+        let getMergedView = () => {
+           return this.renderPageContainer(
+               AppViewMode.mergedView,
+               this.renderMergedView.bind(this),
+           )
+        };
         let getTaskBoard = () => {
             return this.renderPageContainer(
                 AppViewMode.taskView,
@@ -203,7 +226,7 @@ export class App extends React.Component<AppProps, AppState> {
         let getCalendarWeek = (viewType) => {
             return this.renderPageContainer(
                 AppViewMode.eventView,
-                this.renderCalendar.bind(this, viewType)
+                this.renderCalendar.bind(this, viewType, false)
             )
         };
         let getTagGraph = () => {
@@ -215,7 +238,7 @@ export class App extends React.Component<AppProps, AppState> {
 
         return <div>
             <Router history={browserHistory}>
-                <Route path="/" component={getTaskBoard} />
+                <Route path="/" component={getMergedView} />
                 <Route path="/tasks" component={getTaskBoard} />
                 <Route path="/cal" component={getCalendarWeek.bind(this, CalendarViewType.week)} />
                 <Route

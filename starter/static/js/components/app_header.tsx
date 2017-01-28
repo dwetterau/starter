@@ -19,11 +19,13 @@ export class AppHeader extends React.Component<AppHeaderProps, {}> {
 
     renderViewModeSelector() {
         const viewModeToName: {[mode: number]: string} = {};
+        viewModeToName[AppViewMode.mergedView] = "Home";
         viewModeToName[AppViewMode.taskView] = "Task Board";
         viewModeToName[AppViewMode.eventView] = "Calendar";
         viewModeToName[AppViewMode.tagView] = "Tag Graph";
 
         const linkMap: {[mode: number]: string} = {};
+        linkMap[AppViewMode.mergedView] = "/";
         linkMap[AppViewMode.taskView] = "/tasks";
         linkMap[AppViewMode.eventView] = "/cal";
         linkMap[AppViewMode.tagView] = "/tags";

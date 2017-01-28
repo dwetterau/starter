@@ -24,29 +24,21 @@ export class EventComponent extends React.Component<EventProps, {}> {
         if (!this.props.event.tagIds.length) {
             return;
         }
-        return (
-            <div className="event-tags-container">
-                {this.props.event.tagIds.map(this.renderTag.bind(this))}
-            </div>
-        )
+        return this.props.event.tagIds.map(this.renderTag.bind(this))
     }
 
     renderTasks() {
         if (!this.props.event.taskIds.length) {
             return;
         }
-        return (
-            <div className="event-tasks-container">
-                {this.props.event.taskIds.map((taskId) => {
-                    return <div
-                        className="task-id-card card"
-                        key={`T${taskId}`}
-                    >
-                        {`T${taskId}`}
-                    </div>
-                })}
+        return this.props.event.taskIds.map((taskId) => {
+            return <div
+                className="task-id-card card"
+                key={`T${taskId}`}
+            >
+                {`T${taskId}`}
             </div>
-        )
+        });
     }
 
     render() {

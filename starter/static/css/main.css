@@ -379,8 +379,8 @@ div.tokens-container {
 div.rendered-token {
     display: flex;
     padding: .1em .25em;
-    margin-top: -2px;
-    margin-bottom: 10px;
+    margin-top: -3px;
+    margin-bottom: 0;
 }
 
 div.rendered-token div.remove-token {
@@ -398,6 +398,7 @@ div.tokenizer-container div.autocomplete-token-container {
     border-radius: 0 3px 3px;
     border: 1px solid rgba(0, 0, 0, .2);
     border-top: none;
+    z-index: 3;
 }
 
 div.tokenizer-container div.autocomplete-token-container div.autocomplete-token {
@@ -427,7 +428,7 @@ div.modal-container div.background {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, .2);
-    z-index: 3;
+    z-index: 4;
 
     display: flex;
     align-items: center;
@@ -469,3 +470,79 @@ div.modal div.rendered-token {
     margin-top: 0;
 }
 /* End of Modal CSS */
+
+/* Multi-pane CSS */
+div.merged-container {
+    display: flex;
+}
+
+div.main-pane {
+    max-width: 67%;
+    min-width: 67%;
+}
+
+div.right-pane {
+    max-width: 33%;
+    min-width: 33%;
+}
+
+/* Ad-hoc fixes for tasks */
+div.main-pane div.task-board div.full-column-container {
+    height: calc(100vh - 129px);
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* Ad-hoc fixes for calendar */
+div.right-pane div.calendar div.full-column-container {
+    padding: 0;
+}
+
+div.right-pane div.calendar div.tag-selector-container {
+    margin-left: 0;
+}
+
+div.right-pane div.calendar div.column-header {
+    min-width: 0;
+}
+
+div.right-pane div.calendar div.column-header.single-day {
+    min-width: 0;
+}
+
+div.right-pane div.calendar div.column-container {
+    min-width: 0;
+}
+
+div.right-pane div.calendar div.column-container td {
+    min-width: 0;
+}
+
+div.right-pane div.calendar div.column-container.single-day {
+    min-width: 0;
+}
+
+div.right-pane div.calendar div.column-container.single-day td {
+    min-width: 0;
+}
+
+div.right-pane div.calendar div.column-container.single-day div.current-time-cursor {
+    min-width: 0;
+}
+
+div.right-pane div.calendar div.column-container.-times {
+    max-width: 64px;
+}
+
+div.right-pane div.calendar div.column-header.-times {
+    max-width: 64px;
+}
+
+div.right-pane div.calendar div.options div.pending-token-container input {
+    width: 100%;
+}
+
+div.right-pane div.calendar div.options div.tag-selector-label {
+    flex-shrink: 0;
+}
+/* End of Multi-pane CSS */

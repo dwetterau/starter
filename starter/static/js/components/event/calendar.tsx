@@ -15,6 +15,7 @@ export interface CalendarProps {
     tagsById: TagsById,
     tasks: Array<Task>,
     initialViewType: CalendarViewType,
+    simpleOptions: boolean,
     createEvent: (event: Event) => void,
     updateEvent: (event: Event) => void,
     deleteEvent: (event: Event) => void,
@@ -620,6 +621,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     renderCellSizeSlider() {
+        if (this.props.simpleOptions) {
+            return;
+        }
         return (
             <div className="cell-size-slider">
                 <input
@@ -681,6 +685,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     renderChangeViewType() {
+        if (this.props.simpleOptions) {
+            return;
+        }
         return (
             <div className="view-type-selector">
                 {this.renderViewChoice(CalendarViewType.week)}
