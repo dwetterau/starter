@@ -8,6 +8,7 @@ import {Event, User, TagsById, Tag, Task} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
 import {ModalComponent} from "../lib/modal";
+import {debounce} from "../lib/util";
 
 export interface CalendarProps {
     meUser: User,
@@ -354,13 +355,43 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return moment(this.state.startDayTimestamp).add(offset, "seconds").unix() * 1000;
     }
 
-    cellMouseDown(day: string, index: number, event: any) {
+    columnMouseDown(day: string, event: any) {
+        let index = event.target.dataset.index * 1;
         this.state.draggingStartTimestamp = this.computeTimestamp(day, index);
         this.state.draggingEndTimestamp = this.state.draggingStartTimestamp;
         this.updateCreateEventTimestamp();
 
         this.setState(this.state);
         event.preventDefault();
+    }
+
+    columnMouseOver(day: string, event: any) {
+        if (!this.state.draggingStartTimestamp) {
+            // No dragging was happening, nothing to do.
+            return
+        }
+        let index = event.target.dataset.index * 1;
+        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
+        this.updateCreateEventTimestamp();
+        this.updateCreateEventDurationSecs();
+        this.setState(this.state);
+    }
+
+    columnMouseUp(day: string, event: any) {
+        if (!this.state.draggingStartTimestamp) {
+            // No dragging was happening, nothing to do.
+            return
+        }
+
+        let index = event.target.dataset.index * 1;
+        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
+        this.updateCreateEventTimestamp();
+        this.updateCreateEventDurationSecs();
+
+        this.state.draggingStartTimestamp = null;
+        this.state.draggingEndTimestamp = null;
+        this.state.showCreate = true;
+        this.setState(this.state);
     }
 
     updateCreateEventTimestamp() {
@@ -388,36 +419,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         duration += GRANULARITY; // dragging to the same cell means to make duration equal to GRANULARITY
 
         this.state.createEventDurationSecs = duration;
-    }
-
-    cellMouseOver(day: string, index: number) {
-        if (!this.state.draggingStartTimestamp) {
-            // No dragging was happening, nothing to do.
-            return
-        }
-        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
-        this.updateCreateEventTimestamp();
-        this.updateCreateEventDurationSecs();
-        this.setState(this.state);
-    }
-
-    cellMouseUp(day: string, index: number) {
-        if (!this.state.draggingStartTimestamp) {
-            // No dragging was happening, nothing to do.
-            return
-        }
-
-        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
-        this.updateCreateEventTimestamp();
-        this.updateCreateEventDurationSecs();
-
-        this.state.draggingStartTimestamp = null;
-        this.state.draggingEndTimestamp = null;
-        this.state.showCreate = true;
-        this.setState(this.state);
-
-        // Move focus to the event name field
-        jQuery("input#event-name").focus();
     }
 
     _dragTargetEventElement: any = null;
@@ -508,7 +509,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.setState(this.state);
     }
 
-    onDragOver(day: string, index: number, event: any) {
+    onDragOver(day: string, event: any) {
+        let index = event.target.dataset.index * 1;
         if (this.state.draggingEvent) {
             this._dragTargetEventElement.hide();
 
@@ -541,29 +543,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return
         }
         event.preventDefault()
-    }
-
-    onDragLeave(day: string, index: number, event: any) {
-        if (this.state.draggingEvent) {
-            if (this.state.draggingStartTimestamp) {
-                const timestamp = this.computeTimestamp(day, index);
-                // Clear out the dragging info if we were the last one that was dragged over.
-                if (timestamp == this.state.draggingStartTimestamp) {
-                    this.state.draggingStartTimestamp = null;
-                    this.state.draggingEndTimestamp = null;
-                    this.setState(this.state);
-                }
-            }
-        } else if (this.state.endDraggingEvent) {
-            if (this.state.draggingEndTimestamp) {
-                const timestamp = this.computeTimestamp(day, index);
-                if (timestamp == this.state.draggingEndTimestamp) {
-                    this.state.draggingStartTimestamp = null;
-                    this.state.draggingEndTimestamp = null;
-                    this.setState(this.state);
-                }
-            }
-        }
     }
 
     getCurrentTagToken(): Array<Tokenizable> {
@@ -781,15 +760,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             } else {
                 return (
                     <tr key={key} style={style}>
-                        <td className={className}
+                        <td
+                            className={className}
                             data-day={day}
                             data-index={index}
-                            onMouseDown={this.cellMouseDown.bind(this, day, index)}
-                            onMouseOver={this.cellMouseOver.bind(this, day, index)}
-                            onMouseUp={this.cellMouseUp.bind(this, day, index)}
                             onDrop={this.onDrop.bind(this, day, index)}
-                            onDragOver={this.onDragOver.bind(this, day, index)}
-                            onDragLeave={this.onDragLeave.bind(this, day, index)}
                         >
                             {" "}
                         </td>
@@ -804,7 +779,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             tableRows.push(getColumnRow(i));
         }
         return (
-            <table cellPadding="0" cellSpacing="0">
+            <table
+                cellPadding="0"
+                cellSpacing="0"
+                onMouseDown={this.columnMouseDown.bind(this, day)}
+                onMouseOver={debounce(this.columnMouseOver.bind(this, day), 50)}
+                onMouseUp={this.columnMouseUp.bind(this, day)}
+                onDragOver={this.onDragOver.bind(this, day)}
+            >
                 <tbody>
                     {tableRows}
                 </tbody>

@@ -217,8 +217,19 @@ class Event(models.Model):
 
         event_id_to_task_ids = defaultdict(list)
         all_task_events = TaskEvents.objects.filter(event__in=event_id_to_local_id)
+
+        # Do the global -> local id conversion for the linked tasks as well
+        task_id_to_local_id = {
+            tgi.task_id: tgi.local_id
+            for tgi in TaskGlobalId.objects.filter(
+                user_id=user_id, task__in=[x.task_id for x in all_task_events]
+            )
+        }
+
         for task_event in all_task_events:
-            event_id_to_task_ids[task_event.event_id].append(task_event.task_id)
+            event_id_to_task_ids[task_event.event_id].append(
+                task_id_to_local_id[task_event.task_id]
+            )
 
         for event in all_events:
             event._cached_local_id = event_id_to_local_id[event.id]

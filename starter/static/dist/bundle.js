@@ -4389,6 +4389,7 @@
 	var tokenizer_1 = __webpack_require__(12);
 	var event_1 = __webpack_require__(31);
 	var modal_1 = __webpack_require__(27);
+	var util_1 = __webpack_require__(34);
 	var CalendarViewType;
 	(function (CalendarViewType) {
 	    CalendarViewType[CalendarViewType["week"] = 0] = "week";
@@ -4663,12 +4664,38 @@
 	        }
 	        return moment(this.state.startDayTimestamp).add(offset, "seconds").unix() * 1000;
 	    };
-	    CalendarComponent.prototype.cellMouseDown = function (day, index, event) {
+	    CalendarComponent.prototype.columnMouseDown = function (day, event) {
+	        var index = event.target.dataset.index * 1;
 	        this.state.draggingStartTimestamp = this.computeTimestamp(day, index);
 	        this.state.draggingEndTimestamp = this.state.draggingStartTimestamp;
 	        this.updateCreateEventTimestamp();
 	        this.setState(this.state);
 	        event.preventDefault();
+	    };
+	    CalendarComponent.prototype.columnMouseOver = function (day, event) {
+	        if (!this.state.draggingStartTimestamp) {
+	            // No dragging was happening, nothing to do.
+	            return;
+	        }
+	        var index = event.target.dataset.index * 1;
+	        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
+	        this.updateCreateEventTimestamp();
+	        this.updateCreateEventDurationSecs();
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.columnMouseUp = function (day, event) {
+	        if (!this.state.draggingStartTimestamp) {
+	            // No dragging was happening, nothing to do.
+	            return;
+	        }
+	        var index = event.target.dataset.index * 1;
+	        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
+	        this.updateCreateEventTimestamp();
+	        this.updateCreateEventDurationSecs();
+	        this.state.draggingStartTimestamp = null;
+	        this.state.draggingEndTimestamp = null;
+	        this.state.showCreate = true;
+	        this.setState(this.state);
 	    };
 	    CalendarComponent.prototype.updateCreateEventTimestamp = function () {
 	        if (this.state.draggingEndTimestamp < this.state.draggingStartTimestamp) {
@@ -4694,31 +4721,6 @@
 	        duration /= 1000; // convert to seconds
 	        duration += GRANULARITY; // dragging to the same cell means to make duration equal to GRANULARITY
 	        this.state.createEventDurationSecs = duration;
-	    };
-	    CalendarComponent.prototype.cellMouseOver = function (day, index) {
-	        if (!this.state.draggingStartTimestamp) {
-	            // No dragging was happening, nothing to do.
-	            return;
-	        }
-	        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
-	        this.updateCreateEventTimestamp();
-	        this.updateCreateEventDurationSecs();
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.cellMouseUp = function (day, index) {
-	        if (!this.state.draggingStartTimestamp) {
-	            // No dragging was happening, nothing to do.
-	            return;
-	        }
-	        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
-	        this.updateCreateEventTimestamp();
-	        this.updateCreateEventDurationSecs();
-	        this.state.draggingStartTimestamp = null;
-	        this.state.draggingEndTimestamp = null;
-	        this.state.showCreate = true;
-	        this.setState(this.state);
-	        // Move focus to the event name field
-	        jQuery("input#event-name").focus();
 	    };
 	    CalendarComponent.prototype.onDrop = function (day, index) {
 	        if (this.state.draggingEvent) {
@@ -4795,7 +4797,8 @@
 	        this.state.endDraggingEvent = null;
 	        this.setState(this.state);
 	    };
-	    CalendarComponent.prototype.onDragOver = function (day, index, event) {
+	    CalendarComponent.prototype.onDragOver = function (day, event) {
+	        var index = event.target.dataset.index * 1;
 	        if (this.state.draggingEvent) {
 	            this._dragTargetEventElement.hide();
 	            var timestamp = this.computeTimestamp(day, index);
@@ -4825,29 +4828,6 @@
 	            return;
 	        }
 	        event.preventDefault();
-	    };
-	    CalendarComponent.prototype.onDragLeave = function (day, index, event) {
-	        if (this.state.draggingEvent) {
-	            if (this.state.draggingStartTimestamp) {
-	                var timestamp = this.computeTimestamp(day, index);
-	                // Clear out the dragging info if we were the last one that was dragged over.
-	                if (timestamp == this.state.draggingStartTimestamp) {
-	                    this.state.draggingStartTimestamp = null;
-	                    this.state.draggingEndTimestamp = null;
-	                    this.setState(this.state);
-	                }
-	            }
-	        }
-	        else if (this.state.endDraggingEvent) {
-	            if (this.state.draggingEndTimestamp) {
-	                var timestamp = this.computeTimestamp(day, index);
-	                if (timestamp == this.state.draggingEndTimestamp) {
-	                    this.state.draggingStartTimestamp = null;
-	                    this.state.draggingEndTimestamp = null;
-	                    this.setState(this.state);
-	                }
-	            }
-	        }
 	    };
 	    CalendarComponent.prototype.getCurrentTagToken = function () {
 	        if (!this.state.selectedTag) {
@@ -5002,7 +4982,7 @@
 	            }
 	            else {
 	                return (React.createElement("tr", { key: key, style: style },
-	                    React.createElement("td", { className: className, "data-day": day, "data-index": index, onMouseDown: _this.cellMouseDown.bind(_this, day, index), onMouseOver: _this.cellMouseOver.bind(_this, day, index), onMouseUp: _this.cellMouseUp.bind(_this, day, index), onDrop: _this.onDrop.bind(_this, day, index), onDragOver: _this.onDragOver.bind(_this, day, index), onDragLeave: _this.onDragLeave.bind(_this, day, index) }, " ")));
+	                    React.createElement("td", { className: className, "data-day": day, "data-index": index, onDrop: _this.onDrop.bind(_this, day, index) }, " ")));
 	            }
 	        };
 	        var i = 0; // midnight
@@ -5010,7 +4990,7 @@
 	        for (; i < 60 * 60 * 24; i += GRANULARITY) {
 	            tableRows.push(getColumnRow(i));
 	        }
-	        return (React.createElement("table", { cellPadding: "0", cellSpacing: "0" },
+	        return (React.createElement("table", { cellPadding: "0", cellSpacing: "0", onMouseDown: this.columnMouseDown.bind(this, day), onMouseOver: util_1.debounce(this.columnMouseOver.bind(this, day), 50), onMouseUp: this.columnMouseUp.bind(this, day), onDragOver: this.onDragOver.bind(this, day) },
 	            React.createElement("tbody", null, tableRows)));
 	    };
 	    CalendarComponent.prototype.renderCurrentTimeCursor = function (index) {
@@ -5580,6 +5560,32 @@
 	    return NotifierComponent;
 	}(React.Component));
 	exports.NotifierComponent = NotifierComponent;
+
+
+/***/ },
+/* 34 */
+/***/ function(module, exports) {
+
+	"use strict";
+	function debounce(func, window) {
+	    // Executes the given function at most once per window milliseconds, on the first call.
+	    var timeout = null;
+	    return function () {
+	        var context = this;
+	        var args = arguments;
+	        var later = function () {
+	            timeout = null;
+	        };
+	        var callNow = !timeout;
+	        if (!timeout) {
+	            timeout = setTimeout(later, window);
+	        }
+	        if (callNow) {
+	            func.apply(context, args);
+	        }
+	    };
+	}
+	exports.debounce = debounce;
 
 
 /***/ }
