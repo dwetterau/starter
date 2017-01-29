@@ -916,7 +916,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     renderTodayString(): string {
-        return moment(this.state.startDayTimestamp).format("LL")
+        return moment(this.state.startDayTimestamp).format("dddd M/D")
     }
 
     renderDayViewColumns() {

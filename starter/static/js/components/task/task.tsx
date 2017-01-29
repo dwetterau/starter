@@ -20,6 +20,18 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         )
     }
 
+    renderDescription() {
+        let items = this.props.task.description.split("\n");
+        return <Linkify className="task-description">
+            {items.map((item, index) => {
+                return <span>
+                    {item}
+                    {(index < items.length - 1) ? <br /> : ''}
+                </span>
+            })}
+        </Linkify>
+    }
+
     renderPriority() {
         // If we are viewing in priority columns, omit this line
         if (this.props.viewType == TaskBoardViewType.priority) {
@@ -77,7 +89,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         return <div className="task card">
             {this.renderTaskId()}
             <div className="task-title">{this.props.task.title}</div>
-            <Linkify className="task-description">{this.props.task.description}</Linkify>
+            {this.renderDescription()}
             {this.renderPriority()}
             {this.renderState()}
             {this.renderTags()}

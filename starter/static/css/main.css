@@ -201,7 +201,7 @@ div.calendar div.full-column-container div.header-and-content-container {
 
 div.calendar div.column-header-container {
     display: flex;
-    margin-top: 20px;
+    margin-top: .5em;
     margin-right: 15px;
     text-align: center;
 }
@@ -209,7 +209,7 @@ div.calendar div.column-header-container {
 div.calendar div.column-header {
     min-width: 120px;
     flex-grow: 1;
-    height: 20px;
+    height: 22px;
 }
 
 div.calendar div.column-header.-times {
