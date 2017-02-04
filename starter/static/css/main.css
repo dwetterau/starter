@@ -90,17 +90,19 @@ div.task-board div.task-board-tag-selector-container div.tokenizer-container {
 }
 
 div.task-board div.full-column-container {
+    height: 100%;
+}
+
+div.task-board div.full-column-container div.all-columns-container {
     display: flex;
     flex-direction: row;
-    height: 100%;
-    min-height: 768px;
 }
 
 div.task-board div.column-container {
     display: flex;
     flex-direction: column;
     width: 25%;
-    margin: .5em 1em;
+    padding: .5em;
 }
 
 div.task-board div.column-container.drop-container {

@@ -24,7 +24,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         let items = this.props.task.description.split("\n");
         return <Linkify className="task-description">
             {items.map((item, index) => {
-                return <span>
+                return <span key={index}>
                     {item}
                     {(index < items.length - 1) ? <br /> : ''}
                 </span>

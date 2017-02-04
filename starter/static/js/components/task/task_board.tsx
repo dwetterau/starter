@@ -237,7 +237,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         this.state.editingTask = task;
         this.setState(this.state)
     }
-t
+
     changeViewType(type: TaskBoardViewType) {
         const [headers, columnTypes, columns] = this.divideByType(this.props.tasks, type);
         this.state.viewType = type;
@@ -424,7 +424,9 @@ t
             );
         }
         return <div className="full-column-container">
-            {renderedColumns}
+            <div className="all-columns-container">
+                {renderedColumns}
+            </div>
         </div>
     }
 
@@ -449,6 +451,17 @@ t
             return;
         }
 
+        let initialPriority = null;
+        let initialState = null;
+        if (this.state.viewType == TaskBoardViewType.priority) {
+            initialPriority = this.state.createColumnType;
+            initialState = 0;
+        }
+        if (this.state.viewType == TaskBoardViewType.status) {
+            initialPriority = 0;
+            initialState = this.state.createColumnType;
+        }
+
         const initialTags: Array<number> = [];
         if (this.state.selectedTag) {
             initialTags.push(this.state.selectedTag.id);
@@ -459,6 +472,8 @@ t
                 tagsById={this.props.tagsById}
                 createMode={true}
                 createTask={this.props.createTask}
+                initialPriority={initialPriority}
+                initialState={initialState}
                 initialTags={initialTags}
                 updateTask={(task: Task) => {}}
                 deleteTask={(task: Task) => {}}

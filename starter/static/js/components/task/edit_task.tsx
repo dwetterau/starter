@@ -7,6 +7,8 @@ export interface EditTaskProps {
     task?: Task,
     tagsById: TagsById,
     createMode: boolean,
+    initialPriority?: number,
+    initialState?: number,
     initialTags?: Array<number>,
     createTask: (task: Task) => void,
     updateTask: (task: Task) => void,
@@ -22,7 +24,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
         super(props);
         if (props.createMode) {
             this.state = {
-                task: this._getEmptyTask(props.meUser, props.initialTags)
+                task: this._getEmptyTask(props)
             }
         } else {
             this.state = {
@@ -34,7 +36,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
     componentWillReceiveProps(newProps: EditTaskProps) {
         if (newProps.createMode) {
             this.setState({
-                task: this._getEmptyTask(newProps.meUser, newProps.initialTags),
+                task: this._getEmptyTask(newProps),
             })
         } else {
             this.setState({
@@ -43,17 +45,27 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
         }
     }
 
-    _getEmptyTask(user: User, initialTags?: Array<number>): Task {
-        return {
+    _getEmptyTask(props: EditTaskProps): Task {
+        let task = {
             id: 0,
             title: '',
             description: '',
-            authorId: user.id,
-            ownerId: user.id,
-            tagIds: (initialTags) ? initialTags : [],
-            priority: 300,
+            authorId: props.meUser.id,
+            ownerId: props.meUser.id,
+            tagIds: [],
+            priority: 0,
             state: 0,
+        };
+        if (props.initialPriority) {
+            task.priority = props.initialPriority
         }
+        if (props.initialState) {
+            task.state = props.initialState
+        }
+        if (props.initialTags) {
+            task.tagIds = props.initialTags
+        }
+        return task
     }
 
     submitForm(eventType: string) {
