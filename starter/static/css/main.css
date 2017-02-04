@@ -93,7 +93,7 @@ div.task-board div.full-column-container {
     height: 100%;
 }
 
-div.task-board div.full-column-container div.all-columns-container {
+div.task-board div.full-column-container div.columns-container {
     display: flex;
     flex-direction: row;
 }

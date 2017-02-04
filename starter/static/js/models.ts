@@ -17,6 +17,7 @@ export class Task {
     tagIds: Array<number>;
     priority: number;
     state: number;
+    eventIds: Array<number>;
 }
 
 export const priorityNameList = [
@@ -46,6 +47,8 @@ export class Event {
     durationSecs: number;
     taskIds: Array<number>;
 }
+
+export interface EventsById {[eventId: number]: Event}
 
 export class Tag {
     readonly id: number;

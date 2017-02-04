@@ -2,7 +2,7 @@ import * as jQuery from "jquery";
 import * as React from "react";
 import {Router, Route, browserHistory} from "react-router"
 
-import {Event, Tag, Task, User, TagsById} from "../models";
+import {Event, Tag, Task, User, TagsById, EventsById} from "../models";
 import {TagGraphComponent} from "./tag/tag_graph";
 import {TaskBoardComponent} from "./task/task_board"
 import {CalendarComponent, CalendarViewType} from "./event/calendar";
@@ -20,6 +20,7 @@ export interface AppState {
     events: Array<Event>,
     tags: Array<Tag>,
     tagsById: TagsById,
+    eventsById: EventsById,
 }
 
 export enum AppViewMode {
@@ -38,8 +39,10 @@ export class App extends React.Component<AppProps, AppState> {
             events: props.events,
             tags: props.tags,
             tagsById: {},
+            eventsById: {},
         };
         App.updateTagsById(newState);
+        App.updateEventsById(newState);
         this.state = newState;
     }
 
@@ -115,6 +118,14 @@ export class App extends React.Component<AppProps, AppState> {
         state.tagsById = tagsById;
     }
 
+    static updateEventsById(state: AppState) {
+        const eventsById: EventsById = {};
+        for (let event of state.events) {
+            eventsById[event.id] = event;
+        }
+        state.eventsById = eventsById;
+    }
+
     createTag(tag: Tag) {
         delete tag["id"];
         jQuery.post('/api/1/tag/create', tag, (newTagJson: string) => {
@@ -170,6 +181,7 @@ export class App extends React.Component<AppProps, AppState> {
             meUser={this.props.meUser}
             tasks={this.state.tasks}
             tagsById={this.state.tagsById}
+            eventsById={this.state.eventsById}
             createTask={this.createTask.bind(this)}
             updateTask={this.updateTask.bind(this)}
             deleteTask={this.deleteTask.bind(this)}

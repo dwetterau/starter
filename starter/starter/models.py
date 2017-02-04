@@ -86,6 +86,7 @@ class Task(models.Model):
 
         self._cached_local_id = None
         self._cached_tag_ids = None
+        self._cached_event_ids = None
 
     @classmethod
     def get_by_owner_id(cls, user_id):
@@ -102,9 +103,26 @@ class Task(models.Model):
         for task_tag in all_task_tags:
             task_id_to_tag_ids[task_tag.task_id].append(task_tag.tag_id)
 
+        task_id_to_event_ids = defaultdict(list)
+        all_task_events = TaskEvents.objects.filter(task__in=task_id_to_local_id)
+
+        # Do the global -> local id conversion for linked events as well
+        event_id_to_local_id = {
+            egi.event_id: egi.local_id
+            for egi in EventGlobalId.objects.filter(
+                user_id=user_id, event__in=[x.event_id for x in all_task_events],
+            )
+        }
+
+        for task_event in all_task_events:
+            task_id_to_event_ids[task_event.task_id].append(
+                event_id_to_local_id[task_event.event_id]
+            )
+
         for task in all_tasks:
             task._cached_local_id = task_id_to_local_id[task.id]
             task._cached_tag_ids = task_id_to_tag_ids[task.id]
+            task._cached_event_ids = task_id_to_event_ids[task.id]
 
         return all_tasks
 
@@ -146,6 +164,14 @@ class Task(models.Model):
         for tag in new_tags:
             self.tags.add(tag)
 
+    def get_event_ids(self):
+        if self._cached_event_ids is not None:
+            return self._cached_event_ids
+
+        event_ids = [x.get_local_id() for x in self.events.all()]
+        self._cached_event_ids = event_ids
+        return event_ids
+
     def to_dict(self):
         return dict(
             id=self.get_local_id(),
@@ -156,6 +182,7 @@ class Task(models.Model):
             tagIds=self.get_tag_ids(),
             priority=self.Priority(self.priority).value,
             state=self.State(self.state).value,
+            eventIds=self.get_event_ids()
         )
 
 

@@ -2,7 +2,6 @@ import * as React from "react";
 import {Task, priorityNameList, stateNameList, TagsById} from "../../models";
 import {TaskBoardViewType} from "./task_board";
 import {TagComponent} from "../tag/tag";
-import {Linkify} from "../lib/Linkify";
 
 export interface TaskProps {
     task: Task,
@@ -18,18 +17,6 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
                 T{this.props.task.id}
             </div>
         )
-    }
-
-    renderDescription() {
-        let items = this.props.task.description.split("\n");
-        return <Linkify className="task-description">
-            {items.map((item, index) => {
-                return <span key={index}>
-                    {item}
-                    {(index < items.length - 1) ? <br /> : ''}
-                </span>
-            })}
-        </Linkify>
     }
 
     renderPriority() {
@@ -89,7 +76,6 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         return <div className="task card">
             {this.renderTaskId()}
             <div className="task-title">{this.props.task.title}</div>
-            {this.renderDescription()}
             {this.renderPriority()}
             {this.renderState()}
             {this.renderTags()}

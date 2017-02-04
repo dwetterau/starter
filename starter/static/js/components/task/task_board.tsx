@@ -2,15 +2,17 @@ import * as React from "react";
 import * as jQuery from "jquery";
 
 import {EditTaskComponent} from "./edit_task";
-import {Task, stateNameList, User, priorityNameList, TagsById, Tag} from "../../models";
+import {Task, stateNameList, User, priorityNameList, TagsById, Tag, EventsById} from "../../models";
 import {TaskComponent} from "./task";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
 import {ModalComponent} from "../lib/modal";
+import {TaskDetailComponent} from "./task_detail";
 
 export interface TaskBoardProps {
     meUser: User,
     tasks: Array<Task>,
     tagsById: TagsById,
+    eventsById: EventsById,
     createTask: (task: Task) => void,
     updateTask: (task: Task) => void,
     deleteTask: (task: Task) => void,
@@ -23,6 +25,7 @@ export interface TaskBoardState {
     createColumnType?: number,
     draggingTask?: Task,
     editingTask?: Task,
+    selectedTask?: Task,
     shouldHideClosedTasks: boolean,
     selectedTag?: Tag,
 }
@@ -54,6 +57,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             createColumnType: null,
             draggingTask: null,
             editingTask: null,
+            selectedTask: (this.state) ? this.state.selectedTask : null,
             selectedTag: null,
             shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : true,
         };
@@ -232,8 +236,17 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         jQuery(event.target).removeClass("drop-container")
     }
 
+    onClick(task: Task, e: any) {
+        // We stop propagation to prevent event creation modals from appearing.
+        e.stopPropagation();
+
+        this.state.selectedTask = task;
+        this.setState(this.state);
+
+        return false;
+    }
+
     onDoubleClick(task: Task) {
-        // Idk, open an editor modal or something
         this.state.editingTask = task;
         this.setState(this.state)
     }
@@ -399,7 +412,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                             draggable={true}
                             onDragStart={this.onDragStart.bind(this, task)}
                             onDragEnd={this.onDragEnd.bind(this, task)}
-                            onClick={(e) => {e.stopPropagation(); return false}}
+                            onClick={this.onClick.bind(this, task)}
                             onDoubleClick={this.onDoubleClick.bind(this, task)} >
                     <TaskComponent
                         task={task}
@@ -424,7 +437,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             );
         }
         return <div className="full-column-container">
-            <div className="all-columns-container">
+            <div className="columns-container">
                 {renderedColumns}
             </div>
         </div>
@@ -481,12 +494,24 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         </ModalComponent>
     }
 
+    renderSelectedTask() {
+        if (!this.state.selectedTask) {
+            return;
+        }
+        return <TaskDetailComponent
+            task={this.state.selectedTask}
+            tagsById={this.props.tagsById}
+            eventsById={this.props.eventsById}
+        />
+    }
+
     render() {
         return <div className="task-board">
             {this.renderOptions()}
             {this.renderColumns()}
             {this.renderEditingTask()}
             {this.renderCreateTask()}
+            {this.renderSelectedTask()}
         </div>
     }
 }

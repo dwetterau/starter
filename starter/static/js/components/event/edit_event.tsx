@@ -214,15 +214,6 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 />
             </div>
 
-            <div className="tag-tokenizer-container">
-                <label>Tags:</label>
-                <TokenizerComponent
-                    onChange={this.retrieveTagNames.bind(this)}
-                    initialValues={this.getCurrentTags()}
-                    possibleTokens={this.getAllTagNames()}
-                />
-            </div>
-
             <div className="task-tokenizer-container">
                 <label>Tasks:</label>
                 <TokenizerComponent
@@ -232,16 +223,17 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 />
             </div>
 
-            {/*TODO: Add a start time selector dropdown*/}
-
-             <div className="duration-secs-container">
-                <label htmlFor="duration-secs">Duration (seconds): </label>
-                <input
-                    type="number" name="duration-secs"
-                    value={this.state.event.durationSecs}
-                    onChange={this.updateAttr.bind(this, "durationSecs")}
+            <div className="tag-tokenizer-container">
+                <label>Tags:</label>
+                <TokenizerComponent
+                    onChange={this.retrieveTagNames.bind(this)}
+                    initialValues={this.getCurrentTags()}
+                    possibleTokens={this.getAllTagNames()}
                 />
             </div>
+
+            {/*TODO: Add a start time selector dropdown*/}
+            {/*TODO: More granular duration adjustment*/}
             {this.renderButtons()}
         </div>
     }

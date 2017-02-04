@@ -55,6 +55,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
             tagIds: [],
             priority: 0,
             state: 0,
+            eventIds: [],
         };
         if (props.initialPriority) {
             task.priority = props.initialPriority
