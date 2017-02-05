@@ -134,6 +134,10 @@ div.task-board .task,.task-title {
     display: flex;
 }
 
+.task-columns .main-column {
+    width: 100%;
+}
+
 .task-columns .task-color {
     width: 3px;
     flex-shrink: 0;

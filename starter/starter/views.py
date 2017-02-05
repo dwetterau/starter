@@ -71,6 +71,12 @@ def _required_string(x):
     return x
 
 
+def _nonnegative_number(x):
+    x = int(x)
+    assert x >= 0
+    return x
+
+
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def create_task(request):
@@ -80,6 +86,7 @@ def create_task(request):
         'description': str,
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
+        'expectedDurationSecs': _nonnegative_number,
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
@@ -112,6 +119,7 @@ def create_task(request):
         state=arguments["state"].value,
         author=arguments["authorId"],
         owner=arguments["ownerId"],
+        expected_duration_secs=arguments["expectedDurationSecs"],
     )
     task.create_local_id(arguments["authorId"])
     if new_tags_by_id:
@@ -130,6 +138,7 @@ def update_task(request):
         'description': str,
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
+        'expectedDurationSecs': _nonnegative_number,
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
@@ -164,6 +173,7 @@ def update_task(request):
     task.priority = arguments["priority"].value
     task.state = arguments["state"].value
     task.owner = arguments["ownerId"]
+    task.expected_duration_secs = arguments["expectedDurationSecs"]
     task.save()
 
     if set(new_tags_by_id.keys()) != set(task.get_tag_ids()):
@@ -201,7 +211,7 @@ def create_event(request):
     validation_map = {
         'name': _required_string,
         'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
-        'durationSecs': int,
+        'durationSecs': _nonnegative_number,
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
@@ -258,7 +268,7 @@ def update_event(request):
         'id': int,
         'name': _required_string,
         'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
-        'durationSecs': int,
+        'durationSecs': _nonnegative_number,
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),

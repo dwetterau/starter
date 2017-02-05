@@ -18,6 +18,7 @@ export class Task {
     priority: number;
     state: number;
     eventIds: Array<number>;
+    expectedDurationSecs: number;
 }
 
 export interface TasksById {[taskId: number]: Task}

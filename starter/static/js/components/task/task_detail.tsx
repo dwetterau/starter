@@ -13,6 +13,22 @@ interface TaskDetailProps {
 
 export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
 
+    refreshLoopId = 0;
+
+    componentDidMount() {
+        // Register a loop to keep refreshing the "time spent" estimates and percentage.
+        let loop = () => {
+            this.forceUpdate();
+        };
+        this.refreshLoopId = setInterval(loop, 10 * 1000);
+    }
+
+    componentWillUnmount() {
+        if (this.refreshLoopId) {
+            clearInterval(this.refreshLoopId);
+        }
+    }
+
     computeTotalTimeScheduled() {
         // Returns the sum of all events that involved this task
         let totalTime = 0;
@@ -125,7 +141,34 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
                 final += "s"
             }
         }
+        if (!final.length) {
+            // The 0 case
+            return "None"
+        }
+
         return final
+    }
+
+    renderEstimatedTime() {
+        let estimatedTime = this.props.task.expectedDurationSecs;
+        if (estimatedTime == 0) {
+            return
+        }
+        return <div className="time-estimate">
+            Estimated: {this.renderDuration(estimatedTime)}
+        </div>
+    }
+
+    renderProgress(spentTime: number) {
+        if (!spentTime || !this.props.task.expectedDurationSecs) {
+            return
+        }
+
+        let percent = Math.round(spentTime / this.props.task.expectedDurationSecs * 100);
+
+        return <div className="progress">
+            Estimated Time Spent: {percent}%
+        </div>
     }
 
     renderTimeInfo() {
@@ -138,13 +181,18 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
 
         if (scheduledTime == spentTime) {
          return <div className="task-time-info">
+             {this.renderEstimatedTime()}
              Scheduled and Spent: {this.renderDuration(scheduledTime)}
+             {this.renderProgress(spentTime)}
          </div>
         }
+
         return <div className="task-time-info">
+            {this.renderEstimatedTime()}
             Scheduled: {this.renderDuration(scheduledTime)}
             <br />
             Spent: {this.renderDuration(spentTime)}
+            {this.renderProgress(spentTime)}
         </div>
     }
 

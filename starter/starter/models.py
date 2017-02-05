@@ -80,6 +80,7 @@ class Task(models.Model):
     priority = models.SmallIntegerField("The assigned priority of the task")
     state = models.SmallIntegerField("The current state of the task")
     events = models.ManyToManyField('Event', verbose_name="The events for this task")
+    expected_duration_secs = models.IntegerField("Expected duration of the task in seconds")
 
     def __init__(self, *args, **kwargs):
         super(Task, self).__init__(*args, **kwargs)
@@ -182,7 +183,8 @@ class Task(models.Model):
             tagIds=self.get_tag_ids(),
             priority=self.Priority(self.priority).value,
             state=self.State(self.state).value,
-            eventIds=self.get_event_ids()
+            eventIds=self.get_event_ids(),
+            expectedDurationSecs=self.expected_duration_secs,
         )
 
 

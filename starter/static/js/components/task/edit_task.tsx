@@ -46,7 +46,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
     }
 
     _getEmptyTask(props: EditTaskProps): Task {
-        let task = {
+        let task: Task = {
             id: 0,
             title: '',
             description: '',
@@ -56,6 +56,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
             priority: 0,
             state: 0,
             eventIds: [],
+            expectedDurationSecs: 0,
         };
         if (props.initialPriority) {
             task.priority = props.initialPriority
@@ -90,6 +91,12 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
     updateAttr(attrName: string, event: any) {
         this.state.task[attrName] = event.target.value;
         this.setState(this.state);
+    }
+
+    updateEstimate(event: any) {
+        let newDuration = event.target.value;
+        this.state.task.expectedDurationSecs = newDuration * 60;
+        this.setState(this.state)
     }
 
     getCurrentTags(): Array<Tokenizable> {
@@ -170,6 +177,15 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
                     type="text" name="description"
                     value={this.state.task.description}
                     onChange={this.updateAttr.bind(this, "description")}
+                />
+            </div>
+
+            <div className="estimate-container">
+                <label htmlFor="estimate">Estimated Time (minutes): </label>
+                <input
+                    type="number" name="estimate"
+                    value={Math.round(this.state.task.expectedDurationSecs / 60)}
+                    onChange={this.updateEstimate.bind(this)}
                 />
             </div>
 

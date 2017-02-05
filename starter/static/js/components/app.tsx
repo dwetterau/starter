@@ -49,10 +49,19 @@ export class App extends React.Component<AppProps, AppState> {
         this.state = newState;
     }
 
+    static updateTasksById(state: AppState) {
+        const tasksById: TasksById = {};
+        for (let task of state.tasks) {
+            tasksById[task.id] = task;
+        }
+        state.tasksById = tasksById;
+    }
+
     createTask(task: Task) {
         delete task["id"];
         jQuery.post('/api/1/task/create', task, (newTaskJson: string) => {
             this.state.tasks.push(JSON.parse(newTaskJson));
+            App.updateTasksById(this.state);
             this.setState(this.state)
         });
     }
@@ -69,6 +78,7 @@ export class App extends React.Component<AppProps, AppState> {
                     return task
                 }
             });
+            App.updateTasksById(this.state);
             this.setState(this.state);
         });
         task.eventIds = oldIds;
@@ -84,10 +94,55 @@ export class App extends React.Component<AppProps, AppState> {
         })
     }
 
+    static updateEventsById(state: AppState) {
+        const eventsById: EventsById = {};
+        for (let event of state.events) {
+            eventsById[event.id] = event;
+        }
+        state.eventsById = eventsById;
+    }
+
+    updateTaskToEventsAfterNewEvent(newEvent: Event) {
+        // When an event is updated, we need to make sure that all the associated tasks are also
+        // updated
+        let oldTaskMap = {};
+        for (let task of this.state.tasks) {
+            for (let eventId of task.eventIds) {
+                if (eventId == newEvent.id) {
+                    oldTaskMap[task.id] = true;
+                }
+            }
+        }
+
+        let newTaskMap = {};
+        for (let taskId of newEvent.taskIds) {
+            newTaskMap[taskId] = true;
+
+            if (!oldTaskMap[taskId]) {
+                // This task just got added to this event. Add the eventId to the task
+                this.state.tasksById[taskId].eventIds.push(newEvent.id);
+            }
+        }
+
+        for (let taskId in oldTaskMap) {
+            if (!newTaskMap[taskId]) {
+                // This tag no longer has this event, update it's list of events
+                this.state.tasksById[taskId].eventIds = (
+                    this.state.tasksById[taskId].eventIds.filter((eventId) => {
+                        return eventId != newEvent.id
+                    })
+                );
+            }
+        }
+    }
+
     createEvent(event: Event) {
         delete event["id"];
         jQuery.post('/api/1/event/create', event, (newEventJson: string) => {
-            this.state.events.push(JSON.parse(newEventJson));
+            let newEvent = JSON.parse(newEventJson);
+            this.state.events.push(newEvent);
+            App.updateEventsById(this.state);
+            this.updateTaskToEventsAfterNewEvent(newEvent);
             this.setState(this.state)
         });
     }
@@ -102,6 +157,8 @@ export class App extends React.Component<AppProps, AppState> {
                     return event
                 }
             });
+            App.updateEventsById(this.state);
+            this.updateTaskToEventsAfterNewEvent(updatedEvent);
             this.setState(this.state);
         });
     }
@@ -122,22 +179,6 @@ export class App extends React.Component<AppProps, AppState> {
             tagsById[tag.id] = tag;
         }
         state.tagsById = tagsById;
-    }
-
-    static updateEventsById(state: AppState) {
-        const eventsById: EventsById = {};
-        for (let event of state.events) {
-            eventsById[event.id] = event;
-        }
-        state.eventsById = eventsById;
-    }
-
-    static updateTasksById(state: AppState) {
-        const tasksById: TasksById = {};
-        for (let task of state.tasks) {
-            tasksById[task.id] = task;
-        }
-        state.tasksById = tasksById;
     }
 
     createTag(tag: Tag) {

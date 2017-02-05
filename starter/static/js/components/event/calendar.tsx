@@ -115,9 +115,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         // Register a loop to keep refreshing the cursor.
         let loop = () => {
-            this.setState(this.state);
+            this.forceUpdate();
         };
-        this.refreshLoopId = setInterval(loop, 60000);
+        this.refreshLoopId = setInterval(loop, 60 * 1000);
     }
 
     componentWillUnmount() {
