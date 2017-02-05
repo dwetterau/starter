@@ -55,6 +55,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     updateTask(task: Task) {
+        delete task['eventIds'];
         jQuery.post('/api/1/task/update', task, (updatedTaskJson: string) => {
             let updatedTask: Task = JSON.parse(updatedTaskJson);
             this.state.tasks = this.state.tasks.map((task: Task) => {

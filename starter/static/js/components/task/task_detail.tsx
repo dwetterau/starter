@@ -7,6 +7,8 @@ interface TaskDetailProps {
     task: Task,
     tagsById: TagsById,
     eventsById: EventsById,
+    closeCallback: () => void
+    editCallback: () => void
 }
 
 export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
@@ -35,9 +37,20 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
         return timeSpent
     }
 
+    renderOptions() {
+        return <div className="options">
+            <a href="#" className="edit-button" onClick={this.props.editCallback}>Edit</a>
+            <a href="#" className="close-button" onClick={this.props.closeCallback}>Close</a>
+        </div>
+    }
+
     renderHeader() {
         return <div className="task-detail-header">
-            T{this.props.task.id} - {this.props.task.title}
+            <div className="id-and-options">
+                T{this.props.task.id}
+                {this.renderOptions()}
+            </div>
+            <div className="title">{this.props.task.title}</div>
         </div>
     }
 
@@ -90,6 +103,15 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
         let scheduledTime = this.computeTotalTimeScheduled();
         let spentTime = this.computeTotalTimeSpent();
 
+        if (scheduledTime == 0) {
+            return;
+        }
+
+        if (scheduledTime == spentTime) {
+         return <div className="task-time-info">
+             Scheduled and Spent: {this.renderDuration(scheduledTime)}
+         </div>
+        }
         return <div className="task-time-info">
             Scheduled: {this.renderDuration(scheduledTime)}
             <br />

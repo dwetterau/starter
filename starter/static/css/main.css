@@ -55,12 +55,16 @@ div.header-container div.view-mode-selector a.view-mode-option.-selected {
 /* Task Board CSS */
 div.task-board {
     width: 100%;
+    height: calc(100vh - 97px);
+    display: flex;
+    flex-direction: column;
 }
 
 div.task-board div.task-board-options {
     display: flex;
     background-color: #fff;
     padding: 0 1em .5em;
+    flex-shrink: 0;
 }
 
 div.task-board div.task-board-options div.view-type-selector {
@@ -87,10 +91,6 @@ div.task-board div.task-board-tag-selector-container {
 
 div.task-board div.task-board-tag-selector-container div.tokenizer-container {
     margin-left: .5em;
-}
-
-div.task-board div.full-column-container {
-    height: 100%;
 }
 
 div.task-board div.full-column-container div.columns-container {
@@ -139,6 +139,28 @@ div.task-tags-container div.tag {
     padding: .1em .25em;
 }
 /* End of Task view CSS */
+
+/* Task Detail view CSS */
+div.task-detail-container {
+    background-color: #fff;
+    padding: .5em;
+    overflow-wrap: break-word;
+}
+
+div.task-detail-container div.id-and-options {
+    text-decoration: underline;
+    display: flex;
+    justify-content: space-between;
+}
+
+div.task-detail-container div.title {
+    font-weight: bold;
+}
+
+div.task-detail-container div.options a {
+    padding: 0 .25em;
+}
+/* End of Task Detail view CSS */
 
 /* Calendar CSS */
 div.calendar {

@@ -246,6 +246,26 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return false;
     }
 
+    clearSelectedTask() {
+        this.state.selectedTask = null;
+        this.setState(this.state);
+    }
+
+    beginEditingSelected() {
+        if (this.state.editingTask) {
+            // Already editing a task...
+            return
+        }
+        if (!this.state.selectedTask) {
+            // Nothing to start editing...
+            return
+        }
+        // TODO: Only store ids in these values instead of references.
+        this.state.editingTask = JSON.parse(JSON.stringify(this.state.selectedTask));
+
+        this.setState(this.state);
+    }
+
     onDoubleClick(task: Task) {
         this.state.editingTask = task;
         this.setState(this.state)
@@ -502,6 +522,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             task={this.state.selectedTask}
             tagsById={this.props.tagsById}
             eventsById={this.props.eventsById}
+            closeCallback={this.clearSelectedTask.bind(this)}
+            editCallback={this.beginEditingSelected.bind(this)}
         />
     }
 
