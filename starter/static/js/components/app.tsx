@@ -2,7 +2,7 @@ import * as jQuery from "jquery";
 import * as React from "react";
 import {Router, Route, browserHistory} from "react-router"
 
-import {Event, Tag, Task, User, TagsById, EventsById} from "../models";
+import {Event, Tag, Task, User, TagsById, EventsById, TasksById} from "../models";
 import {TagGraphComponent} from "./tag/tag_graph";
 import {TaskBoardComponent} from "./task/task_board"
 import {CalendarComponent, CalendarViewType} from "./event/calendar";
@@ -21,6 +21,7 @@ export interface AppState {
     tags: Array<Tag>,
     tagsById: TagsById,
     eventsById: EventsById,
+    tasksById: TasksById,
 }
 
 export enum AppViewMode {
@@ -40,9 +41,11 @@ export class App extends React.Component<AppProps, AppState> {
             tags: props.tags,
             tagsById: {},
             eventsById: {},
+            tasksById: {},
         };
         App.updateTagsById(newState);
         App.updateEventsById(newState);
+        App.updateTasksById(newState);
         this.state = newState;
     }
 
@@ -55,6 +58,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     updateTask(task: Task) {
+        let oldIds = task.eventIds;
         delete task['eventIds'];
         jQuery.post('/api/1/task/update', task, (updatedTaskJson: string) => {
             let updatedTask: Task = JSON.parse(updatedTaskJson);
@@ -67,6 +71,7 @@ export class App extends React.Component<AppProps, AppState> {
             });
             this.setState(this.state);
         });
+        task.eventIds = oldIds;
     }
 
     deleteTask(task: Task) {
@@ -125,6 +130,14 @@ export class App extends React.Component<AppProps, AppState> {
             eventsById[event.id] = event;
         }
         state.eventsById = eventsById;
+    }
+
+    static updateTasksById(state: AppState) {
+        const tasksById: TasksById = {};
+        for (let task of state.tasks) {
+            tasksById[task.id] = task;
+        }
+        state.tasksById = tasksById;
     }
 
     createTag(tag: Tag) {
@@ -194,7 +207,7 @@ export class App extends React.Component<AppProps, AppState> {
             meUser={this.props.meUser}
             events={this.state.events}
             tagsById={this.state.tagsById}
-            tasks={this.state.tasks}
+            tasksById={this.state.tasksById}
             initialViewType={viewType}
             simpleOptions={simpleOptions}
             createEvent={this.createEvent.bind(this)}

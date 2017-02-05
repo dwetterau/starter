@@ -4,7 +4,7 @@ import * as React from "react";
 import { browserHistory } from 'react-router';
 
 import {EditEventComponent} from "./edit_event"
-import {Event, User, TagsById, Tag, Task} from "../../models"
+import {Event, User, TagsById, Tag, TasksById} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
 import {ModalComponent} from "../lib/modal";
@@ -14,7 +14,7 @@ export interface CalendarProps {
     meUser: User,
     events: Array<Event>,
     tagsById: TagsById,
-    tasks: Array<Task>,
+    tasksById: TasksById,
     initialViewType: CalendarViewType,
     simpleOptions: boolean,
     createEvent: (event: Event) => void,
@@ -961,7 +961,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 event={this.state.editingEvent}
                 tagsById={this.props.tagsById}
                 createMode={false}
-                tasks={this.props.tasks}
+                tasksById={this.props.tasksById}
                 createEvent={(event: Event) => {}}
                 updateEvent={this.props.updateEvent}
                 deleteEvent={this.props.deleteEvent}
@@ -994,7 +994,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 meUser={this.props.meUser}
                 tagsById={this.props.tagsById}
                 createMode={true}
-                tasks={this.props.tasks}
+                tasksById={this.props.tasksById}
                 initialTags={initialTags}
                 initialCreationTime={this.state.createEventTimestamp}
                 initialDurationSecs={this.state.createEventDurationSecs}

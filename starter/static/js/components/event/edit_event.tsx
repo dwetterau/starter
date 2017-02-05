@@ -1,5 +1,5 @@
 import * as React from "react";
-import {User, Event, TagsById, Task} from "../../models";
+import {User, Event, TagsById, TasksById} from "../../models";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
 
 export interface EditEventProps {
@@ -7,7 +7,7 @@ export interface EditEventProps {
     event?: Event,
     tagsById: TagsById,
     createMode: boolean,
-    tasks: Array<Task>,
+    tasksById: TasksById,
     initialCreationTime?: number,
     initialDurationSecs?: number,
     initialTags?: Array<number>,
@@ -158,18 +158,44 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
     }
 
     getAllTaskNames(): Array<Tokenizable> {
-        return this.props.tasks.map((task) => {
-            return {
-                label: `T${task.id}`,
-                value: task.id
-            }
-        })
+        let names = [];
+        for (let taskId in this.props.tasksById) {
+            names.push({
+                label: `T${taskId}`,
+                value: taskId
+            })
+        }
+        return names;
     }
 
     retrieveTaskNames(tokens: Array<Tokenizable>) {
+        // Determine if there are any new ids.
+        let oldTaskIdMap = {};
+        for (let taskId of this.state.event.taskIds) {
+            oldTaskIdMap[taskId] = true;
+        }
+
+        let newTaskIds = [];
         this.state.event.taskIds = tokens.map((token: Tokenizable) => {
+            if (!oldTaskIdMap.hasOwnProperty(token.value)) {
+                newTaskIds.push(token.value);
+            }
             return token.value;
         });
+
+        // With the new TaskIds, see if there are any tag ids that we don't currently have
+        let oldTagIdMap = {};
+        for (let tagId of this.state.event.tagIds) {
+            oldTagIdMap[tagId] = true;
+        }
+        for (let taskId of newTaskIds) {
+            for (let tagId of this.props.tasksById[taskId].tagIds) {
+                if (!oldTagIdMap.hasOwnProperty(tagId + "")) {
+                    this.state.event.tagIds.push(tagId);
+                }
+            }
+        }
+
         this.setState(this.state);
     }
 

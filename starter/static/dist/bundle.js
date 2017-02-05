@@ -500,9 +500,11 @@
 	            tags: props.tags,
 	            tagsById: {},
 	            eventsById: {},
+	            tasksById: {},
 	        };
 	        App.updateTagsById(newState);
 	        App.updateEventsById(newState);
+	        App.updateTasksById(newState);
 	        _this.state = newState;
 	        return _this;
 	    }
@@ -516,6 +518,7 @@
 	    };
 	    App.prototype.updateTask = function (task) {
 	        var _this = this;
+	        var oldIds = task.eventIds;
 	        delete task['eventIds'];
 	        jQuery.post('/api/1/task/update', task, function (updatedTaskJson) {
 	            var updatedTask = JSON.parse(updatedTaskJson);
@@ -529,6 +532,7 @@
 	            });
 	            _this.setState(_this.state);
 	        });
+	        task.eventIds = oldIds;
 	    };
 	    App.prototype.deleteTask = function (task) {
 	        var _this = this;
@@ -589,6 +593,14 @@
 	        }
 	        state.eventsById = eventsById;
 	    };
+	    App.updateTasksById = function (state) {
+	        var tasksById = {};
+	        for (var _i = 0, _a = state.tasks; _i < _a.length; _i++) {
+	            var task = _a[_i];
+	            tasksById[task.id] = task;
+	        }
+	        state.tasksById = tasksById;
+	    };
 	    App.prototype.createTag = function (tag) {
 	        var _this = this;
 	        delete tag["id"];
@@ -631,7 +643,7 @@
 	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, eventsById: this.state.eventsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
 	    };
 	    App.prototype.renderCalendar = function (viewType, simpleOptions) {
-	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, tasks: this.state.tasks, initialViewType: viewType, simpleOptions: simpleOptions, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this) });
+	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, tasksById: this.state.tasksById, initialViewType: viewType, simpleOptions: simpleOptions, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this) });
 	    };
 	    App.prototype.renderTagGraph = function () {
 	        return React.createElement(tag_graph_1.TagGraphComponent, { meUser: this.props.meUser, tagsById: this.state.tagsById, createTag: this.createTag.bind(this), updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this) });
@@ -5299,7 +5311,7 @@
 	            return;
 	        }
 	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.clearEditingEvent.bind(this) },
-	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, event: this.state.editingEvent, tagsById: this.props.tagsById, createMode: false, tasks: this.props.tasks, createEvent: function (event) { }, updateEvent: this.props.updateEvent, deleteEvent: this.props.deleteEvent }));
+	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, event: this.state.editingEvent, tagsById: this.props.tagsById, createMode: false, tasksById: this.props.tasksById, createEvent: function (event) { }, updateEvent: this.props.updateEvent, deleteEvent: this.props.deleteEvent }));
 	    };
 	    CalendarComponent.prototype.closeCreateEvent = function () {
 	        this.state.showCreate = false;
@@ -5318,7 +5330,7 @@
 	            initialTags.push(this.state.selectedTag.id);
 	        }
 	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.closeCreateEvent.bind(this) },
-	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, tasks: this.props.tasks, initialTags: initialTags, initialCreationTime: this.state.createEventTimestamp, initialDurationSecs: this.state.createEventDurationSecs, createEvent: this.createEvent.bind(this), updateEvent: function (event) { }, deleteEvent: function (event) { } }));
+	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, tasksById: this.props.tasksById, initialTags: initialTags, initialCreationTime: this.state.createEventTimestamp, initialDurationSecs: this.state.createEventDurationSecs, createEvent: this.createEvent.bind(this), updateEvent: function (event) { }, deleteEvent: function (event) { } }));
 	    };
 	    CalendarComponent.prototype.render = function () {
 	        return React.createElement("div", { className: "calendar" },
@@ -5465,17 +5477,44 @@
 	        });
 	    };
 	    EditEventComponent.prototype.getAllTaskNames = function () {
-	        return this.props.tasks.map(function (task) {
-	            return {
-	                label: "T" + task.id,
-	                value: task.id
-	            };
-	        });
+	        var names = [];
+	        for (var taskId in this.props.tasksById) {
+	            names.push({
+	                label: "T" + taskId,
+	                value: taskId
+	            });
+	        }
+	        return names;
 	    };
 	    EditEventComponent.prototype.retrieveTaskNames = function (tokens) {
+	        // Determine if there are any new ids.
+	        var oldTaskIdMap = {};
+	        for (var _i = 0, _a = this.state.event.taskIds; _i < _a.length; _i++) {
+	            var taskId = _a[_i];
+	            oldTaskIdMap[taskId] = true;
+	        }
+	        var newTaskIds = [];
 	        this.state.event.taskIds = tokens.map(function (token) {
+	            if (!oldTaskIdMap.hasOwnProperty(token.value)) {
+	                newTaskIds.push(token.value);
+	            }
 	            return token.value;
 	        });
+	        // With the new TaskIds, see if there are any tag ids that we don't currently have
+	        var oldTagIdMap = {};
+	        for (var _b = 0, _c = this.state.event.tagIds; _b < _c.length; _b++) {
+	            var tagId = _c[_b];
+	            oldTagIdMap[tagId] = true;
+	        }
+	        for (var _d = 0, newTaskIds_1 = newTaskIds; _d < newTaskIds_1.length; _d++) {
+	            var taskId = newTaskIds_1[_d];
+	            for (var _e = 0, _f = this.props.tasksById[taskId].tagIds; _e < _f.length; _e++) {
+	                var tagId = _f[_e];
+	                if (!oldTagIdMap.hasOwnProperty(tagId + "")) {
+	                    this.state.event.tagIds.push(tagId);
+	                }
+	            }
+	        }
 	        this.setState(this.state);
 	    };
 	    EditEventComponent.prototype.renderFormTitle = function () {

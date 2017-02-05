@@ -20,6 +20,8 @@ export class Task {
     eventIds: Array<number>;
 }
 
+export interface TasksById {[taskId: number]: Task}
+
 export const priorityNameList = [
     ["Unknown",   0],
     ["Highest", 500],
