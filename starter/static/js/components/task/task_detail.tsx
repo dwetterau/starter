@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as moment from "moment";
-import {Task, TagsById, EventsById} from "../../models"
+import {Task, TagsById, EventsById, stateNameList, priorityNameList} from "../../models"
 import {Linkify} from "../lib/Linkify"
 
 interface TaskDetailProps {
@@ -66,6 +66,35 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
         </Linkify>
     }
 
+    renderCurrentStatus() {
+        let priorityName = '';
+        priorityNameList.forEach((nameAndPriority: [string, number]) => {
+            let [n, priority] = nameAndPriority;
+            if (this.props.task.priority == priority) {
+                priorityName = n;
+            }
+        });
+
+        let stateName = '';
+        stateNameList.forEach((nameAndState: [string, number]) => {
+            let [n, state] = nameAndState;
+            if (this.props.task.state == state) {
+                stateName = n;
+            }
+        });
+
+        return <div className="task-status">
+            <div className="info-container">
+                <div className={`task-color -p${this.props.task.priority}`}/>
+                <div>{priorityName}</div>
+            </div>
+            <div className="info-container">
+                <div className={`task-color -s${this.props.task.state}`}/>
+                <div>{stateName}</div>
+            </div>
+        </div>
+    }
+
     renderDuration(seconds: number): string {
         let final = '';
         if (seconds >= 60 * 60) {
@@ -123,6 +152,7 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
         return <div className="task-detail-container">
             {this.renderHeader()}
             {this.renderDescription()}
+            {this.renderCurrentStatus()}
             {this.renderTimeInfo()}
         </div>
     }

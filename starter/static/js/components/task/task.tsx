@@ -25,15 +25,9 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
             return
         }
 
-        let name = '';
-        priorityNameList.forEach((nameAndPriority: [string, number]) => {
-            let [n, priority] = nameAndPriority;
-            if (this.props.task.priority == priority) {
-                name = n;
-            }
-        });
+        let className = `task-color -p${this.props.task.priority}`;
         return (
-            <div className="task-priority">Priority: {name}</div>
+            <div className={className}></div>
         );
     }
 
@@ -43,15 +37,9 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
             return
         }
 
-        let name = '';
-        stateNameList.forEach((nameAndState: [string, number]) => {
-            let [n, state] = nameAndState;
-            if (this.props.task.state == state) {
-                name = n;
-            }
-        });
+        let className = `task-color -s${this.props.task.state}`;
         return (
-            <div className="task-state">State: {name}</div>
+            <div className={className}></div>
         );
     }
 
@@ -74,11 +62,15 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
 
     render() {
         return <div className="task card">
-            {this.renderTaskId()}
-            <div className="task-title">{this.props.task.title}</div>
-            {this.renderPriority()}
-            {this.renderState()}
-            {this.renderTags()}
+            <div className="task-columns">
+                {this.renderPriority()}
+                {this.renderState()}
+                <div className="main-column">
+                    {this.renderTaskId()}
+                    <div className="task-title">{this.props.task.title}</div>
+                    {this.renderTags()}
+                </div>
+            </div>
         </div>
     }
 }

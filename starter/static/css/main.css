@@ -130,6 +130,66 @@ div.task-board .task,.task-title {
     font-weight: bold;
 }
 
+.task .task-columns {
+    display: flex;
+}
+
+.task-columns .task-color {
+    width: 3px;
+    flex-shrink: 0;
+    margin: -20px 17px -20px -20px;
+}
+
+/* Unknown */
+.task-color.-p0 {
+    background-color: #8b4513;
+}
+
+/* Highest */
+.task-color.-p500 {
+    background-color: #f0f;
+}
+
+/* High */
+.task-color.-p400 {
+    background-color: #f00;
+}
+
+/* Normal */
+.task-color.-p300 {
+    background-color: #ffa500;
+}
+
+/* Low */
+.task-color.-p200 {
+    background-color: #228b22;
+}
+
+/* Lowest */
+.task-color.-p100 {
+    background-color: #6495ed;
+}
+
+/* Open */
+.task-color.-s0 {
+    background-color: #228b22;
+}
+
+/* In Progress */
+.task-color.-s500 {
+    background-color: #6495ed;
+}
+
+/* Blocked */
+.task-color.-s750 {
+    background-color: #f00;
+}
+
+/* Closed */
+.task-color.-s1000 {
+    background-color: #8b4513;
+}
+
 div.task-tags-container {
     display: flex;
 }
@@ -159,6 +219,30 @@ div.task-detail-container div.title {
 
 div.task-detail-container div.options a {
     padding: 0 .25em;
+}
+
+div.task-detail-container div.task-status {
+    display: flex;
+    padding-top: .25em;
+}
+
+div.task-detail-container div.task-status div {
+    margin-right: .5em;
+}
+
+div.task-detail-container div.task-status div.info-container {
+    display: flex;
+}
+
+div.task-detail-container div.task-status div.task-color {
+    height: 22px;
+    width: 1em;
+    margin-right: .25em;
+    margin-left: -.25em;
+}
+
+div.task-detail-container div.task-time-info {
+    padding-top: .25em;
 }
 /* End of Task Detail view CSS */
 
