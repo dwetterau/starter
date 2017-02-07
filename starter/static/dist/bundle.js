@@ -673,15 +673,38 @@
 	    App.prototype.renderMergedView = function () {
 	        return React.createElement("div", { className: "merged-container" },
 	            React.createElement("div", { className: "main-pane" },
-	                React.createElement("div", { className: "merged-task-container" }, this.renderTaskBoard())),
+	                React.createElement("div", { className: "merged-task-container" }, this.renderTaskBoard(true))),
 	            React.createElement("div", { className: "right-pane" },
 	                React.createElement("div", { className: "merged-calendar-container" }, this.renderCalendar(calendar_1.CalendarViewType.day, true))));
 	    };
-	    App.prototype.renderTaskBoard = function () {
-	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, eventsById: this.state.eventsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
+	    App.prototype.renderTaskBoard = function (allowCalendarCoordination) {
+	        var _this = this;
+	        var maybeCreateEvent = function (t) { return void {}; };
+	        var maybeEndEvent = function (t) { return void {}; };
+	        if (allowCalendarCoordination) {
+	            maybeCreateEvent = function (t) {
+	                _this.state.signalCreateEventWithTask = t;
+	                _this.setState(_this.state);
+	            };
+	            maybeEndEvent = function (t) {
+	                _this.state.signalEndEventWithTask = t;
+	                _this.setState(_this.state);
+	            };
+	        }
+	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, eventsById: this.state.eventsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this), maybeCreateEvent: maybeCreateEvent, maybeEndEvent: maybeEndEvent });
 	    };
 	    App.prototype.renderCalendar = function (viewType, simpleOptions) {
-	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, tasksById: this.state.tasksById, initialViewType: viewType, simpleOptions: simpleOptions, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this) });
+	        var maybeCreateEventWithTask = null;
+	        var maybeEndEventWithTask = null;
+	        if (this.state.signalCreateEventWithTask) {
+	            maybeCreateEventWithTask = this.state.signalCreateEventWithTask;
+	            this.state.signalCreateEventWithTask = null;
+	        }
+	        if (this.state.signalEndEventWithTask) {
+	            maybeEndEventWithTask = this.state.signalEndEventWithTask;
+	            this.state.signalEndEventWithTask = null;
+	        }
+	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, tasksById: this.state.tasksById, initialViewType: viewType, simpleOptions: simpleOptions, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this), maybeCreateEventWithTask: maybeCreateEventWithTask, maybeEndEventWithTask: maybeEndEventWithTask });
 	    };
 	    App.prototype.renderTagGraph = function () {
 	        return React.createElement(tag_graph_1.TagGraphComponent, { meUser: this.props.meUser, tagsById: this.state.tagsById, createTag: this.createTag.bind(this), updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this) });
@@ -699,7 +722,7 @@
 	            return _this.renderPageContainer(AppViewMode.mergedView, _this.renderMergedView.bind(_this));
 	        };
 	        var getTaskBoard = function () {
-	            return _this.renderPageContainer(AppViewMode.taskView, _this.renderTaskBoard.bind(_this));
+	            return _this.renderPageContainer(AppViewMode.taskView, _this.renderTaskBoard.bind(_this, false));
 	        };
 	        var getCalendarWeek = function (viewType) {
 	            return _this.renderPageContainer(AppViewMode.eventView, _this.renderCalendar.bind(_this, viewType, false));
@@ -1408,7 +1431,16 @@
 	        event.preventDefault();
 	        // Update the task with the new column
 	        if (this.state.viewType == TaskBoardViewType.status) {
+	            var oldState = this.state.draggingTask.state;
 	            this.state.draggingTask.state = columnType;
+	            if (oldState != 500 && columnType == 500) {
+	                // This task was just marked "in progress"
+	                this.props.maybeCreateEvent(this.state.draggingTask);
+	            }
+	            if (oldState == 500 && columnType != 500) {
+	                // This task was just moved out of "in progress"
+	                this.props.maybeEndEvent(this.state.draggingTask);
+	            }
 	        }
 	        else if (this.state.viewType == TaskBoardViewType.priority) {
 	            this.state.draggingTask.priority = columnType;
@@ -4705,6 +4737,7 @@
 	    function CalendarComponent(props) {
 	        var _this = _super.call(this, props) || this;
 	        _this.refreshLoopId = 0;
+	        _this.gotCreateSignal = null;
 	        _this._dragTargetEventElement = null;
 	        _this.state = _this.getState(props);
 	        return _this;
@@ -4746,6 +4779,18 @@
 	                newState.selectedTag = this.state.selectedTag;
 	            }
 	        }
+	        if (this.shouldCreateEventWithTask(props, newState) || this.gotCreateSignal) {
+	            this.gotCreateSignal = props.maybeCreateEventWithTask;
+	            newState.showCreate = true;
+	        }
+	        var e = this.shouldEndEventWithTask(props, newState);
+	        if (e) {
+	            // Setting the time here should make the request only fire once. Yeah this is
+	            // pretty hacky though.
+	            // TODO: Send a real signal up in a logical way.
+	            e.durationSecs = Math.round((moment().unix() * 1000 - e.startTime) / 1000);
+	            props.updateEvent(e);
+	        }
 	        return newState;
 	    };
 	    CalendarComponent.prototype.componentDidMount = function () {
@@ -4785,6 +4830,41 @@
 	            startDayMoment = startDayMoment.subtract(1, "week");
 	        }
 	        return startDayMoment;
+	    };
+	    CalendarComponent.prototype.shouldCreateEventWithTask = function (newProps, state) {
+	        if (!(newProps.maybeCreateEventWithTask || this.gotCreateSignal)) {
+	            return false;
+	        }
+	        if (state.editingEvent) {
+	            return false;
+	        }
+	        // See if we are currently within an event.
+	        var now = moment().unix() * 1000;
+	        for (var _i = 0, _a = newProps.events; _i < _a.length; _i++) {
+	            var event_2 = _a[_i];
+	            if (event_2.startTime < now && (event_2.startTime + (event_2.durationSecs * 1000)) >= now) {
+	                return false;
+	            }
+	        }
+	        return true;
+	    };
+	    CalendarComponent.prototype.shouldEndEventWithTask = function (newProps, state) {
+	        if (!newProps.maybeEndEventWithTask || state.showCreate || state.editingEvent) {
+	            return null;
+	        }
+	        var now = moment().unix() * 1000;
+	        for (var _i = 0, _a = newProps.events; _i < _a.length; _i++) {
+	            var event_3 = _a[_i];
+	            if (event_3.startTime < now && (event_3.startTime + (event_3.durationSecs * 1000)) >= now) {
+	                for (var _b = 0, _c = event_3.taskIds; _b < _c.length; _b++) {
+	                    var taskId = _c[_b];
+	                    if (taskId == newProps.maybeEndEventWithTask.id) {
+	                        return event_3;
+	                    }
+	                }
+	            }
+	        }
+	        return null;
 	    };
 	    CalendarComponent.prototype.divideAndSort = function (startTimestamp, viewType, events) {
 	        var _this = this;
@@ -5348,7 +5428,7 @@
 	                var marginLeft = widthPercentage * renderingInfo.index;
 	                // We subtract 2 from the height purely for stylistic reasons.
 	                var style = {
-	                    "height": height - 2 + "px",
+	                    "height": Math.max(height - 2, 5) + "px",
 	                    "maxHeight": height + "px",
 	                    "top": dayOffset + "px",
 	                    "marginLeft": marginLeft + "%",
@@ -5412,6 +5492,7 @@
 	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, event: this.state.editingEvent, tagsById: this.props.tagsById, createMode: false, tasksById: this.props.tasksById, createEvent: function (event) { }, updateEvent: this.props.updateEvent, deleteEvent: this.props.deleteEvent }));
 	    };
 	    CalendarComponent.prototype.closeCreateEvent = function () {
+	        this.gotCreateSignal = false;
 	        this.state.showCreate = false;
 	        this.setState(this.state);
 	    };
@@ -5423,12 +5504,28 @@
 	        if (!this.state.showCreate) {
 	            return;
 	        }
+	        var initialCreationTime = this.state.createEventTimestamp;
+	        var initialDurationSecs = this.state.createEventDurationSecs;
 	        var initialTags = [];
 	        if (this.state.selectedTag) {
 	            initialTags.push(this.state.selectedTag.id);
 	        }
+	        var initialTasks = [];
+	        if (this.shouldCreateEventWithTask(this.props, this.state)) {
+	            var task = ((this.gotCreateSignal) ? this.gotCreateSignal : this.props.maybeCreateEventWithTask);
+	            initialTasks.push(task.id);
+	            for (var _i = 0, _a = task.tagIds; _i < _a.length; _i++) {
+	                var tagId = _a[_i];
+	                if (!initialTags.length || tagId != initialTags[0]) {
+	                    initialTags.push(tagId);
+	                }
+	            }
+	            // Also set the proper startTime
+	            initialCreationTime = moment().unix() * 1000;
+	            initialDurationSecs = 30 * 60;
+	        }
 	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.closeCreateEvent.bind(this) },
-	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, tasksById: this.props.tasksById, initialTags: initialTags, initialCreationTime: this.state.createEventTimestamp, initialDurationSecs: this.state.createEventDurationSecs, createEvent: this.createEvent.bind(this), updateEvent: function (event) { }, deleteEvent: function (event) { } }));
+	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, tasksById: this.props.tasksById, initialTags: initialTags, initialCreationTime: initialCreationTime, initialDurationSecs: initialDurationSecs, initialTasks: initialTasks, createEvent: this.createEvent.bind(this), updateEvent: function (event) { }, deleteEvent: function (event) { } }));
 	    };
 	    CalendarComponent.prototype.render = function () {
 	        return React.createElement("div", { className: "calendar" },
@@ -5460,7 +5557,7 @@
 	        var _this = _super.call(this, props) || this;
 	        if (props.createMode) {
 	            _this.state = {
-	                event: _this._getEmptyEvent(props.meUser, props.initialCreationTime, props.initialDurationSecs, props.initialTags),
+	                event: _this._getEmptyEvent(props.meUser, props.initialCreationTime, props.initialDurationSecs, props.initialTags, props.initialTasks),
 	                submitted: false,
 	            };
 	        }
@@ -5474,7 +5571,7 @@
 	    }
 	    EditEventComponent.prototype.componentWillReceiveProps = function (newProps) {
 	        if (newProps.createMode) {
-	            var newEvent = this._getEmptyEvent(newProps.meUser, newProps.initialCreationTime, newProps.initialDurationSecs, newProps.initialTags);
+	            var newEvent = this._getEmptyEvent(newProps.meUser, newProps.initialCreationTime, newProps.initialDurationSecs, newProps.initialTags, newProps.initialTasks);
 	            if (this.state && !this.state.submitted) {
 	                // Copy over the name field so it doesn't get cleared out. As well as all fields
 	                // that weren't set in the new props.
@@ -5487,6 +5584,9 @@
 	                if (!(newProps.initialTags && newProps.initialTags.length)) {
 	                    newEvent.tagIds = this.state.event.tagIds;
 	                }
+	                if (!(newProps.initialTasks && newProps.initialTasks.length)) {
+	                    newEvent.taskIds = this.state.event.taskIds;
+	                }
 	                newEvent.name = this.state.event.name;
 	            }
 	            this.setState({ event: newEvent, submitted: false });
@@ -5495,7 +5595,7 @@
 	            this.setState({ event: newProps.event, submitted: false });
 	        }
 	    };
-	    EditEventComponent.prototype._getEmptyEvent = function (user, initialCreationTime, initialDurationSecs, initialTags) {
+	    EditEventComponent.prototype._getEmptyEvent = function (user, initialCreationTime, initialDurationSecs, initialTags, initialTasks) {
 	        return {
 	            id: 0,
 	            name: '',
@@ -5504,7 +5604,7 @@
 	            tagIds: (initialTags) ? initialTags : [],
 	            startTime: (initialCreationTime) ? initialCreationTime : 0,
 	            durationSecs: (initialDurationSecs) ? initialDurationSecs : 900,
-	            taskIds: [],
+	            taskIds: (initialTasks) ? initialTasks : [],
 	        };
 	    };
 	    EditEventComponent.prototype.submitForm = function (eventType) {

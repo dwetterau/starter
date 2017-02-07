@@ -22,6 +22,9 @@ export interface AppState {
     tagsById: TagsById,
     eventsById: EventsById,
     tasksById: TasksById,
+
+    signalCreateEventWithTask?: Task,
+    signalEndEventWithTask?: Task,
 }
 
 export enum AppViewMode {
@@ -220,7 +223,7 @@ export class App extends React.Component<AppProps, AppState> {
         return <div className="merged-container">
             <div className="main-pane">
                 <div className="merged-task-container">
-                    {this.renderTaskBoard()}
+                    {this.renderTaskBoard(true)}
                 </div>
             </div>
             <div className="right-pane">
@@ -231,7 +234,21 @@ export class App extends React.Component<AppProps, AppState> {
         </div>
     }
 
-    renderTaskBoard() {
+    renderTaskBoard(allowCalendarCoordination: boolean) {
+        let maybeCreateEvent = (t: Task) => void {};
+        let maybeEndEvent = (t: Task) => void {};
+
+        if (allowCalendarCoordination) {
+            maybeCreateEvent = (t: Task) => {
+                this.state.signalCreateEventWithTask = t;
+                this.setState(this.state)
+            };
+            maybeEndEvent = (t: Task) => {
+                this.state.signalEndEventWithTask = t;
+                this.setState(this.state)
+            };
+        }
+
         return <TaskBoardComponent
             meUser={this.props.meUser}
             tasks={this.state.tasks}
@@ -240,10 +257,25 @@ export class App extends React.Component<AppProps, AppState> {
             createTask={this.createTask.bind(this)}
             updateTask={this.updateTask.bind(this)}
             deleteTask={this.deleteTask.bind(this)}
+            maybeCreateEvent={maybeCreateEvent}
+            maybeEndEvent={maybeEndEvent}
         />
     }
 
     renderCalendar(viewType, simpleOptions) {
+        let maybeCreateEventWithTask = null;
+        let maybeEndEventWithTask = null;
+
+        if (this.state.signalCreateEventWithTask) {
+            maybeCreateEventWithTask = this.state.signalCreateEventWithTask;
+            this.state.signalCreateEventWithTask = null;
+        }
+
+        if (this.state.signalEndEventWithTask) {
+            maybeEndEventWithTask = this.state.signalEndEventWithTask;
+            this.state.signalEndEventWithTask = null;
+        }
+
         return <CalendarComponent
             meUser={this.props.meUser}
             events={this.state.events}
@@ -254,6 +286,8 @@ export class App extends React.Component<AppProps, AppState> {
             createEvent={this.createEvent.bind(this)}
             updateEvent={this.updateEvent.bind(this)}
             deleteEvent={this.deleteEvent.bind(this)}
+            maybeCreateEventWithTask={maybeCreateEventWithTask}
+            maybeEndEventWithTask={maybeEndEventWithTask}
         />
     }
 
@@ -287,7 +321,7 @@ export class App extends React.Component<AppProps, AppState> {
         let getTaskBoard = () => {
             return this.renderPageContainer(
                 AppViewMode.taskView,
-                this.renderTaskBoard.bind(this),
+                this.renderTaskBoard.bind(this, false),
             )
         };
         let getCalendarWeek = (viewType) => {

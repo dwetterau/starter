@@ -4,7 +4,7 @@ import * as React from "react";
 import { browserHistory } from 'react-router';
 
 import {EditEventComponent} from "./edit_event"
-import {Event, User, TagsById, Tag, TasksById} from "../../models"
+import {Event, User, TagsById, Tag, TasksById, Task} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
 import {ModalComponent} from "../lib/modal";
@@ -20,6 +20,10 @@ export interface CalendarProps {
     createEvent: (event: Event) => void,
     updateEvent: (event: Event) => void,
     deleteEvent: (event: Event) => void,
+
+    // For getting inputs from the task board.
+    maybeCreateEventWithTask?: Task,
+    maybeEndEventWithTask?: Task,
 }
 export interface CalendarState {
     viewType: CalendarViewType,
@@ -66,6 +70,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.setState(this.getState(props))
     }
 
+    gotCreateSignal = null;
     getState(props: CalendarProps) {
         let viewType = props.initialViewType;
         let startDayTimestamp: number;
@@ -101,6 +106,20 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 newState.selectedTag = this.state.selectedTag;
             }
         }
+        if (this.shouldCreateEventWithTask(props, newState) || this.gotCreateSignal) {
+            this.gotCreateSignal = props.maybeCreateEventWithTask;
+            newState.showCreate = true;
+        }
+
+        let e = this.shouldEndEventWithTask(props, newState);
+        if (e) {
+            // Setting the time here should make the request only fire once. Yeah this is
+            // pretty hacky though.
+            // TODO: Send a real signal up in a logical way.
+            e.durationSecs = Math.round((moment().unix() * 1000 - e.startTime) / 1000);
+            props.updateEvent(e);
+        }
+
         return newState;
     }
 
@@ -143,6 +162,41 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             startDayMoment = startDayMoment.subtract(1, "week");
         }
         return startDayMoment
+    }
+
+    shouldCreateEventWithTask(newProps: CalendarProps, state: CalendarState) {
+        if (!(newProps.maybeCreateEventWithTask || this.gotCreateSignal)) {
+            return false;
+        }
+        if (state.editingEvent) {
+            return false;
+        }
+
+        // See if we are currently within an event.
+        let now = moment().unix() * 1000;
+        for (let event of newProps.events) {
+            if (event.startTime < now && (event.startTime + (event.durationSecs * 1000)) >= now) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    shouldEndEventWithTask(newProps: CalendarProps, state: CalendarState) {
+        if (!newProps.maybeEndEventWithTask || state.showCreate || state.editingEvent) {
+            return null;
+        }
+        let now = moment().unix() * 1000;
+        for (let event of newProps.events) {
+            if (event.startTime < now && (event.startTime + (event.durationSecs * 1000)) >= now) {
+                for (let taskId of event.taskIds) {
+                    if (taskId == newProps.maybeEndEventWithTask.id) {
+                        return event;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     divideAndSort(
@@ -854,7 +908,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
                 // We subtract 2 from the height purely for stylistic reasons.
                 const style = {
-                    "height": `${height - 2}px`,
+                    "height": `${Math.max(height - 2, 5)}px`,
                     "maxHeight": `${height}px`,
                     "top": `${dayOffset}px`,
                     "marginLeft": `${marginLeft}%`,
@@ -970,6 +1024,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     closeCreateEvent() {
+        this.gotCreateSignal = false;
         this.state.showCreate = false;
         this.setState(this.state);
 
@@ -984,10 +1039,28 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         if (!this.state.showCreate) {
             return;
         }
+        let initialCreationTime = this.state.createEventTimestamp;
+        let initialDurationSecs = this.state.createEventDurationSecs;
 
         const initialTags: Array<number> = [];
         if (this.state.selectedTag) {
             initialTags.push(this.state.selectedTag.id)
+        }
+        const initialTasks: Array<number> = [];
+        if (this.shouldCreateEventWithTask(this.props, this.state)) {
+            let task = (
+                (this.gotCreateSignal) ? this.gotCreateSignal : this.props.maybeCreateEventWithTask
+            );
+            initialTasks.push(task.id);
+            for (let tagId of task.tagIds) {
+                if (!initialTags.length || tagId != initialTags[0]) {
+                    initialTags.push(tagId)
+                }
+            }
+
+            // Also set the proper startTime
+            initialCreationTime = moment().unix() * 1000;
+            initialDurationSecs = 30 * 60;
         }
         return <ModalComponent cancelFunc={this.closeCreateEvent.bind(this)}>
             <EditEventComponent
@@ -996,8 +1069,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 createMode={true}
                 tasksById={this.props.tasksById}
                 initialTags={initialTags}
-                initialCreationTime={this.state.createEventTimestamp}
-                initialDurationSecs={this.state.createEventDurationSecs}
+                initialCreationTime={initialCreationTime}
+                initialDurationSecs={initialDurationSecs}
+                initialTasks={initialTasks}
                 createEvent={this.createEvent.bind(this)}
                 updateEvent={(event: Event) => {}}
                 deleteEvent={(event: Event) => {}}

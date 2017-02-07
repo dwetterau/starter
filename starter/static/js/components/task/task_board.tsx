@@ -16,6 +16,10 @@ export interface TaskBoardProps {
     createTask: (task: Task) => void,
     updateTask: (task: Task) => void,
     deleteTask: (task: Task) => void,
+
+    // For interacting with calendar
+    maybeCreateEvent: (task: Task) => void,
+    maybeEndEvent: (task: Task) => void,
 }
 export interface TaskBoardState {
     viewType: TaskBoardViewType,
@@ -204,7 +208,16 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
         // Update the task with the new column
         if (this.state.viewType == TaskBoardViewType.status) {
+            const oldState = this.state.draggingTask.state;
             this.state.draggingTask.state = columnType;
+            if (oldState != 500 && columnType == 500) {
+                // This task was just marked "in progress"
+                this.props.maybeCreateEvent(this.state.draggingTask)
+            }
+            if (oldState == 500 && columnType != 500) {
+                // This task was just moved out of "in progress"
+                this.props.maybeEndEvent(this.state.draggingTask)
+            }
         } else if (this.state.viewType == TaskBoardViewType.priority) {
             this.state.draggingTask.priority = columnType;
         } else {
