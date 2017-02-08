@@ -11,7 +11,6 @@ export interface EditEventProps {
     initialCreationTime?: number,
     initialDurationSecs?: number,
     initialTags?: Array<number>,
-    initialTasks?: Array<number>,
     createEvent: (event: Event) => void,
     updateEvent: (event: Event) => void,
     deleteEvent: (event: Event) => void,
@@ -31,8 +30,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                     props.meUser,
                     props.initialCreationTime,
                     props.initialDurationSecs,
-                    props.initialTags,
-                    props.initialTasks,
+                    props.initialTags
                 ),
                 submitted: false,
             }
@@ -50,8 +48,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 newProps.meUser,
                 newProps.initialCreationTime,
                 newProps.initialDurationSecs,
-                newProps.initialTags,
-                newProps.initialTasks,
+                newProps.initialTags
             );
             if (this.state && !this.state.submitted) {
                 // Copy over the name field so it doesn't get cleared out. As well as all fields
@@ -65,9 +62,6 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 if (!(newProps.initialTags && newProps.initialTags.length)) {
                     newEvent.tagIds = this.state.event.tagIds
                 }
-                if (!(newProps.initialTasks && newProps.initialTasks.length)) {
-                    newEvent.taskIds = this.state.event.taskIds
-                }
                 newEvent.name = this.state.event.name
             }
             this.setState({event: newEvent, submitted: false})
@@ -80,8 +74,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         user: User,
         initialCreationTime?: number,
         initialDurationSecs?: number,
-        initialTags?: Array<number>,
-        initialTasks?: Array<number>,
+        initialTags?: Array<number>
     ): Event {
         return {
             id: 0,
@@ -91,7 +84,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
             tagIds: (initialTags) ? initialTags : [],
             startTime: (initialCreationTime) ? initialCreationTime: 0,
             durationSecs: (initialDurationSecs) ? initialDurationSecs: 900,
-            taskIds: (initialTasks) ? initialTasks: [],
+            taskIds: [],
         }
     }
 
