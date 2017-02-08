@@ -1,3 +1,4 @@
+import * as moment from "moment";
 import * as React from "react";
 import {User, Event, TagsById, TasksById} from "../../models";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
@@ -11,12 +12,15 @@ export interface EditEventProps {
     initialCreationTime?: number,
     initialDurationSecs?: number,
     initialTags?: Array<number>,
+    initialTasks?: Array<number>,
     createEvent: (event: Event) => void,
     updateEvent: (event: Event) => void,
     deleteEvent: (event: Event) => void,
 }
 export interface EditEventState {
     event: Event,
+    startNow: boolean,
+    endNow: boolean,
     submitted: boolean,
 }
 
@@ -24,31 +28,35 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
 
     constructor(props: EditEventProps) {
         super(props);
+        let event = null;
         if (props.createMode) {
-            this.state = {
-                event: this._getEmptyEvent(
-                    props.meUser,
-                    props.initialCreationTime,
-                    props.initialDurationSecs,
-                    props.initialTags
-                ),
-                submitted: false,
-            }
+            event = this._getEmptyEvent(
+                props.meUser,
+                props.initialCreationTime,
+                props.initialDurationSecs,
+                props.initialTags,
+                props.initialTasks,
+            );
         } else {
-            this.state = {
-                event: props.event,
-                submitted: false,
-            }
+            event = props.event;
+        }
+        this.state = {
+            event,
+            startNow: false,
+            endNow: false,
+            submitted: false,
         }
     }
 
     componentWillReceiveProps(newProps: EditEventProps) {
+        let event = newProps.event;
         if (newProps.createMode) {
             const newEvent = this._getEmptyEvent(
                 newProps.meUser,
                 newProps.initialCreationTime,
                 newProps.initialDurationSecs,
-                newProps.initialTags
+                newProps.initialTags,
+                newProps.initialTasks,
             );
             if (this.state && !this.state.submitted) {
                 // Copy over the name field so it doesn't get cleared out. As well as all fields
@@ -62,19 +70,23 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 if (!(newProps.initialTags && newProps.initialTags.length)) {
                     newEvent.tagIds = this.state.event.tagIds
                 }
+                if (!(newProps.initialTasks && newProps.initialTasks.length)) {
+                    newEvent.taskIds = this.state.event.taskIds;
+                }
                 newEvent.name = this.state.event.name
             }
-            this.setState({event: newEvent, submitted: false})
-        } else {
-            this.setState({event: newProps.event, submitted: false})
+            event = newEvent;
         }
+        this.state.event = event;
+        this.setState(this.state);
     }
 
     _getEmptyEvent(
         user: User,
         initialCreationTime?: number,
         initialDurationSecs?: number,
-        initialTags?: Array<number>
+        initialTags?: Array<number>,
+        initialTasks?: Array<number>,
     ): Event {
         return {
             id: 0,
@@ -84,11 +96,38 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
             tagIds: (initialTags) ? initialTags : [],
             startTime: (initialCreationTime) ? initialCreationTime: 0,
             durationSecs: (initialDurationSecs) ? initialDurationSecs: 900,
-            taskIds: [],
+            taskIds: (initialTasks) ? initialTasks: [],
         }
     }
 
+    toggleStartNow() {
+        this.state.startNow = !this.state.startNow;
+        this.setState(this.state);
+    }
+
+    toggleEndNow() {
+        this.state.endNow = !this.state.endNow;
+        this.setState(this.state);
+    }
+
     submitForm(eventType: string) {
+        let now = moment().unix() * 1000;
+        if (this.state.startNow) {
+            let currentEndTime = this.state.event.startTime + (
+                this.state.event.durationSecs * 1000
+            );
+            this.state.event.startTime = now;
+            this.state.event.durationSecs = Math.floor((currentEndTime - now) / 1000)
+        }
+
+        if (this.state.endNow) {
+            if (now > this.state.event.startTime) {
+                // This only makes sense to do if the start time is in the past.
+                this.state.event.durationSecs = Math.floor(
+                    (now - this.state.event.startTime) / 1000
+                );
+            }
+        }
         if (eventType == "save") {
             this.props.updateEvent(this.state.event);
         } else if (eventType == "delete") {
@@ -101,6 +140,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         // Reset the form after a submission. We don't clear anything out in case the
         // request fails. We wait for the new props to actually clear it out.
         this.state.submitted = true;
+
         this.setState(this.state)
     }
 
@@ -255,6 +295,24 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                     onChange={this.retrieveTagNames.bind(this)}
                     initialValues={this.getCurrentTags()}
                     possibleTokens={this.getAllTagNames()}
+                />
+            </div>
+
+            <div className="start-now checkbox-container">
+                <label onClick={this.toggleStartNow.bind(this)}>Start Now?</label>
+                <input
+                    type="checkbox"
+                    onChange={this.toggleStartNow.bind(this)}
+                    checked={this.state.startNow}
+                />
+            </div>
+
+            <div className="end-now checkbox-container">
+                <label onClick={this.toggleEndNow.bind(this)}>End Now?</label>
+                <input
+                    type="checkbox"
+                    onChange={this.toggleEndNow.bind(this)}
+                    checked={this.state.endNow}
                 />
             </div>
 

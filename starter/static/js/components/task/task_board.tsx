@@ -7,6 +7,7 @@ import {TaskComponent} from "./task";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
 import {ModalComponent} from "../lib/modal";
 import {TaskDetailComponent} from "./task_detail";
+import {signalCreateEventWithTask, signalEndEventWithTask} from "../../events";
 
 export interface TaskBoardProps {
     meUser: User,
@@ -204,7 +205,25 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
         // Update the task with the new column
         if (this.state.viewType == TaskBoardViewType.status) {
+            const oldState = this.state.draggingTask.state;
             this.state.draggingTask.state = columnType;
+            if (oldState != 500 && columnType == 500) {
+                // This task was just marked "in progress"
+                let event = new CustomEvent(
+                    signalCreateEventWithTask,
+                    {'detail': this.state.draggingTask},
+                );
+                document.dispatchEvent(event);
+            }
+            if (oldState == 500 && columnType != 500) {
+                // This task was just moved out of "in progress"
+                let event = new CustomEvent(
+                    signalEndEventWithTask,
+                    {'detail': this.state.draggingTask},
+                );
+                document.dispatchEvent(event);
+            }
+
         } else if (this.state.viewType == TaskBoardViewType.priority) {
             this.state.draggingTask.priority = columnType;
         } else {

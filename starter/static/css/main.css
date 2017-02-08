@@ -581,6 +581,17 @@ div.modal input[type=button] {
 div.modal div.rendered-token {
     margin-top: 0;
 }
+
+div.modal div.checkbox-container {
+    display: flex;
+    align-items: center;
+}
+
+div.modal div.checkbox-container input {
+    width: 30px;
+    height: 15px;
+    margin-top: 7px;
+}
 /* End of Modal CSS */
 
 /* Multi-pane CSS */

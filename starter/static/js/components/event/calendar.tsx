@@ -4,11 +4,12 @@ import * as React from "react";
 import { browserHistory } from 'react-router';
 
 import {EditEventComponent} from "./edit_event"
-import {Event, User, TagsById, Tag, TasksById} from "../../models"
+import {Event, User, TagsById, Tag, TasksById, Task} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
 import {ModalComponent} from "../lib/modal";
 import {debounce} from "../lib/util";
+import {signalCreateEventWithTask, signalEndEventWithTask} from "../../events";
 
 export interface CalendarProps {
     meUser: User,
@@ -31,6 +32,7 @@ export interface CalendarState {
     editingEvent?: Event,
     createEventTimestamp?: number,
     createEventDurationSecs?: number,
+    createEventTask?: Task,
     selectedTag?: Tag,
     draggingStartTimestamp?: number,
     draggingEndTimestamp?: number,
@@ -82,11 +84,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             startDayTimestamp,
             columns,
             cellHeight: 22,
-            showCreate: false,
+            showCreate: (this.state) ? this.state.showCreate : false,
             eventToRenderingInfo: eventToRenderingInfo,
             editingEvent: null,
             createEventTimestamp: null,
             createEventDurationSecs: null,
+            createEventTask: null,
             selectedTag: null,
             draggingStartTimestamp: null,
             draggingEndTimestamp: null,
@@ -118,6 +121,35 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             this.forceUpdate();
         };
         this.refreshLoopId = setInterval(loop, 60 * 1000);
+
+        // Register some event handlers to respond to signals from the task board
+        document.addEventListener(signalCreateEventWithTask, (e: CustomEvent) => {
+            let t: Task = e.detail;
+            if (this.shouldCreateEventWithTask()) {
+                let now = moment();
+                this.state.createEventTimestamp = now.unix() * 1000;
+                let x = moment(now).add(30, "minutes");
+                let remainder = x.minute() % 15;
+                if (remainder > 7.5) {
+                    x = moment(x).add(15 - remainder, "minutes")
+                } else {
+                    x = moment(x).subtract(remainder, "minutes")
+                }
+                this.state.createEventDurationSecs = x.startOf("minute").unix() - now.unix();
+                this.state.showCreate = true;
+                this.state.createEventTask = t;
+                this.setState(this.state);
+            }
+        });
+
+        document.addEventListener(signalEndEventWithTask, (e: CustomEvent) => {
+            let t: Task = e.detail;
+            let event = this.shouldEndEventWithTask(t);
+            if (event) {
+                event.durationSecs = Math.floor((moment().unix() * 1000 - event.startTime) / 1000);
+                this.props.updateEvent(event);
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -143,6 +175,38 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             startDayMoment = startDayMoment.subtract(1, "week");
         }
         return startDayMoment
+    }
+
+    shouldCreateEventWithTask() {
+        if (this.state.editingEvent || this.state.showCreate) {
+            return false;
+        }
+
+        // See if we are currently within an event.
+        let now = moment().unix() * 1000;
+        for (let event of this.props.events) {
+            if (event.startTime < now && (event.startTime + (event.durationSecs * 1000)) >= now) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    shouldEndEventWithTask(task: Task) {
+        if (this.state.showCreate || this.state.editingEvent) {
+            return null;
+        }
+        let now = moment().unix() * 1000;
+        for (let event of this.props.events) {
+            if (event.startTime < now && (event.startTime + (event.durationSecs * 1000)) >= now) {
+                for (let taskId of event.taskIds) {
+                    if (taskId == task.id) {
+                        return event;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     divideAndSort(
@@ -854,7 +918,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
                 // We subtract 2 from the height purely for stylistic reasons.
                 const style = {
-                    "height": `${height - 2}px`,
+                    "height": `${Math.max(height - 2, 5)}px`,
                     "maxHeight": `${height}px`,
                     "top": `${dayOffset}px`,
                     "marginLeft": `${marginLeft}%`,
@@ -971,8 +1035,10 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     closeCreateEvent() {
         this.state.showCreate = false;
+        this.state.createEventTimestamp = null;
+        this.state.createEventDurationSecs = null;
+        this.state.createEventTask = null;
         this.setState(this.state);
-
     }
 
     createEvent(event: Event) {
@@ -989,15 +1055,26 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         if (this.state.selectedTag) {
             initialTags.push(this.state.selectedTag.id)
         }
+        const initialTasks: Array<number> = [];
+        if (this.state.createEventTask) {
+            initialTasks.push(this.state.createEventTask.id);
+            for (let tagId of this.state.createEventTask.tagIds) {
+                if (!initialTags.length || tagId != initialTags[0]) {
+                    initialTags.push(tagId)
+                }
+            }
+        }
+
         return <ModalComponent cancelFunc={this.closeCreateEvent.bind(this)}>
             <EditEventComponent
                 meUser={this.props.meUser}
                 tagsById={this.props.tagsById}
                 createMode={true}
                 tasksById={this.props.tasksById}
-                initialTags={initialTags}
                 initialCreationTime={this.state.createEventTimestamp}
                 initialDurationSecs={this.state.createEventDurationSecs}
+                initialTags={initialTags}
+                initialTasks={initialTasks}
                 createEvent={this.createEvent.bind(this)}
                 updateEvent={(event: Event) => {}}
                 deleteEvent={(event: Event) => {}}
