@@ -216,11 +216,11 @@ export class App extends React.Component<AppProps, AppState> {
         />
     }
 
-    renderMergedView() {
+    renderMergedView(tagName) {
         return <div className="merged-container">
             <div className="main-pane">
                 <div className="merged-task-container">
-                    {this.renderTaskBoard()}
+                    {this.renderTaskBoard(tagName)}
                 </div>
             </div>
             <div className="right-pane">
@@ -231,10 +231,11 @@ export class App extends React.Component<AppProps, AppState> {
         </div>
     }
 
-    renderTaskBoard() {
+    renderTaskBoard(tagName) {
         return <TaskBoardComponent
             meUser={this.props.meUser}
             tasks={this.state.tasks}
+            initialTagName={tagName}
             tagsById={this.state.tagsById}
             eventsById={this.state.eventsById}
             createTask={this.createTask.bind(this)}
@@ -284,6 +285,12 @@ export class App extends React.Component<AppProps, AppState> {
                this.renderMergedView.bind(this),
            )
         };
+        let getMergedWithTag = (somethingWithParams: any) => {
+            return this.renderPageContainer(
+                AppViewMode.mergedView,
+                this.renderMergedView.bind(this, somethingWithParams.params.tagName),
+            )
+        };
         let getTaskBoard = () => {
             return this.renderPageContainer(
                 AppViewMode.taskView,
@@ -316,6 +323,7 @@ export class App extends React.Component<AppProps, AppState> {
                     path="/cal/day"
                     component={getCalendarWeek.bind(this, CalendarViewType.day)}
                 />
+                <Route path="/tag/:tagName" component={getMergedWithTag} />
                 <Route path="/tags" component={getTagGraph} />
             </Router>
         </div>

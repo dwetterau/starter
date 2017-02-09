@@ -670,15 +670,15 @@
 	    App.prototype.renderNotifier = function () {
 	        return React.createElement(notifier_1.NotifierComponent, { tasks: this.state.tasks, events: this.state.events });
 	    };
-	    App.prototype.renderMergedView = function () {
+	    App.prototype.renderMergedView = function (tagName) {
 	        return React.createElement("div", { className: "merged-container" },
 	            React.createElement("div", { className: "main-pane" },
-	                React.createElement("div", { className: "merged-task-container" }, this.renderTaskBoard())),
+	                React.createElement("div", { className: "merged-task-container" }, this.renderTaskBoard(tagName))),
 	            React.createElement("div", { className: "right-pane" },
 	                React.createElement("div", { className: "merged-calendar-container" }, this.renderCalendar(calendar_1.CalendarViewType.day, true))));
 	    };
-	    App.prototype.renderTaskBoard = function () {
-	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, tagsById: this.state.tagsById, eventsById: this.state.eventsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
+	    App.prototype.renderTaskBoard = function (tagName) {
+	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, initialTagName: tagName, tagsById: this.state.tagsById, eventsById: this.state.eventsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
 	    };
 	    App.prototype.renderCalendar = function (viewType, simpleOptions) {
 	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, tasksById: this.state.tasksById, initialViewType: viewType, simpleOptions: simpleOptions, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this) });
@@ -698,6 +698,9 @@
 	        var getMergedView = function () {
 	            return _this.renderPageContainer(AppViewMode.mergedView, _this.renderMergedView.bind(_this));
 	        };
+	        var getMergedWithTag = function (somethingWithParams) {
+	            return _this.renderPageContainer(AppViewMode.mergedView, _this.renderMergedView.bind(_this, somethingWithParams.params.tagName));
+	        };
 	        var getTaskBoard = function () {
 	            return _this.renderPageContainer(AppViewMode.taskView, _this.renderTaskBoard.bind(_this));
 	        };
@@ -714,6 +717,7 @@
 	                React.createElement(react_router_1.Route, { path: "/cal", component: getCalendarWeek.bind(this, calendar_1.CalendarViewType.week) }),
 	                React.createElement(react_router_1.Route, { path: "/cal/week", component: getCalendarWeek.bind(this, calendar_1.CalendarViewType.week) }),
 	                React.createElement(react_router_1.Route, { path: "/cal/day", component: getCalendarWeek.bind(this, calendar_1.CalendarViewType.day) }),
+	                React.createElement(react_router_1.Route, { path: "/tag/:tagName", component: getMergedWithTag }),
 	                React.createElement(react_router_1.Route, { path: "/tags", component: getTagGraph })));
 	    };
 	    return App;
@@ -1277,7 +1281,21 @@
 	        this.setState(this.getState(props, this.state.viewType));
 	    };
 	    TaskBoardComponent.prototype.getState = function (props, viewType) {
-	        var _a = this.divideByType(props.tasks, viewType), headers = _a[0], columnTypes = _a[1], columns = _a[2];
+	        var selectedTag = null;
+	        if (this.state && this.state.selectedTag) {
+	            selectedTag = this.state.selectedTag;
+	        }
+	        else if (props.initialTagName) {
+	            // See if any tag matches
+	            var lower = props.initialTagName.toLowerCase();
+	            for (var _i = 0, _a = Object.keys(props.tagsById); _i < _a.length; _i++) {
+	                var tagId = _a[_i];
+	                if (props.tagsById[tagId].name.toLowerCase() == lower) {
+	                    selectedTag = props.tagsById[tagId];
+	                }
+	            }
+	        }
+	        var _b = this.divideByType(props.tasks, viewType, selectedTag), headers = _b[0], columnTypes = _b[1], columns = _b[2];
 	        var newState = {
 	            viewType: viewType,
 	            columns: columns,
@@ -1287,7 +1305,7 @@
 	            draggingTask: null,
 	            editingTask: null,
 	            selectedTask: (this.state) ? this.state.selectedTask : null,
-	            selectedTag: null,
+	            selectedTag: selectedTag,
 	            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : true,
 	        };
 	        if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
@@ -1296,7 +1314,7 @@
 	        }
 	        return newState;
 	    };
-	    TaskBoardComponent.prototype.divideByType = function (tasks, type) {
+	    TaskBoardComponent.prototype.divideByType = function (tasks, type, selectedTag) {
 	        var _this = this;
 	        var columns = {};
 	        var columnList = [];
@@ -1325,8 +1343,8 @@
 	        }
 	        var _a = typeToHelpers[type], attr = _a.attr, orderedNameAndValue = _a.orderedNameAndValue, sortFunc = _a.sortFunc;
 	        var allChildIdsOfSelectedTag = {};
-	        if (this.state && this.state.selectedTag) {
-	            var queue = [this.state.selectedTag];
+	        if (selectedTag) {
+	            var queue = [selectedTag];
 	            while (queue.length) {
 	                var curTag = queue.pop();
 	                allChildIdsOfSelectedTag[curTag.id] = true;
@@ -1339,22 +1357,22 @@
 	            }
 	        }
 	        var shouldHideTask = function (task) {
-	            if (!_this.state) {
-	                // Other checks can only return true if state is defined.
-	                return false;
-	            }
-	            if (task.state == 1000) {
-	                if (type == TaskBoardViewType.priority && _this.state.shouldHideClosedTasks) {
-	                    return true;
-	                }
-	            }
-	            if (_this.state.selectedTag) {
+	            if (selectedTag) {
 	                // See if the task has the right tag
 	                var matches_1 = false;
 	                task.tagIds.forEach(function (tagId) {
 	                    matches_1 = matches_1 || allChildIdsOfSelectedTag[tagId];
 	                });
 	                if (!matches_1) {
+	                    return true;
+	                }
+	            }
+	            if (!_this.state) {
+	                // Other checks can only return true if state is defined.
+	                return false;
+	            }
+	            if (task.state == 1000) {
+	                if (type == TaskBoardViewType.priority && _this.state.shouldHideClosedTasks) {
 	                    return true;
 	                }
 	            }
@@ -1479,7 +1497,7 @@
 	        this.setState(this.state);
 	    };
 	    TaskBoardComponent.prototype.changeViewType = function (type) {
-	        var _a = this.divideByType(this.props.tasks, type), headers = _a[0], columnTypes = _a[1], columns = _a[2];
+	        var _a = this.divideByType(this.props.tasks, type, this.state.selectedTag), headers = _a[0], columnTypes = _a[1], columns = _a[2];
 	        this.state.viewType = type;
 	        this.state.headers = headers;
 	        this.state.columnTypes = columnTypes;

@@ -12,6 +12,7 @@ import {signalCreateEventWithTask, signalEndEventWithTask} from "../../events";
 export interface TaskBoardProps {
     meUser: User,
     tasks: Array<Task>,
+    initialTagName?: string,
     tagsById: TagsById,
     eventsById: EventsById,
     createTask: (task: Task) => void,
@@ -49,7 +50,22 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     getState(props: TaskBoardProps, viewType: TaskBoardViewType): TaskBoardState {
-        const [headers, columnTypes, columns] = this.divideByType(props.tasks, viewType);
+        let selectedTag = null;
+        if (this.state && this.state.selectedTag) {
+            selectedTag = this.state.selectedTag;
+        } else if (props.initialTagName) {
+            // See if any tag matches
+            let lower = props.initialTagName.toLowerCase();
+            for (let tagId of Object.keys(props.tagsById)) {
+                if (props.tagsById[tagId].name.toLowerCase() == lower) {
+                    selectedTag = props.tagsById[tagId]
+                }
+            }
+        }
+        const [headers, columnTypes, columns] = this.divideByType(
+            props.tasks, viewType, selectedTag
+        );
+
         const newState: TaskBoardState = {
             viewType,
             columns,
@@ -59,7 +75,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             draggingTask: null,
             editingTask: null,
             selectedTask: (this.state) ? this.state.selectedTask : null,
-            selectedTag: null,
+            selectedTag: selectedTag,
             shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : true,
         };
         if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
@@ -69,7 +85,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return newState;
     }
 
-    divideByType(tasks: Array<Task>, type: TaskBoardViewType): [
+    divideByType(tasks: Array<Task>, type: TaskBoardViewType, selectedTag: Tag): [
             Array<string>, Array<number>, Array<Array<Task>>] {
 
         const columns: {[columnType: number]: Array<Task>} = {};
@@ -109,8 +125,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         const {attr, orderedNameAndValue, sortFunc} = typeToHelpers[type];
 
         const allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
-        if (this.state && this.state.selectedTag) {
-            const queue = [this.state.selectedTag];
+        if (selectedTag) {
+            const queue = [selectedTag];
             while (queue.length) {
                 const curTag: Tag = queue.pop();
                 allChildIdsOfSelectedTag[curTag.id] = true;
@@ -123,6 +139,17 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
 
         const shouldHideTask = (task: Task) => {
+            if (selectedTag) {
+                // See if the task has the right tag
+                let matches = false;
+                task.tagIds.forEach((tagId: number) => {
+                    matches = matches || allChildIdsOfSelectedTag[tagId]
+                });
+                if (!matches) {
+                    return true;
+                }
+            }
+
             if (!this.state) {
                 // Other checks can only return true if state is defined.
                 return false;
@@ -130,17 +157,6 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
             if (task.state == 1000) {
                 if (type == TaskBoardViewType.priority && this.state.shouldHideClosedTasks) {
-                    return true;
-                }
-            }
-
-            if (this.state.selectedTag) {
-                // See if the task has the right tag
-                let matches = false;
-                task.tagIds.forEach((tagId: number) => {
-                    matches = matches || allChildIdsOfSelectedTag[tagId]
-                });
-                if (!matches) {
                     return true;
                 }
             }
@@ -291,7 +307,9 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     changeViewType(type: TaskBoardViewType) {
-        const [headers, columnTypes, columns] = this.divideByType(this.props.tasks, type);
+        const [headers, columnTypes, columns] = this.divideByType(
+            this.props.tasks, type, this.state.selectedTag
+        );
         this.state.viewType = type;
         this.state.headers = headers;
         this.state.columnTypes = columnTypes;

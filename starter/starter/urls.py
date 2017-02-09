@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^cal/day?$', views.index),
     url(r'^cal/week?$', views.index),
     url(r'^tags/?$', views.index),
+    url(r'^tag/[a-zA-Z0-9_]+/?$', views.index),
 
 
     # Auth urls
