@@ -5131,7 +5131,7 @@
 	            return;
 	        }
 	    };
-	    CalendarComponent.prototype.onDropPassThrough = function (event) {
+	    CalendarComponent.prototype.getDayAndIndexUnderneathEvent = function (event, callback) {
 	        var xPos = event.clientX;
 	        var yPos = event.clientY;
 	        // Hide the element
@@ -5140,16 +5140,18 @@
 	        if (dropTargetBelow.prop("tagName") == "TD") {
 	            // Great, we found a cell that we can actually finish dropping into
 	            var data = dropTargetBelow.data();
-	            this.onDrop(data.day, data.index);
-	        }
-	        else {
+	            callback(data.day, data.index);
 	        }
 	        // Show the element again
 	        jQuery(event.currentTarget).show();
+	    };
+	    CalendarComponent.prototype.onDropPassThrough = function (event) {
+	        this.getDayAndIndexUnderneathEvent(event, this.onDrop.bind(this));
 	        event.preventDefault();
 	        event.stopPropagation();
 	    };
 	    CalendarComponent.prototype.onDragOverPassThrough = function (event) {
+	        this.getDayAndIndexUnderneathEvent(event, this.onDragOver.bind(this));
 	        event.preventDefault();
 	        event.stopPropagation();
 	    };
@@ -5183,8 +5185,12 @@
 	        this.state.endDraggingEvent = null;
 	        this.setState(this.state);
 	    };
-	    CalendarComponent.prototype.onDragOver = function (day, event) {
-	        var index = event.target.dataset.index * 1;
+	    CalendarComponent.prototype.onDragOver = function (day, index, event) {
+	        // Watch out: This function is abused and needs refactoring. Event might be undefined,
+	        // index might be -1. Not at the same time though.
+	        if (index == -1) {
+	            index = event.target.dataset.index * 1;
+	        }
 	        if (this.state.draggingEvent) {
 	            this._dragTargetEventElement.hide();
 	            var timestamp = this.computeTimestamp(day, index);
@@ -5201,7 +5207,6 @@
 	        }
 	        else if (this.state.endDraggingEvent) {
 	            var timestamp = this.computeTimestamp(day, index);
-	            this.state.draggingEndTimestamp = timestamp;
 	            if (this.state.draggingStartTimestamp != this.state.endDraggingEvent.startTime ||
 	                this.state.draggingEndTimestamp != timestamp) {
 	                this.state.draggingStartTimestamp = this.state.endDraggingEvent.startTime;
@@ -5213,7 +5218,9 @@
 	            // Nothing being dragged
 	            return;
 	        }
-	        event.preventDefault();
+	        if (event) {
+	            event.preventDefault();
+	        }
 	    };
 	    CalendarComponent.prototype.getCurrentTagToken = function () {
 	        if (!this.state.selectedTag) {
@@ -5376,7 +5383,7 @@
 	        for (; i < 60 * 60 * 24; i += GRANULARITY) {
 	            tableRows.push(getColumnRow(i));
 	        }
-	        return (React.createElement("table", { cellPadding: "0", cellSpacing: "0", onMouseDown: this.columnMouseDown.bind(this, day), onMouseOver: util_1.debounce(this.columnMouseOver.bind(this, day), 50), onMouseUp: this.columnMouseUp.bind(this, day), onDragOver: this.onDragOver.bind(this, day) },
+	        return (React.createElement("table", { cellPadding: "0", cellSpacing: "0", onMouseDown: this.columnMouseDown.bind(this, day), onMouseOver: util_1.debounce(this.columnMouseOver.bind(this, day), 50), onMouseUp: this.columnMouseUp.bind(this, day), onDragOver: this.onDragOver.bind(this, day, -1) },
 	            React.createElement("tbody", null, tableRows)));
 	    };
 	    CalendarComponent.prototype.renderCurrentTimeCursor = function (index) {
@@ -5437,7 +5444,7 @@
 	                    "marginLeft": marginLeft + "%",
 	                    "width": widthPercentage + "%",
 	                };
-	                return (React.createElement("div", { className: "rendered-event-container", key: event.id, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough },
+	                return (React.createElement("div", { className: "rendered-event-container", key: event.id, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough.bind(_this) },
 	                    React.createElement("div", { className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event) },
 	                        React.createElement(event_1.EventComponent, { event: event, tagsById: _this.props.tagsById })),
 	                    React.createElement("div", { className: "draggable-event-end", draggable: true, onDragStart: _this.onEventEndDragStart.bind(_this, event), onDragEnd: _this.onEventEndDragEnd.bind(_this, event) })));

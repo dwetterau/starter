@@ -512,7 +512,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
     }
 
-    onDropPassThrough(event: any) {
+    getDayAndIndexUnderneathEvent(event: any, callback: (day: string, index: number) => void) {
         const xPos = event.clientX;
         const yPos = event.clientY;
 
@@ -522,18 +522,23 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         if (dropTargetBelow.prop("tagName") == "TD") {
             // Great, we found a cell that we can actually finish dropping into
             const data = dropTargetBelow.data();
-            this.onDrop(data.day, data.index)
-        } else {
-            // TODO: Try again? Could have many stacked divs here.
+            callback(data.day, data.index);
         }
 
         // Show the element again
         jQuery(event.currentTarget).show();
+    }
+
+    onDropPassThrough(event: any) {
+        this.getDayAndIndexUnderneathEvent(event, this.onDrop.bind(this));
+
         event.preventDefault();
         event.stopPropagation();
     }
 
     onDragOverPassThrough(event: any) {
+        this.getDayAndIndexUnderneathEvent(event, this.onDragOver.bind(this));
+
         event.preventDefault();
         event.stopPropagation();
     }
@@ -573,8 +578,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.setState(this.state);
     }
 
-    onDragOver(day: string, event: any) {
-        let index = event.target.dataset.index * 1;
+    onDragOver(day: string, index: number, event: any) {
+        // Watch out: This function is abused and needs refactoring. Event might be undefined,
+        // index might be -1. Not at the same time though.
+        if (index == -1) {
+            index = event.target.dataset.index * 1;
+        }
         if (this.state.draggingEvent) {
             this._dragTargetEventElement.hide();
 
@@ -593,8 +602,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             }
         } else if (this.state.endDraggingEvent) {
             const timestamp = this.computeTimestamp(day, index);
-            this.state.draggingEndTimestamp = timestamp;
-
             if (this.state.draggingStartTimestamp !=  this.state.endDraggingEvent.startTime ||
                     this.state.draggingEndTimestamp != timestamp) {
 
@@ -606,7 +613,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             // Nothing being dragged
             return
         }
-        event.preventDefault()
+        if (event) {
+            event.preventDefault()
+        }
     }
 
     getCurrentTagToken(): Array<Tokenizable> {
@@ -849,7 +858,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 onMouseDown={this.columnMouseDown.bind(this, day)}
                 onMouseOver={debounce(this.columnMouseOver.bind(this, day), 50)}
                 onMouseUp={this.columnMouseUp.bind(this, day)}
-                onDragOver={this.onDragOver.bind(this, day)}
+                onDragOver={this.onDragOver.bind(this, day, -1)}
             >
                 <tbody>
                     {tableRows}
@@ -930,7 +939,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         key={event.id}
                         style={style}
                         onDrop={this.onDropPassThrough.bind(this)}
-                        onDragOver={this.onDragOverPassThrough}
+                        onDragOver={this.onDragOverPassThrough.bind(this)}
                     >
                         <div
                             className="rendered-event card"
