@@ -21,10 +21,6 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
 
     renderPriority() {
         // If we are viewing in priority columns, omit this line
-        if (this.props.viewType == TaskBoardViewType.priority) {
-            return
-        }
-
         let className = `task-color -p${this.props.task.priority}`;
         return (
             <div className={className}></div>
@@ -36,11 +32,8 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         if (this.props.viewType == TaskBoardViewType.status) {
             return
         }
-
-        let className = `task-color -s${this.props.task.state}`;
-        return (
-            <div className={className}></div>
-        );
+        // We don't show the state on the priority view in any way right now.
+        return (<div/>);
     }
 
     renderTag(tagId: number) {

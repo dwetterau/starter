@@ -1820,11 +1820,11 @@
 	                React.createElement("label", { htmlFor: "priority" }, "Priority: "),
 	                React.createElement("select", { name: "priority", value: this.state.task.priority, onChange: this.updateAttr.bind(this, "priority") },
 	                    React.createElement("option", { value: "0" }, "Unknown"),
-	                    React.createElement("option", { value: "100" }, "Lowest"),
-	                    React.createElement("option", { value: "200" }, "Low"),
-	                    React.createElement("option", { value: "300" }, "Normal"),
+	                    React.createElement("option", { value: "500" }, "Highest"),
 	                    React.createElement("option", { value: "400" }, "High"),
-	                    React.createElement("option", { value: "500" }, "Highest"))),
+	                    React.createElement("option", { value: "300" }, "Normal"),
+	                    React.createElement("option", { value: "200" }, "Low"),
+	                    React.createElement("option", { value: "100" }, "Lowest"))),
 	            React.createElement("div", { className: "state-selector" },
 	                React.createElement("label", { htmlFor: "state" }, "Status: "),
 	                React.createElement("select", { name: "state", value: this.state.task.state, onChange: this.updateAttr.bind(this, "state") },
@@ -1915,9 +1915,6 @@
 	    };
 	    TaskComponent.prototype.renderPriority = function () {
 	        // If we are viewing in priority columns, omit this line
-	        if (this.props.viewType == task_board_1.TaskBoardViewType.priority) {
-	            return;
-	        }
 	        var className = "task-color -p" + this.props.task.priority;
 	        return (React.createElement("div", { className: className }));
 	    };
@@ -1926,8 +1923,8 @@
 	        if (this.props.viewType == task_board_1.TaskBoardViewType.status) {
 	            return;
 	        }
-	        var className = "task-color -s" + this.props.task.state;
-	        return (React.createElement("div", { className: className }));
+	        // We don't show the state on the priority view in any way right now.
+	        return (React.createElement("div", null));
 	    };
 	    TaskComponent.prototype.renderTag = function (tagId) {
 	        var tag = this.props.tagsById[tagId];

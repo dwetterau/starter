@@ -194,11 +194,11 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
                 <select name="priority" value={this.state.task.priority}
                         onChange={this.updateAttr.bind(this, "priority")} >
                     <option value="0">Unknown</option>
-                    <option value="100">Lowest</option>
-                    <option value="200">Low</option>
-                    <option value="300">Normal</option>
-                    <option value="400">High</option>
                     <option value="500">Highest</option>
+                    <option value="400">High</option>
+                    <option value="300">Normal</option>
+                    <option value="200">Low</option>
+                    <option value="100">Lowest</option>
                 </select>
             </div>
 
