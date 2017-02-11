@@ -557,6 +557,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return
         }
 
+        this.state.draggingStartTimestamp = null;
+        this.state.draggingEndTimestamp = null;
         this.state.draggingEvent = null;
         this.setState(this.state);
         this._dragTargetEventElement.show();
@@ -574,6 +576,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         if (this.state.endDraggingEvent != event) {
             return
         }
+
+        this.state.draggingStartTimestamp = null;
+        this.state.draggingEndTimestamp = null;
         this.state.endDraggingEvent = null;
         this.setState(this.state);
     }
@@ -884,6 +889,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 className="current-time-cursor"
                 style={style}
                 data-top={offset}
+                onDrop={this.onDropPassThrough.bind(this)}
+                onDragOver={this.onDragOverPassThrough.bind(this)}
             />
         }
     }
