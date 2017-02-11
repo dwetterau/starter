@@ -4,7 +4,7 @@ import * as React from "react";
 import { browserHistory } from 'react-router';
 
 import {EditEventComponent} from "./edit_event"
-import {Event, User, TagsById, Tag, TasksById, Task} from "../../models"
+import {Event, User, TagsById, Tag, TasksById, Task, EventsById} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
 import {ModalComponent} from "../lib/modal";
@@ -13,7 +13,7 @@ import {signalCreateEventWithTask, signalEndEventWithTask} from "../../events";
 
 export interface CalendarProps {
     meUser: User,
-    events: Array<Event>,
+    eventsById: EventsById,
     tagsById: TagsById,
     tasksById: TasksById,
     initialViewType: CalendarViewType,
@@ -25,10 +25,10 @@ export interface CalendarProps {
 export interface CalendarState {
     viewType: CalendarViewType,
     startDayTimestamp: number,
-    columns: Array<Array<Event>>,
+    columns: Array<Array<number>>,
     cellHeight: number,
     showCreate: boolean,
-    eventToRenderingInfo: {[eventId: string]: EventRenderingInfo},
+    eventToRenderingInfo: {[eventKey: string]: EventRenderingInfo},
     editingEvent?: Event,
     createEventTimestamp?: number,
     createEventDurationSecs?: number,
@@ -48,10 +48,15 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 
 const GRANULARITY = 900; // Each cell is 15 minutes (unit in seconds)
 
+const DEFAULT_CELL_HEIGHT = 25;
+
 interface EventRenderingInfo {
     index: number
     columnWidth: number
     extraCols: number
+
+    height: number
+    top: number
 }
 
 export class CalendarComponent extends React.Component<CalendarProps, CalendarState> {
@@ -78,12 +83,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             startDayTimestamp = this.computeTodayStartTime(viewType);
         }
         const [columns, eventToRenderingInfo] = this.divideAndSort(
-            startDayTimestamp, viewType, props.events);
+            startDayTimestamp, viewType, props.eventsById);
         const newState: CalendarState = {
             viewType,
             startDayTimestamp,
             columns,
-            cellHeight: 22,
+            cellHeight: DEFAULT_CELL_HEIGHT,
             showCreate: (this.state) ? this.state.showCreate : false,
             eventToRenderingInfo: eventToRenderingInfo,
             editingEvent: null,
@@ -184,7 +189,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         // See if we are currently within an event.
         let now = moment().unix() * 1000;
-        for (let event of this.props.events) {
+        for (let eventId of Object.keys(this.props.eventsById)) {
+            let event = this.props.eventsById[eventId];
             if (event.startTime < now && (event.startTime + (event.durationSecs * 1000)) >= now) {
                 return false;
             }
@@ -197,7 +203,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return null;
         }
         let now = moment().unix() * 1000;
-        for (let event of this.props.events) {
+        for (let eventId of Object.keys(this.props.eventsById)) {
+            let event = this.props.eventsById[eventId];
             if (event.startTime < now && (event.startTime + (event.durationSecs * 1000)) >= now) {
                 for (let taskId of event.taskIds) {
                     if (taskId == task.id) {
@@ -209,13 +216,17 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return null;
     }
 
+    getEventKey(eventId: number, columnIndex: number): string {
+        return `${eventId}-${columnIndex}`
+    }
+
     divideAndSort(
         startTimestamp: number,
         viewType: CalendarViewType,
-        events: Array<Event>
-    ): [Array<Array<Event>>, {[eventId: string]: EventRenderingInfo}] {
+        eventsById: EventsById
+    ): [Array<Array<number>>, {[eventId: string]: EventRenderingInfo}] {
 
-        let columnList: Array<Array<Event>>;
+        let columnList: Array<Array<number>>;
         if (viewType == CalendarViewType.week) {
             // Note that the columns will be ordered with the weekend at the end.
              columnList = [[], [], [], [], [], [], []];
@@ -256,7 +267,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         };
 
         // Divide the events by start day
-        events.forEach((event: Event) => {
+        for (let eventId of Object.keys(eventsById)) {
+            let event = eventsById[eventId];
             const startTimestamp = event.startTime;
             const endTimestamp = startTimestamp + event.durationSecs * 1000;
             for (let index in DAYS) {
@@ -271,10 +283,10 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 if (curTimestamp < endTimestamp) {
                     if (curTimestamp >= startTimestamp) {
                         // We are in a partial day, create a fake event.
-                        columnList[index].push(event)
+                        columnList[index].push(parseInt(eventId))
                     } else if (curTimestamp + 24 * 60 * 60 * 1000 > startTimestamp) {
                         // This day contains the start timestamp, push it on as normal.
-                        columnList[index].push(event)
+                        columnList[index].push(parseInt(eventId))
                     }
                 }
 
@@ -284,10 +296,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     break;
                 }
             }
-        });
+        }
 
         columnList.forEach((column) => {
-            column.sort((event1, event2) => {
+            column.sort((eventId1, eventId2) => {
+                let event1 = eventsById[eventId1];
+                let event2 = eventsById[eventId2];
                 const diff = event1.startTime - event2.startTime;
                 if (diff != 0) {
                     return diff;
@@ -299,21 +313,66 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         });
 
         // After sorting the events, run the division alg on each column
-        const eventToRenderingInfo: {[eventId: string]: EventRenderingInfo} = {};
+        const eventToRenderingInfo: {[eventKey: string]: EventRenderingInfo} = {};
 
-        columnList.forEach((column) => {
+        let cellHeight = DEFAULT_CELL_HEIGHT;
+        if (this.state) {
+            cellHeight = this.state.cellHeight;
+        }
+        let overlaps = (
+            idTopAndHeight: {id: number, top: number, height: number},
+            top: number,
+        ) => {
+            // To help with rounding errors
+            let eps = 0.0000001;
+            if (top >= idTopAndHeight.top - eps) {
+                if (top < idTopAndHeight.top + idTopAndHeight.height + eps) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        columnList.forEach((column, columnIndex) => {
+            let columnStartTime = moment(dayStart).add(columnIndex, "days").unix() * 1000;
+            let columnEndTime = moment(dayStart).add(columnIndex + 1, "days").unix() * 1000;
 
             // TODO: precompute the max size of aux in order to calculate extra space later.
 
-            let aux: Array<Event> = [];
-            column.forEach((event) => {
+            let aux: Array<{id: number, top: number, height: number}> = [];
+            column.forEach((eventId) => {
+                let top = null;
+                let height = null;
+                let event = eventsById[eventId];
+                if (event.startTime < columnStartTime) {
+                    // event started on a previous day.
+                    top = 0;
+                } else {
+                    // event must start somewhere during this day.
+                    let percentage = (event.startTime - columnStartTime) / (86400 * 1000);
+                    top = percentage * cellHeight * (86400 / GRANULARITY);
+                }
+                let realEndTimestamp = Math.min(
+                    event.startTime + (event.durationSecs * 1000),
+                    columnEndTime,
+                );
+                let durationSecs = (realEndTimestamp - event.startTime) / 1000;
+                if (event.startTime < columnStartTime) {
+                    // Event started on an earlier day, deduct this from the duration
+                    durationSecs -= (columnStartTime - event.startTime) / 1000;
+                }
+                // TODO: Keep short end of day events from hanging off the end.
+                height = Math.max(cellHeight, (durationSecs / GRANULARITY) * cellHeight);
+
                 // Base case for the initial element
                 if (!aux.length) {
-                    aux.push(event);
-                    eventToRenderingInfo[event.id] = {
+                    aux.push({id: event.id, height, top});
+                    eventToRenderingInfo[this.getEventKey(event.id, columnIndex)] = {
                         index: 0,
                         columnWidth: 1,
                         extraCols: 0,
+                        height: height,
+                        top: top,
                     };
                     return
                 }
@@ -321,17 +380,19 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 let slotUsed = false;
                 // If this event doesn't overlap with an element in the array, replace it.
                 // During the replace, we need to calculate what the max width was for the element.
-                aux.forEach((auxEvent, index) => {
-                    if (!auxEvent || event.startTime >= auxEvent.startTime + (auxEvent.durationSecs * 1000)) {
+                aux.forEach((idTopAndHeight, index) => {
+                    if (!idTopAndHeight || !overlaps(idTopAndHeight, top)) {
                         // Doesn't overlap, will use this slot (if it's the first) and evict
                         if (!slotUsed) {
                             slotUsed = true;
                             // Replace out this element
-                            aux[index] = event;
-                            eventToRenderingInfo[event.id] = {
+                            aux[index] = {id: event.id, top, height};
+                            eventToRenderingInfo[this.getEventKey(event.id, columnIndex)] = {
                                 index,
                                 columnWidth: 0, // This will be resized later.
                                 extraCols: 0, // This is determined later.
+                                height: height,
+                                top: top,
                             }
                         } else {
                             aux[index] = null;
@@ -343,18 +404,21 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 // If this event overlaps with whatever is in aux, we must append
                 if (!slotUsed) {
                     // Append to the end
-                    aux.forEach((auxEvent) => {
-                        if (!auxEvent) {
+                    aux.forEach((idTopAndHeight) => {
+                        if (!idTopAndHeight) {
                             return
                         }
-                        eventToRenderingInfo[auxEvent.id].columnWidth = aux.length + 1;
+                        let key = this.getEventKey(idTopAndHeight.id, columnIndex);
+                        eventToRenderingInfo[key].columnWidth = aux.length + 1;
                     });
-                    eventToRenderingInfo[event.id] = {
+                    eventToRenderingInfo[this.getEventKey(event.id, columnIndex)] = {
                         columnWidth: aux.length + 1,
                         index: aux.length,
                         extraCols: 0,
+                        height: height,
+                        top: top,
                     };
-                    aux.push(event);
+                    aux.push({id: event.id, top, height});
                 } else {
                     // See if we need to resize aux
                     while (aux.length && aux[aux.length - 1] == null) {
@@ -363,23 +427,28 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     // Everything left in the aux array at this point must be overlapping at some point
                     let numNotNull = 0;
                     let maxWidth = aux.length;
-                    aux.forEach((auxEvent) => {
-                        if (auxEvent) {
+                    aux.forEach((idTopAndHeight) => {
+                        if (idTopAndHeight) {
                             numNotNull++;
-                            maxWidth = Math.max(maxWidth, eventToRenderingInfo[auxEvent.id].columnWidth);
+                            maxWidth = Math.max(
+                                maxWidth,
+                                eventToRenderingInfo[
+                                    this.getEventKey(idTopAndHeight.id, columnIndex)].columnWidth
+                            );
                         }
                     });
 
-                    aux.forEach((auxEvent) => {
-                        if (!auxEvent) {
+                    aux.forEach((idTopAndHeight) => {
+                        if (!idTopAndHeight) {
                             return
                         }
+                        let key = this.getEventKey(idTopAndHeight.id, columnIndex);
                         const newWidth = Math.max(
                             numNotNull,
-                            eventToRenderingInfo[auxEvent.id].columnWidth
+                            eventToRenderingInfo[key].columnWidth
                         );
-                        eventToRenderingInfo[auxEvent.id].columnWidth = newWidth;
-                        eventToRenderingInfo[auxEvent.id].extraCols = maxWidth - newWidth;
+                        eventToRenderingInfo[key].columnWidth = newWidth;
+                        eventToRenderingInfo[key].extraCols = maxWidth - newWidth;
                     });
                 }
             })
@@ -392,7 +461,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         const [columns, eventToRenderingInfo] = this.divideAndSort(
             this.state.startDayTimestamp,
             this.state.viewType,
-            this.props.events
+            this.props.eventsById,
         );
         this.state.columns = columns;
         this.state.eventToRenderingInfo = eventToRenderingInfo;
@@ -895,7 +964,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
     }
 
-    renderColumn(columnIndex: number, column: Array<Event>, singleDay?: boolean) {
+    renderColumn(columnIndex: number, column: Array<number>, singleDay?: boolean) {
         const day = DAYS[columnIndex];
         let className = "column-container";
         if (singleDay) {
@@ -905,26 +974,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return <div key={day} className={className}>
             {this.renderCells(day)}
             {this.renderCurrentTimeCursor(columnIndex)}
-            {column.map((event: Event) => {
-                let dayOffset = event.startTime - (
-                    this.state.startDayTimestamp + columnIndex * 24 * 60 * 60 * 1000);
-                dayOffset /= 1000 * 86400;
-                dayOffset *= this.state.cellHeight * (86400 / GRANULARITY); // Total height of a column
-                let multiDayAdjustment = 0;
-                if (dayOffset < 0) {
-                    multiDayAdjustment = -dayOffset;
-                    dayOffset = 0;
-                }
-                let height = (event.durationSecs / GRANULARITY) * this.state.cellHeight;
-                height -= multiDayAdjustment;
-                let bottomOverflow = (this.state.cellHeight * (86400 / GRANULARITY)) - (dayOffset + height);
-                if (bottomOverflow < 0) {
-                    height += bottomOverflow;
-                }
-
+            {column.map((eventId: number) => {
                 // calculate the width change
                 // TODO: The extra cols only work right now with the expand-to-the-right case
-                const renderingInfo = this.state.eventToRenderingInfo[event.id];
+                const renderingInfo = this.state.eventToRenderingInfo[
+                    this.getEventKey(eventId, columnIndex)];
                 let width = renderingInfo.columnWidth;
                 if (renderingInfo.extraCols) {
                     width += renderingInfo.extraCols;
@@ -934,16 +988,17 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
                 // We subtract 2 from the height purely for stylistic reasons.
                 const style = {
-                    "height": `${Math.max(height - 2, 5)}px`,
-                    "maxHeight": `${height}px`,
-                    "top": `${dayOffset}px`,
+                    "height": `${renderingInfo.height}px`,
+                    "maxHeight": `${renderingInfo.height}px`,
+                    "top": `${renderingInfo.top}px`,
                     "marginLeft": `${marginLeft}%`,
                     "width": `${widthPercentage}%`,
                 };
+                let event = this.props.eventsById[eventId];
                 return (
                     <div
                         className="rendered-event-container"
-                        key={event.id}
+                        key={eventId}
                         style={style}
                         onDrop={this.onDropPassThrough.bind(this)}
                         onDragOver={this.onDragOverPassThrough.bind(this)}

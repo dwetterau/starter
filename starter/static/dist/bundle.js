@@ -681,7 +681,7 @@
 	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, initialTagName: tagName, tagsById: this.state.tagsById, eventsById: this.state.eventsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
 	    };
 	    App.prototype.renderCalendar = function (viewType, simpleOptions) {
-	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, events: this.state.events, tagsById: this.state.tagsById, tasksById: this.state.tasksById, initialViewType: viewType, simpleOptions: simpleOptions, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this) });
+	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, eventsById: this.state.eventsById, tagsById: this.state.tagsById, tasksById: this.state.tasksById, initialViewType: viewType, simpleOptions: simpleOptions, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this) });
 	    };
 	    App.prototype.renderTagGraph = function () {
 	        return React.createElement(tag_graph_1.TagGraphComponent, { meUser: this.props.meUser, tagsById: this.state.tagsById, createTag: this.createTag.bind(this), updateTag: this.updateTag.bind(this), deleteTag: this.deleteTag.bind(this) });
@@ -4740,6 +4740,7 @@
 	})(CalendarViewType = exports.CalendarViewType || (exports.CalendarViewType = {}));
 	var DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 	var GRANULARITY = 900; // Each cell is 15 minutes (unit in seconds)
+	var DEFAULT_CELL_HEIGHT = 25;
 	var CalendarComponent = (function (_super) {
 	    __extends(CalendarComponent, _super);
 	    function CalendarComponent(props) {
@@ -4762,12 +4763,12 @@
 	        else {
 	            startDayTimestamp = this.computeTodayStartTime(viewType);
 	        }
-	        var _a = this.divideAndSort(startDayTimestamp, viewType, props.events), columns = _a[0], eventToRenderingInfo = _a[1];
+	        var _a = this.divideAndSort(startDayTimestamp, viewType, props.eventsById), columns = _a[0], eventToRenderingInfo = _a[1];
 	        var newState = {
 	            viewType: viewType,
 	            startDayTimestamp: startDayTimestamp,
 	            columns: columns,
-	            cellHeight: 22,
+	            cellHeight: DEFAULT_CELL_HEIGHT,
 	            showCreate: (this.state) ? this.state.showCreate : false,
 	            eventToRenderingInfo: eventToRenderingInfo,
 	            editingEvent: null,
@@ -4861,8 +4862,9 @@
 	        }
 	        // See if we are currently within an event.
 	        var now = moment().unix() * 1000;
-	        for (var _i = 0, _a = this.props.events; _i < _a.length; _i++) {
-	            var event_2 = _a[_i];
+	        for (var _i = 0, _a = Object.keys(this.props.eventsById); _i < _a.length; _i++) {
+	            var eventId = _a[_i];
+	            var event_2 = this.props.eventsById[eventId];
 	            if (event_2.startTime < now && (event_2.startTime + (event_2.durationSecs * 1000)) >= now) {
 	                return false;
 	            }
@@ -4874,8 +4876,9 @@
 	            return null;
 	        }
 	        var now = moment().unix() * 1000;
-	        for (var _i = 0, _a = this.props.events; _i < _a.length; _i++) {
-	            var event_3 = _a[_i];
+	        for (var _i = 0, _a = Object.keys(this.props.eventsById); _i < _a.length; _i++) {
+	            var eventId = _a[_i];
+	            var event_3 = this.props.eventsById[eventId];
 	            if (event_3.startTime < now && (event_3.startTime + (event_3.durationSecs * 1000)) >= now) {
 	                for (var _b = 0, _c = event_3.taskIds; _b < _c.length; _b++) {
 	                    var taskId = _c[_b];
@@ -4887,7 +4890,10 @@
 	        }
 	        return null;
 	    };
-	    CalendarComponent.prototype.divideAndSort = function (startTimestamp, viewType, events) {
+	    CalendarComponent.prototype.getEventKey = function (eventId, columnIndex) {
+	        return eventId + "-" + columnIndex;
+	    };
+	    CalendarComponent.prototype.divideAndSort = function (startTimestamp, viewType, eventsById) {
 	        var _this = this;
 	        var columnList;
 	        if (viewType == CalendarViewType.week) {
@@ -4927,11 +4933,13 @@
 	            return false;
 	        };
 	        // Divide the events by start day
-	        events.forEach(function (event) {
-	            var startTimestamp = event.startTime;
-	            var endTimestamp = startTimestamp + event.durationSecs * 1000;
+	        for (var _b = 0, _c = Object.keys(eventsById); _b < _c.length; _b++) {
+	            var eventId = _c[_b];
+	            var event_4 = eventsById[eventId];
+	            var startTimestamp_1 = event_4.startTime;
+	            var endTimestamp = startTimestamp_1 + event_4.durationSecs * 1000;
 	            for (var index in DAYS) {
-	                if (shouldHide(event)) {
+	                if (shouldHide(event_4)) {
 	                    return;
 	                }
 	                var curTimestamp = moment(dayStart).add(index, "days").unix() * 1000;
@@ -4939,13 +4947,13 @@
 	                // not include the beginning, we need to make a fake event. There should only
 	                // be at most one event in each column for the same event.
 	                if (curTimestamp < endTimestamp) {
-	                    if (curTimestamp >= startTimestamp) {
+	                    if (curTimestamp >= startTimestamp_1) {
 	                        // We are in a partial day, create a fake event.
-	                        columnList[index].push(event);
+	                        columnList[index].push(parseInt(eventId));
 	                    }
-	                    else if (curTimestamp + 24 * 60 * 60 * 1000 > startTimestamp) {
+	                    else if (curTimestamp + 24 * 60 * 60 * 1000 > startTimestamp_1) {
 	                        // This day contains the start timestamp, push it on as normal.
-	                        columnList[index].push(event);
+	                        columnList[index].push(parseInt(eventId));
 	                    }
 	                }
 	                // This is pretty hacky, make this cleaner later
@@ -4954,9 +4962,11 @@
 	                    break;
 	                }
 	            }
-	        });
+	        }
 	        columnList.forEach(function (column) {
-	            column.sort(function (event1, event2) {
+	            column.sort(function (eventId1, eventId2) {
+	                var event1 = eventsById[eventId1];
+	                var event2 = eventsById[eventId2];
 	                var diff = event1.startTime - event2.startTime;
 	                if (diff != 0) {
 	                    return diff;
@@ -4967,34 +4977,74 @@
 	        });
 	        // After sorting the events, run the division alg on each column
 	        var eventToRenderingInfo = {};
-	        columnList.forEach(function (column) {
+	        var cellHeight = DEFAULT_CELL_HEIGHT;
+	        if (this.state) {
+	            cellHeight = this.state.cellHeight;
+	        }
+	        var overlaps = function (idTopAndHeight, top) {
+	            // To help with rounding errors
+	            var eps = 0.0000001;
+	            if (top >= idTopAndHeight.top - eps) {
+	                if (top < idTopAndHeight.top + idTopAndHeight.height + eps) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        };
+	        columnList.forEach(function (column, columnIndex) {
+	            var columnStartTime = moment(dayStart).add(columnIndex, "days").unix() * 1000;
+	            var columnEndTime = moment(dayStart).add(columnIndex + 1, "days").unix() * 1000;
 	            // TODO: precompute the max size of aux in order to calculate extra space later.
 	            var aux = [];
-	            column.forEach(function (event) {
+	            column.forEach(function (eventId) {
+	                var top = null;
+	                var height = null;
+	                var event = eventsById[eventId];
+	                if (event.startTime < columnStartTime) {
+	                    // event started on a previous day.
+	                    top = 0;
+	                }
+	                else {
+	                    // event must start somewhere during this day.
+	                    var percentage = (event.startTime - columnStartTime) / (86400 * 1000);
+	                    top = percentage * cellHeight * (86400 / GRANULARITY);
+	                }
+	                var realEndTimestamp = Math.min(event.startTime + (event.durationSecs * 1000), columnEndTime);
+	                var durationSecs = (realEndTimestamp - event.startTime) / 1000;
+	                if (event.startTime < columnStartTime) {
+	                    // Event started on an earlier day, deduct this from the duration
+	                    durationSecs -= (columnStartTime - event.startTime) / 1000;
+	                }
+	                // TODO: Keep short end of day events from hanging off the end.
+	                height = Math.max(cellHeight, (durationSecs / GRANULARITY) * cellHeight);
 	                // Base case for the initial element
 	                if (!aux.length) {
-	                    aux.push(event);
-	                    eventToRenderingInfo[event.id] = {
+	                    aux.push({ id: event.id, height: height, top: top });
+	                    eventToRenderingInfo[_this.getEventKey(event.id, columnIndex)] = {
 	                        index: 0,
 	                        columnWidth: 1,
 	                        extraCols: 0,
+	                        height: height,
+	                        top: top,
 	                    };
 	                    return;
 	                }
 	                var slotUsed = false;
 	                // If this event doesn't overlap with an element in the array, replace it.
 	                // During the replace, we need to calculate what the max width was for the element.
-	                aux.forEach(function (auxEvent, index) {
-	                    if (!auxEvent || event.startTime >= auxEvent.startTime + (auxEvent.durationSecs * 1000)) {
+	                aux.forEach(function (idTopAndHeight, index) {
+	                    if (!idTopAndHeight || !overlaps(idTopAndHeight, top)) {
 	                        // Doesn't overlap, will use this slot (if it's the first) and evict
 	                        if (!slotUsed) {
 	                            slotUsed = true;
 	                            // Replace out this element
-	                            aux[index] = event;
-	                            eventToRenderingInfo[event.id] = {
+	                            aux[index] = { id: event.id, top: top, height: height };
+	                            eventToRenderingInfo[_this.getEventKey(event.id, columnIndex)] = {
 	                                index: index,
 	                                columnWidth: 0,
 	                                extraCols: 0,
+	                                height: height,
+	                                top: top,
 	                            };
 	                        }
 	                        else {
@@ -5005,18 +5055,21 @@
 	                // If this event overlaps with whatever is in aux, we must append
 	                if (!slotUsed) {
 	                    // Append to the end
-	                    aux.forEach(function (auxEvent) {
-	                        if (!auxEvent) {
+	                    aux.forEach(function (idTopAndHeight) {
+	                        if (!idTopAndHeight) {
 	                            return;
 	                        }
-	                        eventToRenderingInfo[auxEvent.id].columnWidth = aux.length + 1;
+	                        var key = _this.getEventKey(idTopAndHeight.id, columnIndex);
+	                        eventToRenderingInfo[key].columnWidth = aux.length + 1;
 	                    });
-	                    eventToRenderingInfo[event.id] = {
+	                    eventToRenderingInfo[_this.getEventKey(event.id, columnIndex)] = {
 	                        columnWidth: aux.length + 1,
 	                        index: aux.length,
 	                        extraCols: 0,
+	                        height: height,
+	                        top: top,
 	                    };
-	                    aux.push(event);
+	                    aux.push({ id: event.id, top: top, height: height });
 	                }
 	                else {
 	                    // See if we need to resize aux
@@ -5026,19 +5079,20 @@
 	                    // Everything left in the aux array at this point must be overlapping at some point
 	                    var numNotNull_1 = 0;
 	                    var maxWidth_1 = aux.length;
-	                    aux.forEach(function (auxEvent) {
-	                        if (auxEvent) {
+	                    aux.forEach(function (idTopAndHeight) {
+	                        if (idTopAndHeight) {
 	                            numNotNull_1++;
-	                            maxWidth_1 = Math.max(maxWidth_1, eventToRenderingInfo[auxEvent.id].columnWidth);
+	                            maxWidth_1 = Math.max(maxWidth_1, eventToRenderingInfo[_this.getEventKey(idTopAndHeight.id, columnIndex)].columnWidth);
 	                        }
 	                    });
-	                    aux.forEach(function (auxEvent) {
-	                        if (!auxEvent) {
+	                    aux.forEach(function (idTopAndHeight) {
+	                        if (!idTopAndHeight) {
 	                            return;
 	                        }
-	                        var newWidth = Math.max(numNotNull_1, eventToRenderingInfo[auxEvent.id].columnWidth);
-	                        eventToRenderingInfo[auxEvent.id].columnWidth = newWidth;
-	                        eventToRenderingInfo[auxEvent.id].extraCols = maxWidth_1 - newWidth;
+	                        var key = _this.getEventKey(idTopAndHeight.id, columnIndex);
+	                        var newWidth = Math.max(numNotNull_1, eventToRenderingInfo[key].columnWidth);
+	                        eventToRenderingInfo[key].columnWidth = newWidth;
+	                        eventToRenderingInfo[key].extraCols = maxWidth_1 - newWidth;
 	                    });
 	                }
 	            });
@@ -5047,7 +5101,7 @@
 	    };
 	    CalendarComponent.prototype.resort = function () {
 	        // Recompute all the events and where to render them:
-	        var _a = this.divideAndSort(this.state.startDayTimestamp, this.state.viewType, this.props.events), columns = _a[0], eventToRenderingInfo = _a[1];
+	        var _a = this.divideAndSort(this.state.startDayTimestamp, this.state.viewType, this.props.eventsById), columns = _a[0], eventToRenderingInfo = _a[1];
 	        this.state.columns = columns;
 	        this.state.eventToRenderingInfo = eventToRenderingInfo;
 	        this.setState(this.state);
@@ -5434,24 +5488,10 @@
 	        return React.createElement("div", { key: day, className: className },
 	            this.renderCells(day),
 	            this.renderCurrentTimeCursor(columnIndex),
-	            column.map(function (event) {
-	                var dayOffset = event.startTime - (_this.state.startDayTimestamp + columnIndex * 24 * 60 * 60 * 1000);
-	                dayOffset /= 1000 * 86400;
-	                dayOffset *= _this.state.cellHeight * (86400 / GRANULARITY); // Total height of a column
-	                var multiDayAdjustment = 0;
-	                if (dayOffset < 0) {
-	                    multiDayAdjustment = -dayOffset;
-	                    dayOffset = 0;
-	                }
-	                var height = (event.durationSecs / GRANULARITY) * _this.state.cellHeight;
-	                height -= multiDayAdjustment;
-	                var bottomOverflow = (_this.state.cellHeight * (86400 / GRANULARITY)) - (dayOffset + height);
-	                if (bottomOverflow < 0) {
-	                    height += bottomOverflow;
-	                }
+	            column.map(function (eventId) {
 	                // calculate the width change
 	                // TODO: The extra cols only work right now with the expand-to-the-right case
-	                var renderingInfo = _this.state.eventToRenderingInfo[event.id];
+	                var renderingInfo = _this.state.eventToRenderingInfo[_this.getEventKey(eventId, columnIndex)];
 	                var width = renderingInfo.columnWidth;
 	                if (renderingInfo.extraCols) {
 	                    width += renderingInfo.extraCols;
@@ -5460,13 +5500,14 @@
 	                var marginLeft = widthPercentage * renderingInfo.index;
 	                // We subtract 2 from the height purely for stylistic reasons.
 	                var style = {
-	                    "height": Math.max(height - 2, 5) + "px",
-	                    "maxHeight": height + "px",
-	                    "top": dayOffset + "px",
+	                    "height": renderingInfo.height + "px",
+	                    "maxHeight": renderingInfo.height + "px",
+	                    "top": renderingInfo.top + "px",
 	                    "marginLeft": marginLeft + "%",
 	                    "width": widthPercentage + "%",
 	                };
-	                return (React.createElement("div", { className: "rendered-event-container", key: event.id, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough.bind(_this) },
+	                var event = _this.props.eventsById[eventId];
+	                return (React.createElement("div", { className: "rendered-event-container", key: eventId, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough.bind(_this) },
 	                    React.createElement("div", { className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event) },
 	                        React.createElement(event_1.EventComponent, { event: event, tagsById: _this.props.tagsById })),
 	                    React.createElement("div", { className: "draggable-event-end", draggable: true, onDragStart: _this.onEventEndDragStart.bind(_this, event), onDragEnd: _this.onEventEndDragEnd.bind(_this, event) })));

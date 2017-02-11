@@ -247,7 +247,7 @@ export class App extends React.Component<AppProps, AppState> {
     renderCalendar(viewType, simpleOptions) {
         return <CalendarComponent
             meUser={this.props.meUser}
-            events={this.state.events}
+            eventsById={this.state.eventsById}
             tagsById={this.state.tagsById}
             tasksById={this.state.tasksById}
             initialViewType={viewType}
