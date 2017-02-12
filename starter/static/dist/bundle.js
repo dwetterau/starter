@@ -134,7 +134,7 @@
 	
 	
 	// module
-	exports.push([module.id, "* {\n    font-family: \"Open Sans\",\"lucida grande\",\"Segoe UI\",arial,verdana,\"lucida sans unicode\",tahoma,sans-serif!important;\n    letter-spacing: .3px;\n    color: #47525d;\n    font-weight: 100;\n}\n\nbody {\n    background: #f6f9fc;\n    margin: 0;\n}\n\ndiv.card {\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    background: #fff;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n    padding: 1em 1em 0;\n    background-color: #fff;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option {\n    margin-right: 1em;\n    text-decoration: none;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n    height: calc(100vh - 97px);\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n    flex-shrink: 0;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container div.columns-container {\n    display: flex;\n    flex-direction: row;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    padding: .5em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\ndiv.task-board .task,.task-title {\n    text-overflow: ellipsis;\n    overflow-x: hidden;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\n.task .task-columns {\n    display: flex;\n}\n\n.task-columns .main-column {\n    width: 100%;\n}\n\n.task-columns .task-color {\n    width: 3px;\n    flex-shrink: 0;\n    margin: -20px 17px -20px -20px;\n}\n\n/* Unknown */\n.task-color.-p0 {\n    background-color: #8b4513;\n}\n\n/* Highest */\n.task-color.-p500 {\n    background-color: #f0f;\n}\n\n/* High */\n.task-color.-p400 {\n    background-color: #f00;\n}\n\n/* Normal */\n.task-color.-p300 {\n    background-color: #ffa500;\n}\n\n/* Low */\n.task-color.-p200 {\n    background-color: #228b22;\n}\n\n/* Lowest */\n.task-color.-p100 {\n    background-color: #6495ed;\n}\n\n/* Open */\n.task-color.-s0 {\n    background-color: #228b22;\n}\n\n/* In Progress */\n.task-color.-s500 {\n    background-color: #6495ed;\n}\n\n/* Blocked */\n.task-color.-s750 {\n    background-color: #f00;\n}\n\n/* Closed */\n.task-color.-s1000 {\n    background-color: #8b4513;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Task Detail view CSS */\ndiv.task-detail-container {\n    background-color: #fff;\n    padding: .5em;\n    overflow-wrap: break-word;\n}\n\ndiv.task-detail-container div.id-and-options {\n    text-decoration: underline;\n    display: flex;\n    justify-content: space-between;\n}\n\ndiv.task-detail-container div.title {\n    font-weight: bold;\n}\n\ndiv.task-detail-container div.options a {\n    padding: 0 .25em;\n}\n\ndiv.task-detail-container div.task-status {\n    display: flex;\n    padding-top: .25em;\n}\n\ndiv.task-detail-container div.task-status div {\n    margin-right: .5em;\n}\n\ndiv.task-detail-container div.task-status div.info-container {\n    display: flex;\n}\n\ndiv.task-detail-container div.task-status div.task-color {\n    height: 22px;\n    width: 1em;\n    margin-right: .25em;\n    margin-left: -.25em;\n}\n\ndiv.task-detail-container div.task-time-info {\n    padding-top: .25em;\n}\n/* End of Task Detail view CSS */\n\n/* Calendar CSS */\ndiv.calendar {\n    width: 100%;\n}\n\ndiv.calendar div.options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n}\n\ndiv.calendar div.options div.view-type-selector {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.calendar div.options div.pagination-container {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.pagination-container div.pagination-option {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.calendar div.tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\n\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n    height: calc(100vh - 140px); /* 140px is the height of the header */\n    padding: 0 2em;\n}\n\ndiv.calendar div.full-column-container div.header-and-content-container {\n    overflow: hidden;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n    margin-top: .5em;\n    margin-right: 15px;\n    text-align: center;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    flex-grow: 1;\n    height: 22px;\n}\n\ndiv.calendar div.column-header.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    flex-grow: 1;\n    min-width: 120px;\n    position: relative;\n}\n\n\ndiv.calendar div.column-container.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-container table {\n    width: 100%;\n}\n\ndiv.calendar div.column-container.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-right: 2px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    min-width: 120px;\n    width: 100%;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(0, 0, 0, .2);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n    flex-wrap: wrap;\n    align-content: space-between;\n    overflow-x: hidden;\n    height: 100%;\n}\n\ndiv.event-container div.name {\n    flex-grow: 1;\n}\n\ndiv.event-card-container {\n    align-self: flex-end;\n    flex-grow: 1;\n    display: flex;\n    justify-content: flex-end;\n    padding-bottom: .25em;\n}\n\ndiv.event-card-container div.card {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokenizer-container div.pending-token-container {\n    width: 100%;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    padding: .1em .25em;\n    margin-top: -3px;\n    margin-bottom: 0;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n\ndiv.tokenizer-container div.pending-state-container {\n    width: 100%;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container {\n    position: absolute;\n    background: #fff;\n    border-radius: 0 3px 3px;\n    border: 1px solid rgba(0, 0, 0, .2);\n    border-top: none;\n    z-index: 3;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token {\n    padding: .5em;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.tokenizer-container div.autocomplete-token-container:last-child {\n    border-bottom: none;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token:hover {\n    cursor: pointer;\n    background-color: #f6f9fc;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token.-selected {\n    background-color: #f6f9fc;\n}\n/* End of Tokenizer CSS */\n\n/* Modal CSS */\ndiv.modal-container div.background {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .2);\n    z-index: 4;\n\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\ndiv.modal.card {\n    min-width: 350px;\n}\n\ndiv.modal h3 {\n    margin: 0;\n}\n\ndiv.modal-container div.cancel-button-container {\n    cursor: pointer;\n    float: right;\n}\n\ndiv.modal label {\n    display: block;\n    padding-top: .5em;\n}\n\ndiv.modal input,textarea,select {\n    width: 100%;\n    background-color: #fff;\n    border: 1px solid rgba(0, 0, 0, .4);\n    margin: 0;\n    padding: 0;\n}\n\ndiv.modal input[type=button] {\n    margin-top: .5em;\n    height: 30px;\n}\n\ndiv.modal div.rendered-token {\n    margin-top: 0;\n}\n\ndiv.modal div.checkbox-container {\n    display: flex;\n    align-items: center;\n}\n\ndiv.modal div.checkbox-container input {\n    width: 30px;\n    height: 15px;\n    margin-top: 7px;\n}\n/* End of Modal CSS */\n\n/* Multi-pane CSS */\ndiv.merged-container {\n    display: flex;\n}\n\ndiv.main-pane {\n    max-width: 67%;\n    min-width: 67%;\n}\n\ndiv.right-pane {\n    max-width: 33%;\n    min-width: 33%;\n}\n\n/* Ad-hoc fixes for tasks */\ndiv.main-pane div.task-board div.full-column-container {\n    height: calc(100vh - 129px);\n    min-height: 0;\n    overflow-y: auto;\n}\n\n/* Ad-hoc fixes for calendar */\ndiv.right-pane div.calendar div.full-column-container {\n    padding: 0;\n}\n\ndiv.right-pane div.calendar div.tag-selector-container {\n    margin-left: 0;\n}\n\ndiv.right-pane div.calendar div.column-header {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-header.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.column-header.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.options div.pending-token-container input {\n    width: 100%;\n}\n\ndiv.right-pane div.calendar div.options div.tag-selector-label {\n    flex-shrink: 0;\n}\n/* End of Multi-pane CSS */", ""]);
+	exports.push([module.id, "* {\n    font-family: \"Open Sans\",\"lucida grande\",\"Segoe UI\",arial,verdana,\"lucida sans unicode\",tahoma,sans-serif!important;\n    letter-spacing: .3px;\n    color: #47525d;\n    font-weight: 100;\n}\n\nbody {\n    background: #f6f9fc;\n    margin: 0;\n}\n\ndiv.card {\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    background: #fff;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n    padding: 1em 1em 0;\n    background-color: #fff;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option {\n    margin-right: 1em;\n    text-decoration: none;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n    height: calc(100vh - 97px);\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n    flex-shrink: 0;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container div.columns-container {\n    display: flex;\n    flex-direction: row;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    padding: .5em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\ndiv.task-board .task,.task-title {\n    text-overflow: ellipsis;\n    overflow-x: hidden;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\n.task .task-columns {\n    display: flex;\n}\n\n.task-columns .main-column {\n    width: 100%;\n}\n\n.task-columns .task-color {\n    width: 3px;\n    flex-shrink: 0;\n    margin: -20px 17px -20px -20px;\n}\n\n/* Unknown */\n.task-color.-p0 {\n    background-color: #8b4513;\n}\n\n/* Highest */\n.task-color.-p500 {\n    background-color: #f0f;\n}\n\n/* High */\n.task-color.-p400 {\n    background-color: #f00;\n}\n\n/* Normal */\n.task-color.-p300 {\n    background-color: #ffa500;\n}\n\n/* Low */\n.task-color.-p200 {\n    background-color: #228b22;\n}\n\n/* Lowest */\n.task-color.-p100 {\n    background-color: #6495ed;\n}\n\n/* Open */\n.task-color.-s0 {\n    background-color: #228b22;\n}\n\n/* In Progress */\n.task-color.-s500 {\n    background-color: #6495ed;\n}\n\n/* Blocked */\n.task-color.-s750 {\n    background-color: #f00;\n}\n\n/* Closed */\n.task-color.-s1000 {\n    background-color: #8b4513;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Task Detail view CSS */\ndiv.task-detail-container {\n    background-color: #fff;\n    padding: .5em;\n    overflow-wrap: break-word;\n}\n\ndiv.task-detail-container div.id-and-options {\n    text-decoration: underline;\n    display: flex;\n    justify-content: space-between;\n}\n\ndiv.task-detail-container div.title {\n    font-weight: bold;\n}\n\ndiv.task-detail-container div.options a {\n    padding: 0 .25em;\n}\n\ndiv.task-detail-container div.task-status {\n    display: flex;\n    padding-top: .25em;\n}\n\ndiv.task-detail-container div.task-status div {\n    margin-right: .5em;\n}\n\ndiv.task-detail-container div.task-status div.info-container {\n    display: flex;\n}\n\ndiv.task-detail-container div.task-status div.task-color {\n    height: 22px;\n    width: 1em;\n    margin-right: .25em;\n    margin-left: -.25em;\n}\n\ndiv.task-detail-container div.task-time-info {\n    padding-top: .25em;\n}\n/* End of Task Detail view CSS */\n\n/* Calendar CSS */\ndiv.calendar {\n    width: 100%;\n}\n\ndiv.calendar div.options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n}\n\ndiv.calendar div.options div.view-type-selector {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.calendar div.options div.pagination-container {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.pagination-container div.pagination-option {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.calendar div.tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\n\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n    height: calc(100vh - 140px); /* 140px is the height of the header */\n    padding: 0 2em;\n}\n\ndiv.calendar div.full-column-container div.header-and-content-container {\n    overflow: hidden;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n    margin-top: .5em;\n    margin-right: 15px;\n    text-align: center;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    flex-grow: 1;\n    height: 22px;\n}\n\ndiv.calendar div.column-header.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    flex-grow: 1;\n    min-width: 120px;\n    position: relative;\n}\n\n\ndiv.calendar div.column-container.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-container table {\n    width: 100%;\n}\n\ndiv.calendar div.column-container.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-right: 2px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    min-width: 120px;\n    width: 100%;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(0, 0, 0, .2);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n    flex-wrap: wrap;\n    align-content: space-between;\n    overflow-x: hidden;\n    height: 100%;\n}\n\ndiv.event-container div.name {\n    flex-grow: 1;\n}\n\ndiv.event-card-container {\n    align-self: flex-end;\n    flex-grow: 1;\n    display: flex;\n    justify-content: flex-end;\n    padding-bottom: .25em;\n}\n\ndiv.event-card-container div.card {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n\ndiv.event-container div.task-id-card {\n    cursor: pointer;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokenizer-container div.pending-token-container {\n    width: 100%;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    padding: .1em .25em;\n    margin-top: -3px;\n    margin-bottom: 0;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n\ndiv.tokenizer-container div.pending-state-container {\n    width: 100%;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container {\n    position: absolute;\n    background: #fff;\n    border-radius: 0 3px 3px;\n    border: 1px solid rgba(0, 0, 0, .2);\n    border-top: none;\n    z-index: 3;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token {\n    padding: .5em;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.tokenizer-container div.autocomplete-token-container:last-child {\n    border-bottom: none;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token:hover {\n    cursor: pointer;\n    background-color: #f6f9fc;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token.-selected {\n    background-color: #f6f9fc;\n}\n/* End of Tokenizer CSS */\n\n/* Modal CSS */\ndiv.modal-container div.background {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .2);\n    z-index: 4;\n\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\ndiv.modal.card {\n    min-width: 350px;\n}\n\ndiv.modal h3 {\n    margin: 0;\n}\n\ndiv.modal-container div.cancel-button-container {\n    cursor: pointer;\n    float: right;\n}\n\ndiv.modal label {\n    display: block;\n    padding-top: .5em;\n}\n\ndiv.modal input,textarea,select {\n    width: 100%;\n    background-color: #fff;\n    border: 1px solid rgba(0, 0, 0, .4);\n    margin: 0;\n    padding: 0;\n}\n\ndiv.modal input[type=button] {\n    margin-top: .5em;\n    height: 30px;\n}\n\ndiv.modal div.rendered-token {\n    margin-top: 0;\n}\n\ndiv.modal div.checkbox-container {\n    display: flex;\n    align-items: center;\n}\n\ndiv.modal div.checkbox-container input {\n    width: 30px;\n    height: 15px;\n    margin-top: 7px;\n}\n/* End of Modal CSS */\n\n/* Multi-pane CSS */\ndiv.merged-container {\n    display: flex;\n}\n\ndiv.main-pane {\n    max-width: 67%;\n    min-width: 67%;\n}\n\ndiv.right-pane {\n    max-width: 33%;\n    min-width: 33%;\n}\n\n/* Ad-hoc fixes for tasks */\ndiv.main-pane div.task-board div.full-column-container {\n    height: calc(100vh - 129px);\n    min-height: 0;\n    overflow-y: auto;\n}\n\n/* Ad-hoc fixes for calendar */\ndiv.right-pane div.calendar div.full-column-container {\n    padding: 0;\n}\n\ndiv.right-pane div.calendar div.tag-selector-container {\n    margin-left: 0;\n}\n\ndiv.right-pane div.calendar div.column-header {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-header.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.column-header.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.options div.pending-token-container input {\n    width: 100%;\n}\n\ndiv.right-pane div.calendar div.options div.tag-selector-label {\n    flex-shrink: 0;\n}\n/* End of Multi-pane CSS */", ""]);
 	
 	// exports
 
@@ -678,7 +678,7 @@
 	                React.createElement("div", { className: "merged-calendar-container" }, this.renderCalendar(calendar_1.CalendarViewType.day, true))));
 	    };
 	    App.prototype.renderTaskBoard = function (tagName) {
-	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasks: this.state.tasks, initialTagName: tagName, tagsById: this.state.tagsById, eventsById: this.state.eventsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
+	        return React.createElement(task_board_1.TaskBoardComponent, { meUser: this.props.meUser, tasksById: this.state.tasksById, initialTagName: tagName, tagsById: this.state.tagsById, eventsById: this.state.eventsById, createTask: this.createTask.bind(this), updateTask: this.updateTask.bind(this), deleteTask: this.deleteTask.bind(this) });
 	    };
 	    App.prototype.renderCalendar = function (viewType, simpleOptions) {
 	        return React.createElement(calendar_1.CalendarComponent, { meUser: this.props.meUser, eventsById: this.state.eventsById, tagsById: this.state.tagsById, tasksById: this.state.tasksById, initialViewType: viewType, simpleOptions: simpleOptions, createEvent: this.createEvent.bind(this), updateEvent: this.updateEvent.bind(this), deleteEvent: this.deleteEvent.bind(this) });
@@ -1273,12 +1273,27 @@
 	    __extends(TaskBoardComponent, _super);
 	    function TaskBoardComponent(props) {
 	        var _this = _super.call(this, props) || this;
+	        _this._handleDisplayTaskInfo = null;
 	        _this._dragTargetElement = null;
 	        _this.state = _this.getState(props, TaskBoardViewType.status);
 	        return _this;
 	    }
 	    TaskBoardComponent.prototype.componentWillReceiveProps = function (props) {
 	        this.setState(this.getState(props, this.state.viewType));
+	    };
+	    TaskBoardComponent.prototype.componentDidMount = function () {
+	        this._handleDisplayTaskInfo = this.handleDisplayTaskInfo.bind(this);
+	        document.addEventListener(events_1.signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+	    };
+	    TaskBoardComponent.prototype.componentWillUnmount = function () {
+	        document.removeEventListener(events_1.signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+	        this._handleDisplayTaskInfo = null;
+	    };
+	    TaskBoardComponent.prototype.handleDisplayTaskInfo = function (e) {
+	        // Sets the task identified by the event to be selected
+	        var taskId = e.detail;
+	        this.state.selectedTask = this.props.tasksById[taskId];
+	        this.setState(this.state);
 	    };
 	    TaskBoardComponent.prototype.getState = function (props, viewType) {
 	        var selectedTag = null;
@@ -1295,7 +1310,7 @@
 	                }
 	            }
 	        }
-	        var _b = this.divideByType(props.tasks, viewType, selectedTag), headers = _b[0], columnTypes = _b[1], columns = _b[2];
+	        var _b = this.divideByType(props.tasksById, viewType, selectedTag), headers = _b[0], columnTypes = _b[1], columns = _b[2];
 	        var newState = {
 	            viewType: viewType,
 	            columns: columns,
@@ -1314,7 +1329,7 @@
 	        }
 	        return newState;
 	    };
-	    TaskBoardComponent.prototype.divideByType = function (tasks, type, selectedTag) {
+	    TaskBoardComponent.prototype.divideByType = function (tasksById, type, selectedTag) {
 	        var _this = this;
 	        var columns = {};
 	        var columnList = [];
@@ -1379,7 +1394,9 @@
 	            return false;
 	        };
 	        // Categorize each task
-	        tasks.forEach(function (task) {
+	        for (var _c = 0, _d = Object.keys(tasksById); _c < _d.length; _c++) {
+	            var taskId = _d[_c];
+	            var task = tasksById[taskId];
 	            if (shouldHideTask(task)) {
 	                return;
 	            }
@@ -1389,7 +1406,7 @@
 	            else {
 	                columns[task[attr]].push(task);
 	            }
-	        });
+	        }
 	        // Order the columns
 	        orderedNameAndValue.forEach(function (nameAndValue) {
 	            var name = nameAndValue[0], value = nameAndValue[1];
@@ -1497,7 +1514,7 @@
 	        this.setState(this.state);
 	    };
 	    TaskBoardComponent.prototype.changeViewType = function (type) {
-	        var _a = this.divideByType(this.props.tasks, type, this.state.selectedTag), headers = _a[0], columnTypes = _a[1], columns = _a[2];
+	        var _a = this.divideByType(this.props.tasksById, type, this.state.selectedTag), headers = _a[0], columnTypes = _a[1], columns = _a[2];
 	        this.state.viewType = type;
 	        this.state.headers = headers;
 	        this.state.columnTypes = columnTypes;
@@ -4708,6 +4725,7 @@
 	"use strict";
 	exports.signalCreateEventWithTask = "signalCreateEventWithTask";
 	exports.signalEndEventWithTask = "signalEndEventWithTask";
+	exports.signalDisplayTaskInfo = "signalDisplayTaskInfo";
 
 
 /***/ },
@@ -4743,6 +4761,8 @@
 	    function CalendarComponent(props) {
 	        var _this = _super.call(this, props) || this;
 	        _this.refreshLoopId = 0;
+	        _this._handleCreateEventWithTaskFn = null;
+	        _this._handleEndEventWithTaskFn = null;
 	        _this._dragTargetEventElement = null;
 	        _this.state = _this.getState(props);
 	        return _this;
@@ -4802,37 +4822,45 @@
 	        };
 	        this.refreshLoopId = setInterval(loop, 60 * 1000);
 	        // Register some event handlers to respond to signals from the task board
-	        document.addEventListener(events_1.signalCreateEventWithTask, function (e) {
-	            var t = e.detail;
-	            if (_this.shouldCreateEventWithTask()) {
-	                var now = moment();
-	                _this.state.createEventTimestamp = now.unix() * 1000;
-	                var x = moment(now).add(30, "minutes");
-	                var remainder = x.minute() % 15;
-	                if (remainder > 7.5) {
-	                    x = moment(x).add(15 - remainder, "minutes");
-	                }
-	                else {
-	                    x = moment(x).subtract(remainder, "minutes");
-	                }
-	                _this.state.createEventDurationSecs = x.startOf("minute").unix() - now.unix();
-	                _this.state.showCreate = true;
-	                _this.state.createEventTask = t;
-	                _this.setState(_this.state);
-	            }
-	        });
-	        document.addEventListener(events_1.signalEndEventWithTask, function (e) {
-	            var t = e.detail;
-	            var event = _this.shouldEndEventWithTask(t);
-	            if (event) {
-	                event.durationSecs = Math.floor((moment().unix() * 1000 - event.startTime) / 1000);
-	                _this.props.updateEvent(event);
-	            }
-	        });
+	        this._handleCreateEventWithTaskFn = this.handleCreateEventWithTask.bind(this);
+	        document.addEventListener(events_1.signalCreateEventWithTask, this._handleCreateEventWithTaskFn);
+	        this._handleEndEventWithTaskFn = this.handleEndEventWithTask.bind(this);
+	        document.addEventListener(events_1.signalEndEventWithTask, this._handleEndEventWithTaskFn);
 	    };
 	    CalendarComponent.prototype.componentWillUnmount = function () {
 	        if (this.refreshLoopId) {
 	            clearInterval(this.refreshLoopId);
+	        }
+	        document.removeEventListener(events_1.signalCreateEventWithTask, this._handleCreateEventWithTaskFn);
+	        document.removeEventListener(events_1.signalEndEventWithTask, this._handleEndEventWithTaskFn);
+	        this._handleCreateEventWithTaskFn = null;
+	        this._handleEndEventWithTaskFn = null;
+	    };
+	    CalendarComponent.prototype.handleCreateEventWithTask = function (e) {
+	        var t = e.detail;
+	        if (this.shouldCreateEventWithTask()) {
+	            var now = moment();
+	            this.state.createEventTimestamp = now.unix() * 1000;
+	            var x = moment(now).add(30, "minutes");
+	            var remainder = x.minute() % 15;
+	            if (remainder > 7.5) {
+	                x = moment(x).add(15 - remainder, "minutes");
+	            }
+	            else {
+	                x = moment(x).subtract(remainder, "minutes");
+	            }
+	            this.state.createEventDurationSecs = x.startOf("minute").unix() - now.unix();
+	            this.state.showCreate = true;
+	            this.state.createEventTask = t;
+	            this.setState(this.state);
+	        }
+	    };
+	    CalendarComponent.prototype.handleEndEventWithTask = function (e) {
+	        var t = e.detail;
+	        var event = this.shouldEndEventWithTask(t);
+	        if (event) {
+	            event.durationSecs = Math.floor((moment().unix() * 1000 - event.startTime) / 1000);
+	            this.props.updateEvent(event);
 	        }
 	    };
 	    CalendarComponent.prototype.computeTodayStartTime = function (viewType) {
@@ -5865,11 +5893,16 @@
 	};
 	var React = __webpack_require__(5);
 	var tag_1 = __webpack_require__(18);
+	var events_1 = __webpack_require__(30);
 	var EventComponent = (function (_super) {
 	    __extends(EventComponent, _super);
 	    function EventComponent() {
 	        return _super.apply(this, arguments) || this;
 	    }
+	    EventComponent.prototype.selectTask = function (taskId) {
+	        var event = new CustomEvent(events_1.signalDisplayTaskInfo, { 'detail': taskId });
+	        document.dispatchEvent(event);
+	    };
 	    EventComponent.prototype.renderTag = function (tagId) {
 	        var tag = this.props.tagsById[tagId];
 	        return React.createElement(tag_1.TagComponent, { tag: tag, key: tagId });
@@ -5885,11 +5918,12 @@
 	        return this.props.event.tagIds.map(this.renderTag.bind(this));
 	    };
 	    EventComponent.prototype.renderTasks = function () {
+	        var _this = this;
 	        if (!this.props.event.taskIds.length) {
 	            return;
 	        }
 	        return this.props.event.taskIds.map(function (taskId) {
-	            return React.createElement("div", { className: "task-id-card card", key: "T" + taskId }, "T" + taskId);
+	            return React.createElement("div", { className: "task-id-card card", key: "T" + taskId, onClick: _this.selectTask.bind(_this, taskId) }, "T" + taskId);
 	        });
 	    };
 	    EventComponent.prototype.render = function () {

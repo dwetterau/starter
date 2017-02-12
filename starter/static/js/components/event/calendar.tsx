@@ -112,6 +112,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return newState;
     }
 
+    _handleCreateEventWithTaskFn = null;
+    _handleEndEventWithTaskFn = null;
     componentDidMount() {
         const cursor = document.getElementsByClassName("current-time-cursor");
         if (cursor.length) {
@@ -128,38 +130,48 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.refreshLoopId = setInterval(loop, 60 * 1000);
 
         // Register some event handlers to respond to signals from the task board
-        document.addEventListener(signalCreateEventWithTask, (e: CustomEvent) => {
-            let t: Task = e.detail;
-            if (this.shouldCreateEventWithTask()) {
-                let now = moment();
-                this.state.createEventTimestamp = now.unix() * 1000;
-                let x = moment(now).add(30, "minutes");
-                let remainder = x.minute() % 15;
-                if (remainder > 7.5) {
-                    x = moment(x).add(15 - remainder, "minutes")
-                } else {
-                    x = moment(x).subtract(remainder, "minutes")
-                }
-                this.state.createEventDurationSecs = x.startOf("minute").unix() - now.unix();
-                this.state.showCreate = true;
-                this.state.createEventTask = t;
-                this.setState(this.state);
-            }
-        });
+        this._handleCreateEventWithTaskFn = this.handleCreateEventWithTask.bind(this);
+        document.addEventListener(signalCreateEventWithTask, this._handleCreateEventWithTaskFn);
 
-        document.addEventListener(signalEndEventWithTask, (e: CustomEvent) => {
-            let t: Task = e.detail;
-            let event = this.shouldEndEventWithTask(t);
-            if (event) {
-                event.durationSecs = Math.floor((moment().unix() * 1000 - event.startTime) / 1000);
-                this.props.updateEvent(event);
-            }
-        });
+        this._handleEndEventWithTaskFn = this.handleEndEventWithTask.bind(this);
+        document.addEventListener(signalEndEventWithTask, this._handleEndEventWithTaskFn);
     }
 
     componentWillUnmount() {
         if (this.refreshLoopId) {
             clearInterval(this.refreshLoopId)
+        }
+        document.removeEventListener(signalCreateEventWithTask, this._handleCreateEventWithTaskFn);
+        document.removeEventListener(signalEndEventWithTask, this._handleEndEventWithTaskFn);
+        this._handleCreateEventWithTaskFn = null;
+        this._handleEndEventWithTaskFn = null;
+    }
+
+    handleCreateEventWithTask(e: CustomEvent) {
+        let t: Task = e.detail;
+        if (this.shouldCreateEventWithTask()) {
+            let now = moment();
+            this.state.createEventTimestamp = now.unix() * 1000;
+            let x = moment(now).add(30, "minutes");
+            let remainder = x.minute() % 15;
+            if (remainder > 7.5) {
+                x = moment(x).add(15 - remainder, "minutes")
+            } else {
+                x = moment(x).subtract(remainder, "minutes")
+            }
+            this.state.createEventDurationSecs = x.startOf("minute").unix() - now.unix();
+            this.state.showCreate = true;
+            this.state.createEventTask = t;
+            this.setState(this.state);
+        }
+    }
+
+    handleEndEventWithTask(e: CustomEvent) {
+        let t: Task = e.detail;
+        let event = this.shouldEndEventWithTask(t);
+        if (event) {
+            event.durationSecs = Math.floor((moment().unix() * 1000 - event.startTime) / 1000);
+            this.props.updateEvent(event);
         }
     }
 

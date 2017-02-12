@@ -2,16 +2,22 @@ import * as React from "react";
 import * as jQuery from "jquery";
 
 import {EditTaskComponent} from "./edit_task";
-import {Task, stateNameList, User, priorityNameList, TagsById, Tag, EventsById} from "../../models";
+import {
+    Task, stateNameList, User, priorityNameList, TagsById, Tag, EventsById,
+    TasksById
+} from "../../models";
 import {TaskComponent} from "./task";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
 import {ModalComponent} from "../lib/modal";
 import {TaskDetailComponent} from "./task_detail";
-import {signalCreateEventWithTask, signalEndEventWithTask} from "../../events";
+import {
+    signalCreateEventWithTask, signalEndEventWithTask,
+    signalDisplayTaskInfo
+} from "../../events";
 
 export interface TaskBoardProps {
     meUser: User,
-    tasks: Array<Task>,
+    tasksById: TasksById,
     initialTagName?: string,
     tagsById: TagsById,
     eventsById: EventsById,
@@ -49,6 +55,24 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         this.setState(this.getState(props, this.state.viewType))
     }
 
+    _handleDisplayTaskInfo = null;
+    componentDidMount() {
+        this._handleDisplayTaskInfo = this.handleDisplayTaskInfo.bind(this);
+        document.addEventListener(signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener(signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+        this._handleDisplayTaskInfo = null;
+    }
+
+    handleDisplayTaskInfo(e: CustomEvent) {
+        // Sets the task identified by the event to be selected
+        let taskId = e.detail;
+        this.state.selectedTask = this.props.tasksById[taskId];
+        this.setState(this.state);
+    }
+
     getState(props: TaskBoardProps, viewType: TaskBoardViewType): TaskBoardState {
         let selectedTag = null;
         if (this.state && this.state.selectedTag) {
@@ -63,7 +87,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             }
         }
         const [headers, columnTypes, columns] = this.divideByType(
-            props.tasks, viewType, selectedTag
+            props.tasksById, viewType, selectedTag
         );
 
         const newState: TaskBoardState = {
@@ -85,7 +109,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return newState;
     }
 
-    divideByType(tasks: Array<Task>, type: TaskBoardViewType, selectedTag: Tag): [
+    divideByType(tasksById: TasksById, type: TaskBoardViewType, selectedTag: Tag): [
             Array<string>, Array<number>, Array<Array<Task>>] {
 
         const columns: {[columnType: number]: Array<Task>} = {};
@@ -165,7 +189,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         };
 
         // Categorize each task
-        tasks.forEach((task: Task) => {
+        for (let taskId of Object.keys(tasksById)) {
+            let task = tasksById[taskId];
             if (shouldHideTask(task)) {
                 return
             }
@@ -175,7 +200,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             } else {
                 columns[task[attr]].push(task)
             }
-        });
+        }
 
         // Order the columns
         orderedNameAndValue.forEach((nameAndValue: [string, number]) => {
@@ -308,7 +333,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     changeViewType(type: TaskBoardViewType) {
         const [headers, columnTypes, columns] = this.divideByType(
-            this.props.tasks, type, this.state.selectedTag
+            this.props.tasksById, type, this.state.selectedTag
         );
         this.state.viewType = type;
         this.state.headers = headers;

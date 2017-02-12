@@ -234,7 +234,7 @@ export class App extends React.Component<AppProps, AppState> {
     renderTaskBoard(tagName) {
         return <TaskBoardComponent
             meUser={this.props.meUser}
-            tasks={this.state.tasks}
+            tasksById={this.state.tasksById}
             initialTagName={tagName}
             tagsById={this.state.tagsById}
             eventsById={this.state.eventsById}

@@ -458,6 +458,10 @@ div.event-card-container div.card {
     margin: 0 0 0 .25em;
     padding: .1em .25em;
 }
+
+div.event-container div.task-id-card {
+    cursor: pointer;
+}
 /* End of Event view CSS */
 
 /* Tag graph CSS */

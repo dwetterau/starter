@@ -1,6 +1,7 @@
 import * as React from "react";
 import {Event, TagsById} from "../../models";
 import {TagComponent} from "../tag/tag";
+import {signalDisplayTaskInfo} from "../../events";
 
 export interface EventProps {
     event: Event,
@@ -8,6 +9,14 @@ export interface EventProps {
 }
 
 export class EventComponent extends React.Component<EventProps, {}> {
+
+    selectTask(taskId: number) {
+        let event = new CustomEvent(
+            signalDisplayTaskInfo,
+            {'detail': taskId},
+        );
+        document.dispatchEvent(event);
+    }
 
     renderTag(tagId: number) {
         const tag = this.props.tagsById[tagId];
@@ -35,6 +44,7 @@ export class EventComponent extends React.Component<EventProps, {}> {
             return <div
                 className="task-id-card card"
                 key={`T${taskId}`}
+                onClick={this.selectTask.bind(this, taskId)}
             >
                 {`T${taskId}`}
             </div>
