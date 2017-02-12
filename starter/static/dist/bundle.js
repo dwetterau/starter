@@ -134,7 +134,7 @@
 	
 	
 	// module
-	exports.push([module.id, "* {\n    font-family: \"Open Sans\",\"lucida grande\",\"Segoe UI\",arial,verdana,\"lucida sans unicode\",tahoma,sans-serif!important;\n    letter-spacing: .3px;\n    color: #47525d;\n    font-weight: 100;\n}\n\nbody {\n    background: #f6f9fc;\n    margin: 0;\n}\n\ndiv.card {\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    background: #fff;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n    padding: 1em 1em 0;\n    background-color: #fff;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option {\n    margin-right: 1em;\n    text-decoration: none;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n    height: calc(100vh - 97px);\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n    flex-shrink: 0;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container div.columns-container {\n    display: flex;\n    flex-direction: row;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    padding: .5em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\ndiv.task-board .task,.task-title {\n    text-overflow: ellipsis;\n    overflow-x: hidden;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\n.task .task-columns {\n    display: flex;\n}\n\n.task-columns .main-column {\n    width: 100%;\n}\n\n.task-columns .task-color {\n    width: 3px;\n    flex-shrink: 0;\n    margin: -20px 17px -20px -20px;\n}\n\n/* Unknown */\n.task-color.-p0 {\n    background-color: #8b4513;\n}\n\n/* Highest */\n.task-color.-p500 {\n    background-color: #f0f;\n}\n\n/* High */\n.task-color.-p400 {\n    background-color: #f00;\n}\n\n/* Normal */\n.task-color.-p300 {\n    background-color: #ffa500;\n}\n\n/* Low */\n.task-color.-p200 {\n    background-color: #228b22;\n}\n\n/* Lowest */\n.task-color.-p100 {\n    background-color: #6495ed;\n}\n\n/* Open */\n.task-color.-s0 {\n    background-color: #228b22;\n}\n\n/* In Progress */\n.task-color.-s500 {\n    background-color: #6495ed;\n}\n\n/* Blocked */\n.task-color.-s750 {\n    background-color: #f00;\n}\n\n/* Closed */\n.task-color.-s1000 {\n    background-color: #8b4513;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Task Detail view CSS */\ndiv.task-detail-container {\n    background-color: #fff;\n    padding: .5em;\n    overflow-wrap: break-word;\n}\n\ndiv.task-detail-container div.id-and-options {\n    text-decoration: underline;\n    display: flex;\n    justify-content: space-between;\n}\n\ndiv.task-detail-container div.title {\n    font-weight: bold;\n}\n\ndiv.task-detail-container div.options a {\n    padding: 0 .25em;\n}\n\ndiv.task-detail-container div.task-status {\n    display: flex;\n    padding-top: .25em;\n}\n\ndiv.task-detail-container div.task-status div {\n    margin-right: .5em;\n}\n\ndiv.task-detail-container div.task-status div.info-container {\n    display: flex;\n}\n\ndiv.task-detail-container div.task-status div.task-color {\n    height: 22px;\n    width: 1em;\n    margin-right: .25em;\n    margin-left: -.25em;\n}\n\ndiv.task-detail-container div.task-time-info {\n    padding-top: .25em;\n}\n/* End of Task Detail view CSS */\n\n/* Calendar CSS */\ndiv.calendar {\n    width: 100%;\n}\n\ndiv.calendar div.options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n}\n\ndiv.calendar div.options div.view-type-selector {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.calendar div.options div.pagination-container {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.pagination-container div.pagination-option {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.calendar div.tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\n\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n    height: calc(100vh - 140px); /* 140px is the height of the header */\n    padding: 0 2em;\n}\n\ndiv.calendar div.full-column-container div.header-and-content-container {\n    overflow: hidden;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n    margin-top: .5em;\n    margin-right: 15px;\n    text-align: center;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    flex-grow: 1;\n    height: 22px;\n}\n\ndiv.calendar div.column-header.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    flex-grow: 1;\n    min-width: 120px;\n    position: relative;\n}\n\n\ndiv.calendar div.column-container.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-container table {\n    width: 100%;\n}\n\ndiv.calendar div.column-container.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-right: 2px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    min-width: 120px;\n    width: 100%;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(0, 0, 0, .2);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n    flex-wrap: wrap;\n    align-content: space-between;\n    overflow-x: hidden;\n    height: 100%;\n}\n\ndiv.event-container div.name {\n    flex-grow: 1;\n}\n\ndiv.event-card-container {\n    align-self: flex-end;\n    flex-grow: 1;\n    display: flex;\n    justify-content: flex-end;\n    padding-bottom: .25em;\n}\n\ndiv.event-card-container div.card {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n\ndiv.event-container div.task-id-card {\n    cursor: pointer;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokenizer-container div.pending-token-container {\n    width: 100%;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    padding: .1em .25em;\n    margin-top: -3px;\n    margin-bottom: 0;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n\ndiv.tokenizer-container div.pending-state-container {\n    width: 100%;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container {\n    position: absolute;\n    background: #fff;\n    border-radius: 0 3px 3px;\n    border: 1px solid rgba(0, 0, 0, .2);\n    border-top: none;\n    z-index: 3;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token {\n    padding: .5em;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.tokenizer-container div.autocomplete-token-container:last-child {\n    border-bottom: none;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token:hover {\n    cursor: pointer;\n    background-color: #f6f9fc;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token.-selected {\n    background-color: #f6f9fc;\n}\n/* End of Tokenizer CSS */\n\n/* Modal CSS */\ndiv.modal-container div.background {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .2);\n    z-index: 4;\n\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\ndiv.modal.card {\n    min-width: 350px;\n}\n\ndiv.modal h3 {\n    margin: 0;\n}\n\ndiv.modal-container div.cancel-button-container {\n    cursor: pointer;\n    float: right;\n}\n\ndiv.modal label {\n    display: block;\n    padding-top: .5em;\n}\n\ndiv.modal input,textarea,select {\n    width: 100%;\n    background-color: #fff;\n    border: 1px solid rgba(0, 0, 0, .4);\n    margin: 0;\n    padding: 0;\n}\n\ndiv.modal input[type=button] {\n    margin-top: .5em;\n    height: 30px;\n}\n\ndiv.modal div.rendered-token {\n    margin-top: 0;\n}\n\ndiv.modal div.checkbox-container {\n    display: flex;\n    align-items: center;\n}\n\ndiv.modal div.checkbox-container input {\n    width: 30px;\n    height: 15px;\n    margin-top: 7px;\n}\n/* End of Modal CSS */\n\n/* Multi-pane CSS */\ndiv.merged-container {\n    display: flex;\n}\n\ndiv.main-pane {\n    max-width: 67%;\n    min-width: 67%;\n}\n\ndiv.right-pane {\n    max-width: 33%;\n    min-width: 33%;\n}\n\n/* Ad-hoc fixes for tasks */\ndiv.main-pane div.task-board div.full-column-container {\n    height: calc(100vh - 129px);\n    min-height: 0;\n    overflow-y: auto;\n}\n\n/* Ad-hoc fixes for calendar */\ndiv.right-pane div.calendar div.full-column-container {\n    padding: 0;\n}\n\ndiv.right-pane div.calendar div.tag-selector-container {\n    margin-left: 0;\n}\n\ndiv.right-pane div.calendar div.column-header {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-header.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.column-header.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.options div.pending-token-container input {\n    width: 100%;\n}\n\ndiv.right-pane div.calendar div.options div.tag-selector-label {\n    flex-shrink: 0;\n}\n/* End of Multi-pane CSS */", ""]);
+	exports.push([module.id, "* {\n    font-family: \"Open Sans\",\"lucida grande\",\"Segoe UI\",arial,verdana,\"lucida sans unicode\",tahoma,sans-serif!important;\n    letter-spacing: .3px;\n    color: #47525d;\n    font-weight: 100;\n}\n\nbody {\n    background: #f6f9fc;\n    margin: 0;\n}\n\ndiv.card {\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    background: #fff;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n    padding: 1em 1em 0;\n    background-color: #fff;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option {\n    margin-right: 1em;\n    text-decoration: none;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n    height: calc(100vh - 97px);\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n    flex-shrink: 0;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container div.columns-container {\n    display: flex;\n    flex-direction: row;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    padding: .5em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\ndiv.task-board .task,.task-title {\n    text-overflow: ellipsis;\n    overflow-x: hidden;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\n.task .task-columns {\n    display: flex;\n}\n\n.task-columns .main-column {\n    width: 100%;\n}\n\n.task-columns .task-color {\n    width: 3px;\n    flex-shrink: 0;\n    margin: -20px 17px -20px -20px;\n}\n\n/* Unknown */\n.task-color.-p0 {\n    background-color: #8b4513;\n}\n\n/* Highest */\n.task-color.-p500 {\n    background-color: #f0f;\n}\n\n/* High */\n.task-color.-p400 {\n    background-color: #f00;\n}\n\n/* Normal */\n.task-color.-p300 {\n    background-color: #ffa500;\n}\n\n/* Low */\n.task-color.-p200 {\n    background-color: #228b22;\n}\n\n/* Lowest */\n.task-color.-p100 {\n    background-color: #6495ed;\n}\n\n/* Open */\n.task-color.-s0 {\n    background-color: #228b22;\n}\n\n/* In Progress */\n.task-color.-s500 {\n    background-color: #6495ed;\n}\n\n/* Blocked */\n.task-color.-s750 {\n    background-color: #f00;\n}\n\n/* Closed */\n.task-color.-s1000 {\n    background-color: #8b4513;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Task Detail view CSS */\ndiv.task-detail-container {\n    background-color: #fff;\n    padding: .5em;\n    overflow-wrap: break-word;\n}\n\ndiv.task-detail-container div.id-and-options {\n    text-decoration: underline;\n    display: flex;\n    justify-content: space-between;\n}\n\ndiv.task-detail-container div.title {\n    font-weight: bold;\n}\n\ndiv.task-detail-container div.options a {\n    padding: 0 .25em;\n    cursor: pointer;\n}\n\ndiv.task-detail-container div.task-status {\n    display: flex;\n    padding-top: .25em;\n}\n\ndiv.task-detail-container div.task-status div {\n    margin-right: .5em;\n}\n\ndiv.task-detail-container div.task-status div.info-container {\n    display: flex;\n}\n\ndiv.task-detail-container div.task-status div.task-color {\n    height: 22px;\n    width: 1em;\n    margin-right: .25em;\n    margin-left: -.25em;\n}\n\ndiv.task-detail-container div.task-time-info {\n    padding-top: .25em;\n}\n/* End of Task Detail view CSS */\n\n/* Calendar CSS */\ndiv.calendar {\n    width: 100%;\n}\n\ndiv.calendar div.options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n}\n\ndiv.calendar div.options div.view-type-selector {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.calendar div.options div.pagination-container {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.pagination-container div.pagination-option {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.calendar div.tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\n\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n    height: calc(100vh - 140px); /* 140px is the height of the header */\n    padding: 0 2em;\n}\n\ndiv.calendar div.full-column-container div.header-and-content-container {\n    overflow: hidden;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n    margin-top: .5em;\n    margin-right: 15px;\n    text-align: center;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    flex-grow: 1;\n    height: 22px;\n}\n\ndiv.calendar div.column-header.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    flex-grow: 1;\n    min-width: 120px;\n    position: relative;\n}\n\n\ndiv.calendar div.column-container.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-container table {\n    width: 100%;\n}\n\ndiv.calendar div.column-container.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-right: 2px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    min-width: 120px;\n    width: 100%;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(0, 0, 0, .2);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n    flex-wrap: wrap;\n    align-content: space-between;\n    overflow-x: hidden;\n    height: 100%;\n}\n\ndiv.event-container div.name {\n    flex-grow: 1;\n}\n\ndiv.event-card-container {\n    align-self: flex-end;\n    flex-grow: 1;\n    display: flex;\n    justify-content: flex-end;\n    padding-bottom: .25em;\n}\n\ndiv.event-card-container div.card {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n\ndiv.event-container div.task-id-card {\n    cursor: pointer;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokenizer-container div.pending-token-container {\n    width: 100%;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    padding: .1em .25em;\n    margin-top: -3px;\n    margin-bottom: 0;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n\ndiv.tokenizer-container div.pending-state-container {\n    width: 100%;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container {\n    position: absolute;\n    background: #fff;\n    border-radius: 0 3px 3px;\n    border: 1px solid rgba(0, 0, 0, .2);\n    border-top: none;\n    z-index: 3;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token {\n    padding: .5em;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.tokenizer-container div.autocomplete-token-container:last-child {\n    border-bottom: none;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token:hover {\n    cursor: pointer;\n    background-color: #f6f9fc;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token.-selected {\n    background-color: #f6f9fc;\n}\n/* End of Tokenizer CSS */\n\n/* Modal CSS */\ndiv.modal-container div.background {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .2);\n    z-index: 4;\n\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\ndiv.modal.card {\n    min-width: 350px;\n}\n\ndiv.modal h3 {\n    margin: 0;\n}\n\ndiv.modal-container div.cancel-button-container {\n    cursor: pointer;\n    float: right;\n}\n\ndiv.modal label {\n    display: block;\n    padding-top: .5em;\n}\n\ndiv.modal input,textarea,select {\n    width: 100%;\n    background-color: #fff;\n    border: 1px solid rgba(0, 0, 0, .4);\n    margin: 0;\n    padding: 0;\n}\n\ndiv.modal input[type=button] {\n    margin-top: .5em;\n    height: 30px;\n}\n\ndiv.modal div.rendered-token {\n    margin-top: 0;\n}\n\ndiv.modal div.checkbox-container {\n    display: flex;\n    align-items: center;\n}\n\ndiv.modal div.checkbox-container input {\n    width: 30px;\n    height: 15px;\n    margin-top: 7px;\n}\n/* End of Modal CSS */\n\n/* Multi-pane CSS */\ndiv.merged-container {\n    display: flex;\n}\n\ndiv.main-pane {\n    max-width: 67%;\n    min-width: 67%;\n\n    height: calc(100vh - 97px);\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.merged-task-container {\n    display: flex;\n}\n\ndiv.right-pane {\n    max-width: 33%;\n    min-width: 33%;\n}\n\n/* Ad-hoc fixes for tasks */\ndiv.main-pane div.task-board {\n    height: auto;\n}\n\ndiv.main-pane div.task-board div.full-column-container {\n    overflow-y: auto;\n}\n\n/* Ad-hoc fixes for calendar */\ndiv.right-pane div.calendar div.full-column-container {\n    padding: 0;\n}\n\ndiv.right-pane div.calendar div.tag-selector-container {\n    margin-left: 0;\n}\n\ndiv.right-pane div.calendar div.column-header {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-header.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.column-header.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.options div.pending-token-container input {\n    width: 100%;\n}\n\ndiv.right-pane div.calendar div.options div.tag-selector-label {\n    flex-shrink: 0;\n}\n/* End of Multi-pane CSS */", ""]);
 	
 	// exports
 
@@ -480,9 +480,11 @@
 	var react_router_1 = __webpack_require__(9);
 	var tag_graph_1 = __webpack_require__(10);
 	var task_board_1 = __webpack_require__(14);
-	var calendar_1 = __webpack_require__(31);
-	var app_header_1 = __webpack_require__(35);
-	var notifier_1 = __webpack_require__(36);
+	var calendar_1 = __webpack_require__(21);
+	var app_header_1 = __webpack_require__(26);
+	var notifier_1 = __webpack_require__(27);
+	var events_1 = __webpack_require__(20);
+	var task_detail_1 = __webpack_require__(28);
 	var AppViewMode;
 	(function (AppViewMode) {
 	    AppViewMode[AppViewMode["mergedView"] = 0] = "mergedView";
@@ -494,6 +496,8 @@
 	    __extends(App, _super);
 	    function App(props) {
 	        var _this = _super.call(this, props) || this;
+	        // Global listener registration
+	        _this._handleDisplayTaskInfo = null;
 	        var newState = {
 	            tasks: props.tasks,
 	            events: props.events,
@@ -501,6 +505,7 @@
 	            tagsById: {},
 	            eventsById: {},
 	            tasksById: {},
+	            detailInfo: {},
 	        };
 	        App.updateTagsById(newState);
 	        App.updateEventsById(newState);
@@ -508,6 +513,24 @@
 	        _this.state = newState;
 	        return _this;
 	    }
+	    App.prototype.componentDidMount = function () {
+	        this._handleDisplayTaskInfo = this.handleDisplayTaskInfo.bind(this);
+	        document.addEventListener(events_1.signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+	    };
+	    App.prototype.componentWillUnmount = function () {
+	        document.removeEventListener(events_1.signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+	        this._handleDisplayTaskInfo = null;
+	    };
+	    App.prototype.handleDisplayTaskInfo = function (e) {
+	        // Sets the task identified by the event to be selected
+	        var taskId = e.detail;
+	        this.state.detailInfo = {
+	            taskId: taskId,
+	            tagId: null,
+	        };
+	        this.setState(this.state);
+	    };
+	    // API-style methods for updating global state.
 	    App.updateTasksById = function (state) {
 	        var tasksById = {};
 	        for (var _i = 0, _a = state.tasks; _i < _a.length; _i++) {
@@ -667,13 +690,39 @@
 	    App.prototype.deleteTag = function (tag) {
 	        // TODO: Filter out all tags and children or something
 	    };
+	    // Inline handlers for detail changes
+	    App.prototype.beginEditingSelectedTask = function () {
+	        if (!this.state.detailInfo.taskId) {
+	            // No task to start editing.
+	            return;
+	        }
+	        var event = new CustomEvent(events_1.signalBeginEditingTask, { 'detail': this.state.detailInfo.taskId });
+	        document.dispatchEvent(event);
+	    };
+	    App.prototype.closeDetail = function () {
+	        this.state.detailInfo = {};
+	        this.setState(this.state);
+	    };
 	    App.prototype.renderNotifier = function () {
 	        return React.createElement(notifier_1.NotifierComponent, { tasks: this.state.tasks, events: this.state.events });
+	    };
+	    App.prototype.renderDetail = function () {
+	        if (this.state.detailInfo.taskId) {
+	            var task = this.state.tasksById[this.state.detailInfo.taskId];
+	            if (!task) {
+	                console.error("Task not found to show detail for...");
+	                return;
+	            }
+	            return React.createElement(task_detail_1.TaskDetailComponent, { task: task, tagsById: this.state.tagsById, eventsById: this.state.eventsById, closeCallback: this.closeDetail.bind(this), editCallback: this.beginEditingSelectedTask.bind(this) });
+	        }
+	        else if (this.state.detailInfo.tagId) {
+	        }
 	    };
 	    App.prototype.renderMergedView = function (tagName) {
 	        return React.createElement("div", { className: "merged-container" },
 	            React.createElement("div", { className: "main-pane" },
-	                React.createElement("div", { className: "merged-task-container" }, this.renderTaskBoard(tagName))),
+	                React.createElement("div", { className: "merged-task-container" }, this.renderTaskBoard(tagName)),
+	                this.renderDetail()),
 	            React.createElement("div", { className: "right-pane" },
 	                React.createElement("div", { className: "merged-calendar-container" }, this.renderCalendar(calendar_1.CalendarViewType.day, true))));
 	    };
@@ -1262,8 +1311,7 @@
 	var task_1 = __webpack_require__(17);
 	var tokenizer_1 = __webpack_require__(12);
 	var modal_1 = __webpack_require__(19);
-	var task_detail_1 = __webpack_require__(20);
-	var events_1 = __webpack_require__(30);
+	var events_1 = __webpack_require__(20);
 	var TaskBoardViewType;
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
@@ -1273,7 +1321,7 @@
 	    __extends(TaskBoardComponent, _super);
 	    function TaskBoardComponent(props) {
 	        var _this = _super.call(this, props) || this;
-	        _this._handleDisplayTaskInfo = null;
+	        _this._handleBeginEditingTask = null;
 	        _this._dragTargetElement = null;
 	        _this.state = _this.getState(props, TaskBoardViewType.status);
 	        return _this;
@@ -1282,17 +1330,21 @@
 	        this.setState(this.getState(props, this.state.viewType));
 	    };
 	    TaskBoardComponent.prototype.componentDidMount = function () {
-	        this._handleDisplayTaskInfo = this.handleDisplayTaskInfo.bind(this);
-	        document.addEventListener(events_1.signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+	        this._handleBeginEditingTask = this.handleBeginEditingTask.bind(this);
+	        document.addEventListener(events_1.signalBeginEditingTask, this._handleBeginEditingTask);
 	    };
 	    TaskBoardComponent.prototype.componentWillUnmount = function () {
-	        document.removeEventListener(events_1.signalDisplayTaskInfo, this._handleDisplayTaskInfo);
-	        this._handleDisplayTaskInfo = null;
+	        document.removeEventListener(events_1.signalBeginEditingTask, this._handleBeginEditingTask);
+	        this._handleBeginEditingTask = null;
 	    };
-	    TaskBoardComponent.prototype.handleDisplayTaskInfo = function (e) {
+	    TaskBoardComponent.prototype.handleBeginEditingTask = function (e) {
 	        // Sets the task identified by the event to be selected
+	        if (this.state.editingTask) {
+	            // Already editing a different task.
+	            return;
+	        }
 	        var taskId = e.detail;
-	        this.state.selectedTask = this.props.tasksById[taskId];
+	        this.state.editingTask = this.props.tasksById[taskId];
 	        this.setState(this.state);
 	    };
 	    TaskBoardComponent.prototype.getState = function (props, viewType) {
@@ -1319,7 +1371,6 @@
 	            createColumnType: null,
 	            draggingTask: null,
 	            editingTask: null,
-	            selectedTask: (this.state) ? this.state.selectedTask : null,
 	            selectedTag: selectedTag,
 	            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : true,
 	        };
@@ -1485,29 +1536,13 @@
 	        }
 	        jQuery(event.target).removeClass("drop-container");
 	    };
-	    TaskBoardComponent.prototype.onClick = function (task, e) {
+	    TaskBoardComponent.prototype.onClick = function (taskId, e) {
 	        // We stop propagation to prevent event creation modals from appearing.
 	        e.stopPropagation();
-	        this.state.selectedTask = task;
-	        this.setState(this.state);
+	        // Send an event to show the detail for the task
+	        var event = new CustomEvent(events_1.signalDisplayTaskInfo, { 'detail': taskId });
+	        document.dispatchEvent(event);
 	        return false;
-	    };
-	    TaskBoardComponent.prototype.clearSelectedTask = function () {
-	        this.state.selectedTask = null;
-	        this.setState(this.state);
-	    };
-	    TaskBoardComponent.prototype.beginEditingSelected = function () {
-	        if (this.state.editingTask) {
-	            // Already editing a task...
-	            return;
-	        }
-	        if (!this.state.selectedTask) {
-	            // Nothing to start editing...
-	            return;
-	        }
-	        // TODO: Only store ids in these values instead of references.
-	        this.state.editingTask = JSON.parse(JSON.stringify(this.state.selectedTask));
-	        this.setState(this.state);
 	    };
 	    TaskBoardComponent.prototype.onDoubleClick = function (task) {
 	        this.state.editingTask = task;
@@ -1618,7 +1653,7 @@
 	            React.createElement("div", { className: "column-header" }, header),
 	            column.map(function (task) {
 	                // TODO: determine draggability programatically
-	                return React.createElement("div", { key: task.id, className: "draggable-task", draggable: true, onDragStart: _this.onDragStart.bind(_this, task), onDragEnd: _this.onDragEnd.bind(_this, task), onClick: _this.onClick.bind(_this, task), onDoubleClick: _this.onDoubleClick.bind(_this, task) },
+	                return React.createElement("div", { key: task.id, className: "draggable-task", draggable: true, onDragStart: _this.onDragStart.bind(_this, task), onDragEnd: _this.onDragEnd.bind(_this, task), onClick: _this.onClick.bind(_this, task.id), onDoubleClick: _this.onDoubleClick.bind(_this, task) },
 	                    React.createElement(task_1.TaskComponent, { task: task, viewType: _this.state.viewType, tagsById: _this.props.tagsById }));
 	            }));
 	    };
@@ -1659,19 +1694,12 @@
 	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.clearCreateColumnType.bind(this) },
 	            React.createElement(edit_task_1.EditTaskComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, createTask: this.props.createTask, initialPriority: initialPriority, initialState: initialState, initialTags: initialTags, updateTask: function (task) { }, deleteTask: function (task) { } }));
 	    };
-	    TaskBoardComponent.prototype.renderSelectedTask = function () {
-	        if (!this.state.selectedTask) {
-	            return;
-	        }
-	        return React.createElement(task_detail_1.TaskDetailComponent, { task: this.state.selectedTask, tagsById: this.props.tagsById, eventsById: this.props.eventsById, closeCallback: this.clearSelectedTask.bind(this), editCallback: this.beginEditingSelected.bind(this) });
-	    };
 	    TaskBoardComponent.prototype.render = function () {
 	        return React.createElement("div", { className: "task-board" },
 	            this.renderOptions(),
 	            this.renderColumns(),
 	            this.renderEditingTask(),
-	            this.renderCreateTask(),
-	            this.renderSelectedTask());
+	            this.renderCreateTask());
 	    };
 	    return TaskBoardComponent;
 	}(React.Component));
@@ -2048,6 +2076,1178 @@
 
 /***/ },
 /* 20 */
+/***/ function(module, exports) {
+
+	"use strict";
+	// Used for event auto-creation + ending on task moves
+	exports.signalCreateEventWithTask = "signalCreateEventWithTask";
+	exports.signalEndEventWithTask = "signalEndEventWithTask";
+	// Used by detail rendering
+	exports.signalDisplayTaskInfo = "signalDisplayTaskInfo";
+	exports.signalBeginEditingTask = "signalBeginEditingTask";
+
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var jQuery = __webpack_require__(7);
+	var moment = __webpack_require__(22);
+	var React = __webpack_require__(5);
+	var react_router_1 = __webpack_require__(9);
+	var edit_event_1 = __webpack_require__(23);
+	var tokenizer_1 = __webpack_require__(12);
+	var event_1 = __webpack_require__(24);
+	var modal_1 = __webpack_require__(19);
+	var util_1 = __webpack_require__(25);
+	var events_1 = __webpack_require__(20);
+	var CalendarViewType;
+	(function (CalendarViewType) {
+	    CalendarViewType[CalendarViewType["week"] = 0] = "week";
+	    CalendarViewType[CalendarViewType["day"] = 1] = "day";
+	})(CalendarViewType = exports.CalendarViewType || (exports.CalendarViewType = {}));
+	var DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+	var GRANULARITY = 900; // Each cell is 15 minutes (unit in seconds)
+	var DEFAULT_CELL_HEIGHT = 25;
+	var CalendarComponent = (function (_super) {
+	    __extends(CalendarComponent, _super);
+	    function CalendarComponent(props) {
+	        var _this = _super.call(this, props) || this;
+	        _this.refreshLoopId = 0;
+	        _this._handleCreateEventWithTaskFn = null;
+	        _this._handleEndEventWithTaskFn = null;
+	        _this._dragTargetEventElement = null;
+	        _this.state = _this.getState(props);
+	        return _this;
+	    }
+	    CalendarComponent.prototype.componentWillReceiveProps = function (props) {
+	        this.setState(this.getState(props));
+	    };
+	    CalendarComponent.prototype.getState = function (props) {
+	        var viewType = props.initialViewType;
+	        var startDayTimestamp;
+	        if (this.state) {
+	            viewType = this.state.viewType;
+	            startDayTimestamp = this.state.startDayTimestamp;
+	        }
+	        else {
+	            startDayTimestamp = this.computeTodayStartTime(viewType);
+	        }
+	        var _a = this.divideAndSort(startDayTimestamp, viewType, props.eventsById), columns = _a[0], eventToRenderingInfo = _a[1];
+	        var newState = {
+	            viewType: viewType,
+	            startDayTimestamp: startDayTimestamp,
+	            columns: columns,
+	            cellHeight: DEFAULT_CELL_HEIGHT,
+	            showCreate: (this.state) ? this.state.showCreate : false,
+	            eventToRenderingInfo: eventToRenderingInfo,
+	            editingEvent: null,
+	            createEventTimestamp: null,
+	            createEventDurationSecs: null,
+	            createEventTask: null,
+	            selectedTag: null,
+	            draggingStartTimestamp: null,
+	            draggingEndTimestamp: null,
+	            draggingEvent: null,
+	            endDraggingEvent: null,
+	        };
+	        if (this.state) {
+	            newState.cellHeight = this.state.cellHeight;
+	            // Want to persist tag between event creations
+	            if (this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
+	                newState.selectedTag = this.state.selectedTag;
+	            }
+	        }
+	        return newState;
+	    };
+	    CalendarComponent.prototype.componentDidMount = function () {
+	        var _this = this;
+	        var cursor = document.getElementsByClassName("current-time-cursor");
+	        if (cursor.length) {
+	            // Scroll the calendar view so that the current time is in the middle.
+	            var container = document.getElementsByClassName("all-columns-container")[0];
+	            var top_1 = jQuery(cursor[0]).data("top");
+	            container.scrollTop = top_1 - container.clientHeight / 2;
+	        }
+	        // Register a loop to keep refreshing the cursor.
+	        var loop = function () {
+	            _this.forceUpdate();
+	        };
+	        this.refreshLoopId = setInterval(loop, 60 * 1000);
+	        // Register some event handlers to respond to signals from the task board
+	        this._handleCreateEventWithTaskFn = this.handleCreateEventWithTask.bind(this);
+	        document.addEventListener(events_1.signalCreateEventWithTask, this._handleCreateEventWithTaskFn);
+	        this._handleEndEventWithTaskFn = this.handleEndEventWithTask.bind(this);
+	        document.addEventListener(events_1.signalEndEventWithTask, this._handleEndEventWithTaskFn);
+	    };
+	    CalendarComponent.prototype.componentWillUnmount = function () {
+	        if (this.refreshLoopId) {
+	            clearInterval(this.refreshLoopId);
+	        }
+	        document.removeEventListener(events_1.signalCreateEventWithTask, this._handleCreateEventWithTaskFn);
+	        document.removeEventListener(events_1.signalEndEventWithTask, this._handleEndEventWithTaskFn);
+	        this._handleCreateEventWithTaskFn = null;
+	        this._handleEndEventWithTaskFn = null;
+	    };
+	    CalendarComponent.prototype.handleCreateEventWithTask = function (e) {
+	        var t = e.detail;
+	        if (this.shouldCreateEventWithTask()) {
+	            var now = moment();
+	            this.state.createEventTimestamp = now.unix() * 1000;
+	            var x = moment(now).add(30, "minutes");
+	            var remainder = x.minute() % 15;
+	            if (remainder > 7.5) {
+	                x = moment(x).add(15 - remainder, "minutes");
+	            }
+	            else {
+	                x = moment(x).subtract(remainder, "minutes");
+	            }
+	            this.state.createEventDurationSecs = x.startOf("minute").unix() - now.unix();
+	            this.state.showCreate = true;
+	            this.state.createEventTask = t;
+	            this.setState(this.state);
+	        }
+	    };
+	    CalendarComponent.prototype.handleEndEventWithTask = function (e) {
+	        var t = e.detail;
+	        var event = this.shouldEndEventWithTask(t);
+	        if (event) {
+	            event.durationSecs = Math.floor((moment().unix() * 1000 - event.startTime) / 1000);
+	            this.props.updateEvent(event);
+	        }
+	    };
+	    CalendarComponent.prototype.computeTodayStartTime = function (viewType) {
+	        var startDayMoment;
+	        if (viewType == CalendarViewType.week) {
+	            startDayMoment = this.computeClosestMonday(moment());
+	        }
+	        else {
+	            startDayMoment = moment().startOf("day");
+	        }
+	        return startDayMoment.unix() * 1000;
+	    };
+	    CalendarComponent.prototype.computeClosestMonday = function (m) {
+	        var startDayMoment = moment().startOf("week").add(1, "days");
+	        if (startDayMoment > moment()) {
+	            // It must be Sunday, handle the edge case by subtracting off a week.
+	            startDayMoment = startDayMoment.subtract(1, "week");
+	        }
+	        return startDayMoment;
+	    };
+	    CalendarComponent.prototype.shouldCreateEventWithTask = function () {
+	        if (this.state.editingEvent || this.state.showCreate) {
+	            return false;
+	        }
+	        // See if we are currently within an event.
+	        var now = moment().unix() * 1000;
+	        for (var _i = 0, _a = Object.keys(this.props.eventsById); _i < _a.length; _i++) {
+	            var eventId = _a[_i];
+	            var event_2 = this.props.eventsById[eventId];
+	            if (event_2.startTime < now && (event_2.startTime + (event_2.durationSecs * 1000)) >= now) {
+	                return false;
+	            }
+	        }
+	        return true;
+	    };
+	    CalendarComponent.prototype.shouldEndEventWithTask = function (task) {
+	        if (this.state.showCreate || this.state.editingEvent) {
+	            return null;
+	        }
+	        var now = moment().unix() * 1000;
+	        for (var _i = 0, _a = Object.keys(this.props.eventsById); _i < _a.length; _i++) {
+	            var eventId = _a[_i];
+	            var event_3 = this.props.eventsById[eventId];
+	            if (event_3.startTime < now && (event_3.startTime + (event_3.durationSecs * 1000)) >= now) {
+	                for (var _b = 0, _c = event_3.taskIds; _b < _c.length; _b++) {
+	                    var taskId = _c[_b];
+	                    if (taskId == task.id) {
+	                        return event_3;
+	                    }
+	                }
+	            }
+	        }
+	        return null;
+	    };
+	    CalendarComponent.prototype.getEventKey = function (eventId, columnIndex) {
+	        return eventId + "-" + columnIndex;
+	    };
+	    CalendarComponent.prototype.divideAndSort = function (startTimestamp, viewType, eventsById) {
+	        var _this = this;
+	        var columnList;
+	        if (viewType == CalendarViewType.week) {
+	            // Note that the columns will be ordered with the weekend at the end.
+	            columnList = [[], [], [], [], [], [], []];
+	        }
+	        else {
+	            columnList = [[]];
+	        }
+	        var dayStart = moment(startTimestamp); // From seconds back into moment
+	        // I just died a little inside, refactor this to somewhere more re-usable.
+	        var allChildIdsOfSelectedTag = {};
+	        if (this.state && this.state.selectedTag) {
+	            var queue = [this.state.selectedTag];
+	            while (queue.length) {
+	                var curTag = queue.pop();
+	                allChildIdsOfSelectedTag[curTag.id] = true;
+	                for (var _i = 0, _a = curTag.childTagIds; _i < _a.length; _i++) {
+	                    var tagId = _a[_i];
+	                    if (!allChildIdsOfSelectedTag[tagId]) {
+	                        queue.push(this.props.tagsById[tagId]);
+	                    }
+	                }
+	            }
+	        }
+	        var shouldHide = function (event) {
+	            if (_this.state && _this.state.selectedTag) {
+	                // See if the task has the right tag
+	                var matches_1 = false;
+	                event.tagIds.forEach(function (tagId) {
+	                    matches_1 = matches_1 || allChildIdsOfSelectedTag[tagId];
+	                });
+	                if (!matches_1) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        };
+	        // Divide the events by start day
+	        for (var _b = 0, _c = Object.keys(eventsById); _b < _c.length; _b++) {
+	            var eventId = _c[_b];
+	            var event_4 = eventsById[eventId];
+	            var startTimestamp_1 = event_4.startTime;
+	            var endTimestamp = startTimestamp_1 + event_4.durationSecs * 1000;
+	            for (var index in DAYS) {
+	                if (shouldHide(event_4)) {
+	                    return;
+	                }
+	                var curTimestamp = moment(dayStart).add(index, "days").unix() * 1000;
+	                // See if any part of the event falls within this day. If the part that does does
+	                // not include the beginning, we need to make a fake event. There should only
+	                // be at most one event in each column for the same event.
+	                if (curTimestamp < endTimestamp) {
+	                    if (curTimestamp >= startTimestamp_1) {
+	                        // We are in a partial day, create a fake event.
+	                        columnList[index].push(parseInt(eventId));
+	                    }
+	                    else if (curTimestamp + 24 * 60 * 60 * 1000 > startTimestamp_1) {
+	                        // This day contains the start timestamp, push it on as normal.
+	                        columnList[index].push(parseInt(eventId));
+	                    }
+	                }
+	                // This is pretty hacky, make this cleaner later
+	                if (viewType == CalendarViewType.day) {
+	                    // We only want to iterate once if we're in day view
+	                    break;
+	                }
+	            }
+	        }
+	        columnList.forEach(function (column) {
+	            column.sort(function (eventId1, eventId2) {
+	                var event1 = eventsById[eventId1];
+	                var event2 = eventsById[eventId2];
+	                var diff = event1.startTime - event2.startTime;
+	                if (diff != 0) {
+	                    return diff;
+	                }
+	                // We want the larger events to be sorted first if they have the same start time
+	                return event2.durationSecs - event1.durationSecs;
+	            });
+	        });
+	        // After sorting the events, run the division alg on each column
+	        var eventToRenderingInfo = {};
+	        var cellHeight = DEFAULT_CELL_HEIGHT;
+	        if (this.state) {
+	            cellHeight = this.state.cellHeight;
+	        }
+	        var overlaps = function (idTopAndHeight, top) {
+	            // To help with rounding errors
+	            var eps = 0.0000001;
+	            if (top >= idTopAndHeight.top + eps) {
+	                if (top < idTopAndHeight.top + idTopAndHeight.height - eps) {
+	                    return true;
+	                }
+	            }
+	            return false;
+	        };
+	        columnList.forEach(function (column, columnIndex) {
+	            var columnStartTime = moment(dayStart).add(columnIndex, "days").unix() * 1000;
+	            var columnEndTime = moment(dayStart).add(columnIndex + 1, "days").unix() * 1000;
+	            // TODO: precompute the max size of aux in order to calculate extra space later.
+	            var aux = [];
+	            column.forEach(function (eventId) {
+	                var top = null;
+	                var height = null;
+	                var event = eventsById[eventId];
+	                if (event.startTime < columnStartTime) {
+	                    // event started on a previous day.
+	                    top = 0;
+	                }
+	                else {
+	                    // event must start somewhere during this day.
+	                    var percentage = (event.startTime - columnStartTime) / (86400 * 1000);
+	                    top = percentage * cellHeight * (86400 / GRANULARITY);
+	                }
+	                var realEndTimestamp = Math.min(event.startTime + (event.durationSecs * 1000), columnEndTime);
+	                var durationSecs = (realEndTimestamp - event.startTime) / 1000;
+	                if (event.startTime < columnStartTime) {
+	                    // Event started on an earlier day, deduct this from the duration
+	                    durationSecs -= (columnStartTime - event.startTime) / 1000;
+	                }
+	                // TODO: Keep short end of day events from hanging off the end.
+	                height = Math.max(cellHeight, (durationSecs / GRANULARITY) * cellHeight);
+	                // Base case for the initial element
+	                if (!aux.length) {
+	                    aux.push({ id: event.id, height: height, top: top });
+	                    eventToRenderingInfo[_this.getEventKey(event.id, columnIndex)] = {
+	                        index: 0,
+	                        columnWidth: 1,
+	                        extraCols: 0,
+	                        height: height,
+	                        top: top,
+	                    };
+	                    return;
+	                }
+	                var slotUsed = false;
+	                // If this event doesn't overlap with an element in the array, replace it.
+	                // During the replace, we need to calculate what the max width was for the element.
+	                aux.forEach(function (idTopAndHeight, index) {
+	                    if (!idTopAndHeight || !overlaps(idTopAndHeight, top)) {
+	                        // Doesn't overlap, will use this slot (if it's the first) and evict
+	                        if (!slotUsed) {
+	                            slotUsed = true;
+	                            // Replace out this element
+	                            aux[index] = { id: event.id, top: top, height: height };
+	                            eventToRenderingInfo[_this.getEventKey(event.id, columnIndex)] = {
+	                                index: index,
+	                                columnWidth: 0,
+	                                extraCols: 0,
+	                                height: height,
+	                                top: top,
+	                            };
+	                        }
+	                        else {
+	                            aux[index] = null;
+	                        }
+	                    }
+	                });
+	                // If this event overlaps with whatever is in aux, we must append
+	                if (!slotUsed) {
+	                    // Append to the end
+	                    aux.forEach(function (idTopAndHeight) {
+	                        if (!idTopAndHeight) {
+	                            return;
+	                        }
+	                        var key = _this.getEventKey(idTopAndHeight.id, columnIndex);
+	                        eventToRenderingInfo[key].columnWidth = aux.length + 1;
+	                    });
+	                    eventToRenderingInfo[_this.getEventKey(event.id, columnIndex)] = {
+	                        columnWidth: aux.length + 1,
+	                        index: aux.length,
+	                        extraCols: 0,
+	                        height: height,
+	                        top: top,
+	                    };
+	                    aux.push({ id: event.id, top: top, height: height });
+	                }
+	                else {
+	                    // See if we need to resize aux
+	                    while (aux.length && aux[aux.length - 1] == null) {
+	                        aux.pop();
+	                    }
+	                    // Everything left in the aux array at this point must be overlapping at some point
+	                    var numNotNull_1 = 0;
+	                    var maxWidth_1 = aux.length;
+	                    aux.forEach(function (idTopAndHeight) {
+	                        if (idTopAndHeight) {
+	                            numNotNull_1++;
+	                            maxWidth_1 = Math.max(maxWidth_1, eventToRenderingInfo[_this.getEventKey(idTopAndHeight.id, columnIndex)].columnWidth);
+	                        }
+	                    });
+	                    aux.forEach(function (idTopAndHeight) {
+	                        if (!idTopAndHeight) {
+	                            return;
+	                        }
+	                        var key = _this.getEventKey(idTopAndHeight.id, columnIndex);
+	                        var newWidth = Math.max(numNotNull_1, eventToRenderingInfo[key].columnWidth);
+	                        eventToRenderingInfo[key].columnWidth = newWidth;
+	                        eventToRenderingInfo[key].extraCols = maxWidth_1 - newWidth;
+	                    });
+	                }
+	            });
+	        });
+	        return [columnList, eventToRenderingInfo];
+	    };
+	    CalendarComponent.prototype.resort = function () {
+	        // Recompute all the events and where to render them:
+	        var _a = this.divideAndSort(this.state.startDayTimestamp, this.state.viewType, this.props.eventsById), columns = _a[0], eventToRenderingInfo = _a[1];
+	        this.state.columns = columns;
+	        this.state.eventToRenderingInfo = eventToRenderingInfo;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.onDoubleClick = function (event) {
+	        this.state.editingEvent = event;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.computeTimestamp = function (day, index) {
+	        var offset = index;
+	        if (this.state.viewType == CalendarViewType.week) {
+	            DAYS.forEach(function (curDay, i) {
+	                if (curDay != day) {
+	                    return;
+	                }
+	                offset += i * (60 * 60 * 24);
+	            });
+	        }
+	        return moment(this.state.startDayTimestamp).add(offset, "seconds").unix() * 1000;
+	    };
+	    CalendarComponent.prototype.columnMouseDown = function (day, event) {
+	        var index = event.target.dataset.index * 1;
+	        this.state.draggingStartTimestamp = this.computeTimestamp(day, index);
+	        this.state.draggingEndTimestamp = this.state.draggingStartTimestamp;
+	        this.updateCreateEventTimestamp();
+	        this.setState(this.state);
+	        event.preventDefault();
+	    };
+	    CalendarComponent.prototype.columnMouseOver = function (day, event) {
+	        if (!this.state.draggingStartTimestamp) {
+	            // No dragging was happening, nothing to do.
+	            return;
+	        }
+	        var index = event.target.dataset.index * 1;
+	        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
+	        this.updateCreateEventTimestamp();
+	        this.updateCreateEventDurationSecs();
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.columnMouseUp = function (day, event) {
+	        if (!this.state.draggingStartTimestamp) {
+	            // No dragging was happening, nothing to do.
+	            return;
+	        }
+	        var index = event.target.dataset.index * 1;
+	        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
+	        this.updateCreateEventTimestamp();
+	        this.updateCreateEventDurationSecs();
+	        this.state.draggingStartTimestamp = null;
+	        this.state.draggingEndTimestamp = null;
+	        this.state.showCreate = true;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.updateCreateEventTimestamp = function () {
+	        if (this.state.draggingEndTimestamp < this.state.draggingStartTimestamp) {
+	            // We dragged backwards, use the end timestamp
+	            this.state.createEventTimestamp = this.state.draggingEndTimestamp;
+	        }
+	        else {
+	            // Just set the start timestamp
+	            this.state.createEventTimestamp = this.state.draggingStartTimestamp;
+	        }
+	    };
+	    CalendarComponent.prototype.updateCreateEventDurationSecs = function () {
+	        var start, end;
+	        if (this.state.draggingEndTimestamp < this.state.draggingStartTimestamp) {
+	            start = this.state.draggingEndTimestamp;
+	            end = this.state.draggingStartTimestamp;
+	        }
+	        else {
+	            start = this.state.draggingStartTimestamp;
+	            end = this.state.draggingEndTimestamp;
+	        }
+	        var duration = (end - start);
+	        duration /= 1000; // convert to seconds
+	        duration += GRANULARITY; // dragging to the same cell means to make duration equal to GRANULARITY
+	        this.state.createEventDurationSecs = duration;
+	    };
+	    CalendarComponent.prototype.onDrop = function (day, index) {
+	        if (this.state.draggingEvent) {
+	            // Update the event with the new timestamp
+	            this.state.draggingEvent.startTime = this.computeTimestamp(day, index);
+	            this.props.updateEvent(this.state.draggingEvent);
+	            this.state.draggingEvent = null;
+	            this.setState(this.state);
+	            this._dragTargetEventElement.show();
+	        }
+	        else if (this.state.endDraggingEvent) {
+	            var timestamp = this.computeTimestamp(day, index);
+	            var newDuration = timestamp - this.state.endDraggingEvent.startTime;
+	            newDuration = Math.max(Math.round(newDuration / 1000) + GRANULARITY, GRANULARITY);
+	            this.state.endDraggingEvent.durationSecs = newDuration;
+	            this.props.updateEvent(this.state.endDraggingEvent);
+	            this.state.endDraggingEvent = null;
+	            this.setState(this.state);
+	        }
+	        else {
+	            // No event was being dragged
+	            return;
+	        }
+	    };
+	    CalendarComponent.prototype.getDayAndIndexUnderneathEvent = function (event, callback) {
+	        var xPos = event.clientX;
+	        var yPos = event.clientY;
+	        // Hide the element
+	        jQuery(event.currentTarget).hide();
+	        var dropTargetBelow = jQuery(document.elementFromPoint(xPos, yPos));
+	        if (dropTargetBelow.prop("tagName") == "TD") {
+	            // Great, we found a cell that we can actually finish dropping into
+	            var data = dropTargetBelow.data();
+	            callback(data.day, data.index);
+	        }
+	        // Show the element again
+	        jQuery(event.currentTarget).show();
+	    };
+	    CalendarComponent.prototype.onDropPassThrough = function (event) {
+	        this.getDayAndIndexUnderneathEvent(event, this.onDrop.bind(this));
+	        event.preventDefault();
+	        event.stopPropagation();
+	    };
+	    CalendarComponent.prototype.onDragOverPassThrough = function (event) {
+	        this.getDayAndIndexUnderneathEvent(event, this.onDragOver.bind(this));
+	        event.preventDefault();
+	        event.stopPropagation();
+	    };
+	    CalendarComponent.prototype.onDragStart = function (event, dragEvent) {
+	        if (this.state.endDraggingEvent || this.state.draggingEvent) {
+	            throw Error("Already was dragging an event...");
+	        }
+	        this.state.draggingEvent = event;
+	        this.setState(this.state);
+	        this._dragTargetEventElement = jQuery(dragEvent.target);
+	    };
+	    CalendarComponent.prototype.onDragEnd = function (event) {
+	        if (this.state.draggingEvent != event) {
+	            return;
+	        }
+	        this.state.draggingStartTimestamp = null;
+	        this.state.draggingEndTimestamp = null;
+	        this.state.draggingEvent = null;
+	        this.setState(this.state);
+	        this._dragTargetEventElement.show();
+	    };
+	    CalendarComponent.prototype.onEventEndDragStart = function (event) {
+	        if (this.state.endDraggingEvent || this.state.draggingEvent) {
+	            throw Error("Already dragging an event...");
+	        }
+	        this.state.endDraggingEvent = event;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.onEventEndDragEnd = function (event) {
+	        if (this.state.endDraggingEvent != event) {
+	            return;
+	        }
+	        this.state.draggingStartTimestamp = null;
+	        this.state.draggingEndTimestamp = null;
+	        this.state.endDraggingEvent = null;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.onDragOver = function (day, index, event) {
+	        // Watch out: This function is abused and needs refactoring. Event might be undefined,
+	        // index might be -1. Not at the same time though.
+	        if (index == -1) {
+	            index = event.target.dataset.index * 1;
+	        }
+	        if (this.state.draggingEvent) {
+	            this._dragTargetEventElement.hide();
+	            var timestamp = this.computeTimestamp(day, index);
+	            // Conceptually this is needed because short events should register only a single cell
+	            // to be highlighted.
+	            var truncatedDuration = Math.max(0, this.state.draggingEvent.durationSecs - GRANULARITY);
+	            var endTimestamp = timestamp + truncatedDuration * 1000;
+	            if (this.state.draggingStartTimestamp != timestamp ||
+	                this.state.draggingEndTimestamp != endTimestamp) {
+	                this.state.draggingStartTimestamp = timestamp;
+	                this.state.draggingEndTimestamp = endTimestamp;
+	                this.setState(this.state);
+	            }
+	        }
+	        else if (this.state.endDraggingEvent) {
+	            var timestamp = this.computeTimestamp(day, index);
+	            if (this.state.draggingStartTimestamp != this.state.endDraggingEvent.startTime ||
+	                this.state.draggingEndTimestamp != timestamp) {
+	                this.state.draggingStartTimestamp = this.state.endDraggingEvent.startTime;
+	                this.state.draggingEndTimestamp = timestamp;
+	                this.setState(this.state);
+	            }
+	        }
+	        else {
+	            // Nothing being dragged
+	            return;
+	        }
+	        if (event) {
+	            event.preventDefault();
+	        }
+	    };
+	    CalendarComponent.prototype.getCurrentTagToken = function () {
+	        if (!this.state.selectedTag) {
+	            return [];
+	        }
+	        return [{
+	                label: this.state.selectedTag.name,
+	                value: this.state.selectedTag.id,
+	            }];
+	    };
+	    CalendarComponent.prototype.changeCurrentTagToken = function (newTokens) {
+	        if (newTokens.length) {
+	            this.state.selectedTag = this.props.tagsById[newTokens[0].value];
+	        }
+	        else {
+	            this.state.selectedTag = null;
+	        }
+	        this.resort();
+	    };
+	    CalendarComponent.prototype.getAllTagNames = function () {
+	        var _this = this;
+	        // This function is used to determine the set of valid tokens for the tokenizer.
+	        // We should think about excluding tokens from here that would cause cycles.
+	        var allNames = [];
+	        Object.keys(this.props.tagsById).forEach(function (tagId) {
+	            var tag = _this.props.tagsById[+tagId];
+	            allNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return allNames;
+	    };
+	    CalendarComponent.prototype.renderTagSelector = function () {
+	        return (React.createElement("div", { className: "tag-selector-container" },
+	            React.createElement("div", { className: "tag-selector-label" }, "Filter Tag:"),
+	            React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1 })));
+	    };
+	    CalendarComponent.prototype.changeCellHeight = function (event) {
+	        this.state.cellHeight = event.target.value;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.renderCellSizeSlider = function () {
+	        if (this.props.simpleOptions) {
+	            return;
+	        }
+	        return (React.createElement("div", { className: "cell-size-slider" },
+	            React.createElement("input", { type: "range", min: "20", max: "100", value: this.state.cellHeight, onChange: this.changeCellHeight.bind(this) })));
+	    };
+	    CalendarComponent.prototype.changeViewType = function (type) {
+	        if (this.state.viewType == type) {
+	            // No transition needed
+	            return;
+	        }
+	        var startDayMoment;
+	        if (this.state.viewType == CalendarViewType.week && type == CalendarViewType.day) {
+	            // Week to day transition, need to either pick today or Monday
+	            var monday = moment(this.state.startDayTimestamp);
+	            var now = moment();
+	            if (now.unix() - monday.unix() > 0 && monday.add(1, "week").unix() - now.unix() > 0) {
+	                // Current week view contains today, we will use today as the answer.
+	                this.state.startDayTimestamp = this.computeTodayStartTime(type);
+	            }
+	            else {
+	            }
+	            react_router_1.browserHistory.push("/cal/day");
+	        }
+	        else if (this.state.viewType == CalendarViewType.day && type == CalendarViewType.week) {
+	            // Day to week transition, need to find the nearest Monday
+	            startDayMoment = this.computeClosestMonday(moment(this.state.startDayTimestamp));
+	            this.state.startDayTimestamp = startDayMoment.unix() * 1000;
+	            react_router_1.browserHistory.push("/cal/week");
+	        }
+	        else {
+	            throw Error("Unknown view type transition");
+	        }
+	        this.state.viewType = type;
+	        this.resort();
+	    };
+	    CalendarComponent.prototype.renderViewChoice = function (type) {
+	        var className = "view-type-choice";
+	        if (type == this.state.viewType) {
+	            className += " -selected";
+	        }
+	        var typeToName = {};
+	        typeToName[CalendarViewType.day] = "Day";
+	        typeToName[CalendarViewType.week] = "Week";
+	        return (React.createElement("div", { className: className, key: type, onClick: this.changeViewType.bind(this, type) }, typeToName[type]));
+	    };
+	    CalendarComponent.prototype.renderChangeViewType = function () {
+	        if (this.props.simpleOptions) {
+	            return;
+	        }
+	        return (React.createElement("div", { className: "view-type-selector" },
+	            this.renderViewChoice(CalendarViewType.week),
+	            this.renderViewChoice(CalendarViewType.day)));
+	    };
+	    CalendarComponent.prototype.changePage = function (diff) {
+	        if (this.state.viewType == CalendarViewType.week) {
+	            diff *= 7;
+	        }
+	        // Diff is the difference in days to add to the current time. If it's 0, we reset back
+	        // to the current day.
+	        if (diff == 0) {
+	            this.state.startDayTimestamp = this.computeTodayStartTime(this.state.viewType);
+	        }
+	        else {
+	            this.state.startDayTimestamp = moment(this.state.startDayTimestamp).add(diff, "days").unix() * 1000;
+	        }
+	        this.resort();
+	    };
+	    CalendarComponent.prototype.renderPagination = function () {
+	        return (React.createElement("div", { className: "pagination-container" },
+	            React.createElement("div", { className: "pagination-option", onClick: this.changePage.bind(this, -1) }, "Previous"),
+	            React.createElement("div", { className: "pagination-option", onClick: this.changePage.bind(this, 1) }, "Next"),
+	            React.createElement("div", { className: "pagination-option", onClick: this.changePage.bind(this, 0) }, "Today")));
+	    };
+	    CalendarComponent.prototype.renderOptions = function () {
+	        return (React.createElement("div", { className: "options" },
+	            this.renderCellSizeSlider(),
+	            this.renderTagSelector(),
+	            this.renderChangeViewType(),
+	            this.renderPagination()));
+	    };
+	    CalendarComponent.prototype.renderCells = function (day) {
+	        var _this = this;
+	        var getColumnRow = function (index) {
+	            var key = "" + index;
+	            var style = { height: _this.state.cellHeight + "px" };
+	            var timestamp = _this.computeTimestamp(day, index);
+	            var className = "";
+	            if (_this.state.draggingStartTimestamp && _this.state.draggingEndTimestamp) {
+	                // We are currently dragging, see if this cell is in the range
+	                var start = _this.state.draggingStartTimestamp;
+	                var end = _this.state.draggingEndTimestamp;
+	                if (end < start) {
+	                    start = _this.state.draggingEndTimestamp;
+	                    end = _this.state.draggingStartTimestamp;
+	                }
+	                if (timestamp >= start && timestamp < end + (GRANULARITY * 1000)) {
+	                    className = "-selected";
+	                }
+	            }
+	            if (day == "times") {
+	                var timeHeader = "";
+	                if (index % (GRANULARITY * 2) == 0) {
+	                    timeHeader = moment(_this.state.startDayTimestamp)
+	                        .add(index, "seconds").format("h:mm a");
+	                }
+	                return (React.createElement("tr", { key: key, style: style },
+	                    React.createElement("td", null, timeHeader)));
+	            }
+	            else {
+	                return (React.createElement("tr", { key: key, style: style },
+	                    React.createElement("td", { className: className, "data-day": day, "data-index": index, onDrop: _this.onDrop.bind(_this, day, index) }, " ")));
+	            }
+	        };
+	        var i = 0; // midnight
+	        var tableRows = [];
+	        for (; i < 60 * 60 * 24; i += GRANULARITY) {
+	            tableRows.push(getColumnRow(i));
+	        }
+	        return (React.createElement("table", { cellPadding: "0", cellSpacing: "0", onMouseDown: this.columnMouseDown.bind(this, day), onMouseOver: util_1.debounce(this.columnMouseOver.bind(this, day), 50), onMouseUp: this.columnMouseUp.bind(this, day), onDragOver: this.onDragOver.bind(this, day, -1) },
+	            React.createElement("tbody", null, tableRows)));
+	    };
+	    CalendarComponent.prototype.renderCurrentTimeCursor = function (index) {
+	        var columnTimeRange = 24 * 60 * 60 * 1000;
+	        var columnStartTimestamp = this.state.startDayTimestamp + index * columnTimeRange;
+	        var currentTime = moment().unix() * 1000;
+	        if (currentTime >= columnStartTimestamp &&
+	            currentTime < columnStartTimestamp + columnTimeRange) {
+	            // Okay we can actually render it here.
+	            var offset = (currentTime - columnStartTimestamp) / columnTimeRange;
+	            offset *= this.state.cellHeight * (86400 / GRANULARITY); // Total height of a column
+	            offset -= 2; // Draw it 2 pixels higher because it's width 3.
+	            var style = {
+	                "top": offset + "px",
+	            };
+	            return React.createElement("div", { className: "current-time-cursor", style: style, "data-top": offset, onDrop: this.onDropPassThrough.bind(this), onDragOver: this.onDragOverPassThrough.bind(this) });
+	        }
+	    };
+	    CalendarComponent.prototype.renderColumn = function (columnIndex, column, singleDay) {
+	        var _this = this;
+	        var day = DAYS[columnIndex];
+	        var className = "column-container";
+	        if (singleDay) {
+	            className += " single-day";
+	        }
+	        return React.createElement("div", { key: day, className: className },
+	            this.renderCells(day),
+	            this.renderCurrentTimeCursor(columnIndex),
+	            column.map(function (eventId) {
+	                // calculate the width change
+	                // TODO: The extra cols only work right now with the expand-to-the-right case
+	                var renderingInfo = _this.state.eventToRenderingInfo[_this.getEventKey(eventId, columnIndex)];
+	                var width = renderingInfo.columnWidth;
+	                if (renderingInfo.extraCols) {
+	                    width += renderingInfo.extraCols;
+	                }
+	                var widthPercentage = (100.0 / width) * (1 + renderingInfo.extraCols);
+	                var marginLeft = widthPercentage * renderingInfo.index;
+	                // We subtract 2 from the height purely for stylistic reasons.
+	                var style = {
+	                    "height": renderingInfo.height + "px",
+	                    "maxHeight": renderingInfo.height + "px",
+	                    "top": renderingInfo.top + "px",
+	                    "marginLeft": marginLeft + "%",
+	                    "width": widthPercentage + "%",
+	                };
+	                var event = _this.props.eventsById[eventId];
+	                return (React.createElement("div", { className: "rendered-event-container", key: eventId, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough.bind(_this) },
+	                    React.createElement("div", { className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event) },
+	                        React.createElement(event_1.EventComponent, { event: event, tagsById: _this.props.tagsById })),
+	                    React.createElement("div", { className: "draggable-event-end", draggable: true, onDragStart: _this.onEventEndDragStart.bind(_this, event), onDragEnd: _this.onEventEndDragEnd.bind(_this, event) })));
+	            }));
+	    };
+	    CalendarComponent.prototype.renderWeekViewColumns = function () {
+	        var _this = this;
+	        return React.createElement("div", { className: "full-column-container" },
+	            React.createElement("div", { className: "header-and-content-container" },
+	                React.createElement("div", { className: "column-header-container" },
+	                    React.createElement("div", { className: "column-header -times" }, "Time"),
+	                    DAYS.map(function (day, index) {
+	                        var m = moment(_this.state.startDayTimestamp).add(index, "days");
+	                        return React.createElement("div", { key: day, className: "column-header" }, m.format("ddd M/D"));
+	                    })),
+	                React.createElement("div", { className: "all-columns-container" },
+	                    React.createElement("div", { className: "column-container -times" }, this.renderCells("times")),
+	                    [0, 1, 2, 3, 4, 5, 6].map(function (index, i) {
+	                        return _this.renderColumn(index, _this.state.columns[i]);
+	                    }))));
+	    };
+	    CalendarComponent.prototype.renderTodayString = function () {
+	        return moment(this.state.startDayTimestamp).format("dddd M/D");
+	    };
+	    CalendarComponent.prototype.renderDayViewColumns = function () {
+	        var _this = this;
+	        return React.createElement("div", { className: "full-column-container" },
+	            React.createElement("div", { className: "header-and-content-container" },
+	                React.createElement("div", { className: "column-header-container" },
+	                    React.createElement("div", { className: "column-header -times" }, "Time"),
+	                    React.createElement("div", { className: "column-header single-day" }, this.renderTodayString())),
+	                React.createElement("div", { className: "all-columns-container" },
+	                    React.createElement("div", { className: "column-container -times" }, this.renderCells("times")),
+	                    [0].map(function (index, i) {
+	                        return _this.renderColumn(index, _this.state.columns[i], true);
+	                    }))));
+	    };
+	    CalendarComponent.prototype.renderColumns = function () {
+	        if (this.state.viewType == CalendarViewType.week) {
+	            return this.renderWeekViewColumns();
+	        }
+	        else if (this.state.viewType == CalendarViewType.day) {
+	            return this.renderDayViewColumns();
+	        }
+	    };
+	    CalendarComponent.prototype.clearEditingEvent = function () {
+	        this.state.editingEvent = null;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.renderEditingEvent = function () {
+	        if (!this.state.editingEvent) {
+	            return;
+	        }
+	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.clearEditingEvent.bind(this) },
+	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, event: this.state.editingEvent, tagsById: this.props.tagsById, createMode: false, tasksById: this.props.tasksById, createEvent: function (event) { }, updateEvent: this.props.updateEvent, deleteEvent: this.props.deleteEvent }));
+	    };
+	    CalendarComponent.prototype.closeCreateEvent = function () {
+	        this.state.showCreate = false;
+	        this.state.createEventTimestamp = null;
+	        this.state.createEventDurationSecs = null;
+	        this.state.createEventTask = null;
+	        this.setState(this.state);
+	    };
+	    CalendarComponent.prototype.createEvent = function (event) {
+	        this.closeCreateEvent();
+	        this.props.createEvent(event);
+	    };
+	    CalendarComponent.prototype.renderCreateEvent = function () {
+	        if (!this.state.showCreate) {
+	            return;
+	        }
+	        var initialTags = [];
+	        if (this.state.selectedTag) {
+	            initialTags.push(this.state.selectedTag.id);
+	        }
+	        var initialTasks = [];
+	        if (this.state.createEventTask) {
+	            initialTasks.push(this.state.createEventTask.id);
+	            for (var _i = 0, _a = this.state.createEventTask.tagIds; _i < _a.length; _i++) {
+	                var tagId = _a[_i];
+	                if (!initialTags.length || tagId != initialTags[0]) {
+	                    initialTags.push(tagId);
+	                }
+	            }
+	        }
+	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.closeCreateEvent.bind(this) },
+	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, tasksById: this.props.tasksById, initialCreationTime: this.state.createEventTimestamp, initialDurationSecs: this.state.createEventDurationSecs, initialTags: initialTags, initialTasks: initialTasks, createEvent: this.createEvent.bind(this), updateEvent: function (event) { }, deleteEvent: function (event) { } }));
+	    };
+	    CalendarComponent.prototype.render = function () {
+	        return React.createElement("div", { className: "calendar" },
+	            this.renderOptions(),
+	            this.renderColumns(),
+	            this.renderEditingEvent(),
+	            this.renderCreateEvent());
+	    };
+	    return CalendarComponent;
+	}(React.Component));
+	exports.CalendarComponent = CalendarComponent;
+
+
+/***/ },
+/* 22 */
+/***/ function(module, exports) {
+
+	module.exports = moment;
+
+/***/ },
+/* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var moment = __webpack_require__(22);
+	var React = __webpack_require__(5);
+	var tokenizer_1 = __webpack_require__(12);
+	var EditEventComponent = (function (_super) {
+	    __extends(EditEventComponent, _super);
+	    function EditEventComponent(props) {
+	        var _this = _super.call(this, props) || this;
+	        var event = null;
+	        if (props.createMode) {
+	            event = _this._getEmptyEvent(props.meUser, props.initialCreationTime, props.initialDurationSecs, props.initialTags, props.initialTasks);
+	        }
+	        else {
+	            event = props.event;
+	        }
+	        _this.state = {
+	            event: event,
+	            startNow: false,
+	            endNow: false,
+	            submitted: false,
+	        };
+	        return _this;
+	    }
+	    EditEventComponent.prototype.componentWillReceiveProps = function (newProps) {
+	        var event = newProps.event;
+	        if (newProps.createMode) {
+	            var newEvent = this._getEmptyEvent(newProps.meUser, newProps.initialCreationTime, newProps.initialDurationSecs, newProps.initialTags, newProps.initialTasks);
+	            if (this.state && !this.state.submitted) {
+	                // Copy over the name field so it doesn't get cleared out. As well as all fields
+	                // that weren't set in the new props.
+	                if (newProps.initialCreationTime == null) {
+	                    newEvent.startTime = this.state.event.startTime;
+	                }
+	                if (newProps.initialDurationSecs == null) {
+	                    newEvent.durationSecs = this.state.event.durationSecs;
+	                }
+	                if (!(newProps.initialTags && newProps.initialTags.length)) {
+	                    newEvent.tagIds = this.state.event.tagIds;
+	                }
+	                if (!(newProps.initialTasks && newProps.initialTasks.length)) {
+	                    newEvent.taskIds = this.state.event.taskIds;
+	                }
+	                newEvent.name = this.state.event.name;
+	            }
+	            event = newEvent;
+	        }
+	        this.state.event = event;
+	        this.setState(this.state);
+	    };
+	    EditEventComponent.prototype._getEmptyEvent = function (user, initialCreationTime, initialDurationSecs, initialTags, initialTasks) {
+	        return {
+	            id: 0,
+	            name: '',
+	            authorId: user.id,
+	            ownerId: user.id,
+	            tagIds: (initialTags) ? initialTags : [],
+	            startTime: (initialCreationTime) ? initialCreationTime : 0,
+	            durationSecs: (initialDurationSecs) ? initialDurationSecs : 900,
+	            taskIds: (initialTasks) ? initialTasks : [],
+	        };
+	    };
+	    EditEventComponent.prototype.toggleStartNow = function () {
+	        this.state.startNow = !this.state.startNow;
+	        this.setState(this.state);
+	    };
+	    EditEventComponent.prototype.toggleEndNow = function () {
+	        this.state.endNow = !this.state.endNow;
+	        this.setState(this.state);
+	    };
+	    EditEventComponent.prototype.submitForm = function (eventType) {
+	        var now = moment().unix() * 1000;
+	        if (this.state.startNow) {
+	            var currentEndTime = this.state.event.startTime + (this.state.event.durationSecs * 1000);
+	            this.state.event.startTime = now;
+	            this.state.event.durationSecs = Math.floor((currentEndTime - now) / 1000);
+	        }
+	        if (this.state.endNow) {
+	            if (now > this.state.event.startTime) {
+	                // This only makes sense to do if the start time is in the past.
+	                this.state.event.durationSecs = Math.floor((now - this.state.event.startTime) / 1000);
+	            }
+	        }
+	        if (eventType == "save") {
+	            this.props.updateEvent(this.state.event);
+	        }
+	        else if (eventType == "delete") {
+	            this.props.deleteEvent(this.state.event);
+	        }
+	        else if (eventType == "create") {
+	            this.props.createEvent(this.state.event);
+	        }
+	        else {
+	            throw Error("Unknown submit type!");
+	        }
+	        // Reset the form after a submission. We don't clear anything out in case the
+	        // request fails. We wait for the new props to actually clear it out.
+	        this.state.submitted = true;
+	        this.setState(this.state);
+	    };
+	    EditEventComponent.prototype.onKeyDownCreate = function (event) {
+	        if (event.key == "Enter" && this.props.createMode) {
+	            this.submitForm("create");
+	        }
+	    };
+	    EditEventComponent.prototype.updateAttr = function (attrName, event) {
+	        this.state.event[attrName] = event.target.value;
+	        this.setState(this.state);
+	    };
+	    EditEventComponent.prototype.getCurrentTags = function () {
+	        var _this = this;
+	        var tagNames = [];
+	        this.state.event.tagIds.forEach(function (tagId) {
+	            var tag = _this.props.tagsById[tagId];
+	            tagNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return tagNames;
+	    };
+	    EditEventComponent.prototype.getAllTagNames = function () {
+	        var _this = this;
+	        // This function is used to determine the set of valid tokens for the tokenizer.
+	        var allNames = [];
+	        Object.keys(this.props.tagsById).forEach(function (tagId) {
+	            var tag = _this.props.tagsById[+tagId];
+	            allNames.push({
+	                label: tag.name,
+	                value: tag.id
+	            });
+	        });
+	        return allNames;
+	    };
+	    EditEventComponent.prototype.retrieveTagNames = function (tokens) {
+	        this.state.event.tagIds = tokens.map(function (token) {
+	            return token.value;
+	        });
+	        this.setState(this.state);
+	    };
+	    EditEventComponent.prototype.getCurrentTasks = function () {
+	        // TODO: Do after we have the format
+	        return this.state.event.taskIds.map(function (taskId) {
+	            return {
+	                label: "T" + taskId,
+	                value: taskId,
+	            };
+	        });
+	    };
+	    EditEventComponent.prototype.getAllTaskNames = function () {
+	        var names = [];
+	        for (var taskId in this.props.tasksById) {
+	            names.push({
+	                label: "T" + taskId,
+	                value: taskId
+	            });
+	        }
+	        return names;
+	    };
+	    EditEventComponent.prototype.retrieveTaskNames = function (tokens) {
+	        // Determine if there are any new ids.
+	        var oldTaskIdMap = {};
+	        for (var _i = 0, _a = this.state.event.taskIds; _i < _a.length; _i++) {
+	            var taskId = _a[_i];
+	            oldTaskIdMap[taskId] = true;
+	        }
+	        var newTaskIds = [];
+	        this.state.event.taskIds = tokens.map(function (token) {
+	            if (!oldTaskIdMap.hasOwnProperty(token.value)) {
+	                newTaskIds.push(token.value);
+	            }
+	            return token.value;
+	        });
+	        // With the new TaskIds, see if there are any tag ids that we don't currently have
+	        var oldTagIdMap = {};
+	        for (var _b = 0, _c = this.state.event.tagIds; _b < _c.length; _b++) {
+	            var tagId = _c[_b];
+	            oldTagIdMap[tagId] = true;
+	        }
+	        for (var _d = 0, newTaskIds_1 = newTaskIds; _d < newTaskIds_1.length; _d++) {
+	            var taskId = newTaskIds_1[_d];
+	            for (var _e = 0, _f = this.props.tasksById[taskId].tagIds; _e < _f.length; _e++) {
+	                var tagId = _f[_e];
+	                if (!oldTagIdMap.hasOwnProperty(tagId + "")) {
+	                    this.state.event.tagIds.push(tagId);
+	                }
+	            }
+	        }
+	        this.setState(this.state);
+	    };
+	    EditEventComponent.prototype.renderFormTitle = function () {
+	        if (this.props.createMode) {
+	            return React.createElement("h3", null, "Create Event");
+	        }
+	        else {
+	            return React.createElement("h3", null,
+	                "Editing E",
+	                this.state.event.id);
+	        }
+	    };
+	    EditEventComponent.prototype.renderButtons = function () {
+	        if (this.props.createMode) {
+	            return (React.createElement("div", { className: "edit-event-button-container" },
+	                React.createElement("input", { type: "button", value: "create", onClick: this.submitForm.bind(this, "create") })));
+	        }
+	        else {
+	            return (React.createElement("div", { className: "edit-event-button-container" },
+	                React.createElement("input", { type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete") }),
+	                React.createElement("input", { type: "button", value: "save", onClick: this.submitForm.bind(this, "save") })));
+	        }
+	    };
+	    EditEventComponent.prototype.renderForm = function () {
+	        return React.createElement("div", null,
+	            React.createElement("div", { className: "name-container" },
+	                React.createElement("label", { htmlFor: "name" }, "Name: "),
+	                React.createElement("input", { id: "event-name", type: "text", name: "name", value: this.state.event.name, onKeyDown: this.onKeyDownCreate.bind(this), onChange: this.updateAttr.bind(this, "name") })),
+	            React.createElement("div", { className: "task-tokenizer-container" },
+	                React.createElement("label", null, "Tasks:"),
+	                React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.retrieveTaskNames.bind(this), initialValues: this.getCurrentTasks(), possibleTokens: this.getAllTaskNames() })),
+	            React.createElement("div", { className: "tag-tokenizer-container" },
+	                React.createElement("label", null, "Tags:"),
+	                React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames() })),
+	            React.createElement("div", { className: "start-now checkbox-container" },
+	                React.createElement("label", { onClick: this.toggleStartNow.bind(this) }, "Start Now?"),
+	                React.createElement("input", { type: "checkbox", onChange: this.toggleStartNow.bind(this), checked: this.state.startNow })),
+	            React.createElement("div", { className: "end-now checkbox-container" },
+	                React.createElement("label", { onClick: this.toggleEndNow.bind(this) }, "End Now?"),
+	                React.createElement("input", { type: "checkbox", onChange: this.toggleEndNow.bind(this), checked: this.state.endNow })),
+	            this.renderButtons());
+	    };
+	    EditEventComponent.prototype.render = function () {
+	        return React.createElement("div", { className: "edit-event-container" },
+	            this.renderFormTitle(),
+	            this.renderForm());
+	    };
+	    return EditEventComponent;
+	}(React.Component));
+	exports.EditEventComponent = EditEventComponent;
+
+
+/***/ },
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2057,10 +3257,303 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var moment = __webpack_require__(21);
+	var tag_1 = __webpack_require__(18);
+	var events_1 = __webpack_require__(20);
+	var EventComponent = (function (_super) {
+	    __extends(EventComponent, _super);
+	    function EventComponent() {
+	        return _super.apply(this, arguments) || this;
+	    }
+	    EventComponent.prototype.selectTask = function (taskId) {
+	        var event = new CustomEvent(events_1.signalDisplayTaskInfo, { 'detail': taskId });
+	        document.dispatchEvent(event);
+	    };
+	    EventComponent.prototype.renderTag = function (tagId) {
+	        var tag = this.props.tagsById[tagId];
+	        return React.createElement(tag_1.TagComponent, { tag: tag, key: tagId });
+	    };
+	    EventComponent.prototype.renderName = function () {
+	        return React.createElement("div", { className: "name" }, this.props.event.name);
+	    };
+	    ;
+	    EventComponent.prototype.renderTags = function () {
+	        if (!this.props.event.tagIds.length) {
+	            return;
+	        }
+	        return this.props.event.tagIds.map(this.renderTag.bind(this));
+	    };
+	    EventComponent.prototype.renderTasks = function () {
+	        var _this = this;
+	        if (!this.props.event.taskIds.length) {
+	            return;
+	        }
+	        return this.props.event.taskIds.map(function (taskId) {
+	            return React.createElement("div", { className: "task-id-card card", key: "T" + taskId, onClick: _this.selectTask.bind(_this, taskId) }, "T" + taskId);
+	        });
+	    };
+	    EventComponent.prototype.render = function () {
+	        return React.createElement("div", { className: "event-container" },
+	            this.renderName(),
+	            React.createElement("div", { className: "event-card-container" },
+	                this.renderTags(),
+	                this.renderTasks()));
+	    };
+	    return EventComponent;
+	}(React.Component));
+	exports.EventComponent = EventComponent;
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	"use strict";
+	function debounce(func, window) {
+	    // Executes the given function at most once per window milliseconds, on the first call.
+	    var timeout = null;
+	    return function () {
+	        var context = this;
+	        var args = arguments;
+	        var later = function () {
+	            timeout = null;
+	        };
+	        var callNow = !timeout;
+	        if (!timeout) {
+	            timeout = setTimeout(later, window);
+	        }
+	        if (callNow) {
+	            func.apply(context, args);
+	        }
+	    };
+	}
+	exports.debounce = debounce;
+	function renderDuration(seconds) {
+	    var final = '';
+	    if (seconds >= 60 * 60) {
+	        var numHours = Math.floor(seconds / (60 * 60));
+	        final = numHours + " hour";
+	        if (numHours != 1) {
+	            final += "s";
+	        }
+	        seconds -= (numHours * (60 * 60));
+	    }
+	    if (seconds >= 60) {
+	        if (final.length) {
+	            final += ", ";
+	        }
+	        var numMinutes = Math.floor(seconds / 60);
+	        final += numMinutes + " minute";
+	        if (numMinutes != 1) {
+	            final += "s";
+	        }
+	        seconds -= (numMinutes * 60);
+	    }
+	    if (seconds > 0) {
+	        if (final.length) {
+	            final += ", ";
+	        }
+	        final += seconds + " second";
+	        if (seconds != 1) {
+	            final += "s";
+	        }
+	    }
+	    if (!final.length) {
+	        // The 0 case
+	        return "None";
+	    }
+	    return final;
+	}
+	exports.renderDuration = renderDuration;
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var react_router_1 = __webpack_require__(9);
+	var app_1 = __webpack_require__(8);
+	var AppHeader = (function (_super) {
+	    __extends(AppHeader, _super);
+	    function AppHeader() {
+	        return _super.apply(this, arguments) || this;
+	    }
+	    AppHeader.prototype.renderAccountInfo = function () {
+	        return React.createElement("div", { className: "profile-container" }, "Logged in as: " + this.props.meUser.username);
+	    };
+	    AppHeader.prototype.renderViewModeSelector = function () {
+	        var _this = this;
+	        var viewModeToName = {};
+	        viewModeToName[app_1.AppViewMode.mergedView] = "Home";
+	        viewModeToName[app_1.AppViewMode.taskView] = "Task Board";
+	        viewModeToName[app_1.AppViewMode.eventView] = "Calendar";
+	        viewModeToName[app_1.AppViewMode.tagView] = "Tag Graph";
+	        var linkMap = {};
+	        linkMap[app_1.AppViewMode.mergedView] = "/";
+	        linkMap[app_1.AppViewMode.taskView] = "/tasks";
+	        linkMap[app_1.AppViewMode.eventView] = "/cal";
+	        linkMap[app_1.AppViewMode.tagView] = "/tags";
+	        return React.createElement("div", { className: "view-mode-selector" }, Object.keys(app_1.AppViewMode).map(function (viewMode) {
+	            if (!viewModeToName.hasOwnProperty(viewMode)) {
+	                return;
+	            }
+	            var className = "view-mode-option";
+	            if (+viewMode == _this.props.viewMode) {
+	                className += " -selected";
+	            }
+	            return React.createElement(react_router_1.Link, { key: viewMode, className: className, to: linkMap[+viewMode] }, viewModeToName[+viewMode]);
+	        }));
+	    };
+	    AppHeader.prototype.render = function () {
+	        return React.createElement("div", { className: "header-container" },
+	            React.createElement("h1", { className: "header-title" }, "Starter"),
+	            this.renderAccountInfo(),
+	            this.renderViewModeSelector());
+	    };
+	    return AppHeader;
+	}(React.Component));
+	exports.AppHeader = AppHeader;
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var moment = __webpack_require__(22);
+	var React = __webpack_require__(5);
+	var LOOP_FREQ = 60; // 1 minute
+	var FORCED_INTERVAL = 600; // We will at most send 1 notification every (this) many seconds
+	var LAG_THRESHOLD = 1800; // After this many seconds, we will 100% chance send a notification
+	var NotifierComponent = (function (_super) {
+	    __extends(NotifierComponent, _super);
+	    function NotifierComponent(props) {
+	        var _this = _super.call(this, props) || this;
+	        _this.loopId = 0;
+	        _this.state = {
+	            enabled: false,
+	            // We don't set this to 0 so that we don't immediately spam notifications on startup.
+	            // This is also needed post-redirect, so that we don't keep spamming on the way to
+	            // the user fixing the issue.
+	            lastNotificationTime: moment().unix() - FORCED_INTERVAL,
+	        };
+	        return _this;
+	    }
+	    NotifierComponent.prototype.componentDidMount = function () {
+	        this.requestNotificationPermission();
+	        this.beginLoop();
+	    };
+	    NotifierComponent.prototype.componentWillUnmount = function () {
+	        // Kill our event loop
+	        if (this.loopId) {
+	            clearInterval(this.loopId);
+	        }
+	    };
+	    NotifierComponent.prototype.requestNotificationPermission = function () {
+	        var _this = this;
+	        Notification.requestPermission().then(function (result) {
+	            if (result == "granted") {
+	                // mark notifications as enabled
+	                _this.state.enabled = true;
+	                _this.setState(_this.state);
+	            }
+	        });
+	    };
+	    NotifierComponent.prototype.recordSendingNotification = function () {
+	        this.state.lastNotificationTime = moment().unix();
+	        this.setState(this.state);
+	    };
+	    NotifierComponent.prototype.spawnNotification = function (body, onClick) {
+	        var n = new Notification("Starter", { body: body });
+	        // Automatically close the notification after 5 seconds.
+	        n.onclick = onClick;
+	        setTimeout(n.close.bind(n), 5000);
+	    };
+	    NotifierComponent.prototype.sendOutOfEventNotification = function () {
+	        this.recordSendingNotification();
+	        this.spawnNotification("No event info, not tracking time. :(", function (e) {
+	            e.target.close();
+	            window.focus();
+	        });
+	    };
+	    NotifierComponent.prototype.timeSinceLastEventSec = function () {
+	        var nowTimestamp = moment().unix() * 1000;
+	        var minTimeSinceLastEvent = Number.MAX_VALUE;
+	        this.props.events.forEach(function (event) {
+	            if (nowTimestamp > event.startTime) {
+	                var endTimestamp = event.startTime + event.durationSecs * 1000;
+	                if (nowTimestamp < endTimestamp) {
+	                    // We are currently in this event, use -1 as a sentinel value
+	                    minTimeSinceLastEvent = -1;
+	                }
+	                else {
+	                    minTimeSinceLastEvent = Math.min(minTimeSinceLastEvent, nowTimestamp - endTimestamp);
+	                }
+	            }
+	        });
+	        return minTimeSinceLastEvent / 1000;
+	    };
+	    NotifierComponent.prototype.beginLoop = function () {
+	        var _this = this;
+	        var loop = function () {
+	            if (!_this.state.enabled) {
+	                return;
+	            }
+	            // If it hasn't been more than FORCED_INTERVAL seconds, we aren't allowed to send
+	            // another notification
+	            if (moment().unix() - _this.state.lastNotificationTime < FORCED_INTERVAL) {
+	                return;
+	            }
+	            var timeSinceLastEvent = _this.timeSinceLastEventSec();
+	            if (timeSinceLastEvent < 0) {
+	                // Currently in event still
+	                return;
+	            }
+	            // Regardless of the loop freq, we want to make the notification progressively more
+	            // likely to happen until we are in an event.
+	            // We will target 100% notification probability after LAG_THRESHOLD seconds and linear
+	            // probability back down.
+	            if (Math.random() < timeSinceLastEvent / LAG_THRESHOLD) {
+	                _this.sendOutOfEventNotification();
+	            }
+	            // TODO: Also notify if we don't have a task in progress?
+	        };
+	        this.loopId = setInterval(loop.bind(this), LOOP_FREQ * 1000);
+	    };
+	    NotifierComponent.prototype.render = function () {
+	        return React.createElement("div", null);
+	    };
+	    return NotifierComponent;
+	}(React.Component));
+	exports.NotifierComponent = NotifierComponent;
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	var __extends = (this && this.__extends) || function (d, b) {
+	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+	    function __() { this.constructor = d; }
+	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+	};
+	var React = __webpack_require__(5);
+	var moment = __webpack_require__(22);
 	var models_1 = __webpack_require__(16);
-	var Linkify_1 = __webpack_require__(22);
-	var util_1 = __webpack_require__(34);
+	var Linkify_1 = __webpack_require__(29);
+	var util_1 = __webpack_require__(25);
 	var TaskDetailComponent = (function (_super) {
 	    __extends(TaskDetailComponent, _super);
 	    function TaskDetailComponent() {
@@ -2107,8 +3600,8 @@
 	    };
 	    TaskDetailComponent.prototype.renderOptions = function () {
 	        return React.createElement("div", { className: "options" },
-	            React.createElement("a", { href: "#", className: "edit-button", onClick: this.props.editCallback }, "Edit"),
-	            React.createElement("a", { href: "#", className: "close-button", onClick: this.props.closeCallback }, "Close"));
+	            React.createElement("a", { className: "edit-button", onClick: this.props.editCallback }, "Edit"),
+	            React.createElement("a", { className: "close-button", onClick: this.props.closeCallback }, "Close"));
 	    };
 	    TaskDetailComponent.prototype.renderHeader = function () {
 	        return React.createElement("div", { className: "task-detail-header" },
@@ -2204,13 +3697,7 @@
 
 
 /***/ },
-/* 21 */
-/***/ function(module, exports) {
-
-	module.exports = moment;
-
-/***/ },
-/* 22 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2220,8 +3707,8 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var LinkifyIt = __webpack_require__(23);
-	var tlds = __webpack_require__(29);
+	var LinkifyIt = __webpack_require__(30);
+	var tlds = __webpack_require__(36);
 	var linkify = new LinkifyIt();
 	linkify.tlds(tlds);
 	var Linkify = (function (_super) {
@@ -2302,7 +3789,7 @@
 
 
 /***/ },
-/* 23 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2457,7 +3944,7 @@
 	function compile(self) {
 	
 	  // Load & clone RE patterns.
-	  var re = self.re = __webpack_require__(24)(self.__opts__);
+	  var re = self.re = __webpack_require__(31)(self.__opts__);
 	
 	  // Define dynamic patterns
 	  var tlds = self.__tlds__.slice();
@@ -2945,7 +4432,7 @@
 
 
 /***/ },
-/* 24 */
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2955,10 +4442,10 @@
 	  var re = {};
 	
 	  // Use direct extract instead of `regenerate` to reduse browserified size
-	  re.src_Any = __webpack_require__(25).source;
-	  re.src_Cc  = __webpack_require__(26).source;
-	  re.src_Z   = __webpack_require__(27).source;
-	  re.src_P   = __webpack_require__(28).source;
+	  re.src_Any = __webpack_require__(32).source;
+	  re.src_Cc  = __webpack_require__(33).source;
+	  re.src_Z   = __webpack_require__(34).source;
+	  re.src_P   = __webpack_require__(35).source;
 	
 	  // \p{\Z\P\Cc\CF} (white spaces + control + format + punctuation)
 	  re.src_ZPCc = [ re.src_Z, re.src_P, re.src_Cc ].join('|');
@@ -3124,31 +4611,31 @@
 
 
 /***/ },
-/* 25 */
+/* 32 */
 /***/ function(module, exports) {
 
 	module.exports=/[\0-\uD7FF\uE000-\uFFFF]|[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/
 
 /***/ },
-/* 26 */
+/* 33 */
 /***/ function(module, exports) {
 
 	module.exports=/[\0-\x1F\x7F-\x9F]/
 
 /***/ },
-/* 27 */
+/* 34 */
 /***/ function(module, exports) {
 
 	module.exports=/[ \xA0\u1680\u2000-\u200A\u202F\u205F\u3000]/
 
 /***/ },
-/* 28 */
+/* 35 */
 /***/ function(module, exports) {
 
 	module.exports=/[!-#%-\*,-/:;\?@\[-\]_\{\}\xA1\xA7\xAB\xB6\xB7\xBB\xBF\u037E\u0387\u055A-\u055F\u0589\u058A\u05BE\u05C0\u05C3\u05C6\u05F3\u05F4\u0609\u060A\u060C\u060D\u061B\u061E\u061F\u066A-\u066D\u06D4\u0700-\u070D\u07F7-\u07F9\u0830-\u083E\u085E\u0964\u0965\u0970\u0AF0\u0DF4\u0E4F\u0E5A\u0E5B\u0F04-\u0F12\u0F14\u0F3A-\u0F3D\u0F85\u0FD0-\u0FD4\u0FD9\u0FDA\u104A-\u104F\u10FB\u1360-\u1368\u1400\u166D\u166E\u169B\u169C\u16EB-\u16ED\u1735\u1736\u17D4-\u17D6\u17D8-\u17DA\u1800-\u180A\u1944\u1945\u1A1E\u1A1F\u1AA0-\u1AA6\u1AA8-\u1AAD\u1B5A-\u1B60\u1BFC-\u1BFF\u1C3B-\u1C3F\u1C7E\u1C7F\u1CC0-\u1CC7\u1CD3\u2010-\u2027\u2030-\u2043\u2045-\u2051\u2053-\u205E\u207D\u207E\u208D\u208E\u2308-\u230B\u2329\u232A\u2768-\u2775\u27C5\u27C6\u27E6-\u27EF\u2983-\u2998\u29D8-\u29DB\u29FC\u29FD\u2CF9-\u2CFC\u2CFE\u2CFF\u2D70\u2E00-\u2E2E\u2E30-\u2E44\u3001-\u3003\u3008-\u3011\u3014-\u301F\u3030\u303D\u30A0\u30FB\uA4FE\uA4FF\uA60D-\uA60F\uA673\uA67E\uA6F2-\uA6F7\uA874-\uA877\uA8CE\uA8CF\uA8F8-\uA8FA\uA8FC\uA92E\uA92F\uA95F\uA9C1-\uA9CD\uA9DE\uA9DF\uAA5C-\uAA5F\uAADE\uAADF\uAAF0\uAAF1\uABEB\uFD3E\uFD3F\uFE10-\uFE19\uFE30-\uFE52\uFE54-\uFE61\uFE63\uFE68\uFE6A\uFE6B\uFF01-\uFF03\uFF05-\uFF0A\uFF0C-\uFF0F\uFF1A\uFF1B\uFF1F\uFF20\uFF3B-\uFF3D\uFF3F\uFF5B\uFF5D\uFF5F-\uFF65]|\uD800[\uDD00-\uDD02\uDF9F\uDFD0]|\uD801\uDD6F|\uD802[\uDC57\uDD1F\uDD3F\uDE50-\uDE58\uDE7F\uDEF0-\uDEF6\uDF39-\uDF3F\uDF99-\uDF9C]|\uD804[\uDC47-\uDC4D\uDCBB\uDCBC\uDCBE-\uDCC1\uDD40-\uDD43\uDD74\uDD75\uDDC5-\uDDC9\uDDCD\uDDDB\uDDDD-\uDDDF\uDE38-\uDE3D\uDEA9]|\uD805[\uDC4B-\uDC4F\uDC5B\uDC5D\uDCC6\uDDC1-\uDDD7\uDE41-\uDE43\uDE60-\uDE6C\uDF3C-\uDF3E]|\uD807[\uDC41-\uDC45\uDC70\uDC71]|\uD809[\uDC70-\uDC74]|\uD81A[\uDE6E\uDE6F\uDEF5\uDF37-\uDF3B\uDF44]|\uD82F\uDC9F|\uD836[\uDE87-\uDE8B]|\uD83A[\uDD5E\uDD5F]/
 
 /***/ },
-/* 29 */
+/* 36 */
 /***/ function(module, exports) {
 
 	module.exports = [
@@ -4681,1462 +6168,6 @@
 	  "zuerich",
 	  "zw"
 	];
-
-
-/***/ },
-/* 30 */
-/***/ function(module, exports) {
-
-	"use strict";
-	exports.signalCreateEventWithTask = "signalCreateEventWithTask";
-	exports.signalEndEventWithTask = "signalEndEventWithTask";
-	exports.signalDisplayTaskInfo = "signalDisplayTaskInfo";
-
-
-/***/ },
-/* 31 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var jQuery = __webpack_require__(7);
-	var moment = __webpack_require__(21);
-	var React = __webpack_require__(5);
-	var react_router_1 = __webpack_require__(9);
-	var edit_event_1 = __webpack_require__(32);
-	var tokenizer_1 = __webpack_require__(12);
-	var event_1 = __webpack_require__(33);
-	var modal_1 = __webpack_require__(19);
-	var util_1 = __webpack_require__(34);
-	var events_1 = __webpack_require__(30);
-	var CalendarViewType;
-	(function (CalendarViewType) {
-	    CalendarViewType[CalendarViewType["week"] = 0] = "week";
-	    CalendarViewType[CalendarViewType["day"] = 1] = "day";
-	})(CalendarViewType = exports.CalendarViewType || (exports.CalendarViewType = {}));
-	var DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-	var GRANULARITY = 900; // Each cell is 15 minutes (unit in seconds)
-	var DEFAULT_CELL_HEIGHT = 25;
-	var CalendarComponent = (function (_super) {
-	    __extends(CalendarComponent, _super);
-	    function CalendarComponent(props) {
-	        var _this = _super.call(this, props) || this;
-	        _this.refreshLoopId = 0;
-	        _this._handleCreateEventWithTaskFn = null;
-	        _this._handleEndEventWithTaskFn = null;
-	        _this._dragTargetEventElement = null;
-	        _this.state = _this.getState(props);
-	        return _this;
-	    }
-	    CalendarComponent.prototype.componentWillReceiveProps = function (props) {
-	        this.setState(this.getState(props));
-	    };
-	    CalendarComponent.prototype.getState = function (props) {
-	        var viewType = props.initialViewType;
-	        var startDayTimestamp;
-	        if (this.state) {
-	            viewType = this.state.viewType;
-	            startDayTimestamp = this.state.startDayTimestamp;
-	        }
-	        else {
-	            startDayTimestamp = this.computeTodayStartTime(viewType);
-	        }
-	        var _a = this.divideAndSort(startDayTimestamp, viewType, props.eventsById), columns = _a[0], eventToRenderingInfo = _a[1];
-	        var newState = {
-	            viewType: viewType,
-	            startDayTimestamp: startDayTimestamp,
-	            columns: columns,
-	            cellHeight: DEFAULT_CELL_HEIGHT,
-	            showCreate: (this.state) ? this.state.showCreate : false,
-	            eventToRenderingInfo: eventToRenderingInfo,
-	            editingEvent: null,
-	            createEventTimestamp: null,
-	            createEventDurationSecs: null,
-	            createEventTask: null,
-	            selectedTag: null,
-	            draggingStartTimestamp: null,
-	            draggingEndTimestamp: null,
-	            draggingEvent: null,
-	            endDraggingEvent: null,
-	        };
-	        if (this.state) {
-	            newState.cellHeight = this.state.cellHeight;
-	            // Want to persist tag between event creations
-	            if (this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
-	                newState.selectedTag = this.state.selectedTag;
-	            }
-	        }
-	        return newState;
-	    };
-	    CalendarComponent.prototype.componentDidMount = function () {
-	        var _this = this;
-	        var cursor = document.getElementsByClassName("current-time-cursor");
-	        if (cursor.length) {
-	            // Scroll the calendar view so that the current time is in the middle.
-	            var container = document.getElementsByClassName("all-columns-container")[0];
-	            var top_1 = jQuery(cursor[0]).data("top");
-	            container.scrollTop = top_1 - container.clientHeight / 2;
-	        }
-	        // Register a loop to keep refreshing the cursor.
-	        var loop = function () {
-	            _this.forceUpdate();
-	        };
-	        this.refreshLoopId = setInterval(loop, 60 * 1000);
-	        // Register some event handlers to respond to signals from the task board
-	        this._handleCreateEventWithTaskFn = this.handleCreateEventWithTask.bind(this);
-	        document.addEventListener(events_1.signalCreateEventWithTask, this._handleCreateEventWithTaskFn);
-	        this._handleEndEventWithTaskFn = this.handleEndEventWithTask.bind(this);
-	        document.addEventListener(events_1.signalEndEventWithTask, this._handleEndEventWithTaskFn);
-	    };
-	    CalendarComponent.prototype.componentWillUnmount = function () {
-	        if (this.refreshLoopId) {
-	            clearInterval(this.refreshLoopId);
-	        }
-	        document.removeEventListener(events_1.signalCreateEventWithTask, this._handleCreateEventWithTaskFn);
-	        document.removeEventListener(events_1.signalEndEventWithTask, this._handleEndEventWithTaskFn);
-	        this._handleCreateEventWithTaskFn = null;
-	        this._handleEndEventWithTaskFn = null;
-	    };
-	    CalendarComponent.prototype.handleCreateEventWithTask = function (e) {
-	        var t = e.detail;
-	        if (this.shouldCreateEventWithTask()) {
-	            var now = moment();
-	            this.state.createEventTimestamp = now.unix() * 1000;
-	            var x = moment(now).add(30, "minutes");
-	            var remainder = x.minute() % 15;
-	            if (remainder > 7.5) {
-	                x = moment(x).add(15 - remainder, "minutes");
-	            }
-	            else {
-	                x = moment(x).subtract(remainder, "minutes");
-	            }
-	            this.state.createEventDurationSecs = x.startOf("minute").unix() - now.unix();
-	            this.state.showCreate = true;
-	            this.state.createEventTask = t;
-	            this.setState(this.state);
-	        }
-	    };
-	    CalendarComponent.prototype.handleEndEventWithTask = function (e) {
-	        var t = e.detail;
-	        var event = this.shouldEndEventWithTask(t);
-	        if (event) {
-	            event.durationSecs = Math.floor((moment().unix() * 1000 - event.startTime) / 1000);
-	            this.props.updateEvent(event);
-	        }
-	    };
-	    CalendarComponent.prototype.computeTodayStartTime = function (viewType) {
-	        var startDayMoment;
-	        if (viewType == CalendarViewType.week) {
-	            startDayMoment = this.computeClosestMonday(moment());
-	        }
-	        else {
-	            startDayMoment = moment().startOf("day");
-	        }
-	        return startDayMoment.unix() * 1000;
-	    };
-	    CalendarComponent.prototype.computeClosestMonday = function (m) {
-	        var startDayMoment = moment().startOf("week").add(1, "days");
-	        if (startDayMoment > moment()) {
-	            // It must be Sunday, handle the edge case by subtracting off a week.
-	            startDayMoment = startDayMoment.subtract(1, "week");
-	        }
-	        return startDayMoment;
-	    };
-	    CalendarComponent.prototype.shouldCreateEventWithTask = function () {
-	        if (this.state.editingEvent || this.state.showCreate) {
-	            return false;
-	        }
-	        // See if we are currently within an event.
-	        var now = moment().unix() * 1000;
-	        for (var _i = 0, _a = Object.keys(this.props.eventsById); _i < _a.length; _i++) {
-	            var eventId = _a[_i];
-	            var event_2 = this.props.eventsById[eventId];
-	            if (event_2.startTime < now && (event_2.startTime + (event_2.durationSecs * 1000)) >= now) {
-	                return false;
-	            }
-	        }
-	        return true;
-	    };
-	    CalendarComponent.prototype.shouldEndEventWithTask = function (task) {
-	        if (this.state.showCreate || this.state.editingEvent) {
-	            return null;
-	        }
-	        var now = moment().unix() * 1000;
-	        for (var _i = 0, _a = Object.keys(this.props.eventsById); _i < _a.length; _i++) {
-	            var eventId = _a[_i];
-	            var event_3 = this.props.eventsById[eventId];
-	            if (event_3.startTime < now && (event_3.startTime + (event_3.durationSecs * 1000)) >= now) {
-	                for (var _b = 0, _c = event_3.taskIds; _b < _c.length; _b++) {
-	                    var taskId = _c[_b];
-	                    if (taskId == task.id) {
-	                        return event_3;
-	                    }
-	                }
-	            }
-	        }
-	        return null;
-	    };
-	    CalendarComponent.prototype.getEventKey = function (eventId, columnIndex) {
-	        return eventId + "-" + columnIndex;
-	    };
-	    CalendarComponent.prototype.divideAndSort = function (startTimestamp, viewType, eventsById) {
-	        var _this = this;
-	        var columnList;
-	        if (viewType == CalendarViewType.week) {
-	            // Note that the columns will be ordered with the weekend at the end.
-	            columnList = [[], [], [], [], [], [], []];
-	        }
-	        else {
-	            columnList = [[]];
-	        }
-	        var dayStart = moment(startTimestamp); // From seconds back into moment
-	        // I just died a little inside, refactor this to somewhere more re-usable.
-	        var allChildIdsOfSelectedTag = {};
-	        if (this.state && this.state.selectedTag) {
-	            var queue = [this.state.selectedTag];
-	            while (queue.length) {
-	                var curTag = queue.pop();
-	                allChildIdsOfSelectedTag[curTag.id] = true;
-	                for (var _i = 0, _a = curTag.childTagIds; _i < _a.length; _i++) {
-	                    var tagId = _a[_i];
-	                    if (!allChildIdsOfSelectedTag[tagId]) {
-	                        queue.push(this.props.tagsById[tagId]);
-	                    }
-	                }
-	            }
-	        }
-	        var shouldHide = function (event) {
-	            if (_this.state && _this.state.selectedTag) {
-	                // See if the task has the right tag
-	                var matches_1 = false;
-	                event.tagIds.forEach(function (tagId) {
-	                    matches_1 = matches_1 || allChildIdsOfSelectedTag[tagId];
-	                });
-	                if (!matches_1) {
-	                    return true;
-	                }
-	            }
-	            return false;
-	        };
-	        // Divide the events by start day
-	        for (var _b = 0, _c = Object.keys(eventsById); _b < _c.length; _b++) {
-	            var eventId = _c[_b];
-	            var event_4 = eventsById[eventId];
-	            var startTimestamp_1 = event_4.startTime;
-	            var endTimestamp = startTimestamp_1 + event_4.durationSecs * 1000;
-	            for (var index in DAYS) {
-	                if (shouldHide(event_4)) {
-	                    return;
-	                }
-	                var curTimestamp = moment(dayStart).add(index, "days").unix() * 1000;
-	                // See if any part of the event falls within this day. If the part that does does
-	                // not include the beginning, we need to make a fake event. There should only
-	                // be at most one event in each column for the same event.
-	                if (curTimestamp < endTimestamp) {
-	                    if (curTimestamp >= startTimestamp_1) {
-	                        // We are in a partial day, create a fake event.
-	                        columnList[index].push(parseInt(eventId));
-	                    }
-	                    else if (curTimestamp + 24 * 60 * 60 * 1000 > startTimestamp_1) {
-	                        // This day contains the start timestamp, push it on as normal.
-	                        columnList[index].push(parseInt(eventId));
-	                    }
-	                }
-	                // This is pretty hacky, make this cleaner later
-	                if (viewType == CalendarViewType.day) {
-	                    // We only want to iterate once if we're in day view
-	                    break;
-	                }
-	            }
-	        }
-	        columnList.forEach(function (column) {
-	            column.sort(function (eventId1, eventId2) {
-	                var event1 = eventsById[eventId1];
-	                var event2 = eventsById[eventId2];
-	                var diff = event1.startTime - event2.startTime;
-	                if (diff != 0) {
-	                    return diff;
-	                }
-	                // We want the larger events to be sorted first if they have the same start time
-	                return event2.durationSecs - event1.durationSecs;
-	            });
-	        });
-	        // After sorting the events, run the division alg on each column
-	        var eventToRenderingInfo = {};
-	        var cellHeight = DEFAULT_CELL_HEIGHT;
-	        if (this.state) {
-	            cellHeight = this.state.cellHeight;
-	        }
-	        var overlaps = function (idTopAndHeight, top) {
-	            // To help with rounding errors
-	            var eps = 0.0000001;
-	            if (top >= idTopAndHeight.top + eps) {
-	                if (top < idTopAndHeight.top + idTopAndHeight.height - eps) {
-	                    return true;
-	                }
-	            }
-	            return false;
-	        };
-	        columnList.forEach(function (column, columnIndex) {
-	            var columnStartTime = moment(dayStart).add(columnIndex, "days").unix() * 1000;
-	            var columnEndTime = moment(dayStart).add(columnIndex + 1, "days").unix() * 1000;
-	            // TODO: precompute the max size of aux in order to calculate extra space later.
-	            var aux = [];
-	            column.forEach(function (eventId) {
-	                var top = null;
-	                var height = null;
-	                var event = eventsById[eventId];
-	                if (event.startTime < columnStartTime) {
-	                    // event started on a previous day.
-	                    top = 0;
-	                }
-	                else {
-	                    // event must start somewhere during this day.
-	                    var percentage = (event.startTime - columnStartTime) / (86400 * 1000);
-	                    top = percentage * cellHeight * (86400 / GRANULARITY);
-	                }
-	                var realEndTimestamp = Math.min(event.startTime + (event.durationSecs * 1000), columnEndTime);
-	                var durationSecs = (realEndTimestamp - event.startTime) / 1000;
-	                if (event.startTime < columnStartTime) {
-	                    // Event started on an earlier day, deduct this from the duration
-	                    durationSecs -= (columnStartTime - event.startTime) / 1000;
-	                }
-	                // TODO: Keep short end of day events from hanging off the end.
-	                height = Math.max(cellHeight, (durationSecs / GRANULARITY) * cellHeight);
-	                // Base case for the initial element
-	                if (!aux.length) {
-	                    aux.push({ id: event.id, height: height, top: top });
-	                    eventToRenderingInfo[_this.getEventKey(event.id, columnIndex)] = {
-	                        index: 0,
-	                        columnWidth: 1,
-	                        extraCols: 0,
-	                        height: height,
-	                        top: top,
-	                    };
-	                    return;
-	                }
-	                var slotUsed = false;
-	                // If this event doesn't overlap with an element in the array, replace it.
-	                // During the replace, we need to calculate what the max width was for the element.
-	                aux.forEach(function (idTopAndHeight, index) {
-	                    if (!idTopAndHeight || !overlaps(idTopAndHeight, top)) {
-	                        // Doesn't overlap, will use this slot (if it's the first) and evict
-	                        if (!slotUsed) {
-	                            slotUsed = true;
-	                            // Replace out this element
-	                            aux[index] = { id: event.id, top: top, height: height };
-	                            eventToRenderingInfo[_this.getEventKey(event.id, columnIndex)] = {
-	                                index: index,
-	                                columnWidth: 0,
-	                                extraCols: 0,
-	                                height: height,
-	                                top: top,
-	                            };
-	                        }
-	                        else {
-	                            aux[index] = null;
-	                        }
-	                    }
-	                });
-	                // If this event overlaps with whatever is in aux, we must append
-	                if (!slotUsed) {
-	                    // Append to the end
-	                    aux.forEach(function (idTopAndHeight) {
-	                        if (!idTopAndHeight) {
-	                            return;
-	                        }
-	                        var key = _this.getEventKey(idTopAndHeight.id, columnIndex);
-	                        eventToRenderingInfo[key].columnWidth = aux.length + 1;
-	                    });
-	                    eventToRenderingInfo[_this.getEventKey(event.id, columnIndex)] = {
-	                        columnWidth: aux.length + 1,
-	                        index: aux.length,
-	                        extraCols: 0,
-	                        height: height,
-	                        top: top,
-	                    };
-	                    aux.push({ id: event.id, top: top, height: height });
-	                }
-	                else {
-	                    // See if we need to resize aux
-	                    while (aux.length && aux[aux.length - 1] == null) {
-	                        aux.pop();
-	                    }
-	                    // Everything left in the aux array at this point must be overlapping at some point
-	                    var numNotNull_1 = 0;
-	                    var maxWidth_1 = aux.length;
-	                    aux.forEach(function (idTopAndHeight) {
-	                        if (idTopAndHeight) {
-	                            numNotNull_1++;
-	                            maxWidth_1 = Math.max(maxWidth_1, eventToRenderingInfo[_this.getEventKey(idTopAndHeight.id, columnIndex)].columnWidth);
-	                        }
-	                    });
-	                    aux.forEach(function (idTopAndHeight) {
-	                        if (!idTopAndHeight) {
-	                            return;
-	                        }
-	                        var key = _this.getEventKey(idTopAndHeight.id, columnIndex);
-	                        var newWidth = Math.max(numNotNull_1, eventToRenderingInfo[key].columnWidth);
-	                        eventToRenderingInfo[key].columnWidth = newWidth;
-	                        eventToRenderingInfo[key].extraCols = maxWidth_1 - newWidth;
-	                    });
-	                }
-	            });
-	        });
-	        return [columnList, eventToRenderingInfo];
-	    };
-	    CalendarComponent.prototype.resort = function () {
-	        // Recompute all the events and where to render them:
-	        var _a = this.divideAndSort(this.state.startDayTimestamp, this.state.viewType, this.props.eventsById), columns = _a[0], eventToRenderingInfo = _a[1];
-	        this.state.columns = columns;
-	        this.state.eventToRenderingInfo = eventToRenderingInfo;
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.onDoubleClick = function (event) {
-	        this.state.editingEvent = event;
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.computeTimestamp = function (day, index) {
-	        var offset = index;
-	        if (this.state.viewType == CalendarViewType.week) {
-	            DAYS.forEach(function (curDay, i) {
-	                if (curDay != day) {
-	                    return;
-	                }
-	                offset += i * (60 * 60 * 24);
-	            });
-	        }
-	        return moment(this.state.startDayTimestamp).add(offset, "seconds").unix() * 1000;
-	    };
-	    CalendarComponent.prototype.columnMouseDown = function (day, event) {
-	        var index = event.target.dataset.index * 1;
-	        this.state.draggingStartTimestamp = this.computeTimestamp(day, index);
-	        this.state.draggingEndTimestamp = this.state.draggingStartTimestamp;
-	        this.updateCreateEventTimestamp();
-	        this.setState(this.state);
-	        event.preventDefault();
-	    };
-	    CalendarComponent.prototype.columnMouseOver = function (day, event) {
-	        if (!this.state.draggingStartTimestamp) {
-	            // No dragging was happening, nothing to do.
-	            return;
-	        }
-	        var index = event.target.dataset.index * 1;
-	        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
-	        this.updateCreateEventTimestamp();
-	        this.updateCreateEventDurationSecs();
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.columnMouseUp = function (day, event) {
-	        if (!this.state.draggingStartTimestamp) {
-	            // No dragging was happening, nothing to do.
-	            return;
-	        }
-	        var index = event.target.dataset.index * 1;
-	        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
-	        this.updateCreateEventTimestamp();
-	        this.updateCreateEventDurationSecs();
-	        this.state.draggingStartTimestamp = null;
-	        this.state.draggingEndTimestamp = null;
-	        this.state.showCreate = true;
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.updateCreateEventTimestamp = function () {
-	        if (this.state.draggingEndTimestamp < this.state.draggingStartTimestamp) {
-	            // We dragged backwards, use the end timestamp
-	            this.state.createEventTimestamp = this.state.draggingEndTimestamp;
-	        }
-	        else {
-	            // Just set the start timestamp
-	            this.state.createEventTimestamp = this.state.draggingStartTimestamp;
-	        }
-	    };
-	    CalendarComponent.prototype.updateCreateEventDurationSecs = function () {
-	        var start, end;
-	        if (this.state.draggingEndTimestamp < this.state.draggingStartTimestamp) {
-	            start = this.state.draggingEndTimestamp;
-	            end = this.state.draggingStartTimestamp;
-	        }
-	        else {
-	            start = this.state.draggingStartTimestamp;
-	            end = this.state.draggingEndTimestamp;
-	        }
-	        var duration = (end - start);
-	        duration /= 1000; // convert to seconds
-	        duration += GRANULARITY; // dragging to the same cell means to make duration equal to GRANULARITY
-	        this.state.createEventDurationSecs = duration;
-	    };
-	    CalendarComponent.prototype.onDrop = function (day, index) {
-	        if (this.state.draggingEvent) {
-	            // Update the event with the new timestamp
-	            this.state.draggingEvent.startTime = this.computeTimestamp(day, index);
-	            this.props.updateEvent(this.state.draggingEvent);
-	            this.state.draggingEvent = null;
-	            this.setState(this.state);
-	            this._dragTargetEventElement.show();
-	        }
-	        else if (this.state.endDraggingEvent) {
-	            var timestamp = this.computeTimestamp(day, index);
-	            var newDuration = timestamp - this.state.endDraggingEvent.startTime;
-	            newDuration = Math.max(Math.round(newDuration / 1000) + GRANULARITY, GRANULARITY);
-	            this.state.endDraggingEvent.durationSecs = newDuration;
-	            this.props.updateEvent(this.state.endDraggingEvent);
-	            this.state.endDraggingEvent = null;
-	            this.setState(this.state);
-	        }
-	        else {
-	            // No event was being dragged
-	            return;
-	        }
-	    };
-	    CalendarComponent.prototype.getDayAndIndexUnderneathEvent = function (event, callback) {
-	        var xPos = event.clientX;
-	        var yPos = event.clientY;
-	        // Hide the element
-	        jQuery(event.currentTarget).hide();
-	        var dropTargetBelow = jQuery(document.elementFromPoint(xPos, yPos));
-	        if (dropTargetBelow.prop("tagName") == "TD") {
-	            // Great, we found a cell that we can actually finish dropping into
-	            var data = dropTargetBelow.data();
-	            callback(data.day, data.index);
-	        }
-	        // Show the element again
-	        jQuery(event.currentTarget).show();
-	    };
-	    CalendarComponent.prototype.onDropPassThrough = function (event) {
-	        this.getDayAndIndexUnderneathEvent(event, this.onDrop.bind(this));
-	        event.preventDefault();
-	        event.stopPropagation();
-	    };
-	    CalendarComponent.prototype.onDragOverPassThrough = function (event) {
-	        this.getDayAndIndexUnderneathEvent(event, this.onDragOver.bind(this));
-	        event.preventDefault();
-	        event.stopPropagation();
-	    };
-	    CalendarComponent.prototype.onDragStart = function (event, dragEvent) {
-	        if (this.state.endDraggingEvent || this.state.draggingEvent) {
-	            throw Error("Already was dragging an event...");
-	        }
-	        this.state.draggingEvent = event;
-	        this.setState(this.state);
-	        this._dragTargetEventElement = jQuery(dragEvent.target);
-	    };
-	    CalendarComponent.prototype.onDragEnd = function (event) {
-	        if (this.state.draggingEvent != event) {
-	            return;
-	        }
-	        this.state.draggingStartTimestamp = null;
-	        this.state.draggingEndTimestamp = null;
-	        this.state.draggingEvent = null;
-	        this.setState(this.state);
-	        this._dragTargetEventElement.show();
-	    };
-	    CalendarComponent.prototype.onEventEndDragStart = function (event) {
-	        if (this.state.endDraggingEvent || this.state.draggingEvent) {
-	            throw Error("Already dragging an event...");
-	        }
-	        this.state.endDraggingEvent = event;
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.onEventEndDragEnd = function (event) {
-	        if (this.state.endDraggingEvent != event) {
-	            return;
-	        }
-	        this.state.draggingStartTimestamp = null;
-	        this.state.draggingEndTimestamp = null;
-	        this.state.endDraggingEvent = null;
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.onDragOver = function (day, index, event) {
-	        // Watch out: This function is abused and needs refactoring. Event might be undefined,
-	        // index might be -1. Not at the same time though.
-	        if (index == -1) {
-	            index = event.target.dataset.index * 1;
-	        }
-	        if (this.state.draggingEvent) {
-	            this._dragTargetEventElement.hide();
-	            var timestamp = this.computeTimestamp(day, index);
-	            // Conceptually this is needed because short events should register only a single cell
-	            // to be highlighted.
-	            var truncatedDuration = Math.max(0, this.state.draggingEvent.durationSecs - GRANULARITY);
-	            var endTimestamp = timestamp + truncatedDuration * 1000;
-	            if (this.state.draggingStartTimestamp != timestamp ||
-	                this.state.draggingEndTimestamp != endTimestamp) {
-	                this.state.draggingStartTimestamp = timestamp;
-	                this.state.draggingEndTimestamp = endTimestamp;
-	                this.setState(this.state);
-	            }
-	        }
-	        else if (this.state.endDraggingEvent) {
-	            var timestamp = this.computeTimestamp(day, index);
-	            if (this.state.draggingStartTimestamp != this.state.endDraggingEvent.startTime ||
-	                this.state.draggingEndTimestamp != timestamp) {
-	                this.state.draggingStartTimestamp = this.state.endDraggingEvent.startTime;
-	                this.state.draggingEndTimestamp = timestamp;
-	                this.setState(this.state);
-	            }
-	        }
-	        else {
-	            // Nothing being dragged
-	            return;
-	        }
-	        if (event) {
-	            event.preventDefault();
-	        }
-	    };
-	    CalendarComponent.prototype.getCurrentTagToken = function () {
-	        if (!this.state.selectedTag) {
-	            return [];
-	        }
-	        return [{
-	                label: this.state.selectedTag.name,
-	                value: this.state.selectedTag.id,
-	            }];
-	    };
-	    CalendarComponent.prototype.changeCurrentTagToken = function (newTokens) {
-	        if (newTokens.length) {
-	            this.state.selectedTag = this.props.tagsById[newTokens[0].value];
-	        }
-	        else {
-	            this.state.selectedTag = null;
-	        }
-	        this.resort();
-	    };
-	    CalendarComponent.prototype.getAllTagNames = function () {
-	        var _this = this;
-	        // This function is used to determine the set of valid tokens for the tokenizer.
-	        // We should think about excluding tokens from here that would cause cycles.
-	        var allNames = [];
-	        Object.keys(this.props.tagsById).forEach(function (tagId) {
-	            var tag = _this.props.tagsById[+tagId];
-	            allNames.push({
-	                label: tag.name,
-	                value: tag.id
-	            });
-	        });
-	        return allNames;
-	    };
-	    CalendarComponent.prototype.renderTagSelector = function () {
-	        return (React.createElement("div", { className: "tag-selector-container" },
-	            React.createElement("div", { className: "tag-selector-label" }, "Filter Tag:"),
-	            React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.changeCurrentTagToken.bind(this), initialValues: this.getCurrentTagToken(), possibleTokens: this.getAllTagNames(), tokenLimit: 1 })));
-	    };
-	    CalendarComponent.prototype.changeCellHeight = function (event) {
-	        this.state.cellHeight = event.target.value;
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.renderCellSizeSlider = function () {
-	        if (this.props.simpleOptions) {
-	            return;
-	        }
-	        return (React.createElement("div", { className: "cell-size-slider" },
-	            React.createElement("input", { type: "range", min: "20", max: "100", value: this.state.cellHeight, onChange: this.changeCellHeight.bind(this) })));
-	    };
-	    CalendarComponent.prototype.changeViewType = function (type) {
-	        if (this.state.viewType == type) {
-	            // No transition needed
-	            return;
-	        }
-	        var startDayMoment;
-	        if (this.state.viewType == CalendarViewType.week && type == CalendarViewType.day) {
-	            // Week to day transition, need to either pick today or Monday
-	            var monday = moment(this.state.startDayTimestamp);
-	            var now = moment();
-	            if (now.unix() - monday.unix() > 0 && monday.add(1, "week").unix() - now.unix() > 0) {
-	                // Current week view contains today, we will use today as the answer.
-	                this.state.startDayTimestamp = this.computeTodayStartTime(type);
-	            }
-	            else {
-	            }
-	            react_router_1.browserHistory.push("/cal/day");
-	        }
-	        else if (this.state.viewType == CalendarViewType.day && type == CalendarViewType.week) {
-	            // Day to week transition, need to find the nearest Monday
-	            startDayMoment = this.computeClosestMonday(moment(this.state.startDayTimestamp));
-	            this.state.startDayTimestamp = startDayMoment.unix() * 1000;
-	            react_router_1.browserHistory.push("/cal/week");
-	        }
-	        else {
-	            throw Error("Unknown view type transition");
-	        }
-	        this.state.viewType = type;
-	        this.resort();
-	    };
-	    CalendarComponent.prototype.renderViewChoice = function (type) {
-	        var className = "view-type-choice";
-	        if (type == this.state.viewType) {
-	            className += " -selected";
-	        }
-	        var typeToName = {};
-	        typeToName[CalendarViewType.day] = "Day";
-	        typeToName[CalendarViewType.week] = "Week";
-	        return (React.createElement("div", { className: className, key: type, onClick: this.changeViewType.bind(this, type) }, typeToName[type]));
-	    };
-	    CalendarComponent.prototype.renderChangeViewType = function () {
-	        if (this.props.simpleOptions) {
-	            return;
-	        }
-	        return (React.createElement("div", { className: "view-type-selector" },
-	            this.renderViewChoice(CalendarViewType.week),
-	            this.renderViewChoice(CalendarViewType.day)));
-	    };
-	    CalendarComponent.prototype.changePage = function (diff) {
-	        if (this.state.viewType == CalendarViewType.week) {
-	            diff *= 7;
-	        }
-	        // Diff is the difference in days to add to the current time. If it's 0, we reset back
-	        // to the current day.
-	        if (diff == 0) {
-	            this.state.startDayTimestamp = this.computeTodayStartTime(this.state.viewType);
-	        }
-	        else {
-	            this.state.startDayTimestamp = moment(this.state.startDayTimestamp).add(diff, "days").unix() * 1000;
-	        }
-	        this.resort();
-	    };
-	    CalendarComponent.prototype.renderPagination = function () {
-	        return (React.createElement("div", { className: "pagination-container" },
-	            React.createElement("div", { className: "pagination-option", onClick: this.changePage.bind(this, -1) }, "Previous"),
-	            React.createElement("div", { className: "pagination-option", onClick: this.changePage.bind(this, 1) }, "Next"),
-	            React.createElement("div", { className: "pagination-option", onClick: this.changePage.bind(this, 0) }, "Today")));
-	    };
-	    CalendarComponent.prototype.renderOptions = function () {
-	        return (React.createElement("div", { className: "options" },
-	            this.renderCellSizeSlider(),
-	            this.renderTagSelector(),
-	            this.renderChangeViewType(),
-	            this.renderPagination()));
-	    };
-	    CalendarComponent.prototype.renderCells = function (day) {
-	        var _this = this;
-	        var getColumnRow = function (index) {
-	            var key = "" + index;
-	            var style = { height: _this.state.cellHeight + "px" };
-	            var timestamp = _this.computeTimestamp(day, index);
-	            var className = "";
-	            if (_this.state.draggingStartTimestamp && _this.state.draggingEndTimestamp) {
-	                // We are currently dragging, see if this cell is in the range
-	                var start = _this.state.draggingStartTimestamp;
-	                var end = _this.state.draggingEndTimestamp;
-	                if (end < start) {
-	                    start = _this.state.draggingEndTimestamp;
-	                    end = _this.state.draggingStartTimestamp;
-	                }
-	                if (timestamp >= start && timestamp < end + (GRANULARITY * 1000)) {
-	                    className = "-selected";
-	                }
-	            }
-	            if (day == "times") {
-	                var timeHeader = "";
-	                if (index % (GRANULARITY * 2) == 0) {
-	                    timeHeader = moment(_this.state.startDayTimestamp)
-	                        .add(index, "seconds").format("h:mm a");
-	                }
-	                return (React.createElement("tr", { key: key, style: style },
-	                    React.createElement("td", null, timeHeader)));
-	            }
-	            else {
-	                return (React.createElement("tr", { key: key, style: style },
-	                    React.createElement("td", { className: className, "data-day": day, "data-index": index, onDrop: _this.onDrop.bind(_this, day, index) }, " ")));
-	            }
-	        };
-	        var i = 0; // midnight
-	        var tableRows = [];
-	        for (; i < 60 * 60 * 24; i += GRANULARITY) {
-	            tableRows.push(getColumnRow(i));
-	        }
-	        return (React.createElement("table", { cellPadding: "0", cellSpacing: "0", onMouseDown: this.columnMouseDown.bind(this, day), onMouseOver: util_1.debounce(this.columnMouseOver.bind(this, day), 50), onMouseUp: this.columnMouseUp.bind(this, day), onDragOver: this.onDragOver.bind(this, day, -1) },
-	            React.createElement("tbody", null, tableRows)));
-	    };
-	    CalendarComponent.prototype.renderCurrentTimeCursor = function (index) {
-	        var columnTimeRange = 24 * 60 * 60 * 1000;
-	        var columnStartTimestamp = this.state.startDayTimestamp + index * columnTimeRange;
-	        var currentTime = moment().unix() * 1000;
-	        if (currentTime >= columnStartTimestamp &&
-	            currentTime < columnStartTimestamp + columnTimeRange) {
-	            // Okay we can actually render it here.
-	            var offset = (currentTime - columnStartTimestamp) / columnTimeRange;
-	            offset *= this.state.cellHeight * (86400 / GRANULARITY); // Total height of a column
-	            offset -= 2; // Draw it 2 pixels higher because it's width 3.
-	            var style = {
-	                "top": offset + "px",
-	            };
-	            return React.createElement("div", { className: "current-time-cursor", style: style, "data-top": offset, onDrop: this.onDropPassThrough.bind(this), onDragOver: this.onDragOverPassThrough.bind(this) });
-	        }
-	    };
-	    CalendarComponent.prototype.renderColumn = function (columnIndex, column, singleDay) {
-	        var _this = this;
-	        var day = DAYS[columnIndex];
-	        var className = "column-container";
-	        if (singleDay) {
-	            className += " single-day";
-	        }
-	        return React.createElement("div", { key: day, className: className },
-	            this.renderCells(day),
-	            this.renderCurrentTimeCursor(columnIndex),
-	            column.map(function (eventId) {
-	                // calculate the width change
-	                // TODO: The extra cols only work right now with the expand-to-the-right case
-	                var renderingInfo = _this.state.eventToRenderingInfo[_this.getEventKey(eventId, columnIndex)];
-	                var width = renderingInfo.columnWidth;
-	                if (renderingInfo.extraCols) {
-	                    width += renderingInfo.extraCols;
-	                }
-	                var widthPercentage = (100.0 / width) * (1 + renderingInfo.extraCols);
-	                var marginLeft = widthPercentage * renderingInfo.index;
-	                // We subtract 2 from the height purely for stylistic reasons.
-	                var style = {
-	                    "height": renderingInfo.height + "px",
-	                    "maxHeight": renderingInfo.height + "px",
-	                    "top": renderingInfo.top + "px",
-	                    "marginLeft": marginLeft + "%",
-	                    "width": widthPercentage + "%",
-	                };
-	                var event = _this.props.eventsById[eventId];
-	                return (React.createElement("div", { className: "rendered-event-container", key: eventId, style: style, onDrop: _this.onDropPassThrough.bind(_this), onDragOver: _this.onDragOverPassThrough.bind(_this) },
-	                    React.createElement("div", { className: "rendered-event card", draggable: true, onDragStart: _this.onDragStart.bind(_this, event), onDragEnd: _this.onDragEnd.bind(_this, event), onDoubleClick: _this.onDoubleClick.bind(_this, event) },
-	                        React.createElement(event_1.EventComponent, { event: event, tagsById: _this.props.tagsById })),
-	                    React.createElement("div", { className: "draggable-event-end", draggable: true, onDragStart: _this.onEventEndDragStart.bind(_this, event), onDragEnd: _this.onEventEndDragEnd.bind(_this, event) })));
-	            }));
-	    };
-	    CalendarComponent.prototype.renderWeekViewColumns = function () {
-	        var _this = this;
-	        return React.createElement("div", { className: "full-column-container" },
-	            React.createElement("div", { className: "header-and-content-container" },
-	                React.createElement("div", { className: "column-header-container" },
-	                    React.createElement("div", { className: "column-header -times" }, "Time"),
-	                    DAYS.map(function (day, index) {
-	                        var m = moment(_this.state.startDayTimestamp).add(index, "days");
-	                        return React.createElement("div", { key: day, className: "column-header" }, m.format("ddd M/D"));
-	                    })),
-	                React.createElement("div", { className: "all-columns-container" },
-	                    React.createElement("div", { className: "column-container -times" }, this.renderCells("times")),
-	                    [0, 1, 2, 3, 4, 5, 6].map(function (index, i) {
-	                        return _this.renderColumn(index, _this.state.columns[i]);
-	                    }))));
-	    };
-	    CalendarComponent.prototype.renderTodayString = function () {
-	        return moment(this.state.startDayTimestamp).format("dddd M/D");
-	    };
-	    CalendarComponent.prototype.renderDayViewColumns = function () {
-	        var _this = this;
-	        return React.createElement("div", { className: "full-column-container" },
-	            React.createElement("div", { className: "header-and-content-container" },
-	                React.createElement("div", { className: "column-header-container" },
-	                    React.createElement("div", { className: "column-header -times" }, "Time"),
-	                    React.createElement("div", { className: "column-header single-day" }, this.renderTodayString())),
-	                React.createElement("div", { className: "all-columns-container" },
-	                    React.createElement("div", { className: "column-container -times" }, this.renderCells("times")),
-	                    [0].map(function (index, i) {
-	                        return _this.renderColumn(index, _this.state.columns[i], true);
-	                    }))));
-	    };
-	    CalendarComponent.prototype.renderColumns = function () {
-	        if (this.state.viewType == CalendarViewType.week) {
-	            return this.renderWeekViewColumns();
-	        }
-	        else if (this.state.viewType == CalendarViewType.day) {
-	            return this.renderDayViewColumns();
-	        }
-	    };
-	    CalendarComponent.prototype.clearEditingEvent = function () {
-	        this.state.editingEvent = null;
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.renderEditingEvent = function () {
-	        if (!this.state.editingEvent) {
-	            return;
-	        }
-	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.clearEditingEvent.bind(this) },
-	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, event: this.state.editingEvent, tagsById: this.props.tagsById, createMode: false, tasksById: this.props.tasksById, createEvent: function (event) { }, updateEvent: this.props.updateEvent, deleteEvent: this.props.deleteEvent }));
-	    };
-	    CalendarComponent.prototype.closeCreateEvent = function () {
-	        this.state.showCreate = false;
-	        this.state.createEventTimestamp = null;
-	        this.state.createEventDurationSecs = null;
-	        this.state.createEventTask = null;
-	        this.setState(this.state);
-	    };
-	    CalendarComponent.prototype.createEvent = function (event) {
-	        this.closeCreateEvent();
-	        this.props.createEvent(event);
-	    };
-	    CalendarComponent.prototype.renderCreateEvent = function () {
-	        if (!this.state.showCreate) {
-	            return;
-	        }
-	        var initialTags = [];
-	        if (this.state.selectedTag) {
-	            initialTags.push(this.state.selectedTag.id);
-	        }
-	        var initialTasks = [];
-	        if (this.state.createEventTask) {
-	            initialTasks.push(this.state.createEventTask.id);
-	            for (var _i = 0, _a = this.state.createEventTask.tagIds; _i < _a.length; _i++) {
-	                var tagId = _a[_i];
-	                if (!initialTags.length || tagId != initialTags[0]) {
-	                    initialTags.push(tagId);
-	                }
-	            }
-	        }
-	        return React.createElement(modal_1.ModalComponent, { cancelFunc: this.closeCreateEvent.bind(this) },
-	            React.createElement(edit_event_1.EditEventComponent, { meUser: this.props.meUser, tagsById: this.props.tagsById, createMode: true, tasksById: this.props.tasksById, initialCreationTime: this.state.createEventTimestamp, initialDurationSecs: this.state.createEventDurationSecs, initialTags: initialTags, initialTasks: initialTasks, createEvent: this.createEvent.bind(this), updateEvent: function (event) { }, deleteEvent: function (event) { } }));
-	    };
-	    CalendarComponent.prototype.render = function () {
-	        return React.createElement("div", { className: "calendar" },
-	            this.renderOptions(),
-	            this.renderColumns(),
-	            this.renderEditingEvent(),
-	            this.renderCreateEvent());
-	    };
-	    return CalendarComponent;
-	}(React.Component));
-	exports.CalendarComponent = CalendarComponent;
-
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var moment = __webpack_require__(21);
-	var React = __webpack_require__(5);
-	var tokenizer_1 = __webpack_require__(12);
-	var EditEventComponent = (function (_super) {
-	    __extends(EditEventComponent, _super);
-	    function EditEventComponent(props) {
-	        var _this = _super.call(this, props) || this;
-	        var event = null;
-	        if (props.createMode) {
-	            event = _this._getEmptyEvent(props.meUser, props.initialCreationTime, props.initialDurationSecs, props.initialTags, props.initialTasks);
-	        }
-	        else {
-	            event = props.event;
-	        }
-	        _this.state = {
-	            event: event,
-	            startNow: false,
-	            endNow: false,
-	            submitted: false,
-	        };
-	        return _this;
-	    }
-	    EditEventComponent.prototype.componentWillReceiveProps = function (newProps) {
-	        var event = newProps.event;
-	        if (newProps.createMode) {
-	            var newEvent = this._getEmptyEvent(newProps.meUser, newProps.initialCreationTime, newProps.initialDurationSecs, newProps.initialTags, newProps.initialTasks);
-	            if (this.state && !this.state.submitted) {
-	                // Copy over the name field so it doesn't get cleared out. As well as all fields
-	                // that weren't set in the new props.
-	                if (newProps.initialCreationTime == null) {
-	                    newEvent.startTime = this.state.event.startTime;
-	                }
-	                if (newProps.initialDurationSecs == null) {
-	                    newEvent.durationSecs = this.state.event.durationSecs;
-	                }
-	                if (!(newProps.initialTags && newProps.initialTags.length)) {
-	                    newEvent.tagIds = this.state.event.tagIds;
-	                }
-	                if (!(newProps.initialTasks && newProps.initialTasks.length)) {
-	                    newEvent.taskIds = this.state.event.taskIds;
-	                }
-	                newEvent.name = this.state.event.name;
-	            }
-	            event = newEvent;
-	        }
-	        this.state.event = event;
-	        this.setState(this.state);
-	    };
-	    EditEventComponent.prototype._getEmptyEvent = function (user, initialCreationTime, initialDurationSecs, initialTags, initialTasks) {
-	        return {
-	            id: 0,
-	            name: '',
-	            authorId: user.id,
-	            ownerId: user.id,
-	            tagIds: (initialTags) ? initialTags : [],
-	            startTime: (initialCreationTime) ? initialCreationTime : 0,
-	            durationSecs: (initialDurationSecs) ? initialDurationSecs : 900,
-	            taskIds: (initialTasks) ? initialTasks : [],
-	        };
-	    };
-	    EditEventComponent.prototype.toggleStartNow = function () {
-	        this.state.startNow = !this.state.startNow;
-	        this.setState(this.state);
-	    };
-	    EditEventComponent.prototype.toggleEndNow = function () {
-	        this.state.endNow = !this.state.endNow;
-	        this.setState(this.state);
-	    };
-	    EditEventComponent.prototype.submitForm = function (eventType) {
-	        var now = moment().unix() * 1000;
-	        if (this.state.startNow) {
-	            var currentEndTime = this.state.event.startTime + (this.state.event.durationSecs * 1000);
-	            this.state.event.startTime = now;
-	            this.state.event.durationSecs = Math.floor((currentEndTime - now) / 1000);
-	        }
-	        if (this.state.endNow) {
-	            if (now > this.state.event.startTime) {
-	                // This only makes sense to do if the start time is in the past.
-	                this.state.event.durationSecs = Math.floor((now - this.state.event.startTime) / 1000);
-	            }
-	        }
-	        if (eventType == "save") {
-	            this.props.updateEvent(this.state.event);
-	        }
-	        else if (eventType == "delete") {
-	            this.props.deleteEvent(this.state.event);
-	        }
-	        else if (eventType == "create") {
-	            this.props.createEvent(this.state.event);
-	        }
-	        else {
-	            throw Error("Unknown submit type!");
-	        }
-	        // Reset the form after a submission. We don't clear anything out in case the
-	        // request fails. We wait for the new props to actually clear it out.
-	        this.state.submitted = true;
-	        this.setState(this.state);
-	    };
-	    EditEventComponent.prototype.onKeyDownCreate = function (event) {
-	        if (event.key == "Enter" && this.props.createMode) {
-	            this.submitForm("create");
-	        }
-	    };
-	    EditEventComponent.prototype.updateAttr = function (attrName, event) {
-	        this.state.event[attrName] = event.target.value;
-	        this.setState(this.state);
-	    };
-	    EditEventComponent.prototype.getCurrentTags = function () {
-	        var _this = this;
-	        var tagNames = [];
-	        this.state.event.tagIds.forEach(function (tagId) {
-	            var tag = _this.props.tagsById[tagId];
-	            tagNames.push({
-	                label: tag.name,
-	                value: tag.id
-	            });
-	        });
-	        return tagNames;
-	    };
-	    EditEventComponent.prototype.getAllTagNames = function () {
-	        var _this = this;
-	        // This function is used to determine the set of valid tokens for the tokenizer.
-	        var allNames = [];
-	        Object.keys(this.props.tagsById).forEach(function (tagId) {
-	            var tag = _this.props.tagsById[+tagId];
-	            allNames.push({
-	                label: tag.name,
-	                value: tag.id
-	            });
-	        });
-	        return allNames;
-	    };
-	    EditEventComponent.prototype.retrieveTagNames = function (tokens) {
-	        this.state.event.tagIds = tokens.map(function (token) {
-	            return token.value;
-	        });
-	        this.setState(this.state);
-	    };
-	    EditEventComponent.prototype.getCurrentTasks = function () {
-	        // TODO: Do after we have the format
-	        return this.state.event.taskIds.map(function (taskId) {
-	            return {
-	                label: "T" + taskId,
-	                value: taskId,
-	            };
-	        });
-	    };
-	    EditEventComponent.prototype.getAllTaskNames = function () {
-	        var names = [];
-	        for (var taskId in this.props.tasksById) {
-	            names.push({
-	                label: "T" + taskId,
-	                value: taskId
-	            });
-	        }
-	        return names;
-	    };
-	    EditEventComponent.prototype.retrieveTaskNames = function (tokens) {
-	        // Determine if there are any new ids.
-	        var oldTaskIdMap = {};
-	        for (var _i = 0, _a = this.state.event.taskIds; _i < _a.length; _i++) {
-	            var taskId = _a[_i];
-	            oldTaskIdMap[taskId] = true;
-	        }
-	        var newTaskIds = [];
-	        this.state.event.taskIds = tokens.map(function (token) {
-	            if (!oldTaskIdMap.hasOwnProperty(token.value)) {
-	                newTaskIds.push(token.value);
-	            }
-	            return token.value;
-	        });
-	        // With the new TaskIds, see if there are any tag ids that we don't currently have
-	        var oldTagIdMap = {};
-	        for (var _b = 0, _c = this.state.event.tagIds; _b < _c.length; _b++) {
-	            var tagId = _c[_b];
-	            oldTagIdMap[tagId] = true;
-	        }
-	        for (var _d = 0, newTaskIds_1 = newTaskIds; _d < newTaskIds_1.length; _d++) {
-	            var taskId = newTaskIds_1[_d];
-	            for (var _e = 0, _f = this.props.tasksById[taskId].tagIds; _e < _f.length; _e++) {
-	                var tagId = _f[_e];
-	                if (!oldTagIdMap.hasOwnProperty(tagId + "")) {
-	                    this.state.event.tagIds.push(tagId);
-	                }
-	            }
-	        }
-	        this.setState(this.state);
-	    };
-	    EditEventComponent.prototype.renderFormTitle = function () {
-	        if (this.props.createMode) {
-	            return React.createElement("h3", null, "Create Event");
-	        }
-	        else {
-	            return React.createElement("h3", null,
-	                "Editing E",
-	                this.state.event.id);
-	        }
-	    };
-	    EditEventComponent.prototype.renderButtons = function () {
-	        if (this.props.createMode) {
-	            return (React.createElement("div", { className: "edit-event-button-container" },
-	                React.createElement("input", { type: "button", value: "create", onClick: this.submitForm.bind(this, "create") })));
-	        }
-	        else {
-	            return (React.createElement("div", { className: "edit-event-button-container" },
-	                React.createElement("input", { type: "button", value: "delete", onClick: this.submitForm.bind(this, "delete") }),
-	                React.createElement("input", { type: "button", value: "save", onClick: this.submitForm.bind(this, "save") })));
-	        }
-	    };
-	    EditEventComponent.prototype.renderForm = function () {
-	        return React.createElement("div", null,
-	            React.createElement("div", { className: "name-container" },
-	                React.createElement("label", { htmlFor: "name" }, "Name: "),
-	                React.createElement("input", { id: "event-name", type: "text", name: "name", value: this.state.event.name, onKeyDown: this.onKeyDownCreate.bind(this), onChange: this.updateAttr.bind(this, "name") })),
-	            React.createElement("div", { className: "task-tokenizer-container" },
-	                React.createElement("label", null, "Tasks:"),
-	                React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.retrieveTaskNames.bind(this), initialValues: this.getCurrentTasks(), possibleTokens: this.getAllTaskNames() })),
-	            React.createElement("div", { className: "tag-tokenizer-container" },
-	                React.createElement("label", null, "Tags:"),
-	                React.createElement(tokenizer_1.TokenizerComponent, { onChange: this.retrieveTagNames.bind(this), initialValues: this.getCurrentTags(), possibleTokens: this.getAllTagNames() })),
-	            React.createElement("div", { className: "start-now checkbox-container" },
-	                React.createElement("label", { onClick: this.toggleStartNow.bind(this) }, "Start Now?"),
-	                React.createElement("input", { type: "checkbox", onChange: this.toggleStartNow.bind(this), checked: this.state.startNow })),
-	            React.createElement("div", { className: "end-now checkbox-container" },
-	                React.createElement("label", { onClick: this.toggleEndNow.bind(this) }, "End Now?"),
-	                React.createElement("input", { type: "checkbox", onChange: this.toggleEndNow.bind(this), checked: this.state.endNow })),
-	            this.renderButtons());
-	    };
-	    EditEventComponent.prototype.render = function () {
-	        return React.createElement("div", { className: "edit-event-container" },
-	            this.renderFormTitle(),
-	            this.renderForm());
-	    };
-	    return EditEventComponent;
-	}(React.Component));
-	exports.EditEventComponent = EditEventComponent;
-
-
-/***/ },
-/* 33 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(5);
-	var tag_1 = __webpack_require__(18);
-	var events_1 = __webpack_require__(30);
-	var EventComponent = (function (_super) {
-	    __extends(EventComponent, _super);
-	    function EventComponent() {
-	        return _super.apply(this, arguments) || this;
-	    }
-	    EventComponent.prototype.selectTask = function (taskId) {
-	        var event = new CustomEvent(events_1.signalDisplayTaskInfo, { 'detail': taskId });
-	        document.dispatchEvent(event);
-	    };
-	    EventComponent.prototype.renderTag = function (tagId) {
-	        var tag = this.props.tagsById[tagId];
-	        return React.createElement(tag_1.TagComponent, { tag: tag, key: tagId });
-	    };
-	    EventComponent.prototype.renderName = function () {
-	        return React.createElement("div", { className: "name" }, this.props.event.name);
-	    };
-	    ;
-	    EventComponent.prototype.renderTags = function () {
-	        if (!this.props.event.tagIds.length) {
-	            return;
-	        }
-	        return this.props.event.tagIds.map(this.renderTag.bind(this));
-	    };
-	    EventComponent.prototype.renderTasks = function () {
-	        var _this = this;
-	        if (!this.props.event.taskIds.length) {
-	            return;
-	        }
-	        return this.props.event.taskIds.map(function (taskId) {
-	            return React.createElement("div", { className: "task-id-card card", key: "T" + taskId, onClick: _this.selectTask.bind(_this, taskId) }, "T" + taskId);
-	        });
-	    };
-	    EventComponent.prototype.render = function () {
-	        return React.createElement("div", { className: "event-container" },
-	            this.renderName(),
-	            React.createElement("div", { className: "event-card-container" },
-	                this.renderTags(),
-	                this.renderTasks()));
-	    };
-	    return EventComponent;
-	}(React.Component));
-	exports.EventComponent = EventComponent;
-
-
-/***/ },
-/* 34 */
-/***/ function(module, exports) {
-
-	"use strict";
-	function debounce(func, window) {
-	    // Executes the given function at most once per window milliseconds, on the first call.
-	    var timeout = null;
-	    return function () {
-	        var context = this;
-	        var args = arguments;
-	        var later = function () {
-	            timeout = null;
-	        };
-	        var callNow = !timeout;
-	        if (!timeout) {
-	            timeout = setTimeout(later, window);
-	        }
-	        if (callNow) {
-	            func.apply(context, args);
-	        }
-	    };
-	}
-	exports.debounce = debounce;
-	function renderDuration(seconds) {
-	    var final = '';
-	    if (seconds >= 60 * 60) {
-	        var numHours = Math.floor(seconds / (60 * 60));
-	        final = numHours + " hour";
-	        if (numHours != 1) {
-	            final += "s";
-	        }
-	        seconds -= (numHours * (60 * 60));
-	    }
-	    if (seconds >= 60) {
-	        if (final.length) {
-	            final += ", ";
-	        }
-	        var numMinutes = Math.floor(seconds / 60);
-	        final += numMinutes + " minute";
-	        if (numMinutes != 1) {
-	            final += "s";
-	        }
-	        seconds -= (numMinutes * 60);
-	    }
-	    if (seconds > 0) {
-	        if (final.length) {
-	            final += ", ";
-	        }
-	        final += seconds + " second";
-	        if (seconds != 1) {
-	            final += "s";
-	        }
-	    }
-	    if (!final.length) {
-	        // The 0 case
-	        return "None";
-	    }
-	    return final;
-	}
-	exports.renderDuration = renderDuration;
-
-
-/***/ },
-/* 35 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var React = __webpack_require__(5);
-	var react_router_1 = __webpack_require__(9);
-	var app_1 = __webpack_require__(8);
-	var AppHeader = (function (_super) {
-	    __extends(AppHeader, _super);
-	    function AppHeader() {
-	        return _super.apply(this, arguments) || this;
-	    }
-	    AppHeader.prototype.renderAccountInfo = function () {
-	        return React.createElement("div", { className: "profile-container" }, "Logged in as: " + this.props.meUser.username);
-	    };
-	    AppHeader.prototype.renderViewModeSelector = function () {
-	        var _this = this;
-	        var viewModeToName = {};
-	        viewModeToName[app_1.AppViewMode.mergedView] = "Home";
-	        viewModeToName[app_1.AppViewMode.taskView] = "Task Board";
-	        viewModeToName[app_1.AppViewMode.eventView] = "Calendar";
-	        viewModeToName[app_1.AppViewMode.tagView] = "Tag Graph";
-	        var linkMap = {};
-	        linkMap[app_1.AppViewMode.mergedView] = "/";
-	        linkMap[app_1.AppViewMode.taskView] = "/tasks";
-	        linkMap[app_1.AppViewMode.eventView] = "/cal";
-	        linkMap[app_1.AppViewMode.tagView] = "/tags";
-	        return React.createElement("div", { className: "view-mode-selector" }, Object.keys(app_1.AppViewMode).map(function (viewMode) {
-	            if (!viewModeToName.hasOwnProperty(viewMode)) {
-	                return;
-	            }
-	            var className = "view-mode-option";
-	            if (+viewMode == _this.props.viewMode) {
-	                className += " -selected";
-	            }
-	            return React.createElement(react_router_1.Link, { key: viewMode, className: className, to: linkMap[+viewMode] }, viewModeToName[+viewMode]);
-	        }));
-	    };
-	    AppHeader.prototype.render = function () {
-	        return React.createElement("div", { className: "header-container" },
-	            React.createElement("h1", { className: "header-title" }, "Starter"),
-	            this.renderAccountInfo(),
-	            this.renderViewModeSelector());
-	    };
-	    return AppHeader;
-	}(React.Component));
-	exports.AppHeader = AppHeader;
-
-
-/***/ },
-/* 36 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-	var __extends = (this && this.__extends) || function (d, b) {
-	    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-	    function __() { this.constructor = d; }
-	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-	};
-	var moment = __webpack_require__(21);
-	var React = __webpack_require__(5);
-	var LOOP_FREQ = 60; // 1 minute
-	var FORCED_INTERVAL = 600; // We will at most send 1 notification every (this) many seconds
-	var LAG_THRESHOLD = 1800; // After this many seconds, we will 100% chance send a notification
-	var NotifierComponent = (function (_super) {
-	    __extends(NotifierComponent, _super);
-	    function NotifierComponent(props) {
-	        var _this = _super.call(this, props) || this;
-	        _this.loopId = 0;
-	        _this.state = {
-	            enabled: false,
-	            // We don't set this to 0 so that we don't immediately spam notifications on startup.
-	            // This is also needed post-redirect, so that we don't keep spamming on the way to
-	            // the user fixing the issue.
-	            lastNotificationTime: moment().unix() - FORCED_INTERVAL,
-	        };
-	        return _this;
-	    }
-	    NotifierComponent.prototype.componentDidMount = function () {
-	        this.requestNotificationPermission();
-	        this.beginLoop();
-	    };
-	    NotifierComponent.prototype.componentWillUnmount = function () {
-	        // Kill our event loop
-	        if (this.loopId) {
-	            clearInterval(this.loopId);
-	        }
-	    };
-	    NotifierComponent.prototype.requestNotificationPermission = function () {
-	        var _this = this;
-	        Notification.requestPermission().then(function (result) {
-	            if (result == "granted") {
-	                // mark notifications as enabled
-	                _this.state.enabled = true;
-	                _this.setState(_this.state);
-	            }
-	        });
-	    };
-	    NotifierComponent.prototype.recordSendingNotification = function () {
-	        this.state.lastNotificationTime = moment().unix();
-	        this.setState(this.state);
-	    };
-	    NotifierComponent.prototype.spawnNotification = function (body, onClick) {
-	        var n = new Notification("Starter", { body: body });
-	        // Automatically close the notification after 5 seconds.
-	        n.onclick = onClick;
-	        setTimeout(n.close.bind(n), 5000);
-	    };
-	    NotifierComponent.prototype.sendOutOfEventNotification = function () {
-	        this.recordSendingNotification();
-	        this.spawnNotification("No event info, not tracking time. :(", function (e) {
-	            e.target.close();
-	            window.focus();
-	        });
-	    };
-	    NotifierComponent.prototype.timeSinceLastEventSec = function () {
-	        var nowTimestamp = moment().unix() * 1000;
-	        var minTimeSinceLastEvent = Number.MAX_VALUE;
-	        this.props.events.forEach(function (event) {
-	            if (nowTimestamp > event.startTime) {
-	                var endTimestamp = event.startTime + event.durationSecs * 1000;
-	                if (nowTimestamp < endTimestamp) {
-	                    // We are currently in this event, use -1 as a sentinel value
-	                    minTimeSinceLastEvent = -1;
-	                }
-	                else {
-	                    minTimeSinceLastEvent = Math.min(minTimeSinceLastEvent, nowTimestamp - endTimestamp);
-	                }
-	            }
-	        });
-	        return minTimeSinceLastEvent / 1000;
-	    };
-	    NotifierComponent.prototype.beginLoop = function () {
-	        var _this = this;
-	        var loop = function () {
-	            if (!_this.state.enabled) {
-	                return;
-	            }
-	            // If it hasn't been more than FORCED_INTERVAL seconds, we aren't allowed to send
-	            // another notification
-	            if (moment().unix() - _this.state.lastNotificationTime < FORCED_INTERVAL) {
-	                return;
-	            }
-	            var timeSinceLastEvent = _this.timeSinceLastEventSec();
-	            if (timeSinceLastEvent < 0) {
-	                // Currently in event still
-	                return;
-	            }
-	            // Regardless of the loop freq, we want to make the notification progressively more
-	            // likely to happen until we are in an event.
-	            // We will target 100% notification probability after LAG_THRESHOLD seconds and linear
-	            // probability back down.
-	            if (Math.random() < timeSinceLastEvent / LAG_THRESHOLD) {
-	                _this.sendOutOfEventNotification();
-	            }
-	            // TODO: Also notify if we don't have a task in progress?
-	        };
-	        this.loopId = setInterval(loop.bind(this), LOOP_FREQ * 1000);
-	    };
-	    NotifierComponent.prototype.render = function () {
-	        return React.createElement("div", null);
-	    };
-	    return NotifierComponent;
-	}(React.Component));
-	exports.NotifierComponent = NotifierComponent;
 
 
 /***/ }

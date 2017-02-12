@@ -223,6 +223,7 @@ div.task-detail-container div.title {
 
 div.task-detail-container div.options a {
     padding: 0 .25em;
+    cursor: pointer;
 }
 
 div.task-detail-container div.task-status {
@@ -606,6 +607,14 @@ div.merged-container {
 div.main-pane {
     max-width: 67%;
     min-width: 67%;
+
+    height: calc(100vh - 97px);
+    display: flex;
+    flex-direction: column;
+}
+
+div.merged-task-container {
+    display: flex;
 }
 
 div.right-pane {
@@ -614,9 +623,11 @@ div.right-pane {
 }
 
 /* Ad-hoc fixes for tasks */
+div.main-pane div.task-board {
+    height: auto;
+}
+
 div.main-pane div.task-board div.full-column-container {
-    height: calc(100vh - 129px);
-    min-height: 0;
     overflow-y: auto;
 }
 

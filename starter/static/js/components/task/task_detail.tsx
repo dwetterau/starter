@@ -56,8 +56,8 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
 
     renderOptions() {
         return <div className="options">
-            <a href="#" className="edit-button" onClick={this.props.editCallback}>Edit</a>
-            <a href="#" className="close-button" onClick={this.props.closeCallback}>Close</a>
+            <a className="edit-button" onClick={this.props.editCallback}>Edit</a>
+            <a className="close-button" onClick={this.props.closeCallback}>Close</a>
         </div>
     }
 

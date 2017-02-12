@@ -12,7 +12,7 @@ import {ModalComponent} from "../lib/modal";
 import {TaskDetailComponent} from "./task_detail";
 import {
     signalCreateEventWithTask, signalEndEventWithTask,
-    signalDisplayTaskInfo
+    signalDisplayTaskInfo, signalBeginEditingTask
 } from "../../events";
 
 export interface TaskBoardProps {
@@ -33,7 +33,6 @@ export interface TaskBoardState {
     createColumnType?: number,
     draggingTask?: Task,
     editingTask?: Task,
-    selectedTask?: Task,
     shouldHideClosedTasks: boolean,
     selectedTag?: Tag,
 }
@@ -55,21 +54,26 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         this.setState(this.getState(props, this.state.viewType))
     }
 
-    _handleDisplayTaskInfo = null;
+    _handleBeginEditingTask = null;
     componentDidMount() {
-        this._handleDisplayTaskInfo = this.handleDisplayTaskInfo.bind(this);
-        document.addEventListener(signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+        this._handleBeginEditingTask = this.handleBeginEditingTask.bind(this);
+        document.addEventListener(signalBeginEditingTask, this._handleBeginEditingTask);
     }
 
     componentWillUnmount() {
-        document.removeEventListener(signalDisplayTaskInfo, this._handleDisplayTaskInfo);
-        this._handleDisplayTaskInfo = null;
+        document.removeEventListener(signalBeginEditingTask, this._handleBeginEditingTask);
+        this._handleBeginEditingTask = null;
     }
 
-    handleDisplayTaskInfo(e: CustomEvent) {
+    handleBeginEditingTask(e: CustomEvent) {
         // Sets the task identified by the event to be selected
+        if (this.state.editingTask) {
+            // Already editing a different task.
+            return;
+        }
+
         let taskId = e.detail;
-        this.state.selectedTask = this.props.tasksById[taskId];
+        this.state.editingTask = this.props.tasksById[taskId];
         this.setState(this.state);
     }
 
@@ -98,7 +102,6 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             createColumnType: null,
             draggingTask: null,
             editingTask: null,
-            selectedTask: (this.state) ? this.state.selectedTask : null,
             selectedTag: selectedTag,
             shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : true,
         };
@@ -296,34 +299,18 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         jQuery(event.target).removeClass("drop-container")
     }
 
-    onClick(task: Task, e: any) {
+    onClick(taskId: number, e: any) {
         // We stop propagation to prevent event creation modals from appearing.
         e.stopPropagation();
 
-        this.state.selectedTask = task;
-        this.setState(this.state);
+        // Send an event to show the detail for the task
+        let event = new CustomEvent(
+            signalDisplayTaskInfo,
+            {'detail': taskId},
+        );
+        document.dispatchEvent(event);
 
         return false;
-    }
-
-    clearSelectedTask() {
-        this.state.selectedTask = null;
-        this.setState(this.state);
-    }
-
-    beginEditingSelected() {
-        if (this.state.editingTask) {
-            // Already editing a task...
-            return
-        }
-        if (!this.state.selectedTask) {
-            // Nothing to start editing...
-            return
-        }
-        // TODO: Only store ids in these values instead of references.
-        this.state.editingTask = JSON.parse(JSON.stringify(this.state.selectedTask));
-
-        this.setState(this.state);
     }
 
     onDoubleClick(task: Task) {
@@ -494,7 +481,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                             draggable={true}
                             onDragStart={this.onDragStart.bind(this, task)}
                             onDragEnd={this.onDragEnd.bind(this, task)}
-                            onClick={this.onClick.bind(this, task)}
+                            onClick={this.onClick.bind(this, task.id)}
                             onDoubleClick={this.onDoubleClick.bind(this, task)} >
                     <TaskComponent
                         task={task}
@@ -576,26 +563,12 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         </ModalComponent>
     }
 
-    renderSelectedTask() {
-        if (!this.state.selectedTask) {
-            return;
-        }
-        return <TaskDetailComponent
-            task={this.state.selectedTask}
-            tagsById={this.props.tagsById}
-            eventsById={this.props.eventsById}
-            closeCallback={this.clearSelectedTask.bind(this)}
-            editCallback={this.beginEditingSelected.bind(this)}
-        />
-    }
-
     render() {
         return <div className="task-board">
             {this.renderOptions()}
             {this.renderColumns()}
             {this.renderEditingTask()}
             {this.renderCreateTask()}
-            {this.renderSelectedTask()}
         </div>
     }
 }

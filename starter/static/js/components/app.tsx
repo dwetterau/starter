@@ -8,6 +8,8 @@ import {TaskBoardComponent} from "./task/task_board"
 import {CalendarComponent, CalendarViewType} from "./event/calendar";
 import {AppHeader} from "./app_header";
 import {NotifierComponent} from "./notifier";
+import {signalDisplayTaskInfo, signalBeginEditingTask} from "../events";
+import {TaskDetailComponent} from "./task/task_detail";
 
 export interface AppProps {
     meUser: User,
@@ -15,6 +17,12 @@ export interface AppProps {
     events: Array<Event>,
     tags: Array<Tag>,
 }
+
+interface DetailInfo {
+    tagId?: number,
+    taskId?: number,
+}
+
 export interface AppState {
     tasks: Array<Task>,
     events: Array<Event>,
@@ -22,6 +30,7 @@ export interface AppState {
     tagsById: TagsById,
     eventsById: EventsById,
     tasksById: TasksById,
+    detailInfo: DetailInfo,
 }
 
 export enum AppViewMode {
@@ -35,13 +44,14 @@ export class App extends React.Component<AppProps, AppState> {
 
     constructor(props: AppProps) {
         super(props);
-        const newState = {
+        const newState: AppState = {
             tasks: props.tasks,
             events: props.events,
             tags: props.tags,
             tagsById: {},
             eventsById: {},
             tasksById: {},
+            detailInfo: {},
         };
         App.updateTagsById(newState);
         App.updateEventsById(newState);
@@ -49,6 +59,30 @@ export class App extends React.Component<AppProps, AppState> {
         this.state = newState;
     }
 
+    // Global listener registration
+    _handleDisplayTaskInfo = null;
+    componentDidMount() {
+        this._handleDisplayTaskInfo = this.handleDisplayTaskInfo.bind(this);
+        document.addEventListener(signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener(signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+        this._handleDisplayTaskInfo = null;
+    }
+
+    handleDisplayTaskInfo(e: CustomEvent) {
+        // Sets the task identified by the event to be selected
+        let taskId = e.detail;
+        this.state.detailInfo = {
+            taskId: taskId,
+            tagId: null,
+        };
+
+        this.setState(this.state);
+    }
+
+    // API-style methods for updating global state.
     static updateTasksById(state: AppState) {
         const tasksById: TasksById = {};
         for (let task of state.tasks) {
@@ -209,11 +243,50 @@ export class App extends React.Component<AppProps, AppState> {
         // TODO: Filter out all tags and children or something
     }
 
+    // Inline handlers for detail changes
+    beginEditingSelectedTask() {
+        if (!this.state.detailInfo.taskId) {
+            // No task to start editing.
+            return
+        }
+        let event = new CustomEvent(
+            signalBeginEditingTask,
+            {'detail': this.state.detailInfo.taskId},
+        );
+        document.dispatchEvent(event)
+    }
+
+    closeDetail() {
+        this.state.detailInfo = {};
+        this.setState(this.state);
+    }
+
+
     renderNotifier() {
         return <NotifierComponent
             tasks={this.state.tasks}
             events={this.state.events}
         />
+    }
+
+    renderDetail() {
+        if (this.state.detailInfo.taskId) {
+            let task = this.state.tasksById[this.state.detailInfo.taskId];
+            if (!task) {
+                console.error("Task not found to show detail for...");
+                return
+            }
+
+            return <TaskDetailComponent
+                task={task}
+                tagsById={this.state.tagsById}
+                eventsById={this.state.eventsById}
+                closeCallback={this.closeDetail.bind(this)}
+                editCallback={this.beginEditingSelectedTask.bind(this)}
+            />
+        } else if (this.state.detailInfo.tagId) {
+            // TODO: Allow tag info to be expanded
+        }
     }
 
     renderMergedView(tagName) {
@@ -222,6 +295,7 @@ export class App extends React.Component<AppProps, AppState> {
                 <div className="merged-task-container">
                     {this.renderTaskBoard(tagName)}
                 </div>
+                {this.renderDetail()}
             </div>
             <div className="right-pane">
                 <div className="merged-calendar-container">
