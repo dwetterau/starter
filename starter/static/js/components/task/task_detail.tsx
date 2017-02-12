@@ -2,6 +2,7 @@ import * as React from "react"
 import * as moment from "moment";
 import {Task, TagsById, EventsById, stateNameList, priorityNameList} from "../../models"
 import {Linkify} from "../lib/Linkify"
+import {renderDuration} from "../lib/util";
 
 interface TaskDetailProps {
     task: Task,
@@ -111,51 +112,13 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
         </div>
     }
 
-    renderDuration(seconds: number): string {
-        let final = '';
-        if (seconds >= 60 * 60) {
-            let numHours = Math.floor(seconds / (60 * 60));
-            final = `${numHours} hour`;
-            if (numHours != 1) {
-                final += "s"
-            }
-            seconds -= (numHours * (60 * 60))
-        }
-        if (seconds >= 60) {
-            if (final.length) {
-                final += ", "
-            }
-            let numMinutes = Math.floor(seconds / 60);
-            final += `${numMinutes} minute`;
-            if (numMinutes != 1) {
-                final += "s"
-            }
-            seconds -= (numMinutes * 60)
-        }
-        if (seconds > 0) {
-            if (final.length) {
-                final += ", "
-            }
-            final += `${seconds} second`;
-            if (seconds != 1) {
-                final += "s"
-            }
-        }
-        if (!final.length) {
-            // The 0 case
-            return "None"
-        }
-
-        return final
-    }
-
     renderEstimatedTime() {
         let estimatedTime = this.props.task.expectedDurationSecs;
         if (estimatedTime == 0) {
             return
         }
         return <div className="time-estimate">
-            Estimated: {this.renderDuration(estimatedTime)}
+            Estimated: {renderDuration(estimatedTime)}
         </div>
     }
 
@@ -176,22 +139,24 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
         let spentTime = this.computeTotalTimeSpent();
 
         if (scheduledTime == 0) {
-            return;
+            return <div className="task-time-info">
+                {this.renderEstimatedTime()}
+            </div>
         }
 
         if (scheduledTime == spentTime) {
          return <div className="task-time-info">
              {this.renderEstimatedTime()}
-             Scheduled and Spent: {this.renderDuration(scheduledTime)}
+             Scheduled and Spent: {renderDuration(scheduledTime)}
              {this.renderProgress(spentTime)}
          </div>
         }
 
         return <div className="task-time-info">
             {this.renderEstimatedTime()}
-            Scheduled: {this.renderDuration(scheduledTime)}
+            Scheduled: {renderDuration(scheduledTime)}
             <br />
-            Spent: {this.renderDuration(spentTime)}
+            Spent: {renderDuration(spentTime)}
             {this.renderProgress(spentTime)}
         </div>
     }

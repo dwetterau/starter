@@ -2060,6 +2060,7 @@
 	var moment = __webpack_require__(21);
 	var models_1 = __webpack_require__(16);
 	var Linkify_1 = __webpack_require__(22);
+	var util_1 = __webpack_require__(34);
 	var TaskDetailComponent = (function (_super) {
 	    __extends(TaskDetailComponent, _super);
 	    function TaskDetailComponent() {
@@ -2149,42 +2150,6 @@
 	                React.createElement("div", { className: "task-color -s" + this.props.task.state }),
 	                React.createElement("div", null, stateName)));
 	    };
-	    TaskDetailComponent.prototype.renderDuration = function (seconds) {
-	        var final = '';
-	        if (seconds >= 60 * 60) {
-	            var numHours = Math.floor(seconds / (60 * 60));
-	            final = numHours + " hour";
-	            if (numHours != 1) {
-	                final += "s";
-	            }
-	            seconds -= (numHours * (60 * 60));
-	        }
-	        if (seconds >= 60) {
-	            if (final.length) {
-	                final += ", ";
-	            }
-	            var numMinutes = Math.floor(seconds / 60);
-	            final += numMinutes + " minute";
-	            if (numMinutes != 1) {
-	                final += "s";
-	            }
-	            seconds -= (numMinutes * 60);
-	        }
-	        if (seconds > 0) {
-	            if (final.length) {
-	                final += ", ";
-	            }
-	            final += seconds + " second";
-	            if (seconds != 1) {
-	                final += "s";
-	            }
-	        }
-	        if (!final.length) {
-	            // The 0 case
-	            return "None";
-	        }
-	        return final;
-	    };
 	    TaskDetailComponent.prototype.renderEstimatedTime = function () {
 	        var estimatedTime = this.props.task.expectedDurationSecs;
 	        if (estimatedTime == 0) {
@@ -2192,7 +2157,7 @@
 	        }
 	        return React.createElement("div", { className: "time-estimate" },
 	            "Estimated: ",
-	            this.renderDuration(estimatedTime));
+	            util_1.renderDuration(estimatedTime));
 	    };
 	    TaskDetailComponent.prototype.renderProgress = function (spentTime) {
 	        if (!spentTime || !this.props.task.expectedDurationSecs) {
@@ -2208,22 +2173,22 @@
 	        var scheduledTime = this.computeTotalTimeScheduled();
 	        var spentTime = this.computeTotalTimeSpent();
 	        if (scheduledTime == 0) {
-	            return;
+	            return React.createElement("div", { className: "task-time-info" }, this.renderEstimatedTime());
 	        }
 	        if (scheduledTime == spentTime) {
 	            return React.createElement("div", { className: "task-time-info" },
 	                this.renderEstimatedTime(),
 	                "Scheduled and Spent: ",
-	                this.renderDuration(scheduledTime),
+	                util_1.renderDuration(scheduledTime),
 	                this.renderProgress(spentTime));
 	        }
 	        return React.createElement("div", { className: "task-time-info" },
 	            this.renderEstimatedTime(),
 	            "Scheduled: ",
-	            this.renderDuration(scheduledTime),
+	            util_1.renderDuration(scheduledTime),
 	            React.createElement("br", null),
 	            "Spent: ",
-	            this.renderDuration(spentTime),
+	            util_1.renderDuration(spentTime),
 	            this.renderProgress(spentTime));
 	    };
 	    TaskDetailComponent.prototype.render = function () {
@@ -5962,6 +5927,43 @@
 	    };
 	}
 	exports.debounce = debounce;
+	function renderDuration(seconds) {
+	    var final = '';
+	    if (seconds >= 60 * 60) {
+	        var numHours = Math.floor(seconds / (60 * 60));
+	        final = numHours + " hour";
+	        if (numHours != 1) {
+	            final += "s";
+	        }
+	        seconds -= (numHours * (60 * 60));
+	    }
+	    if (seconds >= 60) {
+	        if (final.length) {
+	            final += ", ";
+	        }
+	        var numMinutes = Math.floor(seconds / 60);
+	        final += numMinutes + " minute";
+	        if (numMinutes != 1) {
+	            final += "s";
+	        }
+	        seconds -= (numMinutes * 60);
+	    }
+	    if (seconds > 0) {
+	        if (final.length) {
+	            final += ", ";
+	        }
+	        final += seconds + " second";
+	        if (seconds != 1) {
+	            final += "s";
+	        }
+	    }
+	    if (!final.length) {
+	        // The 0 case
+	        return "None";
+	    }
+	    return final;
+	}
+	exports.renderDuration = renderDuration;
 
 
 /***/ },

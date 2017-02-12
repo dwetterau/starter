@@ -18,3 +18,42 @@ export function debounce(func, window) {
         }
     }
 }
+
+export function renderDuration(seconds: number): string {
+        let final = '';
+        if (seconds >= 60 * 60) {
+            let numHours = Math.floor(seconds / (60 * 60));
+            final = `${numHours} hour`;
+            if (numHours != 1) {
+                final += "s"
+            }
+            seconds -= (numHours * (60 * 60))
+        }
+        if (seconds >= 60) {
+            if (final.length) {
+                final += ", "
+            }
+            let numMinutes = Math.floor(seconds / 60);
+            final += `${numMinutes} minute`;
+            if (numMinutes != 1) {
+                final += "s"
+            }
+            seconds -= (numMinutes * 60)
+        }
+        if (seconds > 0) {
+            if (final.length) {
+                final += ", "
+            }
+            final += `${seconds} second`;
+            if (seconds != 1) {
+                final += "s"
+            }
+        }
+        if (!final.length) {
+            // The 0 case
+            return "None"
+        }
+
+        return final
+    }
+
