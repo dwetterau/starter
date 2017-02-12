@@ -325,8 +325,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         ) => {
             // To help with rounding errors
             let eps = 0.0000001;
-            if (top >= idTopAndHeight.top - eps) {
-                if (top < idTopAndHeight.top + idTopAndHeight.height + eps) {
+            if (top >= idTopAndHeight.top + eps) {
+                if (top < idTopAndHeight.top + idTopAndHeight.height - eps) {
                     return true;
                 }
             }

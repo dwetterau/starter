@@ -4981,8 +4981,8 @@
 	        var overlaps = function (idTopAndHeight, top) {
 	            // To help with rounding errors
 	            var eps = 0.0000001;
-	            if (top >= idTopAndHeight.top - eps) {
-	                if (top < idTopAndHeight.top + idTopAndHeight.height + eps) {
+	            if (top >= idTopAndHeight.top + eps) {
+	                if (top < idTopAndHeight.top + idTopAndHeight.height - eps) {
 	                    return true;
 	                }
 	            }
