@@ -8,8 +8,11 @@ import {TaskBoardComponent} from "./task/task_board"
 import {CalendarComponent, CalendarViewType} from "./event/calendar";
 import {AppHeader} from "./app_header";
 import {NotifierComponent} from "./notifier";
-import {signalDisplayTaskInfo, signalBeginEditingTask} from "../events";
+import {
+    signalDisplayTaskInfo, signalBeginEditingTask, signalDisplayTagInfo,
+} from "../events";
 import {TaskDetailComponent} from "./task/task_detail";
+import {TagDetailComponent} from "./tag/tag_detail";
 
 export interface AppProps {
     meUser: User,
@@ -61,14 +64,21 @@ export class App extends React.Component<AppProps, AppState> {
 
     // Global listener registration
     _handleDisplayTaskInfo = null;
+    _handleDisplayTagInfo = null;
     componentDidMount() {
         this._handleDisplayTaskInfo = this.handleDisplayTaskInfo.bind(this);
         document.addEventListener(signalDisplayTaskInfo, this._handleDisplayTaskInfo);
+
+        this._handleDisplayTagInfo = this.handleDisplayTagInfo.bind(this);
+        document.addEventListener(signalDisplayTagInfo, this._handleDisplayTagInfo);
     }
 
     componentWillUnmount() {
         document.removeEventListener(signalDisplayTaskInfo, this._handleDisplayTaskInfo);
         this._handleDisplayTaskInfo = null;
+
+        document.removeEventListener(signalDisplayTagInfo, this._handleDisplayTagInfo);
+        this._handleDisplayTagInfo = null;
     }
 
     handleDisplayTaskInfo(e: CustomEvent) {
@@ -77,6 +87,17 @@ export class App extends React.Component<AppProps, AppState> {
         this.state.detailInfo = {
             taskId: taskId,
             tagId: null,
+        };
+
+        this.setState(this.state);
+    }
+
+    handleDisplayTagInfo(e: CustomEvent) {
+        // Sets the tag identified by the event to be selected
+        let tagId = e.detail;
+        this.state.detailInfo = {
+            taskId: null,
+            tagId: tagId,
         };
 
         this.setState(this.state);
@@ -261,7 +282,6 @@ export class App extends React.Component<AppProps, AppState> {
         this.setState(this.state);
     }
 
-
     renderNotifier() {
         return <NotifierComponent
             tasks={this.state.tasks}
@@ -279,13 +299,22 @@ export class App extends React.Component<AppProps, AppState> {
 
             return <TaskDetailComponent
                 task={task}
-                tagsById={this.state.tagsById}
                 eventsById={this.state.eventsById}
                 closeCallback={this.closeDetail.bind(this)}
                 editCallback={this.beginEditingSelectedTask.bind(this)}
             />
         } else if (this.state.detailInfo.tagId) {
-            // TODO: Allow tag info to be expanded
+            let tag = this.state.tagsById[this.state.detailInfo.tagId];
+            if (!tag) {
+                console.error("Tag not found to show detail for...");
+                return
+            }
+
+            return <TagDetailComponent
+                tag={tag}
+                eventsById={this.state.eventsById}
+                closeCallback={this.closeDetail.bind(this)}
+            />
         }
     }
 

@@ -6,7 +6,6 @@ import {renderDuration} from "../lib/util";
 
 interface TaskDetailProps {
     task: Task,
-    tagsById: TagsById,
     eventsById: EventsById,
     closeCallback: () => void
     editCallback: () => void

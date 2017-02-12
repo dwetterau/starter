@@ -479,6 +479,12 @@ div.event-container div.task-id-card {
 }
 /* End of Tag graph CSS */
 
+/* General Tag CSS */
+div.tag.card {
+    cursor: pointer;
+}
+/* End of General Tag CSS */
+
 /* Tokenizer CSS */
 div.tokenizer-container {
     display: flex;
