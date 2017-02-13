@@ -313,6 +313,7 @@ export class App extends React.Component<AppProps, AppState> {
             return <TagDetailComponent
                 tag={tag}
                 eventsById={this.state.eventsById}
+                tagsById={this.state.tagsById}
                 closeCallback={this.closeDetail.bind(this)}
             />
         }

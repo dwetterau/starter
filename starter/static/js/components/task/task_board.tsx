@@ -14,6 +14,7 @@ import {
     signalCreateEventWithTask, signalEndEventWithTask,
     signalDisplayTaskInfo, signalBeginEditingTask
 } from "../../events";
+import {getTagAndDescendantsRecursive} from "../lib/util";
 
 export interface TaskBoardProps {
     meUser: User,
@@ -151,18 +152,11 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
         const {attr, orderedNameAndValue, sortFunc} = typeToHelpers[type];
 
-        const allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
+        let allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
         if (selectedTag) {
-            const queue = [selectedTag];
-            while (queue.length) {
-                const curTag: Tag = queue.pop();
-                allChildIdsOfSelectedTag[curTag.id] = true;
-                for (let tagId of curTag.childTagIds) {
-                    if (!allChildIdsOfSelectedTag[tagId]) {
-                        queue.push(this.props.tagsById[tagId]);
-                    }
-                }
-            }
+            allChildIdsOfSelectedTag = getTagAndDescendantsRecursive(
+                selectedTag.id, this.props.tagsById
+            );
         }
 
         const shouldHideTask = (task: Task) => {

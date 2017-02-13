@@ -8,7 +8,7 @@ import {Event, User, TagsById, Tag, TasksById, Task, EventsById} from "../../mod
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
 import {ModalComponent} from "../lib/modal";
-import {debounce} from "../lib/util";
+import {debounce, getTagAndDescendantsRecursive} from "../lib/util";
 import {signalCreateEventWithTask, signalEndEventWithTask} from "../../events";
 
 export interface CalendarProps {
@@ -248,19 +248,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         let dayStart = moment(startTimestamp); // From seconds back into moment
 
-        // I just died a little inside, refactor this to somewhere more re-usable.
-        const allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
+       let allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
         if (this.state && this.state.selectedTag) {
-            const queue = [this.state.selectedTag];
-            while (queue.length) {
-                const curTag: Tag = queue.pop();
-                allChildIdsOfSelectedTag[curTag.id] = true;
-                for (let tagId of curTag.childTagIds) {
-                    if (!allChildIdsOfSelectedTag[tagId]) {
-                        queue.push(this.props.tagsById[tagId]);
-                    }
-                }
-            }
+            allChildIdsOfSelectedTag = getTagAndDescendantsRecursive(
+                this.state.selectedTag.id, this.props.tagsById
+            );
         }
 
         const shouldHide = (event: Event) => {

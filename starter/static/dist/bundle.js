@@ -134,7 +134,7 @@
 	
 	
 	// module
-	exports.push([module.id, "* {\n    font-family: \"Open Sans\",\"lucida grande\",\"Segoe UI\",arial,verdana,\"lucida sans unicode\",tahoma,sans-serif!important;\n    letter-spacing: .3px;\n    color: #47525d;\n    font-weight: 100;\n}\n\nbody {\n    background: #f6f9fc;\n    margin: 0;\n}\n\ndiv.card {\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    background: #fff;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n    padding: 1em 1em 0;\n    background-color: #fff;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option {\n    margin-right: 1em;\n    text-decoration: none;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n    height: calc(100vh - 97px);\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n    flex-shrink: 0;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container div.columns-container {\n    display: flex;\n    flex-direction: row;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    padding: .5em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\ndiv.task-board .task,.task-title {\n    text-overflow: ellipsis;\n    overflow-x: hidden;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\n.task .task-columns {\n    display: flex;\n}\n\n.task-columns .main-column {\n    width: 100%;\n}\n\n.task-columns .task-color {\n    width: 3px;\n    flex-shrink: 0;\n    margin: -20px 17px -20px -20px;\n}\n\n/* Unknown */\n.task-color.-p0 {\n    background-color: #8b4513;\n}\n\n/* Highest */\n.task-color.-p500 {\n    background-color: #f0f;\n}\n\n/* High */\n.task-color.-p400 {\n    background-color: #f00;\n}\n\n/* Normal */\n.task-color.-p300 {\n    background-color: #ffa500;\n}\n\n/* Low */\n.task-color.-p200 {\n    background-color: #228b22;\n}\n\n/* Lowest */\n.task-color.-p100 {\n    background-color: #6495ed;\n}\n\n/* Open */\n.task-color.-s0 {\n    background-color: #228b22;\n}\n\n/* In Progress */\n.task-color.-s500 {\n    background-color: #6495ed;\n}\n\n/* Blocked */\n.task-color.-s750 {\n    background-color: #f00;\n}\n\n/* Closed */\n.task-color.-s1000 {\n    background-color: #8b4513;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Task Detail view CSS */\ndiv.task-detail-container {\n    background-color: #fff;\n    padding: .5em;\n    overflow-wrap: break-word;\n}\n\ndiv.task-detail-container div.id-and-options {\n    text-decoration: underline;\n    display: flex;\n    justify-content: space-between;\n}\n\ndiv.task-detail-container div.title {\n    font-weight: bold;\n}\n\ndiv.task-detail-container div.options a {\n    padding: 0 .25em;\n    cursor: pointer;\n}\n\ndiv.task-detail-container div.task-status {\n    display: flex;\n    padding-top: .25em;\n}\n\ndiv.task-detail-container div.task-status div {\n    margin-right: .5em;\n}\n\ndiv.task-detail-container div.task-status div.info-container {\n    display: flex;\n}\n\ndiv.task-detail-container div.task-status div.task-color {\n    height: 22px;\n    width: 1em;\n    margin-right: .25em;\n    margin-left: -.25em;\n}\n\ndiv.task-detail-container div.task-time-info {\n    padding-top: .25em;\n}\n/* End of Task Detail view CSS */\n\n/* Calendar CSS */\ndiv.calendar {\n    width: 100%;\n}\n\ndiv.calendar div.options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n}\n\ndiv.calendar div.options div.view-type-selector {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.calendar div.options div.pagination-container {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.pagination-container div.pagination-option {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.calendar div.tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\n\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n    height: calc(100vh - 140px); /* 140px is the height of the header */\n    padding: 0 2em;\n}\n\ndiv.calendar div.full-column-container div.header-and-content-container {\n    overflow: hidden;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n    margin-top: .5em;\n    margin-right: 15px;\n    text-align: center;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    flex-grow: 1;\n    height: 22px;\n}\n\ndiv.calendar div.column-header.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    flex-grow: 1;\n    min-width: 120px;\n    position: relative;\n}\n\n\ndiv.calendar div.column-container.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-container table {\n    width: 100%;\n}\n\ndiv.calendar div.column-container.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-right: 2px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    min-width: 120px;\n    width: 100%;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(0, 0, 0, .2);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n    flex-wrap: wrap;\n    align-content: space-between;\n    overflow-x: hidden;\n    height: 100%;\n}\n\ndiv.event-container div.name {\n    flex-grow: 1;\n}\n\ndiv.event-card-container {\n    align-self: flex-end;\n    flex-grow: 1;\n    display: flex;\n    justify-content: flex-end;\n    padding-bottom: .25em;\n}\n\ndiv.event-card-container div.card {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n\ndiv.event-container div.task-id-card {\n    cursor: pointer;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* General Tag CSS */\ndiv.tag.card {\n    cursor: pointer;\n}\n/* End of General Tag CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokenizer-container div.pending-token-container {\n    width: 100%;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    padding: .1em .25em;\n    margin-top: -3px;\n    margin-bottom: 0;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n\ndiv.tokenizer-container div.pending-state-container {\n    width: 100%;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container {\n    position: absolute;\n    background: #fff;\n    border-radius: 0 3px 3px;\n    border: 1px solid rgba(0, 0, 0, .2);\n    border-top: none;\n    z-index: 3;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token {\n    padding: .5em;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.tokenizer-container div.autocomplete-token-container:last-child {\n    border-bottom: none;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token:hover {\n    cursor: pointer;\n    background-color: #f6f9fc;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token.-selected {\n    background-color: #f6f9fc;\n}\n/* End of Tokenizer CSS */\n\n/* Modal CSS */\ndiv.modal-container div.background {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .2);\n    z-index: 4;\n\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\ndiv.modal.card {\n    min-width: 350px;\n}\n\ndiv.modal h3 {\n    margin: 0;\n}\n\ndiv.modal-container div.cancel-button-container {\n    cursor: pointer;\n    float: right;\n}\n\ndiv.modal label {\n    display: block;\n    padding-top: .5em;\n}\n\ndiv.modal input,textarea,select {\n    width: 100%;\n    background-color: #fff;\n    border: 1px solid rgba(0, 0, 0, .4);\n    margin: 0;\n    padding: 0;\n}\n\ndiv.modal input[type=button] {\n    margin-top: .5em;\n    height: 30px;\n}\n\ndiv.modal div.rendered-token {\n    margin-top: 0;\n}\n\ndiv.modal div.checkbox-container {\n    display: flex;\n    align-items: center;\n}\n\ndiv.modal div.checkbox-container input {\n    width: 30px;\n    height: 15px;\n    margin-top: 7px;\n}\n/* End of Modal CSS */\n\n/* Multi-pane CSS */\ndiv.merged-container {\n    display: flex;\n}\n\ndiv.main-pane {\n    max-width: 67%;\n    min-width: 67%;\n\n    height: calc(100vh - 97px);\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.merged-task-container {\n    display: flex;\n}\n\ndiv.right-pane {\n    max-width: 33%;\n    min-width: 33%;\n}\n\n/* Ad-hoc fixes for tasks */\ndiv.main-pane div.task-board {\n    height: auto;\n}\n\ndiv.main-pane div.task-board div.full-column-container {\n    overflow-y: auto;\n}\n\n/* Ad-hoc fixes for calendar */\ndiv.right-pane div.calendar div.full-column-container {\n    padding: 0;\n}\n\ndiv.right-pane div.calendar div.tag-selector-container {\n    margin-left: 0;\n}\n\ndiv.right-pane div.calendar div.column-header {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-header.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.column-header.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.options div.pending-token-container input {\n    width: 100%;\n}\n\ndiv.right-pane div.calendar div.options div.tag-selector-label {\n    flex-shrink: 0;\n}\n/* End of Multi-pane CSS */", ""]);
+	exports.push([module.id, "* {\n    font-family: \"Open Sans\",\"lucida grande\",\"Segoe UI\",arial,verdana,\"lucida sans unicode\",tahoma,sans-serif!important;\n    letter-spacing: .3px;\n    color: #47525d;\n    font-weight: 100;\n}\n\nbody {\n    background: #f6f9fc;\n    margin: 0;\n}\n\ndiv.card {\n    border: 1px solid rgba(0, 0, 0, .04);\n    box-shadow: 0 1px 4px rgba(0, 0, 0, .03);\n    margin: 0 0 10px 0;\n    padding: 20px;\n    border-radius: 3px;\n    background: #fff;\n    -webkit-tap-highlight-color: transparent;\n    box-sizing: border-box;\n    display: block;\n}\n\n/* Header CSS */\ndiv.header-container {\n    display: flex;\n    justify-content: space-between;\n    flex-wrap: wrap;\n    padding: 1em 1em 0;\n    background-color: #fff;\n}\n\nh1.header-title {\n    margin: 0;\n}\n\ndiv.header-container div.view-mode-selector {\n    display: flex;\n    width: 100%;\n    margin: .5em 0;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option {\n    margin-right: 1em;\n    text-decoration: none;\n}\n\ndiv.header-container div.view-mode-selector a.view-mode-option.-selected {\n    text-decoration: underline;\n}\n\n/* End of Header CSS */\n\n/* Task Board CSS */\ndiv.task-board {\n    width: 100%;\n    height: calc(100vh - 97px);\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.task-board div.task-board-options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n    flex-shrink: 0;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector {\n    display: flex;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.task-board div.task-board-options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.task-board div.hide-closed-tasks {\n    margin-left: .5em;\n}\n\ndiv.task-board div.task-board-tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.task-board div.task-board-tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\ndiv.task-board div.full-column-container div.columns-container {\n    display: flex;\n    flex-direction: row;\n}\n\ndiv.task-board div.column-container {\n    display: flex;\n    flex-direction: column;\n    width: 25%;\n    padding: .5em;\n}\n\ndiv.task-board div.column-container.drop-container {\n    background-color: rgba(0, 0, 0, .04);\n}\n\ndiv.task-board div.draggable-task.-hidden {\n    display: none;\n}\n\ndiv.task-board .task,.task-title {\n    text-overflow: ellipsis;\n    overflow-x: hidden;\n}\n\n/* End of Task Board CSS */\n\n/* Task view CSS */\n.task-id {\n    font-weight: bolder;\n    text-decoration: underline;\n}\n\n.task-title {\n    font-weight: bold;\n}\n\n.task .task-columns {\n    display: flex;\n}\n\n.task-columns .main-column {\n    width: 100%;\n}\n\n.task-columns .task-color {\n    width: 3px;\n    flex-shrink: 0;\n    margin: -20px 17px -20px -20px;\n}\n\n/* Unknown */\n.task-color.-p0 {\n    background-color: #8b4513;\n}\n\n/* Highest */\n.task-color.-p500 {\n    background-color: #f0f;\n}\n\n/* High */\n.task-color.-p400 {\n    background-color: #f00;\n}\n\n/* Normal */\n.task-color.-p300 {\n    background-color: #ffa500;\n}\n\n/* Low */\n.task-color.-p200 {\n    background-color: #228b22;\n}\n\n/* Lowest */\n.task-color.-p100 {\n    background-color: #6495ed;\n}\n\n/* Open */\n.task-color.-s0 {\n    background-color: #228b22;\n}\n\n/* In Progress */\n.task-color.-s500 {\n    background-color: #6495ed;\n}\n\n/* Blocked */\n.task-color.-s750 {\n    background-color: #f00;\n}\n\n/* Closed */\n.task-color.-s1000 {\n    background-color: #8b4513;\n}\n\ndiv.task-tags-container {\n    display: flex;\n}\n\ndiv.task-tags-container div.tag {\n    margin-left: .25em;\n    padding: .1em .25em;\n}\n/* End of Task view CSS */\n\n/* Detail view CSS */\n\n/* End of Detail view CSS */\ndiv.detail-container {\n    background-color: #fff;\n    padding: .5em;\n    overflow-wrap: break-word;\n}\n\ndiv.detail-container div.title {\n    font-weight: bold;\n}\n\ndiv.detail-container div.options-container {\n    text-decoration: underline;\n    display: flex;\n    justify-content: space-between;\n}\n\ndiv.detail-container div.options a {\n    padding: 0 .25em;\n    cursor: pointer;\n}\n\ndiv.detail-container div.time-info {\n    padding-top: .25em;\n}\n\n/* Task Detail view CSS */\ndiv.detail-container div.task-status {\n    display: flex;\n    padding-top: .25em;\n}\n\ndiv.detail-container div.task-status div {\n    margin-right: .5em;\n}\n\ndiv.detail-container div.task-status div.info-container {\n    display: flex;\n}\n\ndiv.detail-container div.task-status div.task-color {\n    height: 22px;\n    width: 1em;\n    margin-right: .25em;\n    margin-left: -.25em;\n}\n/* End of Task Detail view CSS */\n\n/* Start of Tag Detail view CSS */\ndiv.detail-container div.options-container.tag-options-container {\n    text-decoration: none;\n}\n\ndiv.detail-container div.options {\n    text-decoration: underline;\n}\n\ndiv.detail-container div.all-child-names {\n    display: flex;\n    align-items: center;\n}\n\ndiv.detail-container div.all-child-names div.tag {\n    padding: 1px .25em;\n    margin-left: .25em;\n    margin-bottom: 0;\n}\n/* End of Tag Detail view cSS */\n\n/* Calendar CSS */\ndiv.calendar {\n    width: 100%;\n}\n\ndiv.calendar div.options {\n    display: flex;\n    background-color: #fff;\n    padding: 0 1em .5em;\n}\n\ndiv.calendar div.options div.view-type-selector {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.options div.view-type-selector div.view-type-choice.-selected {\n    text-decoration: underline;\n}\n\ndiv.calendar div.options div.pagination-container {\n    display: flex;\n    margin-left: .5em;\n}\n\ndiv.calendar div.options div.pagination-container div.pagination-option {\n    margin-right: .5em;\n    cursor: pointer;\n}\n\ndiv.calendar div.tag-selector-container {\n    display: flex;\n    margin-left: 1em;\n}\n\ndiv.calendar div.tag-selector-container div.tokenizer-container {\n    margin-left: .5em;\n}\n\n\ndiv.calendar div.full-column-container {\n    display: flex;\n    align-items: center;\n    flex-direction: column;\n    height: calc(100vh - 140px); /* 140px is the height of the header */\n    padding: 0 2em;\n}\n\ndiv.calendar div.full-column-container div.header-and-content-container {\n    overflow: hidden;\n    height: 100%;\n    width: 100%;\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.calendar div.column-header-container {\n    display: flex;\n    margin-top: .5em;\n    margin-right: 15px;\n    text-align: center;\n}\n\ndiv.calendar div.column-header {\n    min-width: 120px;\n    flex-grow: 1;\n    height: 22px;\n}\n\ndiv.calendar div.column-header.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-header.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.all-columns-container {\n    display: flex;\n    height: 100%;\n    overflow-x: hidden;\n    overflow-y: auto;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.column-container {\n    flex-grow: 1;\n    min-width: 120px;\n    position: relative;\n}\n\n\ndiv.calendar div.column-container.-times {\n    max-width: 120px;\n}\n\ndiv.calendar div.column-container table {\n    width: 100%;\n}\n\ndiv.calendar div.column-container.single-day {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container td {\n    border-right: 1px solid rgba(0, 0, 0, .2);\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n    font-size: 14px;\n    min-width: 120px;\n    cursor: pointer;\n}\n\ndiv.calendar div.column-container.single-day td {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr:nth-child(odd) td {\n    border-bottom-style: dashed;\n}\n\ndiv.calendar div.column-container:first-child td {\n    border-left: 1px solid rgba(0, 0, 0, .2);\n    cursor: default; /* Prevents times from being click-able */\n    vertical-align: top;\n    text-align: right;\n}\n\ndiv.calendar div.column-container table tbody tr:first-child td {\n    border-top: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.calendar div.rendered-event-container {\n    position: absolute;\n    width: 100%; /* Will need to change when we start overlaying */\n}\n\ndiv.calendar div.rendered-event-container div.card {\n    padding: 1px .25em;\n    margin-left: 1px;\n    margin-right: 2px;\n    margin-bottom: 0;\n    overflow-y: auto;\n    height: 100%;\n}\n\ndiv.calendar div.column-container div.current-time-cursor {\n    position: absolute;\n    height: 3px;\n    background-color: #dc322f;\n    min-width: 120px;\n    width: 100%;\n    z-index: 2;\n}\n\ndiv.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 360px;\n}\n\ndiv.calendar div.column-container tr td.-selected {\n    background-color: rgba(0, 0, 0, .2);\n    border: none;\n}\n\ndiv.calendar div.rendered-event-container div.draggable-event-end {\n    cursor: ns-resize;\n    width: 100%;\n    height: 7px;\n    margin-top: -3px;\n}\n\ndiv.calendar div.rendered-event-container div.tag.card {\n    overflow-y: hidden;\n}\n\n/* End of Calendar CSS */\n\n/* Event view CSS */\ndiv.event-container {\n    font-size: 13px;\n    display: flex;\n    flex-wrap: wrap;\n    align-content: space-between;\n    overflow-x: hidden;\n    height: 100%;\n}\n\ndiv.event-container div.name {\n    flex-grow: 1;\n}\n\ndiv.event-card-container {\n    align-self: flex-end;\n    flex-grow: 1;\n    display: flex;\n    justify-content: flex-end;\n    padding-bottom: .25em;\n}\n\ndiv.event-card-container div.card {\n    margin: 0 0 0 .25em;\n    padding: .1em .25em;\n}\n\ndiv.event-container div.task-id-card {\n    cursor: pointer;\n}\n/* End of Event view CSS */\n\n/* Tag graph CSS */\n.tag-graph {\n    margin: 1em 0;\n}\n\n.tags-root-container, .tag-children-container {\n    border: 1px black solid;\n}\n\n.tag-children-container {\n    margin-left: .5em;\n}\n/* End of Tag graph CSS */\n\n/* General Tag CSS */\ndiv.tag.card {\n    cursor: pointer;\n}\n/* End of General Tag CSS */\n\n/* Tokenizer CSS */\ndiv.tokenizer-container {\n    display: flex;\n}\n\ndiv.tokenizer-container div.pending-token-container {\n    width: 100%;\n}\n\ndiv.tokens-container {\n    display: flex;\n    margin-right: .5em;\n}\n\ndiv.rendered-token {\n    display: flex;\n    padding: .1em .25em;\n    margin-top: -3px;\n    margin-bottom: 0;\n}\n\ndiv.rendered-token div.remove-token {\n    margin-left: .25em;\n    cursor: pointer;\n}\n\ndiv.tokenizer-container div.pending-state-container {\n    width: 100%;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container {\n    position: absolute;\n    background: #fff;\n    border-radius: 0 3px 3px;\n    border: 1px solid rgba(0, 0, 0, .2);\n    border-top: none;\n    z-index: 3;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token {\n    padding: .5em;\n    border-bottom: 1px solid rgba(0, 0, 0, .2);\n}\n\ndiv.tokenizer-container div.autocomplete-token-container:last-child {\n    border-bottom: none;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token:hover {\n    cursor: pointer;\n    background-color: #f6f9fc;\n}\n\ndiv.tokenizer-container div.autocomplete-token-container div.autocomplete-token.-selected {\n    background-color: #f6f9fc;\n}\n/* End of Tokenizer CSS */\n\n/* Modal CSS */\ndiv.modal-container div.background {\n    position: fixed;\n    left: 0;\n    top: 0;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, .2);\n    z-index: 4;\n\n    display: flex;\n    align-items: center;\n    justify-content: center;\n}\n\ndiv.modal.card {\n    min-width: 350px;\n}\n\ndiv.modal h3 {\n    margin: 0;\n}\n\ndiv.modal-container div.cancel-button-container {\n    cursor: pointer;\n    float: right;\n}\n\ndiv.modal label {\n    display: block;\n    padding-top: .5em;\n}\n\ndiv.modal input,textarea,select {\n    width: 100%;\n    background-color: #fff;\n    border: 1px solid rgba(0, 0, 0, .4);\n    margin: 0;\n    padding: 0;\n}\n\ndiv.modal input[type=button] {\n    margin-top: .5em;\n    height: 30px;\n}\n\ndiv.modal div.rendered-token {\n    margin-top: 0;\n}\n\ndiv.modal div.checkbox-container {\n    display: flex;\n    align-items: center;\n}\n\ndiv.modal div.checkbox-container input {\n    width: 30px;\n    height: 15px;\n    margin-top: 7px;\n}\n/* End of Modal CSS */\n\n/* Multi-pane CSS */\ndiv.merged-container {\n    display: flex;\n}\n\ndiv.main-pane {\n    max-width: 67%;\n    min-width: 67%;\n\n    height: calc(100vh - 97px);\n    display: flex;\n    flex-direction: column;\n}\n\ndiv.merged-task-container {\n    display: flex;\n}\n\ndiv.right-pane {\n    max-width: 33%;\n    min-width: 33%;\n}\n\n/* Ad-hoc fixes for tasks */\ndiv.main-pane div.task-board {\n    height: auto;\n}\n\ndiv.main-pane div.task-board div.full-column-container {\n    overflow-y: auto;\n}\n\n/* Ad-hoc fixes for calendar */\ndiv.right-pane div.calendar div.full-column-container {\n    padding: 0;\n}\n\ndiv.right-pane div.calendar div.tag-selector-container {\n    margin-left: 0;\n}\n\ndiv.right-pane div.calendar div.column-header {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-header.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day td {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.single-day div.current-time-cursor {\n    min-width: 0;\n}\n\ndiv.right-pane div.calendar div.column-container.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.column-header.-times {\n    max-width: 64px;\n}\n\ndiv.right-pane div.calendar div.options div.pending-token-container input {\n    width: 100%;\n}\n\ndiv.right-pane div.calendar div.options div.tag-selector-label {\n    flex-shrink: 0;\n}\n/* End of Multi-pane CSS */", ""]);
 	
 	// exports
 
@@ -480,10 +480,10 @@
 	var react_router_1 = __webpack_require__(9);
 	var tag_graph_1 = __webpack_require__(10);
 	var task_board_1 = __webpack_require__(14);
-	var calendar_1 = __webpack_require__(21);
+	var calendar_1 = __webpack_require__(22);
 	var app_header_1 = __webpack_require__(26);
 	var notifier_1 = __webpack_require__(27);
-	var events_1 = __webpack_require__(20);
+	var events_1 = __webpack_require__(19);
 	var task_detail_1 = __webpack_require__(28);
 	var tag_detail_1 = __webpack_require__(37);
 	var AppViewMode;
@@ -736,7 +736,7 @@
 	                console.error("Tag not found to show detail for...");
 	                return;
 	            }
-	            return React.createElement(tag_detail_1.TagDetailComponent, { tag: tag, eventsById: this.state.eventsById, closeCallback: this.closeDetail.bind(this) });
+	            return React.createElement(tag_detail_1.TagDetailComponent, { tag: tag, eventsById: this.state.eventsById, tagsById: this.state.tagsById, closeCallback: this.closeDetail.bind(this) });
 	        }
 	    };
 	    App.prototype.renderMergedView = function (tagName) {
@@ -1331,8 +1331,9 @@
 	var models_1 = __webpack_require__(16);
 	var task_1 = __webpack_require__(17);
 	var tokenizer_1 = __webpack_require__(12);
-	var modal_1 = __webpack_require__(19);
-	var events_1 = __webpack_require__(20);
+	var modal_1 = __webpack_require__(20);
+	var events_1 = __webpack_require__(19);
+	var util_1 = __webpack_require__(21);
 	var TaskBoardViewType;
 	(function (TaskBoardViewType) {
 	    TaskBoardViewType[TaskBoardViewType["status"] = 0] = "status";
@@ -1431,17 +1432,7 @@
 	        var _a = typeToHelpers[type], attr = _a.attr, orderedNameAndValue = _a.orderedNameAndValue, sortFunc = _a.sortFunc;
 	        var allChildIdsOfSelectedTag = {};
 	        if (selectedTag) {
-	            var queue = [selectedTag];
-	            while (queue.length) {
-	                var curTag = queue.pop();
-	                allChildIdsOfSelectedTag[curTag.id] = true;
-	                for (var _i = 0, _b = curTag.childTagIds; _i < _b.length; _i++) {
-	                    var tagId = _b[_i];
-	                    if (!allChildIdsOfSelectedTag[tagId]) {
-	                        queue.push(this.props.tagsById[tagId]);
-	                    }
-	                }
-	            }
+	            allChildIdsOfSelectedTag = util_1.getTagAndDescendantsRecursive(selectedTag.id, this.props.tagsById);
 	        }
 	        var shouldHideTask = function (task) {
 	            if (selectedTag) {
@@ -1466,8 +1457,8 @@
 	            return false;
 	        };
 	        // Categorize each task
-	        for (var _c = 0, _d = Object.keys(tasksById); _c < _d.length; _c++) {
-	            var taskId = _d[_c];
+	        for (var _i = 0, _b = Object.keys(tasksById); _i < _b.length; _i++) {
+	            var taskId = _b[_i];
 	            var task = tasksById[taskId];
 	            if (shouldHideTask(task)) {
 	                return;
@@ -2030,7 +2021,7 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var events_1 = __webpack_require__(20);
+	var events_1 = __webpack_require__(19);
 	var TagComponent = (function (_super) {
 	    __extends(TagComponent, _super);
 	    function TagComponent() {
@@ -2053,6 +2044,20 @@
 
 /***/ },
 /* 19 */
+/***/ function(module, exports) {
+
+	"use strict";
+	// Used for event auto-creation + ending on task moves
+	exports.signalCreateEventWithTask = "signalCreateEventWithTask";
+	exports.signalEndEventWithTask = "signalEndEventWithTask";
+	// Used by detail rendering
+	exports.signalDisplayTaskInfo = "signalDisplayTaskInfo";
+	exports.signalBeginEditingTask = "signalBeginEditingTask";
+	exports.signalDisplayTagInfo = "signalDisplayTagInfo";
+
+
+/***/ },
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2104,21 +2109,99 @@
 
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports) {
 
 	"use strict";
-	// Used for event auto-creation + ending on task moves
-	exports.signalCreateEventWithTask = "signalCreateEventWithTask";
-	exports.signalEndEventWithTask = "signalEndEventWithTask";
-	// Used by detail rendering
-	exports.signalDisplayTaskInfo = "signalDisplayTaskInfo";
-	exports.signalBeginEditingTask = "signalBeginEditingTask";
-	exports.signalDisplayTagInfo = "signalDisplayTagInfo";
+	function debounce(func, window) {
+	    // Executes the given function at most once per window milliseconds, on the first call.
+	    var timeout = null;
+	    return function () {
+	        var context = this;
+	        var args = arguments;
+	        var later = function () {
+	            timeout = null;
+	        };
+	        var callNow = !timeout;
+	        if (!timeout) {
+	            timeout = setTimeout(later, window);
+	        }
+	        if (callNow) {
+	            func.apply(context, args);
+	        }
+	    };
+	}
+	exports.debounce = debounce;
+	function renderDuration(seconds) {
+	    // Given a time in seconds, returns a string in english that describes the duration
+	    var final = '';
+	    if (seconds >= 24 * 60 * 60) {
+	        var numDays = Math.floor(seconds / (24 * 60 * 60));
+	        final += numDays + " day";
+	        if (numDays != 1) {
+	            final += "s";
+	        }
+	        seconds -= (numDays * (24 * 60 * 60));
+	    }
+	    if (seconds >= 60 * 60) {
+	        if (final.length) {
+	            final += ", ";
+	        }
+	        var numHours = Math.floor(seconds / (60 * 60));
+	        final += numHours + " hour";
+	        if (numHours != 1) {
+	            final += "s";
+	        }
+	        seconds -= (numHours * (60 * 60));
+	    }
+	    if (seconds >= 60) {
+	        if (final.length) {
+	            final += ", ";
+	        }
+	        var numMinutes = Math.floor(seconds / 60);
+	        final += numMinutes + " minute";
+	        if (numMinutes != 1) {
+	            final += "s";
+	        }
+	        seconds -= (numMinutes * 60);
+	    }
+	    if (seconds > 0) {
+	        if (final.length) {
+	            final += ", ";
+	        }
+	        final += seconds + " second";
+	        if (seconds != 1) {
+	            final += "s";
+	        }
+	    }
+	    if (!final.length) {
+	        // The 0 case
+	        return "None";
+	    }
+	    return final;
+	}
+	exports.renderDuration = renderDuration;
+	// TODO: Put this in a tag model class
+	function getTagAndDescendantsRecursive(tagId, tagsById) {
+	    var tagDescendantSet = {};
+	    var queue = [tagId];
+	    while (queue.length) {
+	        var curTagId = queue.pop();
+	        tagDescendantSet[curTagId] = true;
+	        for (var _i = 0, _a = tagsById[curTagId].childTagIds; _i < _a.length; _i++) {
+	            var tagId_1 = _a[_i];
+	            if (!tagDescendantSet[tagId_1]) {
+	                queue.push(tagId_1);
+	            }
+	        }
+	    }
+	    return tagDescendantSet;
+	}
+	exports.getTagAndDescendantsRecursive = getTagAndDescendantsRecursive;
 
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -2128,15 +2211,15 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var jQuery = __webpack_require__(7);
-	var moment = __webpack_require__(22);
+	var moment = __webpack_require__(23);
 	var React = __webpack_require__(5);
 	var react_router_1 = __webpack_require__(9);
-	var edit_event_1 = __webpack_require__(23);
+	var edit_event_1 = __webpack_require__(24);
 	var tokenizer_1 = __webpack_require__(12);
-	var event_1 = __webpack_require__(24);
-	var modal_1 = __webpack_require__(19);
-	var util_1 = __webpack_require__(25);
-	var events_1 = __webpack_require__(20);
+	var event_1 = __webpack_require__(25);
+	var modal_1 = __webpack_require__(20);
+	var util_1 = __webpack_require__(21);
+	var events_1 = __webpack_require__(19);
 	var CalendarViewType;
 	(function (CalendarViewType) {
 	    CalendarViewType[CalendarViewType["week"] = 0] = "week";
@@ -2318,20 +2401,9 @@
 	            columnList = [[]];
 	        }
 	        var dayStart = moment(startTimestamp); // From seconds back into moment
-	        // I just died a little inside, refactor this to somewhere more re-usable.
 	        var allChildIdsOfSelectedTag = {};
 	        if (this.state && this.state.selectedTag) {
-	            var queue = [this.state.selectedTag];
-	            while (queue.length) {
-	                var curTag = queue.pop();
-	                allChildIdsOfSelectedTag[curTag.id] = true;
-	                for (var _i = 0, _a = curTag.childTagIds; _i < _a.length; _i++) {
-	                    var tagId = _a[_i];
-	                    if (!allChildIdsOfSelectedTag[tagId]) {
-	                        queue.push(this.props.tagsById[tagId]);
-	                    }
-	                }
-	            }
+	            allChildIdsOfSelectedTag = util_1.getTagAndDescendantsRecursive(this.state.selectedTag.id, this.props.tagsById);
 	        }
 	        var shouldHide = function (event) {
 	            if (_this.state && _this.state.selectedTag) {
@@ -2347,8 +2419,8 @@
 	            return false;
 	        };
 	        // Divide the events by start day
-	        for (var _b = 0, _c = Object.keys(eventsById); _b < _c.length; _b++) {
-	            var eventId = _c[_b];
+	        for (var _i = 0, _a = Object.keys(eventsById); _i < _a.length; _i++) {
+	            var eventId = _a[_i];
 	            var event_4 = eventsById[eventId];
 	            var startTimestamp_1 = event_4.startTime;
 	            var endTimestamp = startTimestamp_1 + event_4.durationSecs * 1000;
@@ -3023,13 +3095,13 @@
 
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports) {
 
 	module.exports = moment;
 
 /***/ },
-/* 23 */
+/* 24 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3038,7 +3110,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var moment = __webpack_require__(22);
+	var moment = __webpack_require__(23);
 	var React = __webpack_require__(5);
 	var tokenizer_1 = __webpack_require__(12);
 	var EditEventComponent = (function (_super) {
@@ -3277,7 +3349,7 @@
 
 
 /***/ },
-/* 24 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3288,7 +3360,7 @@
 	};
 	var React = __webpack_require__(5);
 	var tag_1 = __webpack_require__(18);
-	var events_1 = __webpack_require__(20);
+	var events_1 = __webpack_require__(19);
 	var EventComponent = (function (_super) {
 	    __extends(EventComponent, _super);
 	    function EventComponent() {
@@ -3331,69 +3403,6 @@
 	    return EventComponent;
 	}(React.Component));
 	exports.EventComponent = EventComponent;
-
-
-/***/ },
-/* 25 */
-/***/ function(module, exports) {
-
-	"use strict";
-	function debounce(func, window) {
-	    // Executes the given function at most once per window milliseconds, on the first call.
-	    var timeout = null;
-	    return function () {
-	        var context = this;
-	        var args = arguments;
-	        var later = function () {
-	            timeout = null;
-	        };
-	        var callNow = !timeout;
-	        if (!timeout) {
-	            timeout = setTimeout(later, window);
-	        }
-	        if (callNow) {
-	            func.apply(context, args);
-	        }
-	    };
-	}
-	exports.debounce = debounce;
-	function renderDuration(seconds) {
-	    var final = '';
-	    if (seconds >= 60 * 60) {
-	        var numHours = Math.floor(seconds / (60 * 60));
-	        final = numHours + " hour";
-	        if (numHours != 1) {
-	            final += "s";
-	        }
-	        seconds -= (numHours * (60 * 60));
-	    }
-	    if (seconds >= 60) {
-	        if (final.length) {
-	            final += ", ";
-	        }
-	        var numMinutes = Math.floor(seconds / 60);
-	        final += numMinutes + " minute";
-	        if (numMinutes != 1) {
-	            final += "s";
-	        }
-	        seconds -= (numMinutes * 60);
-	    }
-	    if (seconds > 0) {
-	        if (final.length) {
-	            final += ", ";
-	        }
-	        final += seconds + " second";
-	        if (seconds != 1) {
-	            final += "s";
-	        }
-	    }
-	    if (!final.length) {
-	        // The 0 case
-	        return "None";
-	    }
-	    return final;
-	}
-	exports.renderDuration = renderDuration;
 
 
 /***/ },
@@ -3461,7 +3470,7 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
-	var moment = __webpack_require__(22);
+	var moment = __webpack_require__(23);
 	var React = __webpack_require__(5);
 	var LOOP_FREQ = 60; // 1 minute
 	var FORCED_INTERVAL = 600; // We will at most send 1 notification every (this) many seconds
@@ -3580,10 +3589,10 @@
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
 	var React = __webpack_require__(5);
-	var moment = __webpack_require__(22);
+	var moment = __webpack_require__(23);
 	var models_1 = __webpack_require__(16);
 	var Linkify_1 = __webpack_require__(29);
-	var util_1 = __webpack_require__(25);
+	var util_1 = __webpack_require__(21);
 	var TaskDetailComponent = (function (_super) {
 	    __extends(TaskDetailComponent, _super);
 	    function TaskDetailComponent() {
@@ -3635,7 +3644,7 @@
 	    };
 	    TaskDetailComponent.prototype.renderHeader = function () {
 	        return React.createElement("div", { className: "task-detail-header" },
-	            React.createElement("div", { className: "id-and-options" },
+	            React.createElement("div", { className: "options-container" },
 	                "T",
 	                this.props.task.id,
 	                this.renderOptions()),
@@ -3696,16 +3705,16 @@
 	        var scheduledTime = this.computeTotalTimeScheduled();
 	        var spentTime = this.computeTotalTimeSpent();
 	        if (scheduledTime == 0) {
-	            return React.createElement("div", { className: "task-time-info" }, this.renderEstimatedTime());
+	            return React.createElement("div", { className: "time-info" }, this.renderEstimatedTime());
 	        }
 	        if (scheduledTime == spentTime) {
-	            return React.createElement("div", { className: "task-time-info" },
+	            return React.createElement("div", { className: "time-info" },
 	                this.renderEstimatedTime(),
 	                "Scheduled and Spent: ",
 	                util_1.renderDuration(scheduledTime),
 	                this.renderProgress(spentTime));
 	        }
-	        return React.createElement("div", { className: "task-time-info" },
+	        return React.createElement("div", { className: "time-info" },
 	            this.renderEstimatedTime(),
 	            "Scheduled: ",
 	            util_1.renderDuration(scheduledTime),
@@ -3715,7 +3724,7 @@
 	            this.renderProgress(spentTime));
 	    };
 	    TaskDetailComponent.prototype.render = function () {
-	        return React.createElement("div", { className: "task-detail-container" },
+	        return React.createElement("div", { className: "detail-container" },
 	            this.renderHeader(),
 	            this.renderDescription(),
 	            this.renderCurrentStatus(),
@@ -6210,7 +6219,10 @@
 	    function __() { this.constructor = d; }
 	    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 	};
+	var moment = __webpack_require__(23);
 	var React = __webpack_require__(5);
+	var util_1 = __webpack_require__(21);
+	var tag_1 = __webpack_require__(18);
 	var TagDetailComponent = (function (_super) {
 	    __extends(TagDetailComponent, _super);
 	    function TagDetailComponent() {
@@ -6231,12 +6243,171 @@
 	            clearInterval(this.refreshLoopId);
 	        }
 	    };
+	    TagDetailComponent.prototype.computeAllRelevantEvents = function () {
+	        var allTags = util_1.getTagAndDescendantsRecursive(this.props.tag.id, this.props.tagsById);
+	        var eventIds = [];
+	        for (var _i = 0, _a = Object.keys(this.props.eventsById); _i < _a.length; _i++) {
+	            var eventId = _a[_i];
+	            var event_1 = this.props.eventsById[eventId];
+	            for (var _b = 0, _c = event_1.tagIds; _b < _c.length; _b++) {
+	                var tagId = _c[_b];
+	                if (allTags[tagId]) {
+	                    // This event has the relevant tag, add it to the return list
+	                    eventIds.push(event_1.id);
+	                    break;
+	                }
+	            }
+	        }
+	        return eventIds;
+	    };
+	    TagDetailComponent.prototype.computeStartMonday = function () {
+	        var startOfWeek = moment().startOf("week").add(1, "days");
+	        if (startOfWeek > moment()) {
+	            // This sent us to the next week, subtract off a week
+	            startOfWeek = startOfWeek.subtract(1, "week");
+	        }
+	        return startOfWeek;
+	    };
+	    TagDetailComponent.prototype.computeStartAndEndTimes = function () {
+	        // Returns the following (all in milliseconds):
+	        // - start of day, end of day
+	        // - start of week, end of week
+	        // - start of month, end of month
+	        var startTimes = [
+	            moment().startOf("day"),
+	            this.computeStartMonday(),
+	            moment().startOf("month"),
+	        ];
+	        var startAndEndMoments = [
+	            moment(startTimes[0]),
+	            startTimes[0].add(1, "days"),
+	            moment(startTimes[1]),
+	            startTimes[1].add(1, "week"),
+	            moment(startTimes[2]),
+	            startTimes[2].add(1, "month"),
+	        ];
+	        return startAndEndMoments.map(function (time) {
+	            return time.unix() * 1000;
+	        });
+	    };
+	    TagDetailComponent.prototype.computeDurationOfEventBetweenTimestamps = function (event, intervalStart, intervalEnd) {
+	        // intervalStart and intervalEnd are unix timestamps in milliseconds. The interval
+	        // is inclusive.
+	        if (intervalEnd <= intervalStart) {
+	            // We allow inverted intervals, but assume nothing can overlap with them.
+	            return 0;
+	        }
+	        var duration = 0;
+	        var endTimestamp = event.startTime + (event.durationSecs * 1000);
+	        if (intervalStart < endTimestamp) {
+	            // The event doesn't end before this interval begins.
+	            if (intervalStart >= event.startTime) {
+	                // Event starts before interval does
+	                var truncatedDuration = (event.durationSecs - (intervalStart - event.startTime) / 1000);
+	                if (endTimestamp <= intervalEnd) {
+	                    // Ends within interval too, include the whole duration
+	                    duration = truncatedDuration;
+	                }
+	                else {
+	                    // Ends later than interval, subtract off the excess
+	                    duration = truncatedDuration - (endTimestamp - intervalEnd) / 1000;
+	                }
+	            }
+	            else if (intervalEnd > event.startTime) {
+	                // Event starts during interval
+	                if (endTimestamp <= intervalEnd) {
+	                    // Ends within interval too, include the whole duration
+	                    duration = event.durationSecs;
+	                }
+	                else {
+	                    // Ends later than interval, subtract off the excess
+	                    duration = event.durationSecs - (endTimestamp - intervalEnd) / 1000;
+	                }
+	            }
+	        }
+	        return duration;
+	    };
+	    TagDetailComponent.prototype.computeScheduledTimes = function (eventIds) {
+	        // Returns three durations in seconds: time scheduled this month, this week, and this day
+	        var timeScheduledDay = 0, timeScheduledWeek = 0, timeScheduledMonth = 0;
+	        var _a = (this.computeStartAndEndTimes()), todayStart = _a[0], todayEnd = _a[1], weekStart = _a[2], weekEnd = _a[3], monthStart = _a[4], monthEnd = _a[5];
+	        for (var _i = 0, eventIds_1 = eventIds; _i < eventIds_1.length; _i++) {
+	            var eventId = eventIds_1[_i];
+	            var event_2 = this.props.eventsById[eventId];
+	            timeScheduledDay += this.computeDurationOfEventBetweenTimestamps(event_2, todayStart, todayEnd);
+	            timeScheduledWeek += this.computeDurationOfEventBetweenTimestamps(event_2, weekStart, weekEnd);
+	            timeScheduledMonth += this.computeDurationOfEventBetweenTimestamps(event_2, monthStart, monthEnd);
+	        }
+	        return [timeScheduledDay, timeScheduledWeek, timeScheduledMonth];
+	    };
+	    TagDetailComponent.prototype.computeSpentTimes = function (eventIds) {
+	        // Returns three durations in seconds: time spent this month, this week, and this day
+	        var timeSpentMonth = 0, timeSpentWeek = 0, timeSpentDay = 0;
+	        var _a = (this.computeStartAndEndTimes()), todayStart = _a[0], todayEnd = _a[1], weekStart = _a[2], weekEnd = _a[3], monthStart = _a[4], monthEnd = _a[5];
+	        // Clamp all end times to now
+	        var nowUnix = moment().unix() * 1000;
+	        for (var _i = 0, eventIds_2 = eventIds; _i < eventIds_2.length; _i++) {
+	            var eventId = eventIds_2[_i];
+	            var event_3 = this.props.eventsById[eventId];
+	            timeSpentDay += this.computeDurationOfEventBetweenTimestamps(event_3, todayStart, nowUnix);
+	            timeSpentWeek += this.computeDurationOfEventBetweenTimestamps(event_3, weekStart, nowUnix);
+	            timeSpentMonth += this.computeDurationOfEventBetweenTimestamps(event_3, monthStart, nowUnix);
+	        }
+	        return [timeSpentDay, timeSpentWeek, timeSpentMonth];
+	    };
+	    TagDetailComponent.prototype.renderOptions = function () {
+	        return React.createElement("div", { className: "options" },
+	            React.createElement("a", { className: "close-button", onClick: this.props.closeCallback }, "Close"));
+	    };
+	    TagDetailComponent.prototype.renderHeader = function () {
+	        return React.createElement("div", { className: "tag-detail-header" },
+	            React.createElement("div", { className: "options-container tag-options-container" },
+	                React.createElement("div", { className: "title" }, this.props.tag.name),
+	                this.renderOptions()));
+	    };
+	    TagDetailComponent.prototype.renderDescendantTags = function () {
+	        var _this = this;
+	        var allTags = util_1.getTagAndDescendantsRecursive(this.props.tag.id, this.props.tagsById);
+	        if (Object.keys(allTags).length <= 1) {
+	            // Doesn't have any descendants...
+	            return;
+	        }
+	        return React.createElement("div", { className: "all-child-names" },
+	            "Descendants:",
+	            Object.keys(allTags).map(function (tagId) {
+	                if (parseInt(tagId) == _this.props.tag.id) {
+	                    return;
+	                }
+	                var tag = _this.props.tagsById[tagId];
+	                return React.createElement(tag_1.TagComponent, { key: tag.id, tag: tag });
+	            }));
+	    };
+	    TagDetailComponent.prototype.renderDurationWithName = function (name, amount) {
+	        if (!amount) {
+	            return;
+	        }
+	        return React.createElement("div", { className: "tag-time-duration" },
+	            name,
+	            ": ",
+	            util_1.renderDuration(amount));
+	    };
+	    TagDetailComponent.prototype.renderTimeInfo = function () {
+	        var relevantEvents = this.computeAllRelevantEvents();
+	        var _a = (this.computeScheduledTimes(relevantEvents)), timeScheduledDay = _a[0], timeScheduledWeek = _a[1], timeScheduledMonth = _a[2];
+	        var _b = this.computeSpentTimes(relevantEvents), timeSpentDay = _b[0], timeSpentWeek = _b[1], timeSpentMonth = _b[2];
+	        return React.createElement("div", { className: "time-info" },
+	            this.renderDurationWithName("Scheduled today", timeScheduledDay),
+	            this.renderDurationWithName("Scheduled this week", timeScheduledWeek),
+	            this.renderDurationWithName("Scheduled this month", timeScheduledMonth),
+	            this.renderDurationWithName("Spent today", timeSpentDay),
+	            this.renderDurationWithName("Spent this week", timeSpentWeek),
+	            this.renderDurationWithName("Spent this month", timeSpentMonth));
+	    };
 	    TagDetailComponent.prototype.render = function () {
-	        return React.createElement("div", null,
-	            "YAY TAG DETAIL ",
-	            this.props.tag.id,
-	            " - ",
-	            this.props.tag.name);
+	        return React.createElement("div", { className: "detail-container" },
+	            this.renderHeader(),
+	            this.renderDescendantTags(),
+	            this.renderTimeInfo());
 	    };
 	    return TagDetailComponent;
 	}(React.Component));

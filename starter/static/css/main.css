@@ -204,52 +204,76 @@ div.task-tags-container div.tag {
 }
 /* End of Task view CSS */
 
-/* Task Detail view CSS */
-div.task-detail-container {
+/* Detail view CSS */
+
+/* End of Detail view CSS */
+div.detail-container {
     background-color: #fff;
     padding: .5em;
     overflow-wrap: break-word;
 }
 
-div.task-detail-container div.id-and-options {
+div.detail-container div.title {
+    font-weight: bold;
+}
+
+div.detail-container div.options-container {
     text-decoration: underline;
     display: flex;
     justify-content: space-between;
 }
 
-div.task-detail-container div.title {
-    font-weight: bold;
-}
-
-div.task-detail-container div.options a {
+div.detail-container div.options a {
     padding: 0 .25em;
     cursor: pointer;
 }
 
-div.task-detail-container div.task-status {
+div.detail-container div.time-info {
+    padding-top: .25em;
+}
+
+/* Task Detail view CSS */
+div.detail-container div.task-status {
     display: flex;
     padding-top: .25em;
 }
 
-div.task-detail-container div.task-status div {
+div.detail-container div.task-status div {
     margin-right: .5em;
 }
 
-div.task-detail-container div.task-status div.info-container {
+div.detail-container div.task-status div.info-container {
     display: flex;
 }
 
-div.task-detail-container div.task-status div.task-color {
+div.detail-container div.task-status div.task-color {
     height: 22px;
     width: 1em;
     margin-right: .25em;
     margin-left: -.25em;
 }
-
-div.task-detail-container div.task-time-info {
-    padding-top: .25em;
-}
 /* End of Task Detail view CSS */
+
+/* Start of Tag Detail view CSS */
+div.detail-container div.options-container.tag-options-container {
+    text-decoration: none;
+}
+
+div.detail-container div.options {
+    text-decoration: underline;
+}
+
+div.detail-container div.all-child-names {
+    display: flex;
+    align-items: center;
+}
+
+div.detail-container div.all-child-names div.tag {
+    padding: 1px .25em;
+    margin-left: .25em;
+    margin-bottom: 0;
+}
+/* End of Tag Detail view cSS */
 
 /* Calendar CSS */
 div.calendar {

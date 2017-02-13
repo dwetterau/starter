@@ -1,6 +1,6 @@
 import * as React from "react"
 import * as moment from "moment";
-import {Task, TagsById, EventsById, stateNameList, priorityNameList} from "../../models"
+import {Task, EventsById, stateNameList, priorityNameList} from "../../models"
 import {Linkify} from "../lib/Linkify"
 import {renderDuration} from "../lib/util";
 
@@ -62,7 +62,7 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
 
     renderHeader() {
         return <div className="task-detail-header">
-            <div className="id-and-options">
+            <div className="options-container">
                 T{this.props.task.id}
                 {this.renderOptions()}
             </div>
@@ -138,20 +138,20 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
         let spentTime = this.computeTotalTimeSpent();
 
         if (scheduledTime == 0) {
-            return <div className="task-time-info">
+            return <div className="time-info">
                 {this.renderEstimatedTime()}
             </div>
         }
 
         if (scheduledTime == spentTime) {
-         return <div className="task-time-info">
+         return <div className="time-info">
              {this.renderEstimatedTime()}
              Scheduled and Spent: {renderDuration(scheduledTime)}
              {this.renderProgress(spentTime)}
          </div>
         }
 
-        return <div className="task-time-info">
+        return <div className="time-info">
             {this.renderEstimatedTime()}
             Scheduled: {renderDuration(scheduledTime)}
             <br />
@@ -161,7 +161,7 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
     }
 
     render() {
-        return <div className="task-detail-container">
+        return <div className="detail-container">
             {this.renderHeader()}
             {this.renderDescription()}
             {this.renderCurrentStatus()}
