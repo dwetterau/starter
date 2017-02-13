@@ -2135,45 +2135,23 @@
 	function renderDuration(seconds) {
 	    // Given a time in seconds, returns a string in english that describes the duration
 	    var final = '';
-	    if (seconds >= 24 * 60 * 60) {
-	        var numDays = Math.floor(seconds / (24 * 60 * 60));
-	        final += numDays + " day";
-	        if (numDays != 1) {
-	            final += "s";
+	    var addUnit = function (name, durationInSeconds) {
+	        if (seconds < durationInSeconds) {
+	            return;
 	        }
-	        seconds -= (numDays * (24 * 60 * 60));
-	    }
-	    if (seconds >= 60 * 60) {
 	        if (final.length) {
 	            final += ", ";
 	        }
-	        var numHours = Math.floor(seconds / (60 * 60));
-	        final += numHours + " hour";
-	        if (numHours != 1) {
+	        var numUnits = Math.floor(seconds / durationInSeconds);
+	        final += numUnits + " " + name;
+	        if (numUnits != 1) {
 	            final += "s";
 	        }
-	        seconds -= (numHours * (60 * 60));
-	    }
-	    if (seconds >= 60) {
-	        if (final.length) {
-	            final += ", ";
-	        }
-	        var numMinutes = Math.floor(seconds / 60);
-	        final += numMinutes + " minute";
-	        if (numMinutes != 1) {
-	            final += "s";
-	        }
-	        seconds -= (numMinutes * 60);
-	    }
-	    if (seconds > 0) {
-	        if (final.length) {
-	            final += ", ";
-	        }
-	        final += seconds + " second";
-	        if (seconds != 1) {
-	            final += "s";
-	        }
-	    }
+	        seconds -= (numUnits * durationInSeconds);
+	    };
+	    addUnit("hour", 60 * 60);
+	    addUnit("minute", 60);
+	    addUnit("second", 1);
 	    if (!final.length) {
 	        // The 0 case
 	        return "None";
