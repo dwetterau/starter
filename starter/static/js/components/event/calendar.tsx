@@ -250,6 +250,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
        let allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
         if (this.state && this.state.selectedTag) {
+            // TODO: This should not be reading from props if it ever wants to handle deletion
+            // of tags.
             allChildIdsOfSelectedTag = getTagAndDescendantsRecursive(
                 this.state.selectedTag.id, this.props.tagsById
             );

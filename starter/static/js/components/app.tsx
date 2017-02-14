@@ -145,6 +145,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.state.tasks = this.state.tasks.filter((task: Task) => {
                 return task.id != deletedTaskId;
             });
+            App.updateTasksById(this.state);
             this.setState(this.state);
         })
     }
@@ -157,25 +158,29 @@ export class App extends React.Component<AppProps, AppState> {
         state.eventsById = eventsById;
     }
 
-    updateTaskToEventsAfterNewEvent(newEvent: Event) {
+    updateTaskToEventsAfterEventChange(changedEvent: Event, isDelete: boolean) {
         // When an event is updated, we need to make sure that all the associated tasks are also
         // updated
         let oldTaskMap = {};
         for (let task of this.state.tasks) {
             for (let eventId of task.eventIds) {
-                if (eventId == newEvent.id) {
+                if (eventId == changedEvent.id) {
                     oldTaskMap[task.id] = true;
                 }
             }
         }
 
         let newTaskMap = {};
-        for (let taskId of newEvent.taskIds) {
-            newTaskMap[taskId] = true;
+        for (let taskId of changedEvent.taskIds) {
+            // Only add the task to the newTask map if this isn't a delete.
+            // All delete cases are handled in the next loop over oldTaskMap.
+            if (!isDelete) {
+                newTaskMap[taskId] = true;
 
-            if (!oldTaskMap[taskId]) {
-                // This task just got added to this event. Add the eventId to the task
-                this.state.tasksById[taskId].eventIds.push(newEvent.id);
+                if (!oldTaskMap[taskId]) {
+                    // This task just got added to this event. Add the eventId to the task
+                    this.state.tasksById[taskId].eventIds.push(changedEvent.id);
+                }
             }
         }
 
@@ -184,7 +189,7 @@ export class App extends React.Component<AppProps, AppState> {
                 // This tag no longer has this event, update it's list of events
                 this.state.tasksById[taskId].eventIds = (
                     this.state.tasksById[taskId].eventIds.filter((eventId) => {
-                        return eventId != newEvent.id
+                        return eventId != changedEvent.id
                     })
                 );
             }
@@ -197,7 +202,7 @@ export class App extends React.Component<AppProps, AppState> {
             let newEvent = JSON.parse(newEventJson);
             this.state.events.push(newEvent);
             App.updateEventsById(this.state);
-            this.updateTaskToEventsAfterNewEvent(newEvent);
+            this.updateTaskToEventsAfterEventChange(newEvent, false);
             this.setState(this.state)
         });
     }
@@ -213,7 +218,7 @@ export class App extends React.Component<AppProps, AppState> {
                 }
             });
             App.updateEventsById(this.state);
-            this.updateTaskToEventsAfterNewEvent(updatedEvent);
+            this.updateTaskToEventsAfterEventChange(updatedEvent, false);
             this.setState(this.state);
         });
     }
@@ -224,6 +229,8 @@ export class App extends React.Component<AppProps, AppState> {
             this.state.events = this.state.events.filter((event: Event) => {
                 return event.id != deletedEventId;
             });
+            App.updateEventsById(this.state);
+            this.updateTaskToEventsAfterEventChange(event, true);
             this.setState(this.state);
         })
     }

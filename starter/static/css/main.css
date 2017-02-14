@@ -645,6 +645,7 @@ div.main-pane {
 
 div.merged-task-container {
     display: flex;
+    flex-grow: 1;
 }
 
 div.right-pane {
