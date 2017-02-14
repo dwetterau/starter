@@ -14,16 +14,15 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-BASE_DIR = os.path.dirname(PROJECT_DIR)
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static/'),
+    os.path.join(PROJECT_DIR, 'static/'),
 
     # 3rd party libraries we don't bundle for caching reasons
-    os.path.join(BASE_DIR, 'node_modules/react/dist/'),
-    os.path.join(BASE_DIR, 'node_modules/react-dom/dist/'),
-    os.path.join(BASE_DIR, 'node_modules/jquery/dist/'),
-    os.path.join(BASE_DIR, 'node_modules/moment/min/'),
-    os.path.join(BASE_DIR, 'node_modules/react-router/umd/'),
+    os.path.join(PROJECT_DIR, 'node_modules/react/dist/'),
+    os.path.join(PROJECT_DIR, 'node_modules/react-dom/dist/'),
+    os.path.join(PROJECT_DIR, 'node_modules/jquery/dist/'),
+    os.path.join(PROJECT_DIR, 'node_modules/moment/min/'),
+    os.path.join(PROJECT_DIR, 'node_modules/react-router/umd/'),
 )
 STATIC_ROOT = '/www/starter/static'
 
