@@ -1461,7 +1461,7 @@
 	            var taskId = _b[_i];
 	            var task = tasksById[taskId];
 	            if (shouldHideTask(task)) {
-	                return;
+	                continue;
 	            }
 	            if (!columns[task[attr]]) {
 	                columns[task[attr]] = [task];
@@ -2400,12 +2400,12 @@
 	        for (var _i = 0, _a = Object.keys(eventsById); _i < _a.length; _i++) {
 	            var eventId = _a[_i];
 	            var event_4 = eventsById[eventId];
+	            if (shouldHide(event_4)) {
+	                continue;
+	            }
 	            var startTimestamp_1 = event_4.startTime;
 	            var endTimestamp = startTimestamp_1 + event_4.durationSecs * 1000;
 	            for (var index in DAYS) {
-	                if (shouldHide(event_4)) {
-	                    return;
-	                }
 	                var curTimestamp = moment(dayStart).add(index, "days").unix() * 1000;
 	                // See if any part of the event falls within this day. If the part that does does
 	                // not include the beginning, we need to make a fake event. There should only

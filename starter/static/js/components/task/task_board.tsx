@@ -189,7 +189,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         for (let taskId of Object.keys(tasksById)) {
             let task = tasksById[taskId];
             if (shouldHideTask(task)) {
-                return
+                continue;
             }
 
             if (!columns[task[attr]]) {

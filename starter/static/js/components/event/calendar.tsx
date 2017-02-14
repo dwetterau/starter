@@ -273,12 +273,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         // Divide the events by start day
         for (let eventId of Object.keys(eventsById)) {
             let event = eventsById[eventId];
+            if (shouldHide(event)) {
+                continue;
+            }
             const startTimestamp = event.startTime;
             const endTimestamp = startTimestamp + event.durationSecs * 1000;
             for (let index in DAYS) {
-                if (shouldHide(event)) {
-                    return;
-                }
                 let curTimestamp = moment(dayStart).add(index, "days").unix() * 1000;
 
                 // See if any part of the event falls within this day. If the part that does does
