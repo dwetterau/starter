@@ -6,3 +6,4 @@ node_modules/
 site.db
 *.log
 diff.sh
+.DS_Store
