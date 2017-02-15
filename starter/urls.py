@@ -18,6 +18,8 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic import CreateView
 
 from starter import views
 
@@ -35,9 +37,13 @@ urlpatterns = [
 
 
     # Auth urls
-    # TODO: User creation as well
+    url(r'^auth/register/?$', CreateView.as_view(
+        template_name='registration/register.html',
+        form_class=UserCreationForm,
+        success_url='/'
+    )),
     url(r'^auth/login/?$', auth_views.login),
-    url(r'^auth/logout/?$', auth_views.logout),
+    url(r'^auth/logout/?$', views.logout),
     url(r'^auth/password_change/?$', auth_views.password_change),
     url(r'^auth/password_change_done/?$', auth_views.password_change_done),
 

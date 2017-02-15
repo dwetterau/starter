@@ -13,7 +13,8 @@ export class AppHeader extends React.Component<AppHeaderProps, {}> {
 
     renderAccountInfo() {
         return <div className="profile-container">
-            {"Logged in as: " + this.props.meUser.username}
+            {this.props.meUser.username + " | "}
+            <a href="/auth/logout">Logout</a>
         </div>
     }
 

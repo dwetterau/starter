@@ -3,6 +3,7 @@ import json
 import urllib
 
 import datetime
+from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -33,10 +34,19 @@ def index(request):
     ))
     return render(request, 'starter/index.html', dict(props=props))
 
+#
+# Views for auth
+#
+
+
+@require_http_methods(["GET"])
+def logout(request):
+    return auth_views.logout(request, next_page=u"/")
 
 #
 # API v1
 #
+
 
 class ValidationError(Exception):
     pass
