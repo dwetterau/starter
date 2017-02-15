@@ -7,3 +7,4 @@ site.db
 *.log
 diff.sh
 .DS_Store
+starter/static/dist/dev
