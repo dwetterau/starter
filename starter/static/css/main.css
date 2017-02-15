@@ -93,9 +93,14 @@ div.task-board div.task-board-tag-selector-container div.tokenizer-container {
     margin-left: .5em;
 }
 
+div.task-board div.full-column-container {
+    height: 100%;
+}
+
 div.task-board div.full-column-container div.columns-container {
     display: flex;
     flex-direction: row;
+    height: 100%;
 }
 
 div.task-board div.column-container {
