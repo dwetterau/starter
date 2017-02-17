@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
+import raven
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'raven.contrib.django.raven_compat',
     'starter',
 ]
 
@@ -136,3 +139,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+RAVEN_KEYS = tuple(os.environ[x] for x in ('RAVEN_KEY1', 'RAVEN_KEY2', 'RAVEN_KEY3'))
+RAVEN_CONFIG = {
+    'dsn': 'https://%s:%s@sentry.io/%s' % RAVEN_KEYS,
+    'release': raven.fetch_git_sha(os.path.dirname(os.pardir)),
+}
