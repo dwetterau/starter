@@ -345,7 +345,7 @@ class Event(models.Model):
         global_event_cache.pop(self.id, None)
         self.task_set.clear()
         for task in new_tasks:
-            global_task_cache.pop(task_id, None)
+            global_task_cache.pop(task.id, None)
             self.task_set.add(task)
 
     def add_to_cache(self):
