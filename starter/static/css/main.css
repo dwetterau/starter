@@ -705,11 +705,11 @@ div.right-pane div.calendar div.column-container.single-day div.current-time-cur
 }
 
 div.right-pane div.calendar div.column-container.-times {
-    max-width: 64px;
+    max-width: 70px;
 }
 
 div.right-pane div.calendar div.column-header.-times {
-    max-width: 64px;
+    max-width: 70px;
 }
 
 div.right-pane div.calendar div.options div.pending-token-container input {
