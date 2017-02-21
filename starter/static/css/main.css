@@ -100,7 +100,7 @@ div.task-board div.full-column-container {
 div.task-board div.full-column-container div.columns-container {
     display: flex;
     flex-direction: row;
-    height: 100%;
+    min-height: 100%;
 }
 
 div.task-board div.column-container {
@@ -496,15 +496,34 @@ div.event-container div.task-id-card {
 
 /* Tag graph CSS */
 .tag-graph {
-    margin: 1em 0;
+    margin: 1em;
 }
 
 .tags-root-container, .tag-children-container {
     border: 1px black solid;
+    margin-bottom: .25em;
 }
 
 .tag-children-container {
     margin-left: .5em;
+    margin-right: .5em;
+}
+
+.tag-container {
+    margin-left: .25em;
+    font-weight: bold;
+}
+
+.tag-container .edit-tag-button {
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 100;
+}
+
+.tag-graph div.create-tag-button-container {
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: .5em;
 }
 /* End of Tag graph CSS */
 

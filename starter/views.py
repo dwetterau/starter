@@ -1,8 +1,9 @@
 from collections import defaultdict
+import datetime
 import json
+import re
 import urllib
 
-import datetime
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -352,12 +353,21 @@ def delete_event(request):
     return HttpResponse(json.dumps(dict(id=arguments["id"])), status=200)
 
 
+_tag_name_pattern = re.compile("^[a-zA-Z0-9_]+$")
+
+
+def _valid_tag_name(x):
+    x = _required_string(x)
+    assert _tag_name_pattern.match(x)
+    return x
+
+
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def create_tag(request):
     arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
-        'name': _required_string,
+        'name': _valid_tag_name,
         'childTagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }
@@ -401,7 +411,7 @@ def update_tag(request):
     arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
     validation_map = {
         'id': int,
-        'name': _required_string,
+        'name': _valid_tag_name,
         'childTagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
     }

@@ -3,6 +3,7 @@ import * as React from "react";
 import {Tag, TagsById, User} from "../../models";
 import {EditTagComponent} from "./edit_tag";
 import {CreateTagComponent} from "./create_tag";
+import {ModalComponent} from "../lib/modal";
 
 export interface TagGraphProps {
     meUser: User,
@@ -18,6 +19,7 @@ export interface TagGraphState {
     rootTagIds: Array<number>,
     tagsById: TagsById,
     editingTag?: Tag,
+    creatingTag: boolean,
 }
 
 export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphState> {
@@ -38,6 +40,7 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
             rootTagIds: rootTagIds,
             tagsById: props.tagsById,
             editingTag: null,
+            creatingTag: false,
         }
     }
 
@@ -69,7 +72,7 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
         return [tagGraph, rootTagIdList]
     }
 
-    onDoubleClick(tag: Tag, event: any) {
+    onClick(tag: Tag, event: any) {
         // Idk, open an editor modal or something
         this.state.editingTag = tag;
         this.setState(this.state);
@@ -77,6 +80,16 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
         // Don't let this keep going to the parent element.
         event.preventDefault();
         event.stopPropagation();
+    }
+
+    clearEditingTag() {
+        this.state.editingTag = null;
+        this.setState(this.state);
+    }
+
+    toggleCreatingTag() {
+        this.state.creatingTag = !this.state.creatingTag;
+        this.setState(this.state);
     }
 
     renderTagById(tagId: number) {
@@ -96,9 +109,14 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
         return <div
             className="tag-container"
             key={tag.id}
-            onDoubleClick={this.onDoubleClick.bind(this, tag)}
         >
-            Name: {tag.name}
+            {tag.name} -{" "}
+            <span
+                className="edit-tag-button"
+                onClick={this.onClick.bind(this, tag)}
+            >
+                edit
+            </span>
             {renderChildren()}
         </div>
     }
@@ -119,18 +137,29 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
         if (!this.state.editingTag) {
             return
         }
-        return <EditTagComponent tag={this.state.editingTag}
-                                 tagsById={this.state.tagsById}
-                                 updateTag={this.props.updateTag}
-                                 deleteTag={this.props.deleteTag} />
+        return <ModalComponent cancelFunc={this.clearEditingTag.bind(this)}>
+            <EditTagComponent
+                tag={this.state.editingTag}
+                tagsById={this.state.tagsById}
+                updateTag={this.props.updateTag}
+                deleteTag={this.props.deleteTag}
+            />
+        </ModalComponent>
     }
 
     renderCreateTag() {
-        return <CreateTagComponent
-            meUser={this.props.meUser}
-            createTag={this.props.createTag}
-            tagsById={this.state.tagsById}
-        />
+        if (!this.state.creatingTag) {
+            return <div className="create-tag-button-container">
+                <a onClick={this.toggleCreatingTag.bind(this)}>Create New</a>
+            </div>
+        }
+        return <ModalComponent cancelFunc={this.toggleCreatingTag.bind(this)}>
+            <CreateTagComponent
+                meUser={this.props.meUser}
+                createTag={this.props.createTag}
+                tagsById={this.state.tagsById}
+            />
+        </ModalComponent>
     }
 
     render() {
