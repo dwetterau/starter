@@ -70,6 +70,9 @@ class TagEdge(models.Model):
 # type: Dict[task_id, List[local_id, tag_ids, event_ids]]
 global_task_cache = {}
 
+# type: Dict[event_id, List[local_id, tag_ids, task_ids]]
+global_event_cache = {}
+
 
 class Task(models.Model):
 
@@ -211,6 +214,11 @@ class Task(models.Model):
             expectedDurationSecs=self.expected_duration_secs,
         )
 
+    def delete(self, **kwargs):
+        global_task_cache.pop(self.id, None)
+        self.set_tags([])
+        super(Task, self).delete(**kwargs)
+
 
 class TaskGlobalId(models.Model):
     user = models.ForeignKey(User, related_name="user")
@@ -234,9 +242,6 @@ class TaskEvents(models.Model):
 
     class Meta:
         db_table = "starter_task_events"
-
-# type: Dict[event_id, List[local_id, tag_ids, task_ids]]
-global_event_cache = {}
 
 
 class Event(models.Model):
@@ -336,11 +341,12 @@ class Event(models.Model):
         task_ids = [x.get_local_id() for x in self.task_set.all()]
         return task_ids
 
-    def set_tasks(self, new_tasks):
+    def set_tasks(self, user, new_tasks):
         # TODO: Optimize this
-        current_task_ids = self.get_task_ids()
-        for task_id in current_task_ids:
-            global_task_cache.pop(task_id, None)
+        current_local_task_ids = self.get_task_ids()
+        for task_id in current_local_task_ids:
+            t = Task.get_by_local_id(task_id, user)
+            global_task_cache.pop(t.id, None)
 
         global_event_cache.pop(self.id, None)
         self.task_set.clear()
@@ -366,6 +372,12 @@ class Event(models.Model):
             durationSecs=self.duration_secs,
             taskIds=self.get_task_ids()
         )
+
+    def delete_by_user(self, user):
+        global_event_cache.pop(self.id, None)
+        self.set_tags([])
+        self.set_tasks(user, [])
+        self.delete()
 
 
 class EventGlobalId(models.Model):

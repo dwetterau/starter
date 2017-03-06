@@ -201,20 +201,14 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
             return
         }
         return <div className="tag-time-duration">
-            {name}: {renderDuration(amount)}
+            {name}: {renderDuration(amount, false)}
         </div>
     }
 
     renderTimeInfo() {
         let relevantEvents = this.computeAllRelevantEvents();
-        let [timeScheduledDay, timeScheduledWeek, timeScheduledMonth] = (
-            this.computeScheduledTimes(relevantEvents)
-        );
         let [timeSpentDay, timeSpentWeek, timeSpentMonth] = this.computeSpentTimes(relevantEvents);
         return <div className="time-info">
-            {this.renderDurationWithName("Scheduled today", timeScheduledDay)}
-            {this.renderDurationWithName("Scheduled this week", timeScheduledWeek)}
-            {this.renderDurationWithName("Scheduled this month", timeScheduledMonth)}
             {this.renderDurationWithName("Spent today", timeSpentDay)}
             {this.renderDurationWithName("Spent this week", timeSpentWeek)}
             {this.renderDurationWithName("Spent this month", timeSpentMonth)}

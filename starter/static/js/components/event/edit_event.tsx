@@ -128,6 +128,12 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 );
             }
         }
+
+        // Lets do some magic auto-name filling if name isn't set.
+        if (!this.state.event.name.trim().length) {
+            this.state.event.name = this.autoFillName()
+        }
+
         if (eventType == "save") {
             this.props.updateEvent(this.state.event);
         } else if (eventType == "delete") {
@@ -142,6 +148,24 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         this.state.submitted = true;
 
         this.setState(this.state)
+    }
+
+    autoFillName(): string {
+        const event = this.state.event;
+        if (event.taskIds.length == 1) {
+            return `Working on T${event.taskIds[0]}`
+        }
+        if (event.tagIds.length > 0) {
+            const tagNames = this.getCurrentTags();
+
+            if (event.tagIds.length == 2) {
+                return `${tagNames[0].label} & ${tagNames[1].label}`
+            } else if (event.tagIds.length == 1) {
+                return `${tagNames[0].label}`
+            }
+        }
+
+        return ''
     }
 
     onKeyDownCreate(event: any) {

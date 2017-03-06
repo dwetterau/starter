@@ -207,6 +207,14 @@ div.task-tags-container div.tag {
     margin-left: .25em;
     padding: .1em .25em;
 }
+
+div.task div.progress-container span.percentage.-bad {
+    color: #dc322f;
+}
+
+div.task div.progress-container span.percentage.-good {
+    color: #228b22;
+}
 /* End of Task view CSS */
 
 /* Detail view CSS */
@@ -530,6 +538,7 @@ div.event-container div.task-id-card {
 /* General Tag CSS */
 div.tag.card {
     cursor: pointer;
+    margin-bottom: 0;
 }
 /* End of General Tag CSS */
 

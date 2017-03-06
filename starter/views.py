@@ -266,7 +266,7 @@ def create_event(request):
         event.set_tags(new_tags_by_id.values())
 
     if new_tasks_by_id:
-        event.set_tasks(new_tasks_by_id.values())
+        event.set_tasks(arguments["authorId"], new_tasks_by_id.values())
 
     return HttpResponse(json.dumps(event.to_dict()), status=200)
 
@@ -326,7 +326,7 @@ def update_event(request):
         event.set_tags(new_tags_by_id.values())
 
     if set(new_tasks_by_id.keys()) != set(event.get_task_ids()):
-        event.set_tasks(new_tasks_by_id.values())
+        event.set_tasks(arguments["ownerId"], new_tasks_by_id.values())
 
     return HttpResponse(json.dumps(event.to_dict()), status=200)
 
@@ -349,7 +349,7 @@ def delete_event(request):
     if not event or event.author != request.user:
         return HttpResponse("Invalid event specified".encode(), status=400)
 
-    event.delete()
+    event.delete_by_user(request.user)
     return HttpResponse(json.dumps(dict(id=arguments["id"])), status=200)
 
 

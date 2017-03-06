@@ -481,6 +481,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                         task={task}
                         viewType={this.state.viewType}
                         tagsById={this.props.tagsById}
+                        eventsById={this.props.eventsById}
                     />
                 </div>
             })}

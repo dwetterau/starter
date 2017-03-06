@@ -20,7 +20,7 @@ export function debounce(func, window) {
     }
 }
 
-export function renderDuration(seconds: number): string {
+export function renderDuration(seconds: number, short: boolean): string {
     // Given a time in seconds, returns a string in english that describes the duration
     let final = '';
     let addUnit = (name: string, durationInSeconds: number) => {
@@ -38,9 +38,11 @@ export function renderDuration(seconds: number): string {
         seconds -= (numUnits * durationInSeconds)
     };
 
-    addUnit("hour", 60 * 60);
-    addUnit("minute", 60);
-    addUnit("second", 1);
+    addUnit(short? "hr" : "hour", 60 * 60);
+    addUnit(short? "min" : "minute", 60);
+    if (!short) {
+        addUnit("second", 1);
+    }
 
     if (!final.length) {
         // The 0 case
