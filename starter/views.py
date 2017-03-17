@@ -1,21 +1,26 @@
-from collections import defaultdict
 import datetime
 import json
 import re
-import urllib
+
+from collections import defaultdict
+from urllib.parse import parse_qsl
+from typing import Any, Callable, Dict, List, Set, Tuple
 
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_http_methods
 
 from starter.models import (
     Event,
+    LocalTaskId,
     Tag,
+    TagId,
     TagEdge,
     Task,
+    UserId,
 )
 from starter.utils import user_to_dict
 
@@ -26,7 +31,7 @@ from starter.utils import user_to_dict
 
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["GET"])
-def index(request):
+def index(request: HttpRequest) -> HttpResponse:
     props = json.dumps(dict(
         meUser=user_to_dict(request.user),
         tasks=[task.to_dict() for task in Task.get_by_owner_id(request.user.id)],
@@ -41,7 +46,7 @@ def index(request):
 
 
 @require_http_methods(["GET"])
-def logout(request):
+def logout(request: HttpRequest) -> HttpResponse:
     return auth_views.logout(request, next_page=u"/")
 
 #
@@ -53,8 +58,15 @@ class ValidationError(Exception):
     pass
 
 
-def _validate(args, validation_map):
-    args = [(arg.decode(), values.decode()) for arg, values in args]
+def parse(body: Any) -> List[Tuple[str, str]]:
+    args = parse_qsl(body, keep_blank_values=True)
+    return [(arg.decode(), val.decode()) for arg, val in args]
+
+
+def _validate(
+        args: List[Tuple[str, str]],
+        validation_map: Dict[str, Callable[[str], Any]]
+) -> List[Tuple[str, Any]]:
     if set(validation_map.keys()) != {k for k, v in args}:
         a = {k for k, v in args}
         b = set(validation_map.keys())
@@ -76,35 +88,34 @@ def _validate(args, validation_map):
     return converted_args
 
 
-def _required_string(x):
+def _required_string(x: str) -> str:
     x = str(x)
     assert len(x) > 0
     return x
 
 
-def _nonnegative_number(x):
-    x = int(x)
-    assert x >= 0
-    return x
+def _nonnegative_number(x: str) -> int:
+    num = int(x)
+    assert num >= 0
+    return num
 
 
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
-def create_task(request):
-    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
+def create_task(request: HttpRequest) -> HttpResponse:
     validation_map = {
         'title': _required_string,
-        'description': str,
+        'description': lambda x: str(x),
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
         'expectedDurationSecs': _nonnegative_number,
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
-    }
+    }  # type: Dict[str, Callable[[str], Any]]
 
     try:
-        arguments = _validate(arguments, validation_map)
+        arguments = _validate(parse(request.body), validation_map)
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400, )
@@ -113,10 +124,10 @@ def create_task(request):
     new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
-    arguments = dict(arguments)
+    args_to_objects = dict(arguments)
 
     # Business logic checks
-    if arguments["authorId"] != request.user:
+    if args_to_objects["authorId"] != request.user:
         return HttpResponse("Logged in user not the author".encode(), status=400)
 
     if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
@@ -124,15 +135,15 @@ def create_task(request):
 
     # TODO: tags!
     task = Task.objects.create(
-        title=arguments["title"],
-        description=arguments["description"],
-        priority=arguments["priority"].value,
-        state=arguments["state"].value,
-        author=arguments["authorId"],
-        owner=arguments["ownerId"],
-        expected_duration_secs=arguments["expectedDurationSecs"],
+        title=args_to_objects["title"],
+        description=args_to_objects["description"],
+        priority=args_to_objects["priority"].value,
+        state=args_to_objects["state"].value,
+        author=args_to_objects["authorId"],
+        owner=args_to_objects["ownerId"],
+        expected_duration_secs=args_to_objects["expectedDurationSecs"],
     )
-    task.create_local_id(arguments["authorId"])
+    task.create_local_id(args_to_objects["authorId"])
     if new_tags_by_id:
         task.set_tags(new_tags_by_id.values())
 
@@ -141,50 +152,51 @@ def create_task(request):
 
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
-def update_task(request):
-    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
+def update_task(request: HttpRequest) -> HttpResponse:
     validation_map = {
-        'id': int,
+        'id': lambda x: int(x),
         'title': _required_string,
-        'description': str,
+        'description': lambda x: str(x),
         'priority': lambda x: Task.Priority(int(x)),
         'state': lambda x: Task.State(int(x)),
         'expectedDurationSecs': _nonnegative_number,
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
-    }
+    }  # type: Dict[str, Callable[[str], Any]]
 
     try:
-        arguments = _validate(arguments, validation_map)
+        arguments = _validate(parse(request.body), validation_map)
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400)
 
     # Combine new tags:
-    new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
+    new_tags_by_id = {
+        tag.id: tag for arg, tag in arguments if arg == "tagIds[]"
+    }  # type: Dict[TagId, Tag]
 
     # Now it's safe to squash all the arguments together into a dict
-    arguments = dict(arguments)
+    args_to_objects = dict(arguments)
 
     # Business logic checks
-    if request.user not in [arguments["authorId"], arguments["ownerId"]]:
+    if request.user not in [args_to_objects["authorId"], args_to_objects["ownerId"]]:
         return HttpResponse("Must edit as owner or author".encode(), status=400)
 
-    task = Task.get_by_local_id(arguments["id"], request.user)
-    if not task or task.author != arguments["authorId"]:
+    task = Task.get_by_local_id(args_to_objects["id"], request.user)
+    if not task or task.author != args_to_objects["authorId"]:
         return HttpResponse("Invalid task specified.".encode(), status=400)
 
     if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
         return HttpResponse("Tag not found".encode(), status=400)
 
     # Copy in all the mutable fields
-    task.title = arguments["title"]
-    task.description = arguments["description"]
-    task.priority = arguments["priority"].value
-    task.state = arguments["state"].value
-    task.owner = arguments["ownerId"]
-    task.expected_duration_secs = arguments["expectedDurationSecs"]
+    task.title = args_to_objects["title"]
+    task.description = args_to_objects["description"]
+    task.priority = args_to_objects["priority"].value
+    task.state = args_to_objects["state"].value
+    task.owner = args_to_objects["ownerId"]
+    task.expected_duration_secs = args_to_objects["expectedDurationSecs"]
     task.save()
 
     if set(new_tags_by_id.keys()) != set(task.get_tag_ids()):
@@ -195,13 +207,12 @@ def update_task(request):
 
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
-def delete_task(request):
-    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
+def delete_task(request: HttpRequest) -> HttpResponse:
     validation_map = {
-        'id': int,
-    }
+        'id': lambda x: int(x),
+    }  # type: Dict[str, Callable[[str], Any]]
     try:
-        arguments = dict(_validate(arguments, validation_map))
+        arguments = dict(_validate(parse(request.body), validation_map))
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400)
@@ -217,20 +228,19 @@ def delete_task(request):
 
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
-def create_event(request):
-    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
+def create_event(request: HttpRequest) -> HttpResponse:
     validation_map = {
         'name': _required_string,
         'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
         'durationSecs': _nonnegative_number,
-        'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
-        'authorId': lambda user_id: User.objects.get(id=int(user_id)),
-        'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
-        'taskIds[]': lambda x: Task.get_by_local_id(int(x), request.user),
-    }
+        'tagIds[]': lambda x: Tag.objects.get(id=TagId(int(x))),
+        'authorId': lambda user_id: User.objects.get(id=UserId(int(user_id))),
+        'ownerId': lambda user_id: User.objects.get(id=UserId(int(user_id))),
+        'taskIds[]': lambda x: Task.get_by_local_id(LocalTaskId(int(x)), request.user),
+    }  # type: Dict[str, Callable[[str], Any]]
 
     try:
-        arguments = _validate(arguments, validation_map)
+        arguments = _validate(parse(request.body), validation_map)
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400, )
@@ -242,10 +252,10 @@ def create_event(request):
     new_tasks_by_id = {task.id: task for arg, task in arguments if arg == "taskIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
-    arguments = dict(arguments)
+    args_to_objects = dict(arguments)
 
     # Business logic checks
-    if arguments["authorId"] != request.user:
+    if args_to_objects["authorId"] != request.user:
         return HttpResponse("Logged in user not the author".encode(), status=400)
 
     if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
@@ -255,26 +265,25 @@ def create_event(request):
         return HttpResponse("Task not found".encode(), status=400)
 
     event = Event.objects.create(
-        name=arguments["name"],
-        start_time=arguments["startTime"],
-        duration_secs=arguments["durationSecs"],
-        author=arguments["authorId"],
-        owner=arguments["ownerId"],
+        name=args_to_objects["name"],
+        start_time=args_to_objects["startTime"],
+        duration_secs=args_to_objects["durationSecs"],
+        author=args_to_objects["authorId"],
+        owner=args_to_objects["ownerId"],
     )
-    event.create_local_id(arguments["authorId"])
+    event.create_local_id(args_to_objects["authorId"])
     if new_tags_by_id:
         event.set_tags(new_tags_by_id.values())
 
     if new_tasks_by_id:
-        event.set_tasks(arguments["authorId"], new_tasks_by_id.values())
+        event.set_tasks(args_to_objects["authorId"], new_tasks_by_id.values())
 
     return HttpResponse(json.dumps(event.to_dict()), status=200)
 
 
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
-def update_event(request):
-    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
+def update_event(request: HttpRequest) -> HttpResponse:
     validation_map = {
         'id': int,
         'name': _required_string,
@@ -283,11 +292,11 @@ def update_event(request):
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
-        'taskIds[]': lambda x: Task.get_by_local_id(int(x), request.user),
-    }
+        'taskIds[]': lambda x: Task.get_by_local_id(LocalTaskId(int(x)), request.user),
+    }  # type: Dict[str, Callable[[str], Any]]
 
     try:
-        arguments = _validate(arguments, validation_map)
+        arguments = _validate(parse(request.body), validation_map)
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400)
@@ -298,15 +307,15 @@ def update_event(request):
     # Combine new tasks:
     new_tasks_by_id = {task.id: task for arg, task in arguments if arg == "taskIds[]"}
 
-    # Now it's safe to squash all the arguments together into a dict
-    arguments = dict(arguments)
+    # Now it's safe to squash all the args_to_objects together into a dict
+    args_to_objects = dict(arguments)
 
     # Business logic checks
-    if request.user not in [arguments["authorId"], arguments["ownerId"]]:
+    if request.user not in [args_to_objects["authorId"], args_to_objects["ownerId"]]:
         return HttpResponse("Must edit as owner or author".encode(), status=400)
 
-    event = Event.get_by_local_id(arguments["id"], request.user)
-    if not event or event.author != arguments["authorId"]:
+    event = Event.get_by_local_id(args_to_objects["id"], request.user)
+    if not event or event.author != args_to_objects["authorId"]:
         return HttpResponse("Invalid event specified.".encode(), status=400)
 
     if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
@@ -316,30 +325,29 @@ def update_event(request):
         return HttpResponse("Task not found".encode(), status=400)
 
     # Copy in all the mutable fields
-    event.name = arguments["name"]
-    event.start_time = arguments["startTime"]
-    event.duration_secs = arguments["durationSecs"]
-    event.owner = arguments["ownerId"]
+    event.name = args_to_objects["name"]
+    event.start_time = args_to_objects["startTime"]
+    event.duration_secs = args_to_objects["durationSecs"]
+    event.owner = args_to_objects["ownerId"]
     event.save()
 
     if set(new_tags_by_id.keys()) != set(event.get_tag_ids()):
         event.set_tags(new_tags_by_id.values())
 
     if set(new_tasks_by_id.keys()) != set(event.get_task_ids()):
-        event.set_tasks(arguments["ownerId"], new_tasks_by_id.values())
+        event.set_tasks(args_to_objects["ownerId"], new_tasks_by_id.values())
 
     return HttpResponse(json.dumps(event.to_dict()), status=200)
 
 
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
-def delete_event(request):
-    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
+def delete_event(request: HttpRequest) -> HttpResponse:
     validation_map = {
-        'id': int,
-    }
+        'id': lambda x: int(x),
+    }  # type: Dict[str, Callable[[str], Any]]
     try:
-        arguments = dict(_validate(arguments, validation_map))
+        arguments = dict(_validate(parse(request.body), validation_map))
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400)
@@ -356,7 +364,7 @@ def delete_event(request):
 _tag_name_pattern = re.compile("^[a-zA-Z0-9_]+$")
 
 
-def _valid_tag_name(x):
+def _valid_tag_name(x: str) -> str:
     x = _required_string(x)
     assert _tag_name_pattern.match(x)
     return x
@@ -364,16 +372,15 @@ def _valid_tag_name(x):
 
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
-def create_tag(request):
-    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
+def create_tag(request: HttpRequest) -> HttpResponse:
     validation_map = {
         'name': _valid_tag_name,
         'childTagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
-    }
+    }  # type: Dict[str, Callable[[str], Any]]
 
     try:
-        arguments = _validate(arguments, validation_map)
+        arguments = _validate(parse(request.body), validation_map)
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400)
@@ -382,21 +389,21 @@ def create_tag(request):
     child_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "childTagIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
-    arguments = dict(arguments)
+    args_to_objects = dict(arguments)
 
     # Business logic
-    if request.user != arguments["ownerId"]:
+    if request.user != args_to_objects["ownerId"]:
         return HttpResponse("Must create as owner".encode(), status=400)
 
     # Note that creation can never create a cycle since we don't allow a parent to be specified.
 
-    l_name = arguments["name"].lower()
+    l_name = args_to_objects["name"].lower()
     for t in Tag.get_all_owned_tags(request.user):
         if t.name.lower() == l_name:
             return HttpResponse("Name must be unique".encode(), status=400)
 
     tag = Tag.objects.create(
-        name=arguments["name"],
+        name=args_to_objects["name"],
         owner_id=request.user.id,
     )
     if child_tags_by_id:
@@ -407,17 +414,16 @@ def create_tag(request):
 
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
-def update_tag(request):
-    arguments = urllib.parse.parse_qsl(request.body, keep_blank_values=True)
+def update_tag(request: HttpRequest) -> HttpResponse:
     validation_map = {
         'id': int,
         'name': _valid_tag_name,
         'childTagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
-    }
+    }  # type: Dict[str, Callable[[str], Any]]
 
     try:
-        arguments = _validate(arguments, validation_map)
+        arguments = _validate(parse(request.body), validation_map)
     except ValidationError as e:
         print(e)
         return HttpResponse(str(e.args).encode(), status=400)
@@ -426,14 +432,14 @@ def update_tag(request):
     child_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "childTagIds[]"}
 
     # Now it's safe to squash all the arguments together into a dict
-    arguments = dict(arguments)
+    args_to_objects = dict(arguments)
 
     # Business logic checks
-    tag = Tag.objects.get(id=arguments["id"])
+    tag = Tag.objects.get(id=args_to_objects["id"])
     if not tag:
         return HttpResponse("Tag not found".encode(), status=400)
 
-    if request.user != arguments["ownerId"]:
+    if request.user != args_to_objects["ownerId"]:
         return HttpResponse("Must edit as owner".encode(), status=400)
 
     if any(tag.owner_id != request.user.id for tag in child_tags_by_id.values()):
@@ -442,7 +448,7 @@ def update_tag(request):
     all_tags_by_id = {t.id: t for t in Tag.get_all_owned_tags(request.user)}
 
     # Make sure this is a new name.
-    l_name = arguments["name"].lower()
+    l_name = args_to_objects["name"].lower()
     for t in all_tags_by_id.values():
         if t.name.lower() == l_name and t.id != tag.id:
             return HttpResponse("Name must be unique".encode(), status=400)
@@ -451,7 +457,7 @@ def update_tag(request):
                  for edge in TagEdge.objects.filter(parent_tag_id__in=all_tags_by_id.keys())]
 
     # See if this would create a cycle:
-    graph = defaultdict(set)
+    graph = defaultdict(set)  # type: Dict[TagId, Set[TagId]]
     for parent_id, child_id in all_edges:
         graph[parent_id].add(child_id)
 
@@ -461,9 +467,9 @@ def update_tag(request):
 
     # Detect cycles:
     not_seen = set(graph.keys())
-    seen_set = set()
+    seen_set = set()  # type: Set[TagId]
 
-    def dfs(tag_id: Tag):
+    def dfs(tag_id: TagId) -> bool:
         not_seen.discard(tag_id)
         if tag_id in seen_set:
             return True
@@ -483,7 +489,7 @@ def update_tag(request):
             return HttpResponse("Change would induce cycle in tag graph".encode(), status=400)
 
     # Copy in all the mutable fields
-    tag.name = arguments["name"]
+    tag.name = args_to_objects["name"]
     tag.save()
 
     if set(child_tags_by_id.keys()) != original_children_id_set:

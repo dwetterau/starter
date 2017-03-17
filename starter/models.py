@@ -2,7 +2,7 @@ import enum
 
 from collections import defaultdict
 from threading import Lock
-from typing import Any, Dict, List, Optional, NewType, Tuple
+from typing import Any, Dict, Iterable, List, Optional, NewType, Tuple
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -118,7 +118,7 @@ class Task(models.Model):
     expected_duration_secs = models.IntegerField("Expected duration of the task in seconds")
 
     @classmethod
-    def get_by_owner_id(cls, user_id: UserId) -> "Task":
+    def get_by_owner_id(cls, user_id: UserId) -> List["Task"]:
         all_tasks = Task.objects.filter(owner_id=user_id)
 
         uncached_task_ids = [t.id for t in all_tasks if t.id not in global_task_cache]
@@ -179,7 +179,7 @@ class Task(models.Model):
 
         return [x.id for x in self.tags.all()]
 
-    def set_tags(self, new_tags: List[Tag]) -> None:
+    def set_tags(self, new_tags: Iterable[Tag]) -> None:
         # TODO: Optimize this
         global_task_cache.pop(self.id, None)
         self.tags.clear()
@@ -315,7 +315,7 @@ class Event(models.Model):
 
         return [x.id for x in self.tags.all()]
 
-    def set_tags(self, new_tags: List[TagId]) -> None:
+    def set_tags(self, new_tags: Iterable[TagId]) -> None:
         # TODO: Optimize this
         global_event_cache.pop(self.id, None)
         self.tags.clear()
@@ -328,7 +328,7 @@ class Event(models.Model):
 
         return [x.get_local_id() for x in self.task_set.all()]
 
-    def set_tasks(self, user: User, new_tasks: List[Task]) -> None:
+    def set_tasks(self, user: User, new_tasks: Iterable[Task]) -> None:
         # TODO: Optimize this
         current_local_task_ids = self.get_task_ids()
         for task_id in current_local_task_ids:
