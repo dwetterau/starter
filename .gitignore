@@ -8,3 +8,5 @@ site.db
 diff.sh
 .DS_Store
 starter/static/dist/dev
+.mypy_cache
+index.txt

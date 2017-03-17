@@ -1,9 +1,22 @@
 import enum
+
 from collections import defaultdict
 from threading import Lock
+from typing import Any, Dict, List, Optional, NewType, Tuple
 
 from django.contrib.auth.models import User
 from django.db import models
+
+
+UserId = NewType("UserId", int)
+
+TaskId = NewType("TaskId", int)
+LocalTaskId = NewType("LocalTaskId", int)
+
+EventId = NewType("EventId", int)
+LocalEventId = NewType("LocalEventId", int)
+
+TagId = NewType("TagId", int)
 
 
 class Tag(models.Model):
@@ -17,19 +30,20 @@ class Tag(models.Model):
                            verbose_name="The tags contained by this tag")
     owner = models.ForeignKey(User, related_name="owned_tags", verbose_name="Owner of this tag")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(Tag, self).__init__(*args, **kwargs)
 
-        self._cached_child_ids = None
+        self._cached_child_ids = None  # type: Optional[List[TagId]]
 
-    def get_child_ids(self):
+    def get_child_ids(self) -> List[TagId]:
         if self._cached_child_ids is not None:
             return self._cached_child_ids
 
-        self._cached_child_ids = [x.child_tag_id for x in self.child_tag.all()]
-        return self._cached_child_ids
+        tag_ids = [x.child_tag_id for x in self.child_tag.all()]
+        self._cached_child_ids = tag_ids
+        return tag_ids
 
-    def set_children(self, new_children):
+    def set_children(self, new_children: List["Tag"]) -> None:
         # TODO: Optimize this
         self._cached_child_ids = None
         self.child_tag.all().delete()
@@ -39,10 +53,10 @@ class Tag(models.Model):
                 child_tag_id=child.id
             )
 
-    def get_parents(self):
+    def get_parents(self) -> List["Tag"]:
         return self.parent_tag.all()
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return dict(
             id=self.id,
             name=self.name,
@@ -51,14 +65,14 @@ class Tag(models.Model):
         )
 
     @classmethod
-    def get_all_owned_tags(cls, user: User):
+    def get_all_owned_tags(cls, user: User) -> List["Tag"]:
         tags = user.owned_tags.all()
         all_edges = TagEdge.objects.filter(parent_tag_id__in=[t.id for t in tags]).all()
-        parent_id_to_child_id = defaultdict(list)
+        parent_id_to_child_ids = defaultdict(list)  # type: Dict[TagId, List[TagId]]
         for edge in all_edges:
-            parent_id_to_child_id[edge.parent_tag_id].append(edge.child_tag_id)
+            parent_id_to_child_ids[edge.parent_tag_id].append(edge.child_tag_id)
         for tag in tags:
-            tag._cached_child_ids = parent_id_to_child_id[tag.id]
+            tag._cached_child_ids = parent_id_to_child_ids[tag.id]
         return tags
 
 
@@ -67,11 +81,9 @@ class TagEdge(models.Model):
     parent_tag = models.ForeignKey(Tag, related_name='child_tag')
     child_tag = models.ForeignKey(Tag, related_name='parent_tag')
 
-# type: Dict[task_id, List[local_id, tag_ids, event_ids]]
-global_task_cache = {}
+global_task_cache = {}  # type: Dict[TaskId, Tuple[LocalTaskId, List[TagId], List[LocalEventId]]]
 
-# type: Dict[event_id, List[local_id, tag_ids, task_ids]]
-global_event_cache = {}
+global_event_cache = {}  # type: Dict[EventId, Tuple[LocalEventId, List[TagId], List[LocalTaskId]]]
 
 
 class Task(models.Model):
@@ -106,23 +118,20 @@ class Task(models.Model):
     expected_duration_secs = models.IntegerField("Expected duration of the task in seconds")
 
     @classmethod
-    def get_by_owner_id(cls, user_id):
+    def get_by_owner_id(cls, user_id: UserId) -> "Task":
         all_tasks = Task.objects.filter(owner_id=user_id)
 
         uncached_task_ids = [t.id for t in all_tasks if t.id not in global_task_cache]
 
         # Now, we also want all the local ids so that we can attach them correctly
         for tgi in TaskGlobalId.objects.filter(user_id=user_id, task_id__in=uncached_task_ids):
-            global_task_cache[tgi.task_id] = [tgi.local_id]
+            global_task_cache[tgi.task_id] = (tgi.local_id, [], [])
 
         # Also cache in the tag ids
-        task_id_to_tag_ids = defaultdict(list)
         all_task_tags = TaskTags.objects.filter(task_id__in=uncached_task_ids)
         for task_tag in all_task_tags:
             cache_entry = global_task_cache[task_tag.task_id]
-            if len(cache_entry) == 1:
-                cache_entry.append([])
-            cache_entry[-1].append(task_tag.tag_id)
+            cache_entry[1].append(task_tag.tag_id)
 
         all_task_events = TaskEvents.objects.filter(task__in=uncached_task_ids)
 
@@ -136,25 +145,18 @@ class Task(models.Model):
 
         for task_event in all_task_events:
             cache_entry = global_task_cache[task_event.task_id]
-            while len(cache_entry) < 3:
-                cache_entry.append([])
-            cache_entry[-1].append(event_id_to_local_id[task_event.event_id])
-
-        for task_id in uncached_task_ids:
-            cache_entry = global_task_cache[task_id]
-            while len(cache_entry) < 3:
-                cache_entry.append([])
+            cache_entry[2].append(event_id_to_local_id[task_event.event_id])
 
         return all_tasks
 
     @classmethod
-    def get_by_local_id(cls, local_id, user):
+    def get_by_local_id(cls, local_id: LocalTaskId, user: User) -> "Task":
         task_id = TaskGlobalId.objects.get(user_id=user.id, local_id=local_id).task_id
         task = Task.objects.get(id=task_id)
         task.add_to_cache()
         return task
 
-    def create_local_id(self, user):
+    def create_local_id(self, user: User) -> None:
         with TaskGlobalId.GLOBAL_WLOCK:
             cur_last = TaskGlobalId.objects.filter(user_id=user.id).order_by("local_id").last()
             last_id = cur_last.local_id if cur_last else 0
@@ -164,43 +166,40 @@ class Task(models.Model):
                 local_id=last_id + 1,
             )
 
-    def get_local_id(self):
+    def get_local_id(self) -> LocalTaskId:
         if self.id in global_task_cache:
             return global_task_cache[self.id][0]
 
         local_id = TaskGlobalId.objects.get(task_id=self.id, user_id=self.author_id).local_id
-        self._cached_local_id = local_id
         return local_id
 
-    def get_tag_ids(self):
+    def get_tag_ids(self) -> List[TagId]:
         if self.id in global_task_cache:
             return global_task_cache[self.id][1]
 
-        tag_ids = [x.id for x in self.tags.all()]
-        return tag_ids
+        return [x.id for x in self.tags.all()]
 
-    def set_tags(self, new_tags):
+    def set_tags(self, new_tags: List[Tag]) -> None:
         # TODO: Optimize this
         global_task_cache.pop(self.id, None)
         self.tags.clear()
         for tag in new_tags:
             self.tags.add(tag)
 
-    def get_event_ids(self):
+    def get_event_ids(self) -> List[LocalEventId]:
         if self.id in global_task_cache:
             return global_task_cache[self.id][2]
 
-        event_ids = [x.get_local_id() for x in self.events.all()]
-        return event_ids
+        return [x.get_local_id() for x in self.events.all()]
 
-    def add_to_cache(self):
-        global_task_cache[self.id] = [
+    def add_to_cache(self) -> None:
+        global_task_cache[self.id] = (
             self.get_local_id(),
             self.get_tag_ids(),
             self.get_event_ids(),
-        ]
+        )
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return dict(
             id=self.get_local_id(),
             title=self.title,
@@ -214,7 +213,7 @@ class Task(models.Model):
             expectedDurationSecs=self.expected_duration_secs,
         )
 
-    def delete(self, **kwargs):
+    def delete(self, **kwargs: Any) -> None:
         global_task_cache.pop(self.id, None)
         self.set_tags([])
         super(Task, self).delete(**kwargs)
@@ -256,21 +255,18 @@ class Event(models.Model):
 
     tags = models.ManyToManyField(Tag, verbose_name="The tags for the event")
 
-
     @classmethod
-    def get_by_owner_id(cls, user_id):
+    def get_by_owner_id(cls, user_id: UserId) -> List["Event"]:
         # Note: Iterating over these the first time is a huge perf hit
         all_events = Event.objects.filter(owner_id=user_id).all()
 
         uncached_event_ids = [e.id for e in all_events if e.id not in global_event_cache]
 
         for egi in EventGlobalId.objects.filter(user_id=user_id, event_id__in=uncached_event_ids):
-            global_event_cache[egi.event_id] = [egi.local_id]
+            global_event_cache[egi.event_id] = (egi.local_id, [], [])
 
         for event_tag in EventTags.objects.filter(event__in=uncached_event_ids):
             cache_entry = global_event_cache[event_tag.event_id]
-            if len(cache_entry) == 1:
-                cache_entry.append([])
             cache_entry[1].append(event_tag.tag_id)
 
         all_task_events = TaskEvents.objects.filter(event__in=uncached_event_ids)
@@ -285,25 +281,18 @@ class Event(models.Model):
 
         for task_event in all_task_events:
             cache_entry = global_event_cache[task_event.event_id]
-            while len(cache_entry) < 3:
-                cache_entry.append([])
             cache_entry[2].append(task_id_to_local_id[task_event.task_id])
-
-        for event_id in uncached_event_ids:
-            cache_entry = global_event_cache[event_id]
-            while len(cache_entry) < 3:
-                cache_entry.append([])
 
         return all_events
 
     @classmethod
-    def get_by_local_id(cls, local_id, user):
+    def get_by_local_id(cls, local_id: LocalEventId, user: User) -> "Event":
         event_id = EventGlobalId.objects.get(user_id=user.id, local_id=local_id).event_id
         event = Event.objects.get(id=event_id)
         event.add_to_cache()
         return event
 
-    def create_local_id(self, user):
+    def create_local_id(self, user: User) -> None:
         with EventGlobalId.GLOBAL_WLOCK:
             cur_last = EventGlobalId.objects.filter(user_id=user.id).order_by("local_id").last()
             last_id = cur_last.local_id if cur_last else 0
@@ -313,35 +302,33 @@ class Event(models.Model):
                 local_id=last_id + 1,
             )
 
-    def get_local_id(self):
+    def get_local_id(self) -> LocalEventId:
         if self.id in global_event_cache:
             return global_event_cache[self.id][0]
 
         local_id = EventGlobalId.objects.get(event_id=self.id, user_id=self.author_id).local_id
         return local_id
 
-    def get_tag_ids(self):
+    def get_tag_ids(self) -> List[TagId]:
         if self.id in global_event_cache:
             return global_event_cache[self.id][1]
 
-        tag_ids = [x.id for x in self.tags.all()]
-        return tag_ids
+        return [x.id for x in self.tags.all()]
 
-    def set_tags(self, new_tags):
+    def set_tags(self, new_tags: List[TagId]) -> None:
         # TODO: Optimize this
         global_event_cache.pop(self.id, None)
         self.tags.clear()
         for tag in new_tags:
             self.tags.add(tag)
 
-    def get_task_ids(self):
+    def get_task_ids(self) -> List[LocalTaskId]:
         if self.id in global_event_cache:
             return global_event_cache[self.id][2]
 
-        task_ids = [x.get_local_id() for x in self.task_set.all()]
-        return task_ids
+        return [x.get_local_id() for x in self.task_set.all()]
 
-    def set_tasks(self, user, new_tasks):
+    def set_tasks(self, user: User, new_tasks: List[Task]) -> None:
         # TODO: Optimize this
         current_local_task_ids = self.get_task_ids()
         for task_id in current_local_task_ids:
@@ -354,14 +341,14 @@ class Event(models.Model):
             global_task_cache.pop(task.id, None)
             self.task_set.add(task)
 
-    def add_to_cache(self):
-        global_event_cache[self.id] = [
+    def add_to_cache(self) -> None:
+        global_event_cache[self.id] = (
             self.get_local_id(),
             self.get_tag_ids(),
             self.get_task_ids(),
-        ]
+        )
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Any]:
         return dict(
             id=self.get_local_id(),
             name=self.name,
@@ -373,7 +360,7 @@ class Event(models.Model):
             taskIds=self.get_task_ids()
         )
 
-    def delete_by_user(self, user):
+    def delete_by_user(self, user: User) -> None:
         global_event_cache.pop(self.id, None)
         self.set_tags([])
         self.set_tasks(user, [])
