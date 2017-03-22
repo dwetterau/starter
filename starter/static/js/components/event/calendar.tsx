@@ -1100,6 +1100,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             <EditEventComponent
                 meUser={this.props.meUser}
                 event={this.state.editingEvent}
+                eventsById={this.props.eventsById}
                 tagsById={this.props.tagsById}
                 createMode={false}
                 tasksById={this.props.tasksById}
@@ -1147,6 +1148,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 meUser={this.props.meUser}
                 tagsById={this.props.tagsById}
                 createMode={true}
+                eventsById={this.props.eventsById}
                 tasksById={this.props.tasksById}
                 initialCreationTime={this.state.createEventTimestamp}
                 initialDurationSecs={this.state.createEventDurationSecs}

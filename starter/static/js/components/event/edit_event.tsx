@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import * as React from "react";
-import {User, Event, TagsById, TasksById} from "../../models";
+import {User, Event, TagsById, TasksById, EventsById} from "../../models";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
 
 export interface EditEventProps {
@@ -8,6 +8,7 @@ export interface EditEventProps {
     event?: Event,
     tagsById: TagsById,
     createMode: boolean,
+    eventsById: EventsById,
     tasksById: TasksById,
     initialCreationTime?: number,
     initialDurationSecs?: number,
@@ -20,6 +21,7 @@ export interface EditEventProps {
 export interface EditEventState {
     event: Event,
     startNow: boolean,
+    startAfterLast: boolean,
     endNow: boolean,
     submitted: boolean,
 }
@@ -43,6 +45,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         this.state = {
             event,
             startNow: false,
+            startAfterLast: false,
             endNow: false,
             submitted: false,
         }
@@ -102,6 +105,19 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
 
     toggleStartNow() {
         this.state.startNow = !this.state.startNow;
+        if (this.state.startNow) {
+            this.state.startAfterLast = false;
+        }
+
+        this.setState(this.state);
+    }
+
+    toggleStartAfterLast() {
+        this.state.startAfterLast = !this.state.startAfterLast;
+        if (this.state.startAfterLast) {
+            this.state.startNow = false;
+        }
+
         this.setState(this.state);
     }
 
@@ -118,6 +134,21 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
             );
             this.state.event.startTime = now;
             this.state.event.durationSecs = Math.floor((currentEndTime - now) / 1000)
+        } else if (this.state.startAfterLast) {
+            let candidateStartTime = 0;
+            for (let eventId of Object.keys(this.props.eventsById)) {
+                let event = this.props.eventsById[eventId];
+                let endTime = event.startTime + (event.durationSecs * 1000);
+                if (endTime > candidateStartTime && endTime < now) {
+                    candidateStartTime = endTime;
+                }
+            }
+
+            // If the last event wasn't within 24 hours, just use now
+            if (now - candidateStartTime > 24 * 60 * 60 * 1000) {
+                candidateStartTime = now;
+            }
+            this.state.event.startTime = candidateStartTime;
         }
 
         if (this.state.endNow) {
@@ -328,6 +359,15 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                     type="checkbox"
                     onChange={this.toggleStartNow.bind(this)}
                     checked={this.state.startNow}
+                />
+            </div>
+
+            <div className="start-now checkbox-container">
+                <label onClick={this.toggleStartAfterLast.bind(this)}>After Last?</label>
+                <input
+                    type="checkbox"
+                    onChange={this.toggleStartAfterLast.bind(this)}
+                    checked={this.state.startAfterLast}
                 />
             </div>
 
