@@ -1,7 +1,7 @@
 import * as moment from "moment";
 import * as React from "react"
 import {Event, EventsById, Tag, TagsById} from "../../models";
-import {getTagAndDescendantsRecursive, renderDuration} from "../lib/util";
+import {getTagAndDescendantsRecursive, renderDuration, getTagParentIds} from "../lib/util";
 import {TagComponent} from "./tag";
 
 interface TagDetailProps {
@@ -177,6 +177,21 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         </div>
     }
 
+    renderParentTags() {
+        const parentTagIds = getTagParentIds(this.props.tag.id, this.props.tagsById);
+        if (parentTagIds.length == 0) {
+            // Doesn't have any parents
+            return
+        }
+        return <div className="related-tag-names">
+            Parents:
+            {parentTagIds.map((tagId) => {
+                let tag = this.props.tagsById[tagId];
+                return <TagComponent key={tag.id} tag={tag}/>
+            })}
+        </div>
+    }
+
     renderDescendantTags() {
         const allTags = getTagAndDescendantsRecursive(this.props.tag.id, this.props.tagsById);
         if (Object.keys(allTags).length <= 1) {
@@ -184,7 +199,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
             return
         }
 
-        return <div className="all-child-names">
+        return <div className="related-tag-names">
             Descendants:
             {Object.keys(allTags).map((tagId) => {
                 if (parseInt(tagId) == this.props.tag.id) {
@@ -218,6 +233,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
     render() {
         return <div className="detail-container">
             {this.renderHeader()}
+            {this.renderParentTags()}
             {this.renderDescendantTags()}
             {this.renderTimeInfo()}
         </div>

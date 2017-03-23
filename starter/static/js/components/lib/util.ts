@@ -1,5 +1,5 @@
+import {TagsById, Tag} from "../../models";
 
-import {TagsById} from "../../models";
 export function debounce(func, window) {
     // Executes the given function at most once per window milliseconds, on the first call.
 
@@ -68,4 +68,18 @@ export function getTagAndDescendantsRecursive(tagId: number, tagsById: TagsById)
         }
     }
     return tagDescendantSet;
+}
+
+export function getTagParentIds(tagId: number, tagsById: TagsById): Array<number> {
+    const tagParentIds: Array<number> = [];
+    for (let parentTagId of Object.keys(tagsById)) {
+        let parentTag: Tag = tagsById[parentTagId];
+        for (let childTagId of parentTag.childTagIds) {
+            if (childTagId == tagId) {
+                tagParentIds.push(parentTag.id);
+                break
+            }
+        }
+    }
+    return tagParentIds
 }

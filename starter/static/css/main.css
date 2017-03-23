@@ -276,12 +276,12 @@ div.detail-container div.options {
     text-decoration: underline;
 }
 
-div.detail-container div.all-child-names {
+div.detail-container div.related-tag-names {
     display: flex;
     align-items: center;
 }
 
-div.detail-container div.all-child-names div.tag {
+div.detail-container div.related-tag-names div.tag {
     padding: 1px .25em;
     margin-left: .25em;
     margin-bottom: 0;
