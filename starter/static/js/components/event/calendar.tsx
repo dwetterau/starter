@@ -48,7 +48,8 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 
 const GRANULARITY = 900; // Each cell is 15 minutes (unit in seconds)
 
-const DEFAULT_CELL_HEIGHT = 25;
+const DEFAULT_CELL_HEIGHT = 40;
+const MIN_CELL_HEIGHT = 25;
 
 interface EventRenderingInfo {
     index: number
@@ -368,7 +369,10 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     durationSecs -= (columnStartTime - event.startTime) / 1000;
                 }
                 // TODO: Keep short end of day events from hanging off the end.
-                height = Math.max(cellHeight, (durationSecs / GRANULARITY) * cellHeight);
+                height = Math.max(
+                    Math.min(cellHeight, MIN_CELL_HEIGHT),
+                    (durationSecs / GRANULARITY) * cellHeight,
+                );
 
                 // Base case for the initial element
                 if (!aux.length) {
@@ -749,7 +753,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     changeCellHeight(event: any) {
         this.state.cellHeight = event.target.value;
-        this.setState(this.state)
+        this.resort()
     }
 
     renderCellSizeSlider() {
