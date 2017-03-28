@@ -48,7 +48,7 @@ const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 
 const GRANULARITY = 900; // Each cell is 15 minutes (unit in seconds)
 
-const DEFAULT_CELL_HEIGHT = 40;
+const DEFAULT_CELL_HEIGHT = 30;
 const MIN_CELL_HEIGHT = 25;
 
 interface EventRenderingInfo {

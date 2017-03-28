@@ -53,25 +53,20 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         return startOfWeek;
     }
 
-    computeStartAndEndTimes(): Array<number> {
+    computeStartTimes(): Array<number> {
         // Returns the following (all in milliseconds):
-        // - start of day, end of day
-        // - start of week, end of week
-        // - start of month, end of month
+        // - start of day
+        // - start of week
+        // - start of 2 weeks ago
+        // - start of month
+        let monday = this.computeStartMonday();
         let startTimes = [
             moment().startOf("day"),
-            this.computeStartMonday(),
+            monday,
+            moment(monday).subtract(1, "week"),
             moment().startOf("month"),
         ];
-        let startAndEndMoments = [
-            moment(startTimes[0]),
-            startTimes[0].add(1, "days"),
-            moment(startTimes[1]),
-            startTimes[1].add(1, "week"),
-            moment(startTimes[2]),
-            startTimes[2].add(1, "month"),
-        ];
-        return startAndEndMoments.map((time: moment.Moment) => {
+        return startTimes.map((time: moment.Moment) => {
             return time.unix() * 1000;
         })
     }
@@ -116,33 +111,11 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         return duration;
     }
 
-    computeScheduledTimes(eventIds: Array<number>): [number, number, number] {
-        // Returns three durations in seconds: time scheduled this month, this week, and this day
-        let timeScheduledDay = 0, timeScheduledWeek = 0, timeScheduledMonth = 0;
-        let [todayStart, todayEnd, weekStart, weekEnd, monthStart, monthEnd] = (
-            this.computeStartAndEndTimes()
-        );
-
-        for (let eventId of eventIds) {
-            let event: Event = this.props.eventsById[eventId];
-            timeScheduledDay += this.computeDurationOfEventBetweenTimestamps(
-                event, todayStart, todayEnd
-            );
-            timeScheduledWeek += this.computeDurationOfEventBetweenTimestamps(
-                event, weekStart, weekEnd
-            );
-            timeScheduledMonth += this.computeDurationOfEventBetweenTimestamps(
-                event, monthStart, monthEnd
-            );
-        }
-        return [timeScheduledDay, timeScheduledWeek, timeScheduledMonth];
-    }
-
-    computeSpentTimes(eventIds: Array<number>): [number, number, number] {
+    computeSpentTimes(eventIds: Array<number>): [number, number, number, number] {
         // Returns three durations in seconds: time spent this month, this week, and this day
-        let timeSpentMonth = 0, timeSpentWeek = 0, timeSpentDay = 0;
-        let [todayStart, todayEnd, weekStart, weekEnd, monthStart, monthEnd] = (
-            this.computeStartAndEndTimes()
+        let timeSpentMonth = 0, timeSpentWeek = 0, timeSpentLastWeek = 0, timeSpentDay = 0;
+        let [todayStart, weekStart, twoWeekStart, monthStart] = (
+            this.computeStartTimes()
         );
 
         // Clamp all end times to now
@@ -155,11 +128,14 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
             timeSpentWeek += this.computeDurationOfEventBetweenTimestamps(
                 event, weekStart, nowUnix
             );
+            timeSpentLastWeek += this.computeDurationOfEventBetweenTimestamps(
+                event, twoWeekStart, weekStart,
+            );
             timeSpentMonth += this.computeDurationOfEventBetweenTimestamps(
                 event, monthStart, nowUnix
             );
         }
-        return [timeSpentDay, timeSpentWeek, timeSpentMonth];
+        return [timeSpentDay, timeSpentWeek, timeSpentLastWeek, timeSpentMonth];
     }
 
     renderOptions() {
@@ -222,10 +198,12 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
 
     renderTimeInfo() {
         let relevantEvents = this.computeAllRelevantEvents();
-        let [timeSpentDay, timeSpentWeek, timeSpentMonth] = this.computeSpentTimes(relevantEvents);
+        let [timeSpentDay, timeSpentWeek, timeSpentLastWeek, timeSpentMonth] =
+            this.computeSpentTimes(relevantEvents);
         return <div className="time-info">
             {this.renderDurationWithName("Spent today", timeSpentDay)}
             {this.renderDurationWithName("Spent this week", timeSpentWeek)}
+            {this.renderDurationWithName("Spent last week", timeSpentLastWeek)}
             {this.renderDurationWithName("Spent this month", timeSpentMonth)}
         </div>
     }
