@@ -2,6 +2,7 @@ import * as React from "react";
 
 export interface Tokenizable {
     label: string,
+    subtext?: string,
     value: any,
 }
 export interface TokenizerProps {
@@ -122,6 +123,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
     appendToken(token: Tokenizable) {
         this.state.tokens.push({
             label: token.label,
+            subtext: token.subtext,
             value: token.value,
         });
         this.state.pendingToken = '';
@@ -153,7 +155,10 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
             // Otherwise, attempt to form a token out of what's in the text box.
             const newToken = this.state.pendingToken;
             let foundMatch = false;
-            let maybeToken: Tokenizable = {label: newToken, value: newToken};
+            let maybeToken: Tokenizable = {
+                label: newToken,
+                value: newToken,
+            };
 
             if (!this.props.possibleTokens) {
                 foundMatch = true;
@@ -258,6 +263,13 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         )
     }
 
+    renderTokenSubtext(token: Tokenizable) {
+        if (!token.subtext) {
+            return
+        }
+        return <div className="token-subtext">{token.subtext}</div>
+    }
+
     renderAutoComplete() {
         if (this.shouldHidePendingToken() || !this.state.autoCompleteTokens.length) {
             return
@@ -277,6 +289,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
                         onClick={this.onClick.bind(this, token)}
                     >
                         {token.label}
+                        {this.renderTokenSubtext(token)}
                     </div>
                 })}
             </div>

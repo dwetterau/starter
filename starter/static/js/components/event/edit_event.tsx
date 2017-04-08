@@ -139,7 +139,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
             for (let eventId of Object.keys(this.props.eventsById)) {
                 let event = this.props.eventsById[eventId];
                 let endTime = event.startTime + (event.durationSecs * 1000);
-                if (endTime > candidateStartTime && endTime < now) {
+                if (endTime > candidateStartTime && endTime < this.state.event.startTime) {
                     candidateStartTime = endTime;
                 }
             }
@@ -245,8 +245,10 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
     getCurrentTasks(): Array<Tokenizable> {
         // TODO: Do after we have the format
         return this.state.event.taskIds.map((taskId) => {
+            let task = this.props.tasksById[taskId];
             return {
                 label: `T${taskId}`,
+                subtext: task.title,
                 value: taskId,
             }
         })
@@ -255,8 +257,10 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
     getAllTaskNames(): Array<Tokenizable> {
         let names = [];
         for (let taskId in this.props.tasksById) {
+            let task = this.props.tasksById[taskId];
             names.push({
                 label: `T${taskId}`,
+                subtext: task.title,
                 value: taskId
             })
         }
