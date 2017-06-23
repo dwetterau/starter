@@ -350,6 +350,12 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             this.state.selectedTag = this.props.tagsById[newTokens[0].value];
         } else {
             this.state.selectedTag = null;
+
+            // If we were at a /tag/<tag> url, redirect to / because if we don't, the hacky
+            // /tag/<tag> logic will re-add this tag by looking at the URL :(
+            if (window.location.pathname.indexOf("/tag/") == 0) {
+                window.location.pathname = "/";
+            }
         }
 
         // As a hack to reflow the columns, we will "change the view type to the current one".
