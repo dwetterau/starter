@@ -139,7 +139,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
             for (let eventId of Object.keys(this.props.eventsById)) {
                 let event = this.props.eventsById[eventId];
                 let endTime = event.startTime + (event.durationSecs * 1000);
-                if (endTime > candidateStartTime && endTime < this.state.event.startTime) {
+                if (endTime > candidateStartTime && endTime <= this.state.event.startTime) {
                     candidateStartTime = endTime;
                 }
             }
