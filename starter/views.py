@@ -21,7 +21,7 @@ from starter.models import (
     TagEdge,
     Task,
     UserId,
-)
+    Note)
 from starter.utils import user_to_dict
 
 #
@@ -37,6 +37,7 @@ def index(request: HttpRequest) -> HttpResponse:
         tasks=[task.to_dict() for task in Task.get_by_owner_id(request.user.id)],
         events=[event.to_dict() for event in Event.get_by_owner_id(request.user.id)],
         tags=[tag.to_dict() for tag in Tag.get_all_owned_tags(request.user)],
+        notes=[],
     ))
     return render(request, 'starter/index.html', dict(props=props))
 
@@ -133,7 +134,6 @@ def create_task(request: HttpRequest) -> HttpResponse:
     if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
         return HttpResponse("Tag not found".encode(), status=400)
 
-    # TODO: tags!
     task = Task.objects.create(
         title=args_to_objects["title"],
         description=args_to_objects["description"],
@@ -496,3 +496,114 @@ def update_tag(request: HttpRequest) -> HttpResponse:
         tag.set_children(child_tags_by_id.values())
 
     return HttpResponse(json.dumps(tag.to_dict()), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def create_note(request: HttpRequest) -> HttpResponse:
+    validation_map = {
+        'title': _required_string,
+        'content': lambda x: str(x),
+        'creationTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
+        'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
+        'authorId': lambda user_id: User.objects.get(id=int(user_id)),
+    }  # type: Dict[str, Callable[[str], Any]]
+
+    try:
+        arguments = _validate(parse(request.body), validation_map)
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400, )
+
+    # Combine new tags:
+    new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
+
+    # Now it's safe to squash all the arguments together into a dict
+    args_to_objects = dict(arguments)
+
+    # Business logic checks
+    if args_to_objects["authorId"] != request.user:
+        return HttpResponse("Logged in user not the author".encode(), status=400)
+
+    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
+        return HttpResponse("Tag not found".encode(), status=400)
+
+    note = Note.objects.create(
+        title=args_to_objects["title"],
+        content=args_to_objects["content"],
+        author=args_to_objects["authorId"],
+        creation_time=args_to_objects["creationTime"],
+    )
+    note.create_local_id(args_to_objects["authorId"])
+    if new_tags_by_id:
+        note.set_tags(new_tags_by_id.values())
+
+    return HttpResponse(json.dumps(note.to_dict()), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def update_note(request: HttpRequest) -> HttpResponse:
+    validation_map = {
+        'id': int,
+        'title': _required_string,
+        'content': lambda x: str(x),
+        'creationTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
+        'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
+        'authorId': lambda user_id: User.objects.get(id=int(user_id)),
+    }  # type: Dict[str, Callable[[str], Any]]
+
+    try:
+        arguments = _validate(parse(request.body), validation_map)
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400)
+
+    # Combine new tags:
+    new_tags_by_id = {tag.id: tag for arg, tag in arguments if arg == "tagIds[]"}
+
+    # Now it's safe to squash all the args_to_objects together into a dict
+    args_to_objects = dict(arguments)
+
+    # Business logic checks
+    if request.user != args_to_objects["authorId"]:
+        return HttpResponse("Must edit as owner or author".encode(), status=400)
+
+    note = Note.get_by_local_id(args_to_objects["id"], request.user)
+    if not note or note.author != args_to_objects["authorId"]:
+        return HttpResponse("Invalid note specified.".encode(), status=400)
+
+    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
+        return HttpResponse("Tag not found".encode(), status=400)
+
+    # Copy in all the mutable fields
+    note.title = args_to_objects["title"]
+    note.content = args_to_objects["content"]
+    note.creation_time = args_to_objects["creationTime"]
+    note.save()
+
+    if set(new_tags_by_id.keys()) != set(note.get_tag_ids()):
+        note.set_tags(new_tags_by_id.values())
+
+    return HttpResponse(json.dumps(note.to_dict()), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def delete_note(request: HttpRequest) -> HttpResponse:
+    validation_map = {
+        'id': lambda x: int(x),
+    }  # type: Dict[str, Callable[[str], Any]]
+    try:
+        arguments = dict(_validate(parse(request.body), validation_map))
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400)
+
+    # Business logic checks
+    note = Note.get_by_local_id(arguments["id"], request.user)
+    if not note or note.author != request.user:
+        return HttpResponse("Invalid note specified".encode(), status=400)
+
+    note.delete_by_user(request.user)
+    return HttpResponse(json.dumps(dict(id=arguments["id"])), status=200)

@@ -30,11 +30,11 @@ urlpatterns = [
     # Other urls that are resolved with react-router
     url(r'^tasks/?$', views.index),
     url(r'^cal/?$', views.index),
-    url(r'^cal/day?$', views.index),
-    url(r'^cal/week?$', views.index),
+    url(r'^cal/day/?$', views.index),
+    url(r'^cal/week/?$', views.index),
     url(r'^tags/?$', views.index),
     url(r'^tag/[a-zA-Z0-9_]+/?$', views.index),
-
+    url(r'^notes/?$', views.index),
 
     # Auth urls
     url(r'^auth/register/?$', CreateView.as_view(
@@ -58,6 +58,10 @@ urlpatterns = [
 
     url(r'^api/1/tag/create/?$', views.create_tag),
     url(r'^api/1/tag/update/?$', views.update_tag),
+
+    url(r'^api/1/note/create/?$', views.create_note),
+    url(r'^api/1/note/update/?$', views.update_note),
+    url(r'^api/1/note/delete/?$', views.delete_note),
 
     # Admin pages
     url(r'^admin/', admin.site.urls),

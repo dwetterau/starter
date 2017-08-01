@@ -2,7 +2,7 @@ import * as jQuery from "jquery";
 import * as React from "react";
 import {Router, Route, browserHistory} from "react-router"
 
-import {Event, Tag, Task, User, TagsById, EventsById, TasksById} from "../models";
+import {Event, Tag, Task, User, TagsById, EventsById, TasksById, NotesById, Note} from "../models";
 import {TagGraphComponent} from "./tag/tag_graph";
 import {TaskBoardComponent} from "./task/task_board"
 import {CalendarComponent, CalendarViewType} from "./event/calendar";
@@ -13,12 +13,14 @@ import {
 } from "../events";
 import {TaskDetailComponent} from "./task/task_detail";
 import {TagDetailComponent} from "./tag/tag_detail";
+import {NoteBoardComponent} from "./notes/note_board";
 
 export interface AppProps {
     meUser: User,
     tasks: Array<Task>,
     events: Array<Event>,
     tags: Array<Tag>,
+    notes: Array<Note>,
 }
 
 interface DetailInfo {
@@ -30,10 +32,12 @@ export interface AppState {
     tasks: Array<Task>,
     events: Array<Event>,
     tags: Array<Tag>,
+    notes: Array<Note>,
     tagsById: TagsById,
     eventsById: EventsById,
     tasksById: TasksById,
     detailInfo: DetailInfo,
+    notesById: NotesById,
 }
 
 export enum AppViewMode {
@@ -41,6 +45,7 @@ export enum AppViewMode {
     taskView,
     eventView,
     tagView,
+    noteView,
 }
 
 export class App extends React.Component<AppProps, AppState> {
@@ -51,14 +56,17 @@ export class App extends React.Component<AppProps, AppState> {
             tasks: props.tasks,
             events: props.events,
             tags: props.tags,
+            notes: props.notes,
             tagsById: {},
             eventsById: {},
             tasksById: {},
             detailInfo: {},
+            notesById: {},
         };
         App.updateTagsById(newState);
         App.updateEventsById(newState);
         App.updateTasksById(newState);
+        App.updateNotesById(newState);
         this.state = newState;
     }
 
@@ -271,6 +279,49 @@ export class App extends React.Component<AppProps, AppState> {
         // TODO: Filter out all tags and children or something
     }
 
+    static updateNotesById(state: AppState) {
+        const notesById:  NotesById = {};
+        for (let note of state.notes) {
+            notesById[note.id] = note;
+        }
+        state.notesById = notesById;
+    }
+
+    createNote(note: Note) {
+        delete note["id"];
+        jQuery.post('/api/1/note/create', note, (newNoteJson: string) => {
+            this.state.notes.push(JSON.parse(newNoteJson));
+            App.updateNotesById(this.state);
+            this.setState(this.state)
+        });
+    }
+
+    updateNote(note: Note) {
+        jQuery.post('/api/1/note/update', note, (updatedNoteJson: string) => {
+            let updatedNote: Note = JSON.parse(updatedNoteJson);
+            this.state.notes = this.state.notes.map((note: Note) => {
+                if (note.id == updatedNote.id) {
+                    return updatedNote
+                } else {
+                    return note
+                }
+            });
+            App.updateNotesById(this.state);
+            this.setState(this.state);
+        });
+    }
+
+    deleteNote(note: Note) {
+        jQuery.post('/api/1/note/delete', {id: note.id}, (deletedNoteJson: string) => {
+            const deletedNoteId = JSON.parse(deletedNoteJson).id;
+            this.state.notes = this.state.notes.filter((note: Note) => {
+                return note.id != deletedNoteId;
+            });
+            App.updateNotesById(this.state);
+            this.setState(this.state);
+        })
+    }
+
     // Inline handlers for detail changes
     beginEditingSelectedTask() {
         if (!this.state.detailInfo.taskId) {
@@ -379,6 +430,16 @@ export class App extends React.Component<AppProps, AppState> {
         />
     }
 
+    renderNotes() {
+        return <NoteBoardComponent
+            meUser={this.props.meUser}
+            notesById={this.state.notesById}
+            createNote={this.createNote.bind(this)}
+            updateNote={this.updateNote.bind(this)}
+            deleteNote={this.deleteNote.bind(this)}
+        />
+    }
+
     renderPageContainer(viewMode: AppViewMode, getBoardFn) {
         return <div>
             {this.renderNotifier()}
@@ -421,6 +482,13 @@ export class App extends React.Component<AppProps, AppState> {
             )
         };
 
+        let getNotes = () => {
+            return this.renderPageContainer(
+                AppViewMode.noteView,
+                this.renderNotes.bind(this)
+            )
+        };
+
         return <div>
             <Router history={browserHistory}>
                 <Route path="/" component={getMergedView} />
@@ -436,6 +504,7 @@ export class App extends React.Component<AppProps, AppState> {
                 />
                 <Route path="/tag/:tagName" component={getMergedWithTag} />
                 <Route path="/tags" component={getTagGraph} />
+                <Route path="/notes" component={getNotes} />
             </Router>
         </div>
     }

@@ -61,3 +61,14 @@ export class Tag {
 }
 
 export interface TagsById {[tagId: number]: Tag}
+
+export class Note {
+    readonly id: number;
+    title: string;
+    content: string;
+    creationTime: number;
+    readonly authorId: number;
+    tagIds: Array<number>;
+}
+
+export interface NotesById{[noteId: number]: Note}

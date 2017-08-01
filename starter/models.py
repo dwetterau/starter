@@ -18,6 +18,9 @@ LocalEventId = NewType("LocalEventId", int)
 
 TagId = NewType("TagId", int)
 
+NoteId = NewType("NoteId", int)
+LocalNoteId = NewType("LocalNoteId", int)
+
 
 class Tag(models.Model):
     """
@@ -84,6 +87,8 @@ class TagEdge(models.Model):
 global_task_cache = {}  # type: Dict[TaskId, Tuple[LocalTaskId, List[TagId], List[LocalEventId]]]
 
 global_event_cache = {}  # type: Dict[EventId, Tuple[LocalEventId, List[TagId], List[LocalTaskId]]]
+
+global_note_cache = {}  # type: Dict[NoteId, Tuple[LocalNoteId, List[TagId]]]
 
 
 class Task(models.Model):
@@ -411,3 +416,96 @@ class StravaActivity(models.Model):
     elapsed_time = models.IntegerField("The amount of time the total activity took")
     distance = models.FloatField("The total distance of the activity")
     start_date = models.DateTimeField("The time the activity started")
+
+
+class Note(models.Model):
+    title = models.CharField("Title of note", max_length=128)
+    content = models.TextField("Content of the note", max_length=65536)
+    author = models.ForeignKey(User, related_name="authored_notes",
+                               verbose_name="Original author of the note")
+    creation_time = models.DateTimeField("Creation time of the note")
+
+    tags = models.ManyToManyField(Tag, verbose_name="The tags for the note", through=NoteTags)
+
+    @classmethod
+    def get_by_author_id(cls, user_id: UserId) -> List["Note"]:
+        all_notes = Note.objects.filter(author_id=user_id).all()
+
+        uncached_note_ids = [n.id for n in all_notes if n.id not in global_note_cache]
+
+        for ngi in NoteGlobalId.objects.filter(user_id=user_id, note_id__in=uncached_note_ids):
+            global_note_cache[ngi.note_id] = (ngi.local_id, [])
+
+        for note_tag in NoteTags.objects.filter(user_id=user_id, note_id__in=uncached_note_ids):
+            cache_entry = global_note_cache[note_tag.note_id]
+            cache_entry[1].append(note_tag.tag_id)
+
+        return all_notes
+
+    @classmethod
+    def get_by_local_id(cls, local_id: LocalNoteId, user: User) -> "Note":
+        note_id = NoteGlobalId.objects.get(user_id=user.id, local_id=local_id).note_id
+        note = Event.objects.get(id=note_id)
+        note.add_to_cache()
+        return note
+
+    def create_local_id(self, user: User) -> None:
+        with NoteGlobalId.GLOBAL_WLOCK:
+            cur_last = NoteGlobalId.objects.filter(user_id=user.id).order_by("local_id").last()
+            last_id = cur_last.local_id if cur_last else 0
+            NoteGlobalId.objects.create(
+                note=self,
+                user=user,
+                local_id=last_id + 1,
+            )
+
+    def get_local_id(self) -> LocalNoteId:
+        if self.id in global_note_cache:
+            return global_note_cache[self.id][0]
+
+        local_id = NoteGlobalId.objects.get(note_id=self.id, user_id=self.author_id).local_id
+        return local_id
+
+    def get_tag_ids(self) -> List[TagId]:
+        if self.id in global_note_cache:
+            return global_note_cache[self.id][1]
+        return [x.id for x in self.tags.all()]
+
+    def set_tags(self, new_tags: Iterable[TagId]) -> None:
+        # TODO: Optimize this
+        global_note_cache.pop(self.id, None)
+        self.tags.clear()
+        for tag in new_tags:
+            self.tags.add(tag)
+
+    def add_to_cache(self) -> None:
+        global_note_cache[self.id] = (self.get_local_id(), self.get_tag_ids())
+
+    def to_dict(self) -> Dict[str, Any]:
+        return dict(
+            id=self.get_local_id(),
+            title=self.title,
+            content=self.content,
+            creationTime=self.creation_time,
+            authorId=self.author_id,
+            tagIds=self.get_tag_ids(),
+        )
+
+    def delete_by_user(self, user: User) -> None:
+        global_note_cache.pop(self.id, None)
+        self.set_tags([])
+        self.delete()
+
+
+class NoteGlobalId(models.Model):
+    user = models.ForeignKey(User, related_name="user_notes")
+    note = models.ForeignKey(Note, related_name="note_user")
+    local_id = models.IntegerField(db_index=True)
+
+    GLOBAL_WLOCK = Lock()
+
+
+class NoteTags(models.Model):
+    note = models.ForeignKey(Note)
+    tag = models.ForeignKey(Tag)
+

@@ -9,7 +9,6 @@ import {
 import {TaskComponent} from "./task";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
 import {ModalComponent} from "../lib/modal";
-import {TaskDetailComponent} from "./task_detail";
 import {
     signalCreateEventWithTask, signalEndEventWithTask,
     signalDisplayTaskInfo, signalBeginEditingTask
