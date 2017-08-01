@@ -425,7 +425,7 @@ class Note(models.Model):
                                verbose_name="Original author of the note")
     creation_time = models.DateTimeField("Creation time of the note")
 
-    tags = models.ManyToManyField(Tag, verbose_name="The tags for the note", through=NoteTags)
+    tags = models.ManyToManyField(Tag, verbose_name="The tags for the note", through="NoteTags")
 
     @classmethod
     def get_by_author_id(cls, user_id: UserId) -> List["Note"]:
@@ -436,7 +436,7 @@ class Note(models.Model):
         for ngi in NoteGlobalId.objects.filter(user_id=user_id, note_id__in=uncached_note_ids):
             global_note_cache[ngi.note_id] = (ngi.local_id, [])
 
-        for note_tag in NoteTags.objects.filter(user_id=user_id, note_id__in=uncached_note_ids):
+        for note_tag in NoteTags.objects.filter(note_id__in=uncached_note_ids):
             cache_entry = global_note_cache[note_tag.note_id]
             cache_entry[1].append(note_tag.tag_id)
 
@@ -445,7 +445,7 @@ class Note(models.Model):
     @classmethod
     def get_by_local_id(cls, local_id: LocalNoteId, user: User) -> "Note":
         note_id = NoteGlobalId.objects.get(user_id=user.id, local_id=local_id).note_id
-        note = Event.objects.get(id=note_id)
+        note = Note.objects.get(id=note_id)
         note.add_to_cache()
         return note
 
@@ -476,7 +476,10 @@ class Note(models.Model):
         global_note_cache.pop(self.id, None)
         self.tags.clear()
         for tag in new_tags:
-            self.tags.add(tag)
+            NoteTags.objects.create(
+                note=self,
+                tag=tag,
+            )
 
     def add_to_cache(self) -> None:
         global_note_cache[self.id] = (self.get_local_id(), self.get_tag_ids())
@@ -486,7 +489,7 @@ class Note(models.Model):
             id=self.get_local_id(),
             title=self.title,
             content=self.content,
-            creationTime=self.creation_time,
+            creationTime=int(self.creation_time.timestamp() * 1000),
             authorId=self.author_id,
             tagIds=self.get_tag_ids(),
         )

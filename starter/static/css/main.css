@@ -748,3 +748,10 @@ div.right-pane div.calendar div.options div.tag-selector-label {
     flex-shrink: 0;
 }
 /* End of Multi-pane CSS */
+
+/* Note Board CSS */
+div.note-tags-container div.card {
+    margin: 0 0 0 .25em;
+    padding: .1em .25em;
+}
+/* End of Note Board CSS */

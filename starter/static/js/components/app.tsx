@@ -434,6 +434,7 @@ export class App extends React.Component<AppProps, AppState> {
         return <NoteBoardComponent
             meUser={this.props.meUser}
             notesById={this.state.notesById}
+            tagsById={this.state.tagsById}
             createNote={this.createNote.bind(this)}
             updateNote={this.updateNote.bind(this)}
             deleteNote={this.deleteNote.bind(this)}

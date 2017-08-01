@@ -37,7 +37,7 @@ def index(request: HttpRequest) -> HttpResponse:
         tasks=[task.to_dict() for task in Task.get_by_owner_id(request.user.id)],
         events=[event.to_dict() for event in Event.get_by_owner_id(request.user.id)],
         tags=[tag.to_dict() for tag in Tag.get_all_owned_tags(request.user)],
-        notes=[],
+        notes=[note.to_dict() for note in Note.get_by_author_id(request.user.id)],
     ))
     return render(request, 'starter/index.html', dict(props=props))
 

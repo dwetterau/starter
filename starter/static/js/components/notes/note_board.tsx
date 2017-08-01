@@ -1,6 +1,8 @@
 import * as React from "react";
 import {NotesById, User, Note, TagsById} from "../../models";
 import {ModalComponent} from "../lib/modal";
+import {EditNoteComponent} from "./edit_note";
+import {NoteComponent} from "./note";
 
 export interface NoteBoardProps {
     meUser: User,
@@ -14,9 +16,46 @@ export interface NoteBoardProps {
 export interface NoteBoardState {
     creatingNote: boolean,
     editingNote?: Note,
+    sortedNotes: Array<Note>,
 }
 
 export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoardState> {
+
+    constructor(props: NoteBoardProps) {
+        super(props);
+        this.state = this.getState(props)
+    }
+
+    componentWillReceiveProps(props: NoteBoardProps) {
+        this.setState(this.getState(props))
+    }
+
+    getState(props: NoteBoardProps): NoteBoardState {
+        return {
+            sortedNotes: this.getSortedNotes(props),
+            creatingNote: false,
+            editingNote: null,
+        }
+    }
+
+    getSortedNotes(props: NoteBoardProps): Array<Note> {
+        let notes = [];
+        for (let noteId of Object.keys(props.notesById)) {
+            notes.push(props.notesById[noteId])
+        }
+
+        // Sort by creation time largest first
+        notes.sort((n1: Note, n2: Note) => {
+            return n2.creationTime - n1.creationTime;
+        });
+
+        return notes
+    }
+
+    onDoubleClick(note: Note) {
+        this.state.editingNote = note;
+        this.setState(this.state)
+    }
 
     clearEditingNote() {
         this.state.editingNote = null;
@@ -28,10 +67,22 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
         this.setState(this.state);
     }
 
+    renderNote(note: Note) {
+        return <div
+            key={note.id}
+            className="note-container"
+            onDoubleClick={this.onDoubleClick.bind(this, note)}
+        >
+            <NoteComponent
+                note={note}
+                tagsById={this.props.tagsById}
+            />
+        </div>
+    }
+
     renderNotes() {
-        // TODO(davidw): Render them
         return <div className="notes-container">
-            insert notes here..
+            {this.state.sortedNotes.map(this.renderNote.bind(this))}
         </div>
     }
 
@@ -41,8 +92,11 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
         }
         return <ModalComponent cancelFunc={this.clearEditingNote.bind(this)}>
             <EditNoteComponent
-                tag={this.state.editingNote}
+                meUser={this.props.meUser}
+                note={this.state.editingNote}
                 tagsById={this.props.tagsById}
+                createMode={false}
+                createNote={(note: Note) => {}}
                 updateNote={this.props.updateNote}
                 deleteNote={this.props.deleteNote}
             />
@@ -56,10 +110,14 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
             </div>
         }
         return <ModalComponent cancelFunc={this.toggleCreateNote.bind(this)}>
-            <CreateNoteComponent
+            <EditNoteComponent
                 meUser={this.props.meUser}
+                tagsById={this.props.tagsById}
+                createMode={true}
                 createNote={this.props.createNote}
-                tagsById={this.props.tagsById} />
+                updateNote={(note: Note) => {}}
+                deleteNote={(note: Note) => {}}
+            />
         </ModalComponent>
     }
 
