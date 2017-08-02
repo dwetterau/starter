@@ -25,6 +25,7 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_DIR, 'node_modules/jquery/dist/'),
     os.path.join(PROJECT_DIR, 'node_modules/moment/min/'),
     os.path.join(PROJECT_DIR, 'node_modules/react-router/umd/'),
+    os.path.join(PROJECT_DIR, 'node_modules/react-markdown/umd/'),
 )
 STATIC_ROOT = '/www/starter/static'
 

@@ -30,6 +30,6 @@ module.exports = {
         "jquery": "jQuery",
         "moment": "moment",
         "react-router": "ReactRouter",
-        "react-linkify": "ReactLinkify"
+        "react-markdown": "reactMarkdown"
     }
 };

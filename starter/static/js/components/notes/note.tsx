@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as moment from "moment";
+import * as ReactMarkdown from "react-markdown";
 import {Note, TagsById} from "../../models";
 import {TagComponent} from "../tag/tag";
 
@@ -40,7 +40,9 @@ export class NoteComponent extends React.Component<NoteProps, {}> {
         return <div className="note card">
             {this.renderNoteId()}
             <div className="note-title">{this.props.note.title}</div>
-            <div className="note-content">{this.props.note.content}</div>
+            <div className="note-content">
+                <ReactMarkdown source={this.props.note.content} />
+            </div>
             {this.renderTags()}
         </div>
     }

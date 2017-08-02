@@ -1,7 +1,7 @@
 import * as jQuery from "jquery";
 import * as moment from "moment";
 import * as React from "react";
-import { browserHistory } from 'react-router';
+import {browserHistory} from 'react-router';
 
 import {EditEventComponent} from "./edit_event"
 import {Event, User, TagsById, Tag, TasksById, Task, EventsById} from "../../models"
