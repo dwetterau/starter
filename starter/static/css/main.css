@@ -750,8 +750,31 @@ div.right-pane div.calendar div.options div.tag-selector-label {
 /* End of Multi-pane CSS */
 
 /* Note Board CSS */
+div.note.card {
+    margin: 10px 20px;
+}
+
+div.note div.note-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+div.note div.note-header div.note-title {
+    font-size: 2em;
+}
+
+div.note div.note-content img {
+    max-width: 100%;
+    max-height: 480px;
+}
+
+div.note-tags-container {
+    display: flex;
+}
+
 div.note-tags-container div.card {
-    margin: 0 0 0 .25em;
+    margin-left: .25em;
+    margin-bottom: 0;
     padding: .1em .25em;
 }
 /* End of Note Board CSS */

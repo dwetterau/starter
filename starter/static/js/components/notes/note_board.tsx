@@ -123,9 +123,9 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
 
     render() {
         return <div className="note-board">
-            {this.renderNotes()}
-            {this.renderEditNote()}
             {this.renderCreateNote()}
+            {this.renderEditNote()}
+            {this.renderNotes()}
         </div>
     }
 }

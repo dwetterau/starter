@@ -38,8 +38,10 @@ export class NoteComponent extends React.Component<NoteProps, {}> {
     render() {
         // TODO(davidw): Markdown rendering
         return <div className="note card">
-            {this.renderNoteId()}
-            <div className="note-title">{this.props.note.title}</div>
+            <div className="note-header">
+                <div className="note-title">{this.props.note.title}</div>
+                {this.renderNoteId()}
+            </div>
             <div className="note-content">
                 <ReactMarkdown source={this.props.note.content} />
             </div>
