@@ -768,6 +768,11 @@ div.note div.note-content img {
     max-height: 480px;
 }
 
+div.note div.note-content .checked {
+    color: rgba(0, 0, 0, .5);
+    text-decoration: line-through;
+}
+
 div.note-tags-container {
     display: flex;
 }
