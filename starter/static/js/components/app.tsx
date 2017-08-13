@@ -388,7 +388,7 @@ export class App extends React.Component<AppProps, AppState> {
         // Find the note with the newest startTime and the provided tag.
         let tagId: number;
         for (let tag of this.state.tags) {
-            if (tag.name == tagName) {
+            if (tag.name.toLowerCase() == tagName.toLowerCase()) {
                 tagId = tag.id;
                 break
             }
