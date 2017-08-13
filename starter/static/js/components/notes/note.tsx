@@ -2,18 +2,37 @@ import * as jQuery from "jquery";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as ReactMarkdown from "react-markdown";
-import {Note, TagsById} from "../../models";
+import {Note, TagsById, User} from "../../models";
 import {TagComponent} from "../tag/tag";
+import {EditNoteComponent} from "./edit_note";
+import {ModalComponent} from "../lib/modal";
 
 export interface NoteProps {
+    meUser: User,
     note: Note,
     tagsById: TagsById,
     updateNote: (note: Note) => void;
+    deleteNote: (note: Note) => void,
 }
 
-export class NoteComponent extends React.Component<NoteProps, {}> {
+interface NoteState {
+    editing: boolean,
+}
+
+export class NoteComponent extends React.Component<NoteProps, NoteState> {
 
     renderedMarkdown: ReactMarkdown;
+
+    constructor(props: NoteProps) {
+        super(props);
+        this.state = {
+            editing: false,
+        }
+    }
+
+    componentWillReceiveProps(props: NoteProps) {
+        this.state = {editing: false}
+    }
 
     componentDidMount() {
        this.checkboxHandling()
@@ -66,6 +85,11 @@ export class NoteComponent extends React.Component<NoteProps, {}> {
         }
     }
 
+    toggleEditing() {
+        this.state.editing = !this.state.editing;
+        this.setState(this.state);
+    }
+
     renderNoteId() {
         return (
             <div className="note-id">
@@ -91,22 +115,59 @@ export class NoteComponent extends React.Component<NoteProps, {}> {
         )
     }
 
-    render() {
-        // TODO(davidw): Markdown rendering
-        return <div className="note card">
-            <div className="note-header">
-                <div className="note-title">{this.props.note.title}</div>
+    renderOptions() {
+        return <div className="note-options">
+            <div className="Edit" onClick={this.toggleEditing.bind(this)}>Edit</div>
+        </div>
+    }
+
+    renderNoteHeader() {
+        return <div className="note-header">
+            <div className="note-title">{this.props.note.title}</div>
+            <div className="note-right-header">
+                {this.renderOptions()}
                 {this.renderNoteId()}
             </div>
-            <div className="note-content">
-                <ReactMarkdown
-                    ref={(markdown) => {this.renderedMarkdown = markdown;}}
-                    source={this.props.note.content}
-                    escapeHtml={true}
-                    sourcePos={true}
-                />
-            </div>
+        </div>
+    }
+
+    renderEditingNote() {
+        if (!this.state.editing) {
+            return
+        }
+        return <ModalComponent cancelFunc={this.toggleEditing.bind(this)}>
+            <EditNoteComponent
+                meUser={this.props.meUser}
+                note={this.props.note}
+                tagsById={this.props.tagsById}
+                createMode={false}
+                createNote={(note: Note) => {}}
+                updateNote={this.props.updateNote}
+                deleteNote={this.props.deleteNote}
+            />
+        </ModalComponent>
+    }
+
+    renderNote() {
+        if (this.state.editing) {
+            return
+        }
+        return <div className="note-content">
+            <ReactMarkdown
+                ref={(markdown) => {this.renderedMarkdown = markdown;}}
+                source={this.props.note.content}
+                escapeHtml={true}
+                sourcePos={true}
+            />
             {this.renderTags()}
+        </div>
+    }
+
+    render() {
+        return <div className="note card">
+            {this.renderNoteHeader()}
+            {this.renderNote()}
+            {this.renderEditingNote()}
         </div>
     }
 }

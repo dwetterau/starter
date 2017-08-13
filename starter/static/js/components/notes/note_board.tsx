@@ -15,7 +15,6 @@ export interface NoteBoardProps {
 
 export interface NoteBoardState {
     creatingNote: boolean,
-    editingNote?: Note,
     sortedNotes: Array<Note>,
 }
 
@@ -34,7 +33,6 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
         return {
             sortedNotes: this.getSortedNotes(props),
             creatingNote: false,
-            editingNote: null,
         }
     }
 
@@ -52,16 +50,6 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
         return notes
     }
 
-    onDoubleClick(note: Note) {
-        this.state.editingNote = note;
-        this.setState(this.state)
-    }
-
-    clearEditingNote() {
-        this.state.editingNote = null;
-        this.setState(this.state);
-    }
-
     toggleCreateNote() {
         this.state.creatingNote = !this.state.creatingNote;
         this.setState(this.state);
@@ -71,12 +59,13 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
         return <div
             key={note.id}
             className="note-container"
-            onDoubleClick={this.onDoubleClick.bind(this, note)}
         >
             <NoteComponent
+                meUser={this.props.meUser}
                 note={note}
                 tagsById={this.props.tagsById}
                 updateNote={this.props.updateNote}
+                deleteNote={(note: Note) => {}}
             />
         </div>
     }
@@ -85,23 +74,6 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
         return <div className="notes-container">
             {this.state.sortedNotes.map(this.renderNote.bind(this))}
         </div>
-    }
-
-    renderEditNote() {
-        if (!this.state.editingNote) {
-            return
-        }
-        return <ModalComponent cancelFunc={this.clearEditingNote.bind(this)}>
-            <EditNoteComponent
-                meUser={this.props.meUser}
-                note={this.state.editingNote}
-                tagsById={this.props.tagsById}
-                createMode={false}
-                createNote={(note: Note) => {}}
-                updateNote={this.props.updateNote}
-                deleteNote={this.props.deleteNote}
-            />
-        </ModalComponent>
     }
 
     renderCreateNote() {
@@ -125,7 +97,6 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
     render() {
         return <div className="note-board">
             {this.renderCreateNote()}
-            {this.renderEditNote()}
             {this.renderNotes()}
         </div>
     }

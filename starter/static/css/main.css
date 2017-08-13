@@ -782,4 +782,13 @@ div.note-tags-container div.card {
     margin-bottom: 0;
     padding: .1em .25em;
 }
+
+div.note-header div.note-right-header {
+    display: flex;
+}
+
+div.note-header div.note-options {
+    cursor: pointer;
+    margin-right: .5em;
+}
 /* End of Note Board CSS */
