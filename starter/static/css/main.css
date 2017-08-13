@@ -791,4 +791,8 @@ div.note-header div.note-options {
     cursor: pointer;
     margin-right: .5em;
 }
+
+div.edit-note-container textarea {
+    font-family: "Courier New", Courier, monospace !important;
+}
 /* End of Note Board CSS */

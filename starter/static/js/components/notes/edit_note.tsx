@@ -1,6 +1,7 @@
 import * as moment from "moment";
 import * as React from "react";
-import {Note, NotesById, TagsById, User} from "../../models";
+import Textarea from "react-textarea-autosize";
+import {Note, TagsById, User} from "../../models";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
 
 export interface EditNoteProps {
@@ -153,7 +154,7 @@ export class EditNoteComponent extends React.Component<EditNoteProps, EditNoteSt
 
             <div className="content-container">
                 <label htmlFor="content">Description: </label>
-                <textarea
+                <Textarea
                     type="text" name="content"
                     value={this.state.note.content}
                     onChange={this.updateAttr.bind(this, "content")}
