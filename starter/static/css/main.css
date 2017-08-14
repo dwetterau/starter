@@ -761,6 +761,7 @@ div.note div.note-header {
 
 div.note div.note-header div.note-title {
     font-size: 2em;
+    margin-bottom: .25em;
 }
 
 div.note div.note-content img {
@@ -771,6 +772,11 @@ div.note div.note-content img {
 div.note div.note-content .checked {
     color: rgba(0, 0, 0, .5);
     text-decoration: line-through;
+}
+
+div.note div.note-content h1,h2,h3,p {
+    margin-top: 0;
+    margin-bottom: 2px;
 }
 
 div.note-tags-container {
@@ -794,5 +800,6 @@ div.note-header div.note-options {
 
 div.edit-note-container textarea {
     font-family: "Courier New", Courier, monospace !important;
+    min-width: 480px;
 }
 /* End of Note Board CSS */

@@ -155,7 +155,8 @@ export class EditNoteComponent extends React.Component<EditNoteProps, EditNoteSt
             <div className="content-container">
                 <label htmlFor="content">Description: </label>
                 <Textarea
-                    type="text" name="content"
+                    type="text"
+                    name="content"
                     value={this.state.note.content}
                     onChange={this.updateAttr.bind(this, "content")}
                 />
