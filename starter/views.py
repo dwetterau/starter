@@ -101,6 +101,10 @@ def _nonnegative_number(x: str) -> int:
     return num
 
 
+def _timestamp_millis(x: str) -> datetime.datetime:
+    return datetime.datetime.utcfromtimestamp(int(x) / 1000.0)
+
+
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def create_task(request: HttpRequest) -> HttpResponse:
@@ -113,6 +117,7 @@ def create_task(request: HttpRequest) -> HttpResponse:
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
+        'dueTime': _timestamp_millis,
     }  # type: Dict[str, Callable[[str], Any]]
 
     try:
@@ -142,6 +147,7 @@ def create_task(request: HttpRequest) -> HttpResponse:
         author=args_to_objects["authorId"],
         owner=args_to_objects["ownerId"],
         expected_duration_secs=args_to_objects["expectedDurationSecs"],
+        due_time=args_to_objects["dueTime"],
     )
     task.create_local_id(args_to_objects["authorId"])
     if new_tags_by_id:
@@ -163,6 +169,7 @@ def update_task(request: HttpRequest) -> HttpResponse:
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
+        'dueTime': _timestamp_millis,
     }  # type: Dict[str, Callable[[str], Any]]
 
     try:
@@ -197,6 +204,7 @@ def update_task(request: HttpRequest) -> HttpResponse:
     task.state = args_to_objects["state"].value
     task.owner = args_to_objects["ownerId"]
     task.expected_duration_secs = args_to_objects["expectedDurationSecs"]
+    task.due_time = args_to_objects["dueTime"]
     task.save()
 
     if set(new_tags_by_id.keys()) != set(task.get_tag_ids()):
@@ -231,7 +239,7 @@ def delete_task(request: HttpRequest) -> HttpResponse:
 def create_event(request: HttpRequest) -> HttpResponse:
     validation_map = {
         'name': _required_string,
-        'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
+        'startTime': _timestamp_millis,
         'durationSecs': _nonnegative_number,
         'tagIds[]': lambda x: Tag.objects.get(id=TagId(int(x))),
         'authorId': lambda user_id: User.objects.get(id=UserId(int(user_id))),
@@ -287,7 +295,7 @@ def update_event(request: HttpRequest) -> HttpResponse:
     validation_map = {
         'id': int,
         'name': _required_string,
-        'startTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
+        'startTime': _timestamp_millis,
         'durationSecs': _nonnegative_number,
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
@@ -504,7 +512,7 @@ def create_note(request: HttpRequest) -> HttpResponse:
     validation_map = {
         'title': _required_string,
         'content': lambda x: str(x),
-        'creationTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
+        'creationTime': _timestamp_millis,
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
     }  # type: Dict[str, Callable[[str], Any]]
@@ -548,7 +556,7 @@ def update_note(request: HttpRequest) -> HttpResponse:
         'id': int,
         'title': _required_string,
         'content': lambda x: str(x),
-        'creationTime': lambda x: (datetime.datetime.utcfromtimestamp(int(x) / 1000.0)),
+        'creationTime': _timestamp_millis,
         'tagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
     }  # type: Dict[str, Callable[[str], Any]]

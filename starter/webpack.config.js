@@ -19,7 +19,10 @@ module.exports = {
             {test: /\.css$/, loader: "style-loader!css-loader"}
         ]
     },
-    dependencies: ['node_modules/react-textarea-autosize'],
+    dependencies: [
+        'node_modules/react-textarea-autosize',
+        'node_modules/react-datetime'
+    ],
 
     // When importing a module whose path matches one of the following, just
     // assume a corresponding global variable exists and use that instead.

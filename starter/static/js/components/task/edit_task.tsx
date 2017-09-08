@@ -1,6 +1,9 @@
+import "react-datetime/css/react-datetime.css";
 import * as React from "react";
 import {User, Task, TagsById} from "../../models";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
+import * as Datetime from "react-datetime"
+import * as moment from "moment";
 
 export interface EditTaskProps {
     meUser: User,
@@ -57,6 +60,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
             state: 0,
             eventIds: [],
             expectedDurationSecs: 0,
+            dueTime: 0,
         };
         if (props.initialPriority) {
             task.priority = props.initialPriority
@@ -96,6 +100,11 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
     updateEstimate(event: any) {
         let newDuration = event.target.value;
         this.state.task.expectedDurationSecs = newDuration * 60;
+        this.setState(this.state)
+    }
+
+    updateDueTime(time: moment.Moment) {
+        this.state.task.dueTime = time.unix() * 1000;
         this.setState(this.state)
     }
 
@@ -159,6 +168,24 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
         }
     }
 
+    renderDueTime() {
+        if (this.state.task.dueTime > 0) {
+            let initialDate = moment(this.state.task.dueTime).toDate();
+            return <Datetime
+                value={initialDate}
+                timeFormat={false}
+                closeOnSelect={true}
+                onChange={this.updateDueTime.bind(this)}
+            />
+        }
+
+        return <Datetime
+            timeFormat={false}
+            closeOnSelect={true}
+            onChange={this.updateDueTime.bind(this)}
+        />
+    }
+
     renderForm() {
         return <div>
             <div className="title-container">
@@ -211,6 +238,11 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
                     <option value="750">Blocked</option>
                     <option value="1000">Closed</option>
                 </select>
+            </div>
+
+            <div className="due-time-selector">
+                <label htmlFor="dueTime">Due date:</label>
+                {this.renderDueTime()}
             </div>
 
             <div className="tag-tokenizer-container">

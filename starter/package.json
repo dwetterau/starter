@@ -15,6 +15,7 @@
     "@types/react-dom": "^0.14.23",
     "@types/react-router": "^2.0.50",
     "css-loader": "^0.25.0",
+    "react-datetime": "^2.10.1",
     "react-textarea-autosize": "^5.1.0",
     "source-map-loader": "^0.1.5",
     "style-loader": "^0.13.1",

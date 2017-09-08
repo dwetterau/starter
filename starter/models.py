@@ -1,3 +1,4 @@
+import datetime
 import enum
 
 from collections import defaultdict
@@ -121,6 +122,10 @@ class Task(models.Model):
     state = models.SmallIntegerField("The current state of the task")
     events = models.ManyToManyField('Event', verbose_name="The events for this task")
     expected_duration_secs = models.IntegerField("Expected duration of the task in seconds")
+    due_time = models.DateTimeField(
+        "Time that the task is due",
+        default=datetime.datetime.utcfromtimestamp(0),
+    )
 
     @classmethod
     def get_by_owner_id(cls, user_id: UserId) -> List["Task"]:
@@ -216,6 +221,7 @@ class Task(models.Model):
             state=self.State(self.state).value,
             eventIds=self.get_event_ids(),
             expectedDurationSecs=self.expected_duration_secs,
+            dueTime=int(self.due_time.timestamp() * 1000),
         )
 
     def delete(self, **kwargs: Any) -> None:

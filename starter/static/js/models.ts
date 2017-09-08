@@ -19,6 +19,7 @@ export class Task {
     state: number;
     eventIds: Array<number>;
     expectedDurationSecs: number;
+    dueTime: number;
 }
 
 export interface TasksById {[taskId: number]: Task}
