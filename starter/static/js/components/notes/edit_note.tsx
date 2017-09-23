@@ -116,7 +116,7 @@ export class EditNoteComponent extends React.Component<EditNoteProps, EditNoteSt
         if (this.props.createMode) {
             return <h3>Create Note</h3>
         } else {
-            return <h3>Editing T{this.state.note.id}</h3>
+            return <h3>Editing N{this.state.note.id}</h3>
         }
     }
 

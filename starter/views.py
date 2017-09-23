@@ -21,7 +21,7 @@ from starter.models import (
     TagEdge,
     Task,
     UserId,
-    Note)
+    Note, Capture)
 from starter.utils import user_to_dict
 
 #
@@ -40,6 +40,15 @@ def index(request: HttpRequest) -> HttpResponse:
         notes=[note.to_dict() for note in Note.get_by_author_id(request.user.id)],
     ))
     return render(request, 'starter/index.html', dict(props=props))
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["GET"])
+def capture_create(request: HttpRequest) -> HttpResponse:
+    props = json.dumps(dict(
+        meUser=user_to_dict(request.user),
+    ))
+    return render(request, 'starter/capture.html', dict(props=props))
 
 #
 # Views for auth
@@ -614,4 +623,57 @@ def delete_note(request: HttpRequest) -> HttpResponse:
         return HttpResponse("Invalid note specified".encode(), status=400)
 
     note.delete_by_user(request.user)
+    return HttpResponse(json.dumps(dict(id=arguments["id"])), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def create_capture(request: HttpRequest) -> HttpResponse:
+    validation_map = {
+        'content': lambda x: str(x),
+        'creationTime': _timestamp_millis,
+        'authorId': lambda user_id: User.objects.get(id=int(user_id)),
+    }  # type: Dict[str, Callable[[str], Any]]
+
+    try:
+        arguments = _validate(parse(request.body), validation_map)
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400, )
+
+    # Now it's safe to squash all the arguments together into a dict
+    args_to_objects = dict(arguments)
+
+    # Business logic checks
+    if args_to_objects["authorId"] != request.user:
+        return HttpResponse("Logged in user not the author".encode(), status=400)
+
+    capture = Capture.objects.create(
+        content=args_to_objects["content"],
+        author=args_to_objects["authorId"],
+        creation_time=args_to_objects["creationTime"],
+    )
+    capture.create_local_id(args_to_objects["authorId"])
+
+    return HttpResponse(json.dumps(capture.to_dict()), status=200)
+
+
+@login_required(login_url=u'/auth/login')
+@require_http_methods(["POST"])
+def delete_capture(request: HttpRequest) -> HttpResponse:
+    validation_map = {
+        'id': lambda x: int(x),
+    }  # type: Dict[str, Callable[[str], Any]]
+    try:
+        arguments = dict(_validate(parse(request.body), validation_map))
+    except ValidationError as e:
+        print(e)
+        return HttpResponse(str(e.args).encode(), status=400)
+
+    # Business logic checks
+    capture = Capture.get_by_local_id(arguments["id"], request.user)
+    if not capture or capture.author != request.user:
+        return HttpResponse("Invalid capture specified".encode(), status=400)
+
+    capture.delete_by_user(request.user)
     return HttpResponse(json.dumps(dict(id=arguments["id"])), status=200)

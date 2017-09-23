@@ -803,3 +803,23 @@ div.edit-note-container textarea {
     min-width: 480px;
 }
 /* End of Note Board CSS */
+
+/* Capturer page CSS */
+div.create-capture-container input,textarea,select {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, .4);
+    margin: 0;
+    padding: 0;
+    font-size: larger;
+}
+
+div.create-capture-container .content-container textarea {
+    min-height: 300px;
+}
+
+div.create-capture-container input[type=button] {
+    margin-top: .5em;
+    height: 3em;
+}
+/* End of capturer page CSS */

@@ -4,11 +4,21 @@ import * as ReactDOM from "react-dom";
 import * as jQuery from "jquery";
 
 import {App, AppProps} from "./components/app";
+import {CapturerProps, Capturer} from "./components/capturer";
 
-export default class AppRenderer {
+export class AppRenderer {
     constructor(props: AppProps) {
         ReactDOM.render(
             <App {...props} />,
+            document.getElementById("render-target")
+        );
+    }
+}
+
+export class CaptureRenderer {
+    constructor(props: CapturerProps) {
+        ReactDOM.render(
+            <Capturer {...props} />,
             document.getElementById("render-target")
         );
     }
@@ -45,6 +55,4 @@ jQuery.ajaxSetup({
     }
 });
 
-// Yes, this is disgusting, but it's the only way to expose this entry point without a
-// syntax error from the TS compiler.
-eval("window.AppRenderer = AppRenderer;");
+window['StarterRenderers'] = {AppRenderer, CaptureRenderer};

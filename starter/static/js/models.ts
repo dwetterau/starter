@@ -73,3 +73,12 @@ export class Note {
 }
 
 export interface NotesById{[noteId: number]: Note}
+
+export class Capture {
+    readonly id: number;
+    content: string;
+    creationTime: number;
+    readonly authorId: number;
+}
+
+export interface CapturesById{[captureId: number]: Capture}

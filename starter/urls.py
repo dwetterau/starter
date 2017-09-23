@@ -36,6 +36,9 @@ urlpatterns = [
     url(r'^tag/[a-zA-Z0-9_]+/?$', views.index),
     url(r'^notes/?$', views.index),
 
+    # Mobile capture storing page
+    url(r'^capture/?$', views.capture_create),
+
     # Auth urls
     url(r'^auth/register/?$', CreateView.as_view(
         template_name='registration/register.html',
@@ -62,6 +65,9 @@ urlpatterns = [
     url(r'^api/1/note/create/?$', views.create_note),
     url(r'^api/1/note/update/?$', views.update_note),
     url(r'^api/1/note/delete/?$', views.delete_note),
+
+    url(r'^api/1/capture/create/?$', views.create_capture),
+    url(r'^api/1/capture/delete/?$', views.delete_capture),
 
     # Admin pages
     url(r'^admin/', admin.site.urls),

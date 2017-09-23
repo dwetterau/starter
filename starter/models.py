@@ -22,6 +22,8 @@ TagId = NewType("TagId", int)
 NoteId = NewType("NoteId", int)
 LocalNoteId = NewType("LocalNoteId", int)
 
+CaptureId = NewType("CaptureId", int)
+LocalCaptureId = NewType("LocalCaptureId", int)
 
 class Tag(models.Model):
     """
@@ -90,6 +92,8 @@ global_task_cache = {}  # type: Dict[TaskId, Tuple[LocalTaskId, List[TagId], Lis
 global_event_cache = {}  # type: Dict[EventId, Tuple[LocalEventId, List[TagId], List[LocalTaskId]]]
 
 global_note_cache = {}  # type: Dict[NoteId, Tuple[LocalNoteId, List[TagId]]]
+
+global_capture_cache = {} # type: Dict[CaptureId, LocalCaptureId]
 
 
 class Task(models.Model):
@@ -517,4 +521,71 @@ class NoteGlobalId(models.Model):
 class NoteTags(models.Model):
     note = models.ForeignKey(Note)
     tag = models.ForeignKey(Tag)
+
+
+class Capture(models.Model):
+    content = models.TextField("Content of the capture", max_length=65536)
+    author = models.ForeignKey(User, related_name="authored_captures",
+                               verbose_name="Original author of the capture")
+    creation_time = models.DateTimeField("Creation time of the capture")
+
+    @classmethod
+    def get_by_author_id(cls, user_id: UserId) -> List["Capture"]:
+        all_captures = Capture.objects.filter(author_id=user_id).all()
+
+        uncached_capture_ids = [n.id for n in all_captures if n.id not in global_capture_cache]
+
+        for ngi in CaptureGlobalId.objects.filter(user_id=user_id,
+                                                  capture_id__in=uncached_capture_ids):
+            global_capture_cache[ngi.capture_id] = ngi.local_id
+
+        return all_captures
+
+    @classmethod
+    def get_by_local_id(cls, local_id: LocalCaptureId, user: User) -> "Capture":
+        capture_id = CaptureGlobalId.objects.get(user_id=user.id, local_id=local_id).capture_id
+        capture = Capture.objects.get(id=capture_id)
+        capture.add_to_cache()
+        return capture
+
+    def create_local_id(self, user: User) -> None:
+        with CaptureGlobalId.GLOBAL_WLOCK:
+            cur_last = CaptureGlobalId.objects.filter(user_id=user.id).order_by("local_id").last()
+            last_id = cur_last.local_id if cur_last else 0
+            CaptureGlobalId.objects.create(
+                capture=self,
+                user=user,
+                local_id=last_id + 1,
+            )
+
+    def get_local_id(self) -> LocalCaptureId:
+        if self.id in global_capture_cache:
+            return global_capture_cache[self.id][0]
+
+        local_id = CaptureGlobalId.objects.get(capture_id=self.id, user_id=self.author_id).local_id
+        return local_id
+
+    def add_to_cache(self) -> None:
+        global_capture_cache[self.id] = self.get_local_id()
+
+    def to_dict(self) -> Dict[str, Any]:
+        return dict(
+            id=self.get_local_id(),
+            content=self.content,
+            creationTime=int(self.creation_time.timestamp() * 1000),
+            authorId=self.author_id,
+        )
+
+    def delete_by_user(self, user: User) -> None:
+        global_capture_cache.pop(self.id, None)
+        self.set_tags([])
+        self.delete()
+
+
+class CaptureGlobalId(models.Model):
+    user = models.ForeignKey(User, related_name="user_captures")
+    capture = models.ForeignKey(Capture, related_name="capture_user")
+    local_id = models.IntegerField(db_index=True)
+
+    GLOBAL_WLOCK = Lock()
 
