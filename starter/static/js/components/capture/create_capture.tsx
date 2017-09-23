@@ -82,6 +82,7 @@ export class CreateCaptureComponent extends React.Component<CreateCaptureProps, 
 
     render() {
         return <div className="create-capture-container">
+            <h1>Capture Something...</h1>
             {this.renderForm()}
         </div>
     }

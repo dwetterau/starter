@@ -29,8 +29,7 @@ export class Capturer extends React.Component<CapturerProps, CapturerState> {
     }
 
     render() {
-        return <div>
-            <h1>Capture Something...</h1>
+        return <div className="capturer-container">
             <CreateCaptureComponent
                 meUser={this.props.meUser}
                 createCapture={this.createCapture.bind(this)}

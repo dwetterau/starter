@@ -560,7 +560,7 @@ class Capture(models.Model):
 
     def get_local_id(self) -> LocalCaptureId:
         if self.id in global_capture_cache:
-            return global_capture_cache[self.id][0]
+            return global_capture_cache[self.id]
 
         local_id = CaptureGlobalId.objects.get(capture_id=self.id, user_id=self.author_id).local_id
         return local_id
@@ -578,7 +578,6 @@ class Capture(models.Model):
 
     def delete_by_user(self, user: User) -> None:
         global_capture_cache.pop(self.id, None)
-        self.set_tags([])
         self.delete()
 
 

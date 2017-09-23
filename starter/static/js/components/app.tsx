@@ -2,7 +2,10 @@ import * as jQuery from "jquery";
 import * as React from "react";
 import {Router, Route, browserHistory} from "react-router"
 
-import {Event, Tag, Task, User, TagsById, EventsById, TasksById, NotesById, Note} from "../models";
+import {
+    Event, Tag, Task, User, TagsById, EventsById, TasksById, NotesById, Note,
+    CapturesById, Capture
+} from "../models";
 import {TagGraphComponent} from "./tag/tag_graph";
 import {TaskBoardComponent} from "./task/task_board"
 import {CalendarComponent, CalendarViewType} from "./event/calendar";
@@ -16,6 +19,7 @@ import {TagDetailComponent} from "./tag/tag_detail";
 import {NoteBoardComponent} from "./notes/note_board";
 import {NoteComponent} from "./notes/note"
 import {getTagAndDescendantsRecursive} from "./lib/util";
+import {CaptureListComponent} from "./capture/capture_list";
 
 export interface AppProps {
     meUser: User,
@@ -23,6 +27,7 @@ export interface AppProps {
     events: Array<Event>,
     tags: Array<Tag>,
     notes: Array<Note>,
+    captures: Array<Capture>,
 }
 
 interface DetailInfo {
@@ -35,11 +40,13 @@ export interface AppState {
     events: Array<Event>,
     tags: Array<Tag>,
     notes: Array<Note>,
+    captures: Array<Capture>,
     tagsById: TagsById,
     eventsById: EventsById,
     tasksById: TasksById,
     detailInfo: DetailInfo,
     notesById: NotesById,
+    capturesById: CapturesById,
 }
 
 export enum AppViewMode {
@@ -59,16 +66,19 @@ export class App extends React.Component<AppProps, AppState> {
             events: props.events,
             tags: props.tags,
             notes: props.notes,
+            captures: props.captures,
             tagsById: {},
             eventsById: {},
             tasksById: {},
             detailInfo: {},
             notesById: {},
+            capturesById: {},
         };
         App.updateTagsById(newState);
         App.updateEventsById(newState);
         App.updateTasksById(newState);
         App.updateNotesById(newState);
+        App.updateCapturesById(newState);
         this.state = newState;
     }
 
@@ -324,6 +334,34 @@ export class App extends React.Component<AppProps, AppState> {
         })
     }
 
+    static updateCapturesById(state: AppState) {
+        const capturesById:  CapturesById = {};
+        for (let capture of state.captures) {
+            capturesById[capture.id] = capture;
+        }
+        state.capturesById = capturesById;
+    }
+
+    createCapture(capture: Capture) {
+        delete capture["id"];
+        jQuery.post('/api/1/capture/create', capture, (newCaptureJson: string) => {
+            this.state.captures.push(JSON.parse(newCaptureJson));
+            App.updateCapturesById(this.state);
+            this.setState(this.state)
+        });
+    }
+
+    deleteCapture(capture: Capture) {
+        jQuery.post('/api/1/capture/delete', {id: capture.id}, (deletedCaptureJson: string) => {
+            const deletedCaptureId = JSON.parse(deletedCaptureJson).id;
+            this.state.captures = this.state.captures.filter((capture: Capture) => {
+                return capture.id != deletedCaptureId;
+            });
+            App.updateCapturesById(this.state);
+            this.setState(this.state);
+        })
+    }
+
     // Inline handlers for detail changes
     beginEditingSelectedTask() {
         if (!this.state.detailInfo.taskId) {
@@ -452,8 +490,8 @@ export class App extends React.Component<AppProps, AppState> {
                 {this.renderDetail()}
             </div>
             <div className="right-pane">
-                <div className="merged-calendar-container">
-                    {this.renderCalendar(CalendarViewType.day, true)}
+                <div className="merged-capture-container">
+                    {this.renderCaptures()}
                 </div>
             </div>
         </div>
@@ -483,6 +521,15 @@ export class App extends React.Component<AppProps, AppState> {
             createEvent={this.createEvent.bind(this)}
             updateEvent={this.updateEvent.bind(this)}
             deleteEvent={this.deleteEvent.bind(this)}
+        />
+    }
+
+    renderCaptures() {
+        return <CaptureListComponent
+            meUser={this.props.meUser}
+            capturesById={this.state.capturesById}
+            createCapture={this.createCapture.bind(this)}
+            deleteCapture={this.deleteCapture.bind(this)}
         />
     }
 

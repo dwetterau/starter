@@ -804,22 +804,54 @@ div.edit-note-container textarea {
 }
 /* End of Note Board CSS */
 
-/* Capturer page CSS */
+/* Capture CSS */
 div.create-capture-container input,textarea,select {
     width: 100%;
     background-color: #fff;
     border: 1px solid rgba(0, 0, 0, .4);
     margin: 0;
     padding: 0;
-    font-size: larger;
-}
-
-div.create-capture-container .content-container textarea {
-    min-height: 300px;
 }
 
 div.create-capture-container input[type=button] {
     margin-top: .5em;
+    height: 30px;
+}
+
+div.capturer-container div.create-capture-container textarea {
+    min-height: 200px;
+    font-size: larger;
+}
+
+div.capturer-container div.create-capture-container input[type=button] {
     height: 3em;
 }
-/* End of capturer page CSS */
+
+div.capture-list-container .card {
+    margin: .5em;
+}
+
+div.capture-list-container div.capture-list-options {
+    background-color: #fff;
+    padding: 0 1em 2em;
+}
+
+div.capture-container.card {
+    display: flex;
+    justify-content: space-between;
+}
+
+div.capture-container.card .capture-options-container {
+    margin-left: .5em;
+}
+
+div.capture-container.card .capture-options-container .capture-delete {
+    font-weight: bold;
+    cursor: pointer;
+}
+
+div.captured-everything {
+    margin: auto;
+    text-align: center;
+}
+/* End of Capture CSS */
