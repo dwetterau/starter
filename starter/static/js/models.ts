@@ -34,8 +34,11 @@ export const priorityNameList = [
 ];
 
 export const stateNameList = [
-    ["Open", 0], ["In Progress", 500],
-    ["Blocked", 750], ["Closed", 1000]
+    ["Open", 0],
+    ["In Progress", 500],
+    ["Blocked", 750],
+    ["Project", 900],
+    ["Closed", 1000],
 ];
 
 export class Event {

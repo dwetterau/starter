@@ -236,6 +236,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
                     <option value="0">Open</option>
                     <option value="500">In Progress</option>
                     <option value="750">Blocked</option>
+                    <option value="900">Project</option>
                     <option value="1000">Closed</option>
                 </select>
             </div>

@@ -112,6 +112,7 @@ class Task(models.Model):
         OPEN = 0
         IN_PROGRESS = 500
         BLOCKED = 750
+        PROJECT = 900
         CLOSED = 1000
 
     title = models.CharField("Title of the task", max_length=128)
