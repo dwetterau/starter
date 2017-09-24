@@ -10,7 +10,6 @@ import {TagGraphComponent} from "./tag/tag_graph";
 import {TaskBoardComponent} from "./task/task_board"
 import {CalendarComponent, CalendarViewType} from "./event/calendar";
 import {AppHeader} from "./app_header";
-import {NotifierComponent} from "./notifier";
 import {
     signalDisplayTaskInfo, signalBeginEditingTask, signalDisplayTagInfo,
 } from "../events";
@@ -380,13 +379,6 @@ export class App extends React.Component<AppProps, AppState> {
         this.setState(this.state);
     }
 
-    renderNotifier() {
-        return <NotifierComponent
-            tasks={this.state.tasks}
-            events={this.state.events}
-        />
-    }
-
     renderDetail() {
         if (this.state.detailInfo.taskId) {
             let task = this.state.tasksById[this.state.detailInfo.taskId];
@@ -556,7 +548,6 @@ export class App extends React.Component<AppProps, AppState> {
 
     renderPageContainer(viewMode: AppViewMode, getBoardFn) {
         return <div>
-            {this.renderNotifier()}
             <AppHeader meUser={this.props.meUser} viewMode={viewMode} />
             <div className="board-container">
                 {getBoardFn()}

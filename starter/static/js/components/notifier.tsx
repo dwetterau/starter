@@ -1,3 +1,4 @@
+// Note: DEADCODE. Should be deleted soon if I don't want it back.
 import * as moment from "moment";
 import * as React from "react";
 import {Event, Task} from "../models";
