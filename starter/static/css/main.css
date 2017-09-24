@@ -208,13 +208,6 @@ div.task-tags-container div.tag {
     padding: .1em .25em;
 }
 
-div.task div.progress-container span.percentage.-bad {
-    color: #dc322f;
-}
-
-div.task div.progress-container span.percentage.-good {
-    color: #228b22;
-}
 /* End of Task view CSS */
 
 /* Detail view CSS */

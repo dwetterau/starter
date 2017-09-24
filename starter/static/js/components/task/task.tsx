@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as moment from "moment";
-import {Task, TagsById, EventsById} from "../../models";
+import {Task, TagsById, EventsById, stateNameList} from "../../models";
 import {TaskBoardViewType} from "./task_board";
 import {TagComponent} from "../tag/tag";
 import {renderDuration} from "../lib/util";
@@ -23,7 +23,6 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
     }
 
     renderPriority() {
-        // If we are viewing in priority columns, omit this line
         let className = `task-color -p${this.props.task.priority}`;
         return (
             <div className={className}></div>
@@ -36,7 +35,18 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
             return
         }
         // We don't show the state on the priority view in any way right now.
-        return (<div/>);
+        let className = "task-state";
+        if (this.props.task.state == 900) {
+        }
+
+        let state = '';
+        for (let [stateName, stateNumber] of stateNameList) {
+            if (stateNumber == this.props.task.state) {
+                state = stateName as string;
+            }
+        }
+
+        return <div className={className}>{state}</div>;
     }
 
     renderTag(tagId: number) {
@@ -50,41 +60,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         }
         return (
             <div className="task-tags-container">
-                Tags:
                 {this.props.task.tagIds.map(this.renderTag.bind(this))}
-            </div>
-        )
-    }
-
-    renderProgress() {
-
-        // compute the amount of time spent for the task so far
-        let now = moment().unix() * 1000;
-        let spentTime = 0;
-        this.props.task.eventIds.forEach((eventId) => {
-            let event = this.props.eventsById[eventId];
-            if (event.startTime > now) {
-                return
-            }
-            spentTime += Math.min((now - event.startTime) / 1000, event.durationSecs)
-        });
-
-        let progressPercentage = spentTime / this.props.task.expectedDurationSecs;
-        progressPercentage = Math.round(progressPercentage * 100);
-        // Use different colors for the different stages
-
-        let className = "percentage";
-        if (progressPercentage > 100) {
-            // Overdone..
-            className += " -bad"
-        } else if (progressPercentage > 0) {
-            // Started, make it green..
-            className += " -good"
-        }
-
-        return (
-            <div className="progress-container">
-                Progress: <span className={className}>{progressPercentage}%</span>
             </div>
         )
     }
@@ -97,9 +73,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         return (
             <div className="estimate-container">
                 Est: {renderDuration(this.props.task.expectedDurationSecs, true)}
-                {this.renderProgress()}
             </div>
-
         )
     }
 
@@ -107,11 +81,11 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         return <div className="task card">
             <div className="task-columns">
                 {this.renderPriority()}
-                {this.renderState()}
                 <div className="main-column">
                     {this.renderTaskId()}
                     <div className="task-title">{this.props.task.title}</div>
                     {this.renderTags()}
+                    {this.renderState()}
                     {this.renderEstimate()}
                 </div>
             </div>
