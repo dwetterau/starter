@@ -20,10 +20,11 @@ export function debounce(func, window) {
     }
 }
 
-export function renderDuration(seconds: number, short: boolean): string {
+export function renderDuration(seconds: number, short: boolean, days: boolean): string {
     // Given a time in seconds, returns a string in english that describes the duration
+    // If days is provided, we won't provide hour or less granularity to the returned duration.
     let final = '';
-    let addUnit = (name: string, durationInSeconds: number) => {
+    let addUnit = (name: string, durationInSeconds: number, includeS: boolean) => {
         if (seconds < durationInSeconds) {
             return;
         }
@@ -32,16 +33,21 @@ export function renderDuration(seconds: number, short: boolean): string {
         }
         let numUnits = Math.floor(seconds / durationInSeconds);
         final += `${numUnits} ${name}`;
-        if (numUnits != 1) {
+        if (numUnits != 1 && includeS) {
             final += "s";
         }
         seconds -= (numUnits * durationInSeconds)
     };
 
-    addUnit(short? "hr" : "hour", 60 * 60);
-    addUnit(short? "min" : "minute", 60);
-    if (!short) {
-        addUnit("second", 1);
+    if (days) {
+        addUnit(short ? "w": "week", 7 * 24 * 60 * 60, !short);
+        addUnit(short ? "d": "day", 24 * 60 * 60, !short);
+    } else {
+        addUnit(short ? "hr" : "hour", 60 * 60, true);
+        addUnit(short ? "min" : "minute", 60, true);
+        if (!short) {
+            addUnit("second", 1, true);
+        }
     }
 
     if (!final.length) {

@@ -72,8 +72,33 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
 
         return (
             <div className="estimate-container">
-                Est: {renderDuration(this.props.task.expectedDurationSecs, true)}
+                Est: {renderDuration(this.props.task.expectedDurationSecs, true, false)}
             </div>
+        )
+    }
+
+    renderDueDate() {
+        if (!this.props.task.dueTime) {
+            return;
+        }
+        let timeToDue = Math.round(
+            (this.props.task.dueTime / 1000) - moment().unix()
+        );
+        if (timeToDue > 0) {
+            timeToDue += 24 * 60 * 60 - 1;
+        }
+        let duration = renderDuration(Math.abs(timeToDue), true, true);
+        let dueString = "";
+        if (duration == "None") {
+            dueString = "Due Today"
+        } else if (timeToDue < 0) {
+            dueString = `Due ${duration} ago`
+        } else {
+            dueString = `Due in ${duration}`
+        }
+
+        return (
+            <div className="due-date-container">{dueString}</div>
         )
     }
 
@@ -87,6 +112,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
                     {this.renderTags()}
                     {this.renderState()}
                     {this.renderEstimate()}
+                    {this.renderDueDate()}
                 </div>
             </div>
         </div>

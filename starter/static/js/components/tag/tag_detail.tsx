@@ -192,7 +192,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
             return
         }
         return <div className="tag-time-duration">
-            {name}: {renderDuration(amount, false)}
+            {name}: {renderDuration(amount, false, false)}
         </div>
     }
 

@@ -117,7 +117,7 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
             return
         }
         return <div className="time-estimate">
-            Estimated: {renderDuration(estimatedTime, false)}
+            Estimated: {renderDuration(estimatedTime, false, false)}
         </div>
     }
 
@@ -146,16 +146,16 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
         if (scheduledTime == spentTime) {
          return <div className="time-info">
              {this.renderEstimatedTime()}
-             Scheduled and Spent: {renderDuration(scheduledTime, false)}
+             Scheduled and Spent: {renderDuration(scheduledTime, false, false)}
              {this.renderProgress(spentTime)}
          </div>
         }
 
         return <div className="time-info">
             {this.renderEstimatedTime()}
-            Scheduled: {renderDuration(scheduledTime, false)}
+            Scheduled: {renderDuration(scheduledTime, false, false)}
             <br />
-            Spent: {renderDuration(spentTime, false)}
+            Spent: {renderDuration(spentTime, false, false)}
             {this.renderProgress(spentTime)}
         </div>
     }
