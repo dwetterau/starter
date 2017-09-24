@@ -115,6 +115,23 @@ def _timestamp_millis(x: str) -> datetime.datetime:
     return datetime.datetime.utcfromtimestamp(int(x) / 1000.0)
 
 
+def _validate_task(args_to_objects, new_tags_by_id, request):
+    if args_to_objects["authorId"] != request.user:
+        return HttpResponse("Logged in user not the author".encode(), status=400)
+
+    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
+        return HttpResponse("Tag not found".encode(), status=400)
+
+    if len(new_tags_by_id) == 0:
+        return HttpResponse("Tasks must have at least one tag.", status=400)
+
+    if args_to_objects["state"] != Task.State.PROJECT and (
+                args_to_objects["expectedDurationSecs"] == 0):
+        return HttpResponse("Non-project tasks must have an estimate", status=400)
+
+    return None
+
+
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def create_task(request: HttpRequest) -> HttpResponse:
@@ -143,11 +160,9 @@ def create_task(request: HttpRequest) -> HttpResponse:
     args_to_objects = dict(arguments)
 
     # Business logic checks
-    if args_to_objects["authorId"] != request.user:
-        return HttpResponse("Logged in user not the author".encode(), status=400)
-
-    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
-        return HttpResponse("Tag not found".encode(), status=400)
+    error = _validate_task(args_to_objects, new_tags_by_id, request)
+    if error is not None:
+        return error
 
     task = Task.objects.create(
         title=args_to_objects["title"],
@@ -204,8 +219,10 @@ def update_task(request: HttpRequest) -> HttpResponse:
     if not task or task.author != args_to_objects["authorId"]:
         return HttpResponse("Invalid task specified.".encode(), status=400)
 
-    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
-        return HttpResponse("Tag not found".encode(), status=400)
+    # Business logic checks
+    error = _validate_task(args_to_objects, new_tags_by_id, request)
+    if error is not None:
+        return error
 
     # Copy in all the mutable fields
     task.title = args_to_objects["title"]
