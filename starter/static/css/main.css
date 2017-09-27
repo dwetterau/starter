@@ -818,6 +818,15 @@ div.capturer-container div.create-capture-container textarea {
 
 div.capturer-container div.create-capture-container input[type=button] {
     height: 3em;
+    font-size: 34px;
+}
+
+div.capturer-container {
+    font-size: 34px;
+}
+
+div.capturer-container div.capture-list-container div.capture-list-options {
+    padding: 0;
 }
 
 div.capture-list-container .card {

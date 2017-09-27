@@ -48,6 +48,7 @@ def index(request: HttpRequest) -> HttpResponse:
 def capture_create(request: HttpRequest) -> HttpResponse:
     props = json.dumps(dict(
         meUser=user_to_dict(request.user),
+        captures=[capture.to_dict() for capture in Capture.get_by_author_id(request.user.id)],
     ))
     return render(request, 'starter/capture.html', dict(props=props))
 
