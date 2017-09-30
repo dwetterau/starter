@@ -89,16 +89,29 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         }
         let duration = renderDuration(Math.abs(timeToDue), true, true);
         let dueString = "";
+        let className = "task-due-date";
+
         if (duration == "None") {
+            className += " -due-today";
             dueString = "Due Today"
         } else if (timeToDue < 0) {
+            if (timeToDue < -(3 * 24 * 60 * 60)) {
+                className += " -very-overdue"
+            } else {
+                className += " -overdue"
+            }
             dueString = `Due ${duration} ago`
         } else {
+            if (timeToDue > 3 * 24 * 60 * 60) {
+                className += " -due-not-soon"
+            } else {
+                className += " -due-soon"
+            }
             dueString = `Due in ${duration}`
         }
 
         return (
-            <div className="due-date-container">{dueString}</div>
+            <div className={className}>{dueString}</div>
         )
     }
 

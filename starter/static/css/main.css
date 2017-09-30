@@ -208,6 +208,26 @@ div.task-tags-container div.tag {
     padding: .1em .25em;
 }
 
+.task-due-date.-very-overdue {
+    color: #f0f;
+}
+
+.task-due-date.-overdue {
+    color: #f00;
+}
+
+.task-due-date.-due-today {
+    color: #ffa500;
+}
+
+.task-due-date.-due-soon {
+    color: #228b22;
+}
+
+.task-due-date.-due-not-soon {
+    color: #6495ed;
+}
+
 /* End of Task view CSS */
 
 /* Detail view CSS */
