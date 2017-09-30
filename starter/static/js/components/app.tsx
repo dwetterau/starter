@@ -16,8 +16,6 @@ import {
 import {TaskDetailComponent} from "./task/task_detail";
 import {TagDetailComponent} from "./tag/tag_detail";
 import {NoteBoardComponent} from "./notes/note_board";
-import {NoteComponent} from "./notes/note"
-import {getTagAndDescendantsRecursive} from "./lib/util";
 import {CaptureListComponent} from "./capture/capture_list";
 
 export interface AppProps {
@@ -409,76 +407,12 @@ export class App extends React.Component<AppProps, AppState> {
         }
     }
 
-    computeNoteForNotepad(tagName?: string): null | Note {
-        // Can't pick a note without a selected tagName for now
-        if (!tagName) {
-            return null
-        }
-
-        // Find the note with the newest startTime and the provided tag.
-        let tagId: number;
-        for (let tag of this.state.tags) {
-            if (tag.name.toLowerCase() == tagName.toLowerCase()) {
-                tagId = tag.id;
-                break
-            }
-        }
-        if (!tagId) {
-            return null
-        }
-        let allChildIdsOfSelectedTag = getTagAndDescendantsRecursive(
-            tagId, this.state.tagsById
-        );
-
-        let newest = -1;
-        let finalNote: Note = null;
-        for (let note of this.state.notes) {
-            if (note.tagIds.length == 0) {
-                continue
-            }
-            for (let noteTagId of note.tagIds) {
-                if (allChildIdsOfSelectedTag[noteTagId]) {
-                    // See if this is the newest
-                    if (note.creationTime > newest) {
-                        newest = note.creationTime;
-                        finalNote = note;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return finalNote
-    }
-
-    renderNotepad(tagName) {
-        // For now, don't show if we're going to show detail instead.
-        if (this.state.detailInfo.tagId || this.state.detailInfo.taskId) {
-            return
-        }
-
-        let note = this.computeNoteForNotepad(tagName);
-        if (note == null) {
-            return
-        }
-        return <div className="merged-notepad-container">
-            <NoteComponent
-                meUser={this.props.meUser}
-                note={note}
-                tagsById={this.state.tagsById}
-                updateNote={this.updateNote.bind(this)}
-                deleteNote={this.deleteNote.bind(this)}
-            />
-        </div>
-    }
-
     renderMergedView(tagName) {
         return <div className="merged-container">
             <div className="main-pane">
                 <div className="merged-task-container">
                     {this.renderTaskBoard(tagName)}
                 </div>
-                {this.renderNotepad(tagName)}
                 {this.renderDetail()}
             </div>
             <div className="right-pane">
