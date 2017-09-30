@@ -62,7 +62,9 @@ export class CaptureListComponent extends React.Component<CaptureListProps, Capt
 
     renderCapture(capture: Capture) {
         return <div className="capture-container card" key={capture.id}>
-            {capture.content}
+            <div className="capture-content">
+                {capture.content}
+            </div>
             <div className="capture-options-container">
                 {this.renderDeleteButton(capture.id)}
             </div>

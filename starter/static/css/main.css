@@ -843,6 +843,10 @@ div.capture-container.card {
     justify-content: space-between;
 }
 
+div.capture-container.card .capture-content {
+    overflow: auto;
+}
+
 div.capture-container.card .capture-options-container {
     margin-left: .5em;
 }
