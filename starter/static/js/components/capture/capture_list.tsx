@@ -89,7 +89,9 @@ export class CaptureListComponent extends React.Component<CaptureListProps, Capt
         if (captures.length == 0) {
             return this.renderNoCaptures()
         }
-        return <div>{captures.map(this.renderCapture.bind(this))}</div>
+        return <div className="capture-list-scroll-container">
+            {captures.map(this.renderCapture.bind(this))}
+        </div>
     }
 
     render() {

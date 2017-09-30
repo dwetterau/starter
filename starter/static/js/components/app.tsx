@@ -32,18 +32,24 @@ interface DetailInfo {
     taskId?: number,
 }
 
+interface ApiError {
+    status: number
+    responseText: string
+}
+
 export interface AppState {
-    tasks: Array<Task>,
-    events: Array<Event>,
-    tags: Array<Tag>,
-    notes: Array<Note>,
-    captures: Array<Capture>,
-    tagsById: TagsById,
-    eventsById: EventsById,
-    tasksById: TasksById,
-    detailInfo: DetailInfo,
-    notesById: NotesById,
-    capturesById: CapturesById,
+    tasks: Array<Task>
+    events: Array<Event>
+    tags: Array<Tag>
+    notes: Array<Note>
+    captures: Array<Capture>
+    tagsById: TagsById
+    eventsById: EventsById
+    tasksById: TasksById
+    detailInfo: DetailInfo
+    notesById: NotesById
+    capturesById: CapturesById
+    apiError?: ApiError
 }
 
 export enum AppViewMode {
@@ -120,6 +126,22 @@ export class App extends React.Component<AppProps, AppState> {
         this.setState(this.state);
     }
 
+    handleApiError(apiError: ApiError) {
+        this.state.apiError = apiError;
+        this.setState(this.state);
+
+        // Clear out the error in a few seconds
+        setTimeout(() => {
+            if (!this.state.apiError) {
+                return
+            }
+            if (apiError.responseText == this.state.apiError.responseText) {
+                this.state.apiError = null;
+                this.setState(this.state)
+            }
+        }, 4000)
+    }
+
     // API-style methods for updating global state.
     static updateTasksById(state: AppState) {
         const tasksById: TasksById = {};
@@ -135,7 +157,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.state.tasks.push(JSON.parse(newTaskJson));
             App.updateTasksById(this.state);
             this.setState(this.state)
-        });
+        }).fail(this.handleApiError.bind(this));
     }
 
     updateTask(task: Task) {
@@ -152,7 +174,7 @@ export class App extends React.Component<AppProps, AppState> {
             });
             App.updateTasksById(this.state);
             this.setState(this.state);
-        });
+        }).fail(this.handleApiError.bind(this));
         task.eventIds = oldIds;
     }
 
@@ -164,7 +186,7 @@ export class App extends React.Component<AppProps, AppState> {
             });
             App.updateTasksById(this.state);
             this.setState(this.state);
-        })
+        }).fail(this.handleApiError.bind(this));
     }
 
     static updateEventsById(state: AppState) {
@@ -221,7 +243,7 @@ export class App extends React.Component<AppProps, AppState> {
             App.updateEventsById(this.state);
             this.updateTaskToEventsAfterEventChange(newEvent, false);
             this.setState(this.state)
-        });
+        }).fail(this.handleApiError.bind(this));
     }
 
     updateEvent(event: Event) {
@@ -237,7 +259,7 @@ export class App extends React.Component<AppProps, AppState> {
             App.updateEventsById(this.state);
             this.updateTaskToEventsAfterEventChange(updatedEvent, false);
             this.setState(this.state);
-        });
+        }).fail(this.handleApiError.bind(this));
     }
 
     deleteEvent(event: Event) {
@@ -249,7 +271,7 @@ export class App extends React.Component<AppProps, AppState> {
             App.updateEventsById(this.state);
             this.updateTaskToEventsAfterEventChange(event, true);
             this.setState(this.state);
-        })
+        }).fail(this.handleApiError.bind(this))
     }
 
     static updateTagsById(state: AppState) {
@@ -266,7 +288,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.state.tags.push(JSON.parse(newTagJson));
             App.updateTagsById(this.state);
             this.setState(this.state);
-        })
+        }).fail(this.handleApiError.bind(this))
     }
 
     updateTag(tag: Tag) {
@@ -281,7 +303,7 @@ export class App extends React.Component<AppProps, AppState> {
             });
             App.updateTagsById(this.state);
             this.setState(this.state);
-        })
+        }).fail(this.handleApiError.bind(this))
     }
 
     deleteTag(tag: Tag) {
@@ -302,7 +324,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.state.notes.push(JSON.parse(newNoteJson));
             App.updateNotesById(this.state);
             this.setState(this.state)
-        });
+        }).fail(this.handleApiError.bind(this));
     }
 
     updateNote(note: Note) {
@@ -317,7 +339,7 @@ export class App extends React.Component<AppProps, AppState> {
             });
             App.updateNotesById(this.state);
             this.setState(this.state);
-        });
+        }).fail(this.handleApiError.bind(this));
     }
 
     deleteNote(note: Note) {
@@ -328,7 +350,7 @@ export class App extends React.Component<AppProps, AppState> {
             });
             App.updateNotesById(this.state);
             this.setState(this.state);
-        })
+        }).fail(this.handleApiError.bind(this))
     }
 
     static updateCapturesById(state: AppState) {
@@ -345,7 +367,7 @@ export class App extends React.Component<AppProps, AppState> {
             this.state.captures.push(JSON.parse(newCaptureJson));
             App.updateCapturesById(this.state);
             this.setState(this.state)
-        });
+        }).fail(this.handleApiError.bind(this));
     }
 
     deleteCapture(capture: Capture) {
@@ -356,7 +378,7 @@ export class App extends React.Component<AppProps, AppState> {
             });
             App.updateCapturesById(this.state);
             this.setState(this.state);
-        })
+        }).fail(this.handleApiError.bind(this))
     }
 
     // Inline handlers for detail changes
@@ -405,6 +427,16 @@ export class App extends React.Component<AppProps, AppState> {
                 closeCallback={this.closeDetail.bind(this)}
             />
         }
+    }
+
+    renderToasts() {
+        if (!this.state.apiError) {
+            return
+        }
+
+        return <div className="toast-container">
+            {this.state.apiError.status} - {this.state.apiError.responseText}
+        </div>
     }
 
     renderMergedView(tagName) {
@@ -486,6 +518,7 @@ export class App extends React.Component<AppProps, AppState> {
             <div className="board-container">
                 {getBoardFn()}
             </div>
+            {this.renderToasts()}
         </div>
     };
 

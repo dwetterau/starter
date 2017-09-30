@@ -649,7 +649,7 @@ def delete_note(request: HttpRequest) -> HttpResponse:
 @require_http_methods(["POST"])
 def create_capture(request: HttpRequest) -> HttpResponse:
     validation_map = {
-        'content': lambda x: str(x),
+        'content': _required_string,
         'creationTime': _timestamp_millis,
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
     }  # type: Dict[str, Callable[[str], Any]]
@@ -658,7 +658,7 @@ def create_capture(request: HttpRequest) -> HttpResponse:
         arguments = _validate(parse(request.body), validation_map)
     except ValidationError as e:
         print(e)
-        return HttpResponse(str(e.args).encode(), status=400, )
+        return HttpResponse(str(e.args).encode(), status=400)
 
     # Now it's safe to squash all the arguments together into a dict
     args_to_objects = dict(arguments)

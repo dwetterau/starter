@@ -697,6 +697,7 @@ div.merged-task-container {
 div.right-pane {
     max-width: 33%;
     min-width: 33%;
+    height: calc(100vh - 97px);
 }
 
 /* Ad-hoc fixes for tasks */
@@ -760,6 +761,22 @@ div.right-pane div.calendar div.options div.pending-token-container input {
 div.right-pane div.calendar div.options div.tag-selector-label {
     flex-shrink: 0;
 }
+
+/* Ad-hoc fixes for capture list */
+div.right-pane div.merged-capture-container {
+    height: 100%;
+}
+
+div.right-pane div.merged-capture-container div.capture-list-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+div.right-pane div.merged-capture-container div.capture-list-container div.capture-list-scroll-container{
+    overflow-y: auto;
+}
+
 /* End of Multi-pane CSS */
 
 /* Note Board CSS */
@@ -881,3 +898,15 @@ div.captured-everything {
     text-align: center;
 }
 /* End of Capture CSS */
+
+/* Toast CSS */
+div.toast-container {
+    position: fixed;
+    left: 2em;
+    bottom: 2em;
+    z-index: 8;
+    background-color: #47525d;
+    color: #f6f9fc;
+    padding: 1em;
+}
+/* End of Toast CSS */
