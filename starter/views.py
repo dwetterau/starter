@@ -146,6 +146,7 @@ def create_task(request: HttpRequest) -> HttpResponse:
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
         'dueTime': _timestamp_millis,
+        'stateUpdatedTime': _timestamp_millis,
     }  # type: Dict[str, Callable[[str], Any]]
 
     try:
@@ -174,6 +175,7 @@ def create_task(request: HttpRequest) -> HttpResponse:
         owner=args_to_objects["ownerId"],
         expected_duration_secs=args_to_objects["expectedDurationSecs"],
         due_time=args_to_objects["dueTime"],
+        state_updated_time=args_to_objects["stateUpdatedTime"],
     )
     task.create_local_id(args_to_objects["authorId"])
     if new_tags_by_id:
@@ -196,6 +198,7 @@ def update_task(request: HttpRequest) -> HttpResponse:
         'authorId': lambda user_id: User.objects.get(id=int(user_id)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
         'dueTime': _timestamp_millis,
+        'stateUpdatedTime': _timestamp_millis,
     }  # type: Dict[str, Callable[[str], Any]]
 
     try:
@@ -233,6 +236,7 @@ def update_task(request: HttpRequest) -> HttpResponse:
     task.owner = args_to_objects["ownerId"]
     task.expected_duration_secs = args_to_objects["expectedDurationSecs"]
     task.due_time = args_to_objects["dueTime"]
+    task.state_updated_time = args_to_objects["stateUpdatedTime"]
     task.save()
 
     if set(new_tags_by_id.keys()) != set(task.get_tag_ids()):

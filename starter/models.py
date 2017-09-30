@@ -131,6 +131,10 @@ class Task(models.Model):
         "Time that the task is due",
         default=datetime.datetime.utcfromtimestamp(0),
     )
+    state_updated_time = models.DateTimeField(
+        "Time that the task last had its state changed",
+        default=datetime.datetime.utcfromtimestamp(0),
+    )
 
     @classmethod
     def get_by_owner_id(cls, user_id: UserId) -> List["Task"]:
@@ -227,6 +231,7 @@ class Task(models.Model):
             eventIds=self.get_event_ids(),
             expectedDurationSecs=self.expected_duration_secs,
             dueTime=int(self.due_time.timestamp() * 1000),
+            stateUpdatedTime=int(self.state_updated_time.timestamp() * 1000),
         )
 
     def delete(self, **kwargs: Any) -> None:

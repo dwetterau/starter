@@ -61,6 +61,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
             eventIds: [],
             expectedDurationSecs: 0,
             dueTime: 0,
+            stateUpdatedTime: 0,
         };
         if (props.initialPriority) {
             task.priority = props.initialPriority
@@ -93,6 +94,9 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
     }
 
     updateAttr(attrName: string, event: any) {
+        if (attrName == "state") {
+            this.state.task.stateUpdatedTime = moment().unix() * 1000;
+        }
         this.state.task[attrName] = event.target.value;
         this.setState(this.state);
     }

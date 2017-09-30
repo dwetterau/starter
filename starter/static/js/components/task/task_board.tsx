@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as jQuery from "jquery";
+import * as moment from "moment";
 
 import {EditTaskComponent} from "./edit_task";
 import {
@@ -132,6 +133,12 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             attr: "state",
             orderedNameAndValue: stateNameList,
             sortFunc: (a: Task, b: Task) => {
+                // If the tasks are closed, we want to sort by last updated time instead
+                // of by priority.
+                if (a.state == 1000 && b.state == 1000) {
+                    return b.stateUpdatedTime - a.stateUpdatedTime
+                }
+
                 // This is to put UNKNOWN priority at the top.
                 const aPriority = a.priority == 0 ? 1000 : a.priority;
                 const bPriority = b.priority == 0 ? 1000 : b.priority;
@@ -259,6 +266,9 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                     {'detail': this.state.draggingTask},
                 );
                 document.dispatchEvent(event);
+            }
+            if (oldState != columnType) {
+                this.state.draggingTask.stateUpdatedTime = moment().unix() * 1000;
             }
 
         } else if (this.state.viewType == TaskBoardViewType.priority) {
