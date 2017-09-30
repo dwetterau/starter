@@ -77,41 +77,73 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
         )
     }
 
+    computeTimeUntilTarget(targetMS: number): [number, string] {
+        let timeToTarget = Math.round(
+            (targetMS / 1000) - moment().unix()
+        );
+        if (timeToTarget > 0) {
+            timeToTarget += 24 * 60 * 60 - 1;
+        }
+        return [timeToTarget, renderDuration(Math.abs(timeToTarget), true, true)];
+    }
+
     renderDueDate() {
         if (!this.props.task.dueTime) {
             return;
         }
-        let timeToDue = Math.round(
-            (this.props.task.dueTime / 1000) - moment().unix()
-        );
-        if (timeToDue > 0) {
-            timeToDue += 24 * 60 * 60 - 1;
+        // If the task is closed, don't show a due date
+        if (this.props.task.state == 1000) {
+            return;
         }
-        let duration = renderDuration(Math.abs(timeToDue), true, true);
+
+        let [timeToDue, durationString] = this.computeTimeUntilTarget(this.props.task.dueTime);
         let dueString = "";
         let className = "task-due-date";
-
-        if (duration == "None") {
+        if (durationString == "None") {
             className += " -due-today";
-            dueString = "Due Today"
+            dueString = "Due today"
         } else if (timeToDue < 0) {
             if (timeToDue < -(3 * 24 * 60 * 60)) {
                 className += " -very-overdue"
             } else {
                 className += " -overdue"
             }
-            dueString = `Due ${duration} ago`
+            dueString = `Due ${durationString} ago`
         } else {
             if (timeToDue > 3 * 24 * 60 * 60) {
                 className += " -due-not-soon"
             } else {
                 className += " -due-soon"
             }
-            dueString = `Due in ${duration}`
+            dueString = `Due in ${durationString}`
         }
 
         return (
             <div className={className}>{dueString}</div>
+        )
+    }
+
+    renderClosedDate() {
+        if (this.props.task.state != 1000) {
+            return;
+        }
+        if (!this.props.task.stateUpdatedTime) {
+            return;
+        }
+
+        let [timeToClosed, durationString] = this.computeTimeUntilTarget(
+            this.props.task.stateUpdatedTime
+        );
+        let sinceClosedString = "Closed ";
+        if (durationString == "None") {
+            sinceClosedString += "today";
+        } else if (timeToClosed < 0) {
+            sinceClosedString += `${durationString} ago`
+        } else {
+            sinceClosedString += `${durationString} from now`
+        }
+        return (
+            <div className="closed-time">{sinceClosedString}</div>
         )
     }
 
@@ -126,6 +158,7 @@ export class TaskComponent extends React.Component<TaskProps, {}> {
                     {this.renderState()}
                     {this.renderEstimate()}
                     {this.renderDueDate()}
+                    {this.renderClosedDate()}
                 </div>
             </div>
         </div>
