@@ -49,7 +49,6 @@ export interface AppState {
     detailInfo: DetailInfo
     notesById: NotesById
     capturesById: CapturesById
-    apiError?: ApiError
 }
 
 export enum AppViewMode {
@@ -126,20 +125,27 @@ export class App extends React.Component<AppProps, AppState> {
         this.setState(this.state);
     }
 
+    _apiError: ApiError = null;
     handleApiError(apiError: ApiError) {
-        this.state.apiError = apiError;
-        this.setState(this.state);
+        // This doesn't use react for any rendering because setting the state clears out
+        // the editors :(
+        // TODO: What if we haven't cleared the last one?
+        this._apiError = apiError;
 
         // Clear out the error in a few seconds
         setTimeout(() => {
-            if (!this.state.apiError) {
+            if (!this._apiError) {
                 return
             }
-            if (apiError.responseText == this.state.apiError.responseText) {
-                this.state.apiError = null;
-                this.setState(this.state)
+            if (apiError.responseText == this._apiError.responseText) {
+                this._apiError=  null;
+                jQuery("#toast-container").addClass("hidden");
             }
-        }, 4000)
+        }, 4000);
+
+        jQuery("#toast-container").html(
+            `${this._apiError.status} - ${this._apiError.responseText}`
+        ).removeClass("hidden");
     }
 
     // API-style methods for updating global state.
@@ -430,13 +436,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     renderToasts() {
-        if (!this.state.apiError) {
-            return
-        }
-
-        return <div className="toast-container">
-            {this.state.apiError.status} - {this.state.apiError.responseText}
-        </div>
+        return <div id="toast-container" className="hidden" />
     }
 
     renderMergedView(tagName) {

@@ -900,7 +900,7 @@ div.captured-everything {
 /* End of Capture CSS */
 
 /* Toast CSS */
-div.toast-container {
+div#toast-container {
     position: fixed;
     left: 2em;
     bottom: 2em;
@@ -908,5 +908,9 @@ div.toast-container {
     background-color: #47525d;
     color: #f6f9fc;
     padding: 1em;
+}
+
+div#toast-container.hidden {
+    display: none;
 }
 /* End of Toast CSS */
