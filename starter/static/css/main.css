@@ -854,12 +854,14 @@ div.capturer-container div.create-capture-container textarea {
 }
 
 div.capturer-container div.create-capture-container input[type=button] {
-    height: 3em;
-    font-size: 34px;
+    height: 2em;
+    font-size: 1.7em;
+    -webkit-appearance: none;  /* Makes iOS not render the button weirdly */
 }
 
 div.capturer-container {
-    font-size: 34px;
+    font-size: 2em;
+    line-height: 2;
 }
 
 div.capturer-container div.capture-list-container div.capture-list-options {

@@ -126,9 +126,9 @@ def _validate_task(args_to_objects, new_tags_by_id, request):
     if len(new_tags_by_id) == 0:
         return HttpResponse("Tasks must have at least one tag.", status=400)
 
-    if args_to_objects["state"] != Task.State.PROJECT and (
-                args_to_objects["expectedDurationSecs"] == 0):
-        return HttpResponse("Non-project tasks must have an estimate", status=400)
+    if args_to_objects["state"] not in (Task.State.PROJECT, Task.State.CLOSED) and (
+            args_to_objects["expectedDurationSecs"] == 0):
+        return HttpResponse("Open and Non-project tasks must have an estimate", status=400)
 
     return None
 

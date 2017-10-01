@@ -60,7 +60,7 @@ export class CreateCaptureComponent extends React.Component<CreateCaptureProps, 
     renderButtons() {
         return (
             <div className="create-capture-button-container">
-                <input type="button" value="create"
+                <input type="button" value="Create"
                        onClick={this.submitForm.bind(this, "create")} />
             </div>
         )
