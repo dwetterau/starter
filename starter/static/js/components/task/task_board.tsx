@@ -142,7 +142,13 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                 // This is to put UNKNOWN priority at the top.
                 const aPriority = a.priority == 0 ? 1000 : a.priority;
                 const bPriority = b.priority == 0 ? 1000 : b.priority;
-                return bPriority - aPriority
+                if (aPriority != bPriority) {
+                    return bPriority - aPriority
+                }
+                // Sort tasks with a due date at the top of their priority.
+                const aDueTime = a.dueTime == 0 ? Number.MAX_VALUE : a.dueTime;
+                const bDueTime = b.dueTime == 0 ? Number.MAX_VALUE : b.dueTime;
+                return aDueTime - bDueTime
             }
         };
         typeToHelpers[TaskBoardViewType.priority] = {
