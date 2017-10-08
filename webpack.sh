@@ -1,3 +1,3 @@
 #!/bin/bash
 cd ~/projects/starter/starter
-webpack --progress --colors
+./node_modules/webpack/bin/webpack.js --progress --colors

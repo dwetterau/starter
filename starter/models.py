@@ -163,19 +163,7 @@ class Task(models.Model):
             cache_entry = global_task_cache[task_tag.task_id]
             cache_entry[1].append(task_tag.tag_id)
 
-        all_task_events = TaskEvents.objects.filter(task__in=uncached_task_ids)
-
-        # Do the global -> local id conversion for linked events as well
-        event_id_to_local_id = {
-            egi.event_id: egi.local_id
-            for egi in EventGlobalId.objects.filter(
-                user_id=user_id, event__in=[x.event_id for x in all_task_events],
-            )
-        }
-
-        for task_event in all_task_events:
-            cache_entry = global_task_cache[task_event.task_id]
-            cache_entry[2].append(event_id_to_local_id[task_event.event_id])
+        # TODO(davidw): Adjust the cache to not contain linked events at all
 
         return all_tasks
 
@@ -217,10 +205,7 @@ class Task(models.Model):
             self.tags.add(tag)
 
     def get_event_ids(self) -> List[LocalEventId]:
-        if self.id in global_task_cache:
-            return global_task_cache[self.id][2]
-
-        return [x.get_local_id() for x in self.events.all()]
+        return []
 
     def add_to_cache(self) -> None:
         global_task_cache[self.id] = (
