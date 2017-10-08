@@ -137,8 +137,19 @@ class Task(models.Model):
     )
 
     @classmethod
-    def get_by_owner_id(cls, user_id: UserId) -> List["Task"]:
+    def task_is_recent(cls, task: "Task"):
+        """Recent tasks are non-closed events or events closed within the past month"""
+        if Task.State(task.state) == Task.State.CLOSED:
+            dur = datetime.datetime.now().timestamp() - task.state_updated_time.timestamp()
+            return dur < 30 * 24 * 60 * 60
+        return True
+
+    @classmethod
+    def get_by_owner_id(cls, user_id: UserId, only_recent=False) -> List["Task"]:
         all_tasks = Task.objects.filter(owner_id=user_id)
+
+        if only_recent:
+            all_tasks = [t for t in all_tasks if cls.task_is_recent(t)]
 
         uncached_task_ids = [t.id for t in all_tasks if t.id not in global_task_cache]
 
