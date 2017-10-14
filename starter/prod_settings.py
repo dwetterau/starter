@@ -98,6 +98,7 @@ DATABASES = {
         'PASSWORD': os.environ['MYSQL_PASSWORD'],
         'HOST': os.environ['MYSQL_HOST'],
         'PORT': int(os.environ['MYSQL_PORT']),
+        'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
 
