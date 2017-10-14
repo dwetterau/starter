@@ -71,8 +71,8 @@ class ValidationError(Exception):
 
 
 def parse(body: Any) -> List[Tuple[str, str]]:
-    args = parse_qsl(body, keep_blank_values=True)
-    return [(arg.decode(), val.decode()) for arg, val in args]
+    args = parse_qsl(body.decode('utf-8'), keep_blank_values=True)
+    return [(arg, val) for arg, val in args]
 
 
 def _validate(

@@ -103,6 +103,7 @@ DATABASES = {
         'PASSWORD': os.environ['MYSQL_PASSWORD'],
         'HOST': 'localhost',
         'PORT': 3306,
+        'OPTIONS': {'charset': 'utf8mb4'},
     }
 }
 
