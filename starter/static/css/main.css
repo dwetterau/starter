@@ -151,7 +151,7 @@ div.task-board div.draggable-task.-hidden {
 
 div.task-board .task,.task-title {
     text-overflow: ellipsis;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 /* End of Task Board CSS */
