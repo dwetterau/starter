@@ -232,6 +232,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
         this.state.draggingTask = task;
         this.setState(this.state);
+        event.dataTransfer.setData("id", task.id.toString());
+        event.dataTransfer.effectAllowed = "move";
         this._dragTargetElement = jQuery(event.target)
     }
 
@@ -251,6 +253,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             // No task was being dragged
             return
         }
+        event.dataTransfer.dropEffect = "move";
         event.preventDefault();
 
         // Update the task with the new column
