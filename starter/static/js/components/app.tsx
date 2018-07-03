@@ -53,6 +53,7 @@ export interface AppState {
 
 export enum AppViewMode {
     mergedView,
+    planView,
     taskView,
     eventView,
     tagView,
@@ -455,6 +456,22 @@ export class App extends React.Component<AppProps, AppState> {
         </div>
     }
 
+    renderPlanView(tagName) {
+        return <div className="merged-container">
+             <div className="main-pane">
+                <div className="merged-task-container">
+                    {this.renderTaskBoard(tagName)}
+                </div>
+                {this.renderDetail()}
+            </div>
+            <div className="right-pane">
+                <div className="merged-calendar-container">
+                    {this.renderCalendar(CalendarViewType.day, true)}
+                </div>
+            </div>
+        </div>
+    }
+
     renderTaskBoard(tagName) {
         return <TaskBoardComponent
             meUser={this.props.meUser}
@@ -535,6 +552,18 @@ export class App extends React.Component<AppProps, AppState> {
                 this.renderMergedView.bind(this, somethingWithParams.params.tagName),
             )
         };
+        let getPlanView = () => {
+            return this.renderPageContainer(
+                AppViewMode.planView,
+                this.renderPlanView.bind(this),
+            )
+        };
+        let getPlanViewWithTag = (somethingWithParams: any) => {
+            return this.renderPageContainer(
+                AppViewMode.planView,
+                this.renderPlanView.bind(this, somethingWithParams.params.tagName),
+            )
+        };
         let getTaskBoard = () => {
             return this.renderPageContainer(
                 AppViewMode.taskView,
@@ -564,8 +593,10 @@ export class App extends React.Component<AppProps, AppState> {
         return <div>
             <Router history={browserHistory}>
                 <Route path="/" component={getMergedView} />
+                <Route path="/plan" component={getPlanView} />
+                <Route path="/plan/:tagName" component={getPlanViewWithTag} />
                 <Route path="/tasks" component={getTaskBoard} />
-                <Route path="/cal" component={getCalendarWeek.bind(this, CalendarViewType.day)} />
+                <Route path="/cal" component={getCalendarWeek.bind(this, CalendarViewType.week)} />
                 <Route
                     path="/cal/week"
                     component={getCalendarWeek.bind(this, CalendarViewType.week)}

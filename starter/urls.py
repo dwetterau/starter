@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^$', views.index),
 
     # Other urls that are resolved with react-router
+    url(r'^plan/?$', views.index),
+    url(r'^plan/[a-zA-Z0-9_]+/?$', views.index),
     url(r'^tasks/?$', views.index),
     url(r'^cal/?$', views.index),
     url(r'^cal/day/?$', views.index),
