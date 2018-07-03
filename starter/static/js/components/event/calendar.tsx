@@ -46,10 +46,10 @@ export enum CalendarViewType {
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-const GRANULARITY = 900; // Each cell is 15 minutes (unit in seconds)
+const GRANULARITY = 1800; // Each cell is 30 minutes (unit in seconds)
 
-const DEFAULT_CELL_HEIGHT = 30;
-const MIN_CELL_HEIGHT = 25;
+const DEFAULT_CELL_HEIGHT = 25;
+const MIN_CELL_HEIGHT = 20;
 
 interface EventRenderingInfo {
     index: number
@@ -148,6 +148,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this._handleEndEventWithTaskFn = null;
     }
 
+    // FIXME: Delete!
     handleCreateEventWithTask(e: CustomEvent) {
         let t: Task = e.detail;
         if (this.shouldCreateEventWithTask()) {

@@ -16,7 +16,7 @@ module.exports = {
         loaders: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
             {test: /\.tsx?$/, loader: "ts-loader"},
-            {test: /\.(ttf|woff|woff2)$/, loader: 'file-loader?name=static/fonts/[name].[ext]'},
+            {test: /\.(ttf|woff|woff2)$/, loader: 'file-loader?name=/static/fonts/[name].[ext]'},
             {test: /\.css$/, loader: "style-loader!css-loader"}
         ]
     },

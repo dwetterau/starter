@@ -565,7 +565,7 @@ export class App extends React.Component<AppProps, AppState> {
             <Router history={browserHistory}>
                 <Route path="/" component={getMergedView} />
                 <Route path="/tasks" component={getTaskBoard} />
-                <Route path="/cal" component={getCalendarWeek.bind(this, CalendarViewType.week)} />
+                <Route path="/cal" component={getCalendarWeek.bind(this, CalendarViewType.day)} />
                 <Route
                     path="/cal/week"
                     component={getCalendarWeek.bind(this, CalendarViewType.week)}
