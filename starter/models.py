@@ -138,7 +138,7 @@ class Task(models.Model):
 
     @classmethod
     def task_is_recent(cls, task: "Task"):
-        """Recent tasks are non-closed events or events closed within the past month"""
+        """Recent tasks are non-closed tasks or tasks closed within the past month"""
         if Task.State(task.state) == Task.State.CLOSED:
             dur = datetime.datetime.now().timestamp() - task.state_updated_time.timestamp()
             return dur < 30 * 24 * 60 * 60
@@ -273,9 +273,20 @@ class Event(models.Model):
     tags = models.ManyToManyField(Tag, verbose_name="The tags for the event")
 
     @classmethod
-    def get_by_owner_id(cls, user_id: UserId) -> List["Event"]:
+    def event_is_recent(cls, event: "Event"):
+        """Recent events have a startTime magnitude difference to now of less than a month"""
+        # TODO(davidw): Make event queries actually correspond to the page of events
+        # being viewed rather than this hack.
+        dur = datetime.datetime.now().timestamp() - event.start_time.timestamp()
+        return Math.abs(dur) < 30 * 24 * 60 * 60
+
+    @classmethod
+    def get_by_owner_id(cls, user_id: UserId, only_recent=False) -> List["Event"]:
         # Note: Iterating over these the first time is a huge perf hit
         all_events = Event.objects.filter(owner_id=user_id).all()
+
+        if only_recent:
+            all_events = [e for e in all_events if cls.event_is_recent(e)]
 
         uncached_event_ids = [e.id for e in all_events if e.id not in global_event_cache]
 
