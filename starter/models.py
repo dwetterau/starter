@@ -278,7 +278,7 @@ class Event(models.Model):
         # TODO(davidw): Make event queries actually correspond to the page of events
         # being viewed rather than this hack.
         dur = datetime.datetime.now().timestamp() - event.start_time.timestamp()
-        return Math.abs(dur) < 30 * 24 * 60 * 60
+        return abs(dur) < 30 * 24 * 60 * 60
 
     @classmethod
     def get_by_owner_id(cls, user_id: UserId, only_recent=False) -> List["Event"]:
