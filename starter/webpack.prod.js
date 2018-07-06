@@ -16,7 +16,7 @@ config.plugins = config.plugins.concat([
     // keeps hashes consistent between compilations
     new webpack.optimize.OccurrenceOrderPlugin()
 ]);
-config.mode = "production";
+// config.mode = "production";
 
 delete config['devtool'];
 
