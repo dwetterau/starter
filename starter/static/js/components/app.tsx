@@ -1,6 +1,6 @@
 import * as jQuery from "jquery";
 import * as React from "react";
-import {Router, Route, browserHistory} from "react-router"
+import {BrowserRouter, Route, Switch} from "react-router-dom"
 
 import {
     Event, Tag, Task, User, TagsById, EventsById, TasksById, NotesById, Note,
@@ -549,7 +549,7 @@ export class App extends React.Component<AppProps, AppState> {
         let getMergedWithTag = (somethingWithParams: any) => {
             return this.renderPageContainer(
                 AppViewMode.mergedView,
-                this.renderMergedView.bind(this, somethingWithParams.params.tagName),
+                this.renderMergedView.bind(this, somethingWithParams.match.params.tagName),
             )
         };
         let getPlanView = () => {
@@ -561,7 +561,7 @@ export class App extends React.Component<AppProps, AppState> {
         let getPlanViewWithTag = (somethingWithParams: any) => {
             return this.renderPageContainer(
                 AppViewMode.planView,
-                this.renderPlanView.bind(this, somethingWithParams.params.tagName),
+                this.renderPlanView.bind(this, somethingWithParams.match.params.tagName),
             )
         };
         let getTaskBoard = () => {
@@ -591,24 +591,26 @@ export class App extends React.Component<AppProps, AppState> {
         };
 
         return <div>
-            <Router history={browserHistory}>
-                <Route path="/" component={getMergedView} />
-                <Route path="/plan" component={getPlanView} />
-                <Route path="/plan/:tagName" component={getPlanViewWithTag} />
-                <Route path="/tasks" component={getTaskBoard} />
-                <Route path="/cal" component={getCalendarWeek.bind(this, CalendarViewType.week)} />
-                <Route
-                    path="/cal/week"
-                    component={getCalendarWeek.bind(this, CalendarViewType.week)}
-                />
-                <Route
-                    path="/cal/day"
-                    component={getCalendarWeek.bind(this, CalendarViewType.day)}
-                />
-                <Route path="/tag/:tagName" component={getMergedWithTag} />
-                <Route path="/tags" component={getTagGraph} />
-                <Route path="/notes" component={getNotes} />
-            </Router>
+            <BrowserRouter>
+                <Switch>
+                    <Route exact path="/" component={getMergedView} />
+                    <Route exact path="/plan" component={getPlanView} />
+                    <Route path="/plan/:tagName" component={getPlanViewWithTag} />
+                    <Route path="/tasks" component={getTaskBoard} />
+                    <Route exact path="/cal" component={getCalendarWeek.bind(this, CalendarViewType.week)} />
+                    <Route
+                        path="/cal/week"
+                        component={getCalendarWeek.bind(this, CalendarViewType.week)}
+                    />
+                    <Route
+                        path="/cal/day"
+                        component={getCalendarWeek.bind(this, CalendarViewType.day)}
+                    />
+                    <Route path="/tag/:tagName" component={getMergedWithTag} />
+                    <Route path="/tags" component={getTagGraph} />
+                    <Route path="/notes" component={getNotes} />
+                </Switch>
+            </BrowserRouter>
         </div>
     }
 }

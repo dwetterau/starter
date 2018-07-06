@@ -13,7 +13,7 @@ module.exports = {
     },
 
     module: {
-        loaders: [
+        rules: [
             // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
             {test: /\.tsx?$/, loader: "ts-loader"},
             {test: /\.(ttf|woff|woff2)$/, loader: 'file-loader?name=/static/fonts/[name].[ext]'},
@@ -21,20 +21,14 @@ module.exports = {
         ]
     },
     dependencies: [
+        'node_modules/jquery',
+        'node_modules/react',
+        'node_modules/react-dom',
+        'node_modules/react-markdown',
+        'node_modules/react-router-dom',
         'node_modules/react-textarea-autosize',
-        'node_modules/react-datetime'
+        'node_modules/react-datetime',
+        'node_modules/moment',
     ],
-
-    // When importing a module whose path matches one of the following, just
-    // assume a corresponding global variable exists and use that instead.
-    // This is important because it allows us to avoid bundling all of our
-    // dependencies, which allows browsers to cache those libraries between builds.
-    externals: {
-        "react": "React",
-        "react-dom": "ReactDOM",
-        "jquery": "jQuery",
-        "moment": "moment",
-        "react-router": "ReactRouter",
-        "react-markdown": "reactMarkdown"
-    }
+    mode: "development",
 };

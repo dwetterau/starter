@@ -1,7 +1,6 @@
 import * as jQuery from "jquery";
 import * as moment from "moment";
 import * as React from "react";
-import {browserHistory} from 'react-router';
 
 import {EditEventComponent} from "./edit_event"
 import {Event, User, TagsById, Tag, TasksById, Task, EventsById} from "../../models"
@@ -747,12 +746,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             } else {
                 // Current week does not contain today, we will stay with Monday and no-op.
             }
-            browserHistory.push("/cal/day")
+            // TODO: Figure out what to do here with respect to pushing onto the history
         } else if (this.state.viewType == CalendarViewType.day && type == CalendarViewType.week) {
             // Day to week transition, need to find the nearest Monday
             startDayMoment = this.computeClosestMonday(moment(this.state.startDayTimestamp));
             this.state.startDayTimestamp = startDayMoment.unix() * 1000;
-            browserHistory.push("/cal/week")
+            // TODO: Figure out what to do here with respect to pushing onto the history
         } else {
             throw Error("Unknown view type transition");
         }

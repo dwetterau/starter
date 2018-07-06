@@ -7,14 +7,6 @@
 <body>
     <div id="render-target"></div>
     {%  load static %}
-    <!-- Dependencies -->
-    <script src="{% static "react.js" %}"></script>
-    <script src="{% static "react-dom.js" %}"></script>
-    <script src="{% static "jquery.js" %}"></script>
-    <script src="{% static "moment.min.js" %}"></script>
-    <script src="{% static "ReactRouter.min.js" %}"></script>
-    <script src="{% static "react-markdown.js" %}"></script>
-
     <script type="text/javascript" src="{% if debug %}{%  static "dist/dev/bundle.js" %}{% else %}{% static "dist/bundle.js" %}{% endif %}" charset="utf-8"></script>
     {% block content %}
     {% endblock content %}
