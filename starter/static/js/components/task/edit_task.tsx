@@ -209,7 +209,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
             <div className="description-container">
                 <label htmlFor="description">Description: </label>
                 <textarea
-                    type="text" name="description"
+                    name="description"
                     value={this.state.task.description}
                     onChange={this.updateAttr.bind(this, "description")}
                 />

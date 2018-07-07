@@ -72,9 +72,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             return;
         }
 
-        let taskId = e.detail;
-        this.state.editingTask = this.props.tasksById[taskId];
-        this.setState(this.state);
+        const taskId = e.detail;
+        this.setState({editingTask: this.props.tasksById[taskId]});
     }
 
     getState(props: TaskBoardProps, viewType: TaskBoardViewType): TaskBoardState {
@@ -229,8 +228,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         if (this.state.draggingTask) {
             throw Error("Already was dragging a task...")
         }
-        this.state.draggingTask = task;
-        this.setState(this.state);
+        this.setState({draggingTask: null});
         event.dataTransfer.setData("id", task.id.toString());
         event.dataTransfer.effectAllowed = "move";
         this._dragTargetElement = jQuery(event.target)
@@ -242,8 +240,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         }
 
         // Clean up any leftover state if we didn't successfully drop somewhere
-        this.state.draggingTask = null;
-        this.setState(this.state);
+        this.setState({draggingTask: null});
         this._dragTargetElement.show();
     }
 
@@ -256,22 +253,22 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         event.preventDefault();
 
         // Update the task with the new column
+        let taskToUpdate = this.state.draggingTask;
         if (this.state.viewType == TaskBoardViewType.status) {
-            const oldState = this.state.draggingTask.state;
-            this.state.draggingTask.state = columnType;
+            const oldState = taskToUpdate.state;
+            taskToUpdate.state = columnType;
             if (oldState != columnType) {
-                this.state.draggingTask.stateUpdatedTime = moment().unix() * 1000;
+                taskToUpdate.stateUpdatedTime = moment().unix() * 1000;
             }
         } else if (this.state.viewType == TaskBoardViewType.priority) {
-            this.state.draggingTask.priority = columnType;
+            taskToUpdate.priority = columnType;
         } else {
             throw Error("Haven't implement drag and drop for this view type yet")
         }
-        this.props.updateTask(this.state.draggingTask);
+        this.props.updateTask(taskToUpdate);
 
         jQuery(event.target).removeClass("drop-container");
-        this.state.draggingTask = null;
-        this.setState(this.state);
+        this.setState({draggingTask: null});
         this._dragTargetElement.show();
     }
 
@@ -308,30 +305,27 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     onDoubleClick(task: Task) {
-        this.state.editingTask = task;
-        this.setState(this.state)
+        this.setState({editingTask: task});
     }
 
     changeViewType(type: TaskBoardViewType) {
         const [headers, columnTypes, columns] = this.divideByType(
             this.props.tasksById, type, this.state.selectedTag
         );
-        this.state.viewType = type;
-        this.state.headers = headers;
-        this.state.columnTypes = columnTypes;
-        this.state.columns = columns;
 
-        this.setState(this.state);
+        this.setState({
+            viewType: type,
+            headers: headers,
+            columnTypes: columnTypes,
+            columns: columns,
+        });
     }
 
     changeHideClosedTasks() {
-        this.state.shouldHideClosedTasks = !this.state.shouldHideClosedTasks;
+        this.setState({shouldHideClosedTasks: !this.state.shouldHideClosedTasks});
 
         // As a hack to reflow the columns, we will "change the view type to the current one".
         this.changeViewType(this.state.viewType);
-
-        // We omit a call to setState ourselves because the hiding of the task will also call
-        // setState.
     }
 
     getCurrentTagToken(): Array<Tokenizable> {
@@ -346,10 +340,11 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     changeCurrentTagToken(newTokens: Array<Tokenizable>) {
+        let selectedTag;
         if (newTokens.length) {
-            this.state.selectedTag = this.props.tagsById[newTokens[0].value];
+            selectedTag = this.props.tagsById[newTokens[0].value];
         } else {
-            this.state.selectedTag = null;
+            selectedTag = null;
 
             // If we were at a /tag/<tag> url, redirect to / because if we don't, the hacky
             // /tag/<tag> logic will re-add this tag by looking at the URL :(
@@ -357,6 +352,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                 window.location.pathname = "/";
             }
         }
+        this.setState({selectedTag: selectedTag});
 
         // As a hack to reflow the columns, we will "change the view type to the current one".
         this.changeViewType(this.state.viewType);
@@ -377,8 +373,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     clearCreateColumnType() {
-        this.state.createColumnType = null;
-        this.setState(this.state);
+        this.setState({createColumnType: null});
     }
 
     createTask(columnType: number) {
@@ -386,13 +381,11 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             // Already creating... cancel this request
             return
         }
-        this.state.createColumnType = columnType;
-        this.setState(this.state);
+        this.setState({createColumnType: columnType});
     }
 
     clearEditingTask() {
-        this.state.editingTask = null;
-        this.setState(this.state);
+        this.setState({editingTask: null});
     }
 
     renderTypeChoice(type: TaskBoardViewType) {
