@@ -89,8 +89,9 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                 }
             }
         }
+        const shouldHideClosedTasks = (this.state) ? this.state.shouldHideClosedTasks : true;
         const [headers, columnTypes, columns] = this.divideByType(
-            props.tasksById, viewType, selectedTag
+            props.tasksById, viewType, selectedTag, shouldHideClosedTasks,
         );
 
         const newState: TaskBoardState = {
@@ -102,7 +103,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             draggingTask: null,
             editingTask: null,
             selectedTag: selectedTag,
-            shouldHideClosedTasks: (this.state) ? this.state.shouldHideClosedTasks : true,
+            shouldHideClosedTasks: shouldHideClosedTasks,
         };
         if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
             // Copy over the previous selectedTag
@@ -111,8 +112,12 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return newState;
     }
 
-    divideByType(tasksById: TasksById, type: TaskBoardViewType, selectedTag: Tag): [
-            Array<string>, Array<number>, Array<Array<Task>>] {
+    divideByType(
+        tasksById: TasksById,
+        type: TaskBoardViewType,
+        selectedTag: Tag,
+        shouldHideClosedTasks: boolean,
+    ): [Array<string>, Array<number>, Array<Array<Task>>] {
 
         const columns: {[columnType: number]: Array<Task>} = {};
         const columnList: Array<Array<Task>> = [];
@@ -187,7 +192,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             }
 
             if (task.state == 1000) {
-                if (type == TaskBoardViewType.priority && this.state.shouldHideClosedTasks) {
+                if (type == TaskBoardViewType.priority && shouldHideClosedTasks) {
                     return true;
                 }
             }
@@ -304,24 +309,34 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return false;
     }
 
-    changeViewType(type: TaskBoardViewType) {
+    reflowColumns(type: TaskBoardViewType, selectedTag: Tag, shouldHideClosedTasks: boolean) {
         const [headers, columnTypes, columns] = this.divideByType(
-            this.props.tasksById, type, this.state.selectedTag
+            this.props.tasksById,
+            type,
+            selectedTag,
+            shouldHideClosedTasks,
         );
 
         this.setState({
             viewType: type,
             headers: headers,
+            selectedTag: selectedTag,
+            shouldHideClosedTasks: shouldHideClosedTasks,
             columnTypes: columnTypes,
             columns: columns,
         });
     }
 
-    changeHideClosedTasks() {
-        this.setState({shouldHideClosedTasks: !this.state.shouldHideClosedTasks});
+    changeViewType(type: TaskBoardViewType) {
+        this.reflowColumns(type, this.state.selectedTag, this.state.shouldHideClosedTasks);
+    }
 
-        // As a hack to reflow the columns, we will "change the view type to the current one".
-        this.changeViewType(this.state.viewType);
+    changeHideClosedTasks() {
+        this.reflowColumns(
+            this.state.viewType,
+            this.state.selectedTag,
+            !this.state.shouldHideClosedTasks,
+        );
     }
 
     getCurrentTagToken(): Array<Tokenizable> {
@@ -348,10 +363,8 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                 window.location.pathname = "/";
             }
         }
-        this.setState({selectedTag: selectedTag});
 
-        // As a hack to reflow the columns, we will "change the view type to the current one".
-        this.changeViewType(this.state.viewType);
+        this.reflowColumns(this.state.viewType, selectedTag, this.state.shouldHideClosedTasks);
     }
 
     getAllTagNames(): Array<Tokenizable> {
