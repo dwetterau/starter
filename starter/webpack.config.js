@@ -21,14 +21,20 @@ module.exports = {
         ]
     },
     dependencies: [
-        'node_modules/jquery',
-        'node_modules/react',
-        'node_modules/react-dom',
-        'node_modules/react-markdown',
-        'node_modules/react-router-dom',
         'node_modules/react-textarea-autosize',
         'node_modules/react-datetime',
-        'node_modules/moment',
     ],
+    // When importing a module whose path matches one of the following, just
+    // assume a corresponding global variable exists and use that instead.
+    // This is important because it allows us to avoid bundling all of our
+    // dependencies, which allows browsers to cache those libraries between builds.
+    externals: {
+        "react": "React",
+        "react-dom": "ReactDOM",
+        "react-markdown": "reactMarkdown",
+        "react-router-dom": "ReactRouterDOM",
+        "jquery": "jQuery",
+        "moment": "moment",
+    },
     mode: "development",
 };
