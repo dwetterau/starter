@@ -17,6 +17,7 @@ import {TaskDetailComponent} from "./task/task_detail";
 import {TagDetailComponent} from "./tag/tag_detail";
 import {NoteBoardComponent} from "./notes/note_board";
 import {CaptureListComponent} from "./capture/capture_list";
+import {API} from "../api";
 
 export interface AppProps {
     meUser: User,
@@ -64,25 +65,19 @@ export class App extends React.Component<AppProps, AppState> {
 
     constructor(props: AppProps) {
         super(props);
-        const newState: AppState = {
+        this.state = {
             tasks: props.tasks,
             events: props.events,
             tags: props.tags,
             notes: props.notes,
             captures: props.captures,
-            tagsById: {},
-            eventsById: {},
-            tasksById: {},
+            tagsById: API.getTagsById(props.tags),
+            eventsById: API.getEventsById(props.events),
+            tasksById: API.getTasksById(props.tasks),
+            notesById: API.getNotesById(props.notes),
+            capturesById: API.getCapturesById(props.captures),
             detailInfo: {},
-            notesById: {},
-            capturesById: {},
         };
-        App.updateTagsById(newState);
-        App.updateEventsById(newState);
-        App.updateTasksById(newState);
-        App.updateNotesById(newState);
-        App.updateCapturesById(newState);
-        this.state = newState;
     }
 
     // Global listener registration
@@ -117,12 +112,12 @@ export class App extends React.Component<AppProps, AppState> {
     handleDisplayTagInfo(e: CustomEvent) {
         // Sets the tag identified by the event to be selected
         let tagId = e.detail;
-        this.state.detailInfo = {
-            taskId: null,
-            tagId: tagId,
-        };
-
-        this.setState(this.state);
+        this.setState({
+            detailInfo: {
+                taskId: null,
+                tagId: tagId,
+            },
+        });
     }
 
     _apiError: ApiError = null;
@@ -149,241 +144,189 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     // API-style methods for updating global state.
-    static updateTasksById(state: AppState) {
-        const tasksById: TasksById = {};
-        for (let task of state.tasks) {
-            tasksById[task.id] = task;
-        }
-        state.tasksById = tasksById;
+    updateStateWithTasks(tasks: Array<Task>) {
+        this.setState({
+            tasks: tasks,
+            tasksById: API.getTasksById(tasks),
+        })
     }
 
     createTask(task: Task) {
-        delete task["id"];
-        jQuery.post('/api/1/task/create', task, (newTaskJson: string) => {
-            this.state.tasks.push(JSON.parse(newTaskJson));
-            App.updateTasksById(this.state);
-            this.setState(this.state)
+        API.createTask(task, (task) => {
+            this.updateStateWithTasks(this.state.tasks.concat([task]));
         }).fail(this.handleApiError.bind(this));
     }
 
     updateTask(task: Task) {
-        let oldIds = task.eventIds;
-        delete task['eventIds'];
-        jQuery.post('/api/1/task/update', task, (updatedTaskJson: string) => {
-            let updatedTask: Task = JSON.parse(updatedTaskJson);
-            this.state.tasks = this.state.tasks.map((task: Task) => {
+        API.updateTask(task, (updatedTask) => {
+            const newTasks = this.state.tasks.map((task: Task) => {
                 if (task.id == updatedTask.id) {
                     return updatedTask
                 } else {
                     return task
                 }
             });
-            App.updateTasksById(this.state);
-            this.setState(this.state);
-        }).fail(this.handleApiError.bind(this));
-        task.eventIds = oldIds;
+            this.updateStateWithTasks(newTasks);
+        }).fail(this.handleApiError.bind(this))
     }
 
     deleteTask(task: Task) {
-        jQuery.post('/api/1/task/delete', {id: task.id}, (deletedTaskJson: string) => {
-            const deletedTaskId = JSON.parse(deletedTaskJson).id;
-            this.state.tasks = this.state.tasks.filter((task: Task) => {
-                return task.id != deletedTaskId;
-            });
-            App.updateTasksById(this.state);
-            this.setState(this.state);
-        }).fail(this.handleApiError.bind(this));
+        API.deleteTask(task, (deletedTask) => {
+            this.updateStateWithTasks(this.state.tasks.filter((task: Task) => {
+                return task.id != deletedTask.id;
+            }));
+        }).fail(this.handleApiError.bind(this))
     }
 
-    static updateEventsById(state: AppState) {
-        const eventsById: EventsById = {};
-        for (let event of state.events) {
-            eventsById[event.id] = event;
+    updateStateWithEvents(event: Event, isDelete: boolean, events: Array<Event>) {
+        let changedTasks = API.getTasksAfterEventChange(
+            this.state.tasks,
+            event,
+            isDelete,
+        );
+        if (changedTasks.length == 0) {
+            // Easy case, just update the event state
+            this.setState({
+                events: events,
+                eventsById: API.getEventsById(events),
+            })
         }
-        state.eventsById = eventsById;
-    }
-
-    updateTaskToEventsAfterEventChange(changedEvent: Event, isDelete: boolean) {
-        // When an event is updated, we need to make sure that all the associated tasks are also
-        // updated
-        let oldTaskMap = {};
-        for (let task of this.state.tasks) {
-            for (let eventId of task.eventIds) {
-                if (eventId == changedEvent.id) {
-                    oldTaskMap[task.id] = true;
-                }
+        // Otherwise, fix up the tasks too
+        let changedTasksById = API.getTasksById(changedTasks);
+        let fixedTasks = this.state.tasks.map((task) => {
+            if (!changedTasksById.hasOwnProperty(task.id)) {
+                return task
+            } else {
+                return changedTasksById[task.id];
             }
-        }
+        });
 
-        let newTaskMap = {};
-        for (let taskId of changedEvent.taskIds) {
-            // Only add the task to the newTask map if this isn't a delete.
-            // All delete cases are handled in the next loop over oldTaskMap.
-            if (!isDelete) {
-                newTaskMap[taskId] = true;
-
-                if (!oldTaskMap[taskId]) {
-                    // This task just got added to this event. Add the eventId to the task
-                    this.state.tasksById[taskId].eventIds.push(changedEvent.id);
-                }
-            }
-        }
-
-        for (let taskId in oldTaskMap) {
-            if (!newTaskMap[taskId]) {
-                // This tag no longer has this event, update it's list of events
-                this.state.tasksById[taskId].eventIds = (
-                    this.state.tasksById[taskId].eventIds.filter((eventId) => {
-                        return eventId != changedEvent.id
-                    })
-                );
-            }
-        }
+        this.setState({
+            events: events,
+            eventsById: API.getEventsById(events),
+            tasks: fixedTasks,
+            tasksById: API.getTasksById(fixedTasks),
+        })
     }
 
     createEvent(event: Event) {
-        delete event["id"];
-        jQuery.post('/api/1/event/create', event, (newEventJson: string) => {
-            let newEvent = JSON.parse(newEventJson);
-            this.state.events.push(newEvent);
-            App.updateEventsById(this.state);
-            this.updateTaskToEventsAfterEventChange(newEvent, false);
-            this.setState(this.state)
+        API.createEvent(event, (event) => {
+            this.updateStateWithEvents(
+                event,
+                false,
+                this.state.events.concat([event]),
+            )
         }).fail(this.handleApiError.bind(this));
     }
 
     updateEvent(event: Event) {
-        jQuery.post('/api/1/event/update', event, (updatedEventJson: string) => {
-            let updatedEvent: Event = JSON.parse(updatedEventJson);
-            this.state.events = this.state.events.map((event: Event) => {
+        API.updateEvent(event, (updatedEvent) => {
+            let updatedEvents = this.state.events.map((event: Event) => {
                 if (event.id == updatedEvent.id) {
                     return updatedEvent
                 } else {
                     return event
                 }
             });
-            App.updateEventsById(this.state);
-            this.updateTaskToEventsAfterEventChange(updatedEvent, false);
-            this.setState(this.state);
+            this.updateStateWithEvents(
+                updatedEvent,
+                false,
+                updatedEvents,
+            );
         }).fail(this.handleApiError.bind(this));
     }
 
     deleteEvent(event: Event) {
-        jQuery.post('/api/1/event/delete', {id: event.id}, (deletedEventJson: string) => {
-            const deletedEventId = JSON.parse(deletedEventJson).id;
-            this.state.events = this.state.events.filter((event: Event) => {
-                return event.id != deletedEventId;
+        API.deleteEvent(event, (deletedEvent) => {
+            const events = this.state.events.filter((event: Event) => {
+                return event.id != deletedEvent.id;
             });
-            App.updateEventsById(this.state);
-            this.updateTaskToEventsAfterEventChange(event, true);
-            this.setState(this.state);
+            this.updateStateWithEvents(deletedEvent, true, events);
         }).fail(this.handleApiError.bind(this))
     }
 
-    static updateTagsById(state: AppState) {
-        const tagsById: TagsById = {};
-        for (let tag of state.tags) {
-            tagsById[tag.id] = tag;
-        }
-        state.tagsById = tagsById;
+    updateStateWithTags(tags: Array<Tag>) {
+        this.setState({
+            tags: tags,
+            tagsById: API.getTagsById(tags),
+        })
     }
 
     createTag(tag: Tag) {
-        delete tag["id"];
-        jQuery.post('/api/1/tag/create', tag, (newTagJson: string) => {
-            this.state.tags.push(JSON.parse(newTagJson));
-            App.updateTagsById(this.state);
-            this.setState(this.state);
-        }).fail(this.handleApiError.bind(this))
+        API.createTag(tag, (tag) => {
+            this.updateStateWithTags(this.state.tags.concat([tag]));
+        }).fail(this.handleApiError.bind(this));
     }
 
     updateTag(tag: Tag) {
-        jQuery.post('/api/1/tag/update', tag, (updatedTagJson: string) => {
-            let updatedTag: Tag = JSON.parse(updatedTagJson);
-            this.state.tags = this.state.tags.map((tag: Tag) => {
+        API.updateTag(tag, (updatedTag) => {
+            const newTags = this.state.tags.map((tag: Tag) => {
                 if (tag.id == updatedTag.id) {
-                    return updatedTag;
+                    return updatedTag
                 } else {
-                    return tag;
+                    return tag
                 }
             });
-            App.updateTagsById(this.state);
-            this.setState(this.state);
-        }).fail(this.handleApiError.bind(this))
+            this.updateStateWithTags(newTags);
+        }).fail(this.handleApiError.bind(this));
     }
 
     deleteTag(tag: Tag) {
         // TODO: Filter out all tags and children or something
     }
 
-    static updateNotesById(state: AppState) {
-        const notesById:  NotesById = {};
-        for (let note of state.notes) {
-            notesById[note.id] = note;
-        }
-        state.notesById = notesById;
+    updateStateWithNotes(notes: Array<Note>) {
+        this.setState({
+            notes: notes,
+            notesById: API.getNotesById(notes),
+        })
     }
 
     createNote(note: Note) {
-        delete note["id"];
-        jQuery.post('/api/1/note/create', note, (newNoteJson: string) => {
-            this.state.notes.push(JSON.parse(newNoteJson));
-            App.updateNotesById(this.state);
-            this.setState(this.state)
+        API.createNote(note, (note) => {
+            this.updateStateWithNotes(this.state.notes.concat([note]));
         }).fail(this.handleApiError.bind(this));
     }
 
     updateNote(note: Note) {
-        jQuery.post('/api/1/note/update', note, (updatedNoteJson: string) => {
-            let updatedNote: Note = JSON.parse(updatedNoteJson);
-            this.state.notes = this.state.notes.map((note: Note) => {
+        API.updateNote(note, (updatedNote) => {
+            const newNotes = this.state.notes.map((note: Note) => {
                 if (note.id == updatedNote.id) {
                     return updatedNote
                 } else {
                     return note
                 }
             });
-            App.updateNotesById(this.state);
-            this.setState(this.state);
+            this.updateStateWithNotes(newNotes);
         }).fail(this.handleApiError.bind(this));
     }
 
     deleteNote(note: Note) {
-        jQuery.post('/api/1/note/delete', {id: note.id}, (deletedNoteJson: string) => {
-            const deletedNoteId = JSON.parse(deletedNoteJson).id;
-            this.state.notes = this.state.notes.filter((note: Note) => {
-                return note.id != deletedNoteId;
-            });
-            App.updateNotesById(this.state);
-            this.setState(this.state);
-        }).fail(this.handleApiError.bind(this))
+        API.deleteNote(note, (deletedNote) => {
+            this.updateStateWithNotes(this.state.notes.filter((note: Note) => {
+                return note.id != deletedNote.id;
+            }));
+        }).fail(this.handleApiError.bind(this));
     }
 
-    static updateCapturesById(state: AppState) {
-        const capturesById:  CapturesById = {};
-        for (let capture of state.captures) {
-            capturesById[capture.id] = capture;
-        }
-        state.capturesById = capturesById;
+    updateStateWithCaptures(captures: Array<Capture>) {
+        this.setState({
+            captures: captures,
+            capturesById: API.getCapturesById(captures),
+        });
     }
 
     createCapture(capture: Capture) {
-        delete capture["id"];
-        jQuery.post('/api/1/capture/create', capture, (newCaptureJson: string) => {
-            this.state.captures.push(JSON.parse(newCaptureJson));
-            App.updateCapturesById(this.state);
-            this.setState(this.state)
+        API.createCapture(capture, (capture) => {
+            this.updateStateWithCaptures(this.state.captures.concat([capture]));
         }).fail(this.handleApiError.bind(this));
     }
 
     deleteCapture(capture: Capture) {
-        jQuery.post('/api/1/capture/delete', {id: capture.id}, (deletedCaptureJson: string) => {
-            const deletedCaptureId = JSON.parse(deletedCaptureJson).id;
-            this.state.captures = this.state.captures.filter((capture: Capture) => {
-                return capture.id != deletedCaptureId;
-            });
-            App.updateCapturesById(this.state);
-            this.setState(this.state);
+        API.deleteCapture(capture, (deletedCapture) => {
+            this.updateStateWithCaptures(this.state.captures.filter((capture: Capture) => {
+                return capture.id != deletedCapture.id;
+            }));
         }).fail(this.handleApiError.bind(this))
     }
 
@@ -401,8 +344,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     closeDetail() {
-        this.state.detailInfo = {};
-        this.setState(this.state);
+        this.setState({detailInfo: {}});
     }
 
     renderDetail() {
