@@ -124,12 +124,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         let loop = () => {
             this.forceUpdate();
         };
-        this.refreshLoopId = setInterval(loop, 60 * 1000);
+        this.refreshLoopId = window.setInterval(loop, 60 * 1000);
     }
 
     componentWillUnmount() {
         if (this.refreshLoopId) {
-            clearInterval(this.refreshLoopId)
+            window.clearInterval(this.refreshLoopId)
         }
     }
 
@@ -430,14 +430,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             this.state.viewType,
             this.props.eventsById,
         );
-        this.state.columns = columns;
-        this.state.eventToRenderingInfo = eventToRenderingInfo;
-        this.setState(this.state);
+        this.setState({
+            columns: columns,
+            eventToRenderingInfo: eventToRenderingInfo,
+        });
     }
 
     onDoubleClick(event: Event) {
-        this.state.editingEvent = event;
-        this.setState(this.state);
+        this.setState({editingEvent: event});
     }
 
     computeTimestamp(day: string, index: number): number {
@@ -457,11 +457,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     columnMouseDown(day: string, event: any) {
         let index = event.target.dataset.index * 1;
-        this.state.draggingStartTimestamp = this.computeTimestamp(day, index);
-        this.state.draggingEndTimestamp = this.state.draggingStartTimestamp;
+        this.setState({
+            draggingStartTimestamp: this.computeTimestamp(day, index),
+            draggingEndTimestamp: this.state.draggingStartTimestamp,
+        });
         this.updateCreateEventTimestamp();
 
-        this.setState(this.state);
         event.preventDefault();
     }
 
@@ -471,10 +472,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return
         }
         let index = event.target.dataset.index * 1;
-        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
+        this.setState({draggingEndTimestamp: this.computeTimestamp(day, index)});
         this.updateCreateEventTimestamp();
         this.updateCreateEventDurationSecs();
-        this.setState(this.state);
     }
 
     columnMouseUp(day: string, event: any) {
@@ -484,24 +484,27 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
 
         let index = event.target.dataset.index * 1;
-        this.state.draggingEndTimestamp = this.computeTimestamp(day, index);
+        this.setState({draggingEndTimestamp: this.computeTimestamp(day, index)});
         this.updateCreateEventTimestamp();
         this.updateCreateEventDurationSecs();
 
-        this.state.draggingStartTimestamp = null;
-        this.state.draggingEndTimestamp = null;
-        this.state.showCreate = true;
-        this.setState(this.state);
+        this.setState({
+            draggingStartTimestamp: null,
+            draggingEndTimestamp: null,
+            showCreate: true,
+        });
     }
 
     updateCreateEventTimestamp() {
+        let createEventTimestamp;
         if (this.state.draggingEndTimestamp < this.state.draggingStartTimestamp) {
             // We dragged backwards, use the end timestamp
-            this.state.createEventTimestamp = this.state.draggingEndTimestamp;
+            createEventTimestamp = this.state.draggingEndTimestamp;
         } else {
             // Just set the start timestamp
-            this.state.createEventTimestamp = this.state.draggingStartTimestamp;
+            createEventTimestamp = this.state.draggingStartTimestamp;
         }
+        this.setState({createEventTimestamp: createEventTimestamp});
     }
 
     updateCreateEventDurationSecs() {
@@ -518,30 +521,30 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         duration /= 1000; // convert to seconds
         duration += GRANULARITY; // dragging to the same cell means to make duration equal to GRANULARITY
 
-        this.state.createEventDurationSecs = duration;
+        this.setState({createEventDurationSecs: duration});
     }
 
     _dragTargetEventElement: any = null;
     onDrop(day: string, index: number) {
         if (this.state.draggingEvent) {
             // Update the event with the new timestamp
-            this.state.draggingEvent.startTime = this.computeTimestamp(day, index);
-            this.props.updateEvent(this.state.draggingEvent);
+            let eventToUpdate = this.state.draggingEvent;
+            eventToUpdate.startTime = this.computeTimestamp(day, index);
+            this.props.updateEvent(eventToUpdate);
 
-            this.state.draggingEvent = null;
-            this.setState(this.state);
+            this.setState({draggingEvent: null});
             this._dragTargetEventElement.show();
         } else if (this.state.endDraggingEvent) {
 
             const timestamp = this.computeTimestamp(day, index);
             let newDuration = timestamp - this.state.endDraggingEvent.startTime;
             newDuration = Math.max(Math.round(newDuration / 1000) + GRANULARITY, GRANULARITY);
-            this.state.endDraggingEvent.durationSecs = newDuration;
-            this.props.updateEvent(this.state.endDraggingEvent);
 
-            this.state.endDraggingEvent = null;
-            this.setState(this.state)
+            let eventToUpdate = this.state.endDraggingEvent;
+            eventToUpdate.durationSecs = newDuration;
+            this.props.updateEvent(eventToUpdate);
 
+            this.setState({endDraggingEvent: null});
         } else {
             // No event was being dragged
             return
@@ -583,8 +586,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         if (this.state.endDraggingEvent || this.state.draggingEvent) {
             throw Error("Already was dragging an event...")
         }
-        this.state.draggingEvent = event;
-        this.setState(this.state);
+        this.setState({draggingEvent: event});
         this._dragTargetEventElement = jQuery(dragEvent.target)
     }
 
@@ -593,10 +595,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return
         }
 
-        this.state.draggingStartTimestamp = null;
-        this.state.draggingEndTimestamp = null;
-        this.state.draggingEvent = null;
-        this.setState(this.state);
+        this.setState({
+            draggingStartTimestamp: null,
+            draggingEndTimestamp: null,
+            endDraggingEvent: null,
+        });
         this._dragTargetEventElement.show();
     }
 
@@ -604,8 +607,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         if (this.state.endDraggingEvent || this.state.draggingEvent) {
             throw Error("Already dragging an event...");
         }
-        this.state.endDraggingEvent = event;
-        this.setState(this.state);
+        this.setState({endDraggingEvent: event});
     }
 
     onEventEndDragEnd(event: Event) {
@@ -613,10 +615,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return
         }
 
-        this.state.draggingStartTimestamp = null;
-        this.state.draggingEndTimestamp = null;
-        this.state.endDraggingEvent = null;
-        this.setState(this.state);
+        this.setState({
+            draggingStartTimestamp: null,
+            draggingEndTimestamp: null,
+            endDraggingEvent: null,
+        });
     }
 
     onDragOver(day: string, index: number, event: any) {
@@ -636,19 +639,20 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
             if (this.state.draggingStartTimestamp != timestamp ||
                     this.state.draggingEndTimestamp != endTimestamp) {
-
-                this.state.draggingStartTimestamp = timestamp;
-                this.state.draggingEndTimestamp = endTimestamp;
-                this.setState(this.state);
+                this.setState({
+                    draggingStartTimestamp: timestamp,
+                    draggingEndTimestamp: endTimestamp,
+                });
             }
         } else if (this.state.endDraggingEvent) {
             const timestamp = this.computeTimestamp(day, index);
             if (this.state.draggingStartTimestamp !=  this.state.endDraggingEvent.startTime ||
                     this.state.draggingEndTimestamp != timestamp) {
 
-                this.state.draggingStartTimestamp = this.state.endDraggingEvent.startTime;
-                this.state.draggingEndTimestamp = timestamp;
-                this.setState(this.state);
+                this.setState({
+                    draggingStartTimestamp: this.state.endDraggingEvent.startTime,
+                    draggingEndTimestamp: timestamp,
+                });
             }
         } else {
             // Nothing being dragged
@@ -671,12 +675,13 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     changeCurrentTagToken(newTokens: Array<Tokenizable>) {
+        let selectedTag;
         if (newTokens.length) {
-            this.state.selectedTag = this.props.tagsById[newTokens[0].value];
+            selectedTag = this.props.tagsById[newTokens[0].value];
         } else {
-            this.state.selectedTag = null;
+            selectedTag = null;
         }
-
+        this.setState({selectedTag: selectedTag});
         this.resort();
     }
 
@@ -709,7 +714,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     changeCellHeight(event: any) {
-        this.state.cellHeight = event.target.value;
+        this.setState({cellHeight: event.target.value});
         this.resort()
     }
 
@@ -736,13 +741,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return
         }
         let startDayMoment: moment.Moment;
+        let startDayTimestamp = this.state.startDayTimestamp;
         if (this.state.viewType == CalendarViewType.week && type == CalendarViewType.day) {
             // Week to day transition, need to either pick today or Monday
             const monday = moment(this.state.startDayTimestamp);
             const now = moment();
             if (now.unix() - monday.unix() > 0 && monday.add(1, "week").unix() - now.unix() > 0) {
                 // Current week view contains today, we will use today as the answer.
-                this.state.startDayTimestamp = this.computeTodayStartTime(type);
+                startDayTimestamp = this.computeTodayStartTime(type);
             } else {
                 // Current week does not contain today, we will stay with Monday and no-op.
             }
@@ -750,12 +756,15 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         } else if (this.state.viewType == CalendarViewType.day && type == CalendarViewType.week) {
             // Day to week transition, need to find the nearest Monday
             startDayMoment = this.computeClosestMonday(moment(this.state.startDayTimestamp));
-            this.state.startDayTimestamp = startDayMoment.unix() * 1000;
+            startDayTimestamp = startDayMoment.unix() * 1000;
             // TODO: Figure out what to do here with respect to pushing onto the history
         } else {
             throw Error("Unknown view type transition");
         }
-        this.state.viewType = type;
+        this.setState({
+            viewType: type,
+            startDayTimestamp: startDayTimestamp,
+        });
         this.resort();
     }
 
@@ -795,12 +804,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
         // Diff is the difference in days to add to the current time. If it's 0, we reset back
         // to the current day.
+        let startDayTimestamp;
         if (diff == 0) {
-            this.state.startDayTimestamp = this.computeTodayStartTime(this.state.viewType)
+            startDayTimestamp = this.computeTodayStartTime(this.state.viewType)
         } else {
-            this.state.startDayTimestamp = moment(
+            startDayTimestamp = moment(
                 this.state.startDayTimestamp).add(diff, "days").unix() * 1000;
         }
+        this.setState({startDayTimestamp: startDayTimestamp});
         this.resort()
     }
 
@@ -1049,8 +1060,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     clearEditingEvent() {
-        this.state.editingEvent = null;
-        this.setState(this.state);
+        this.setState({editingEvent: null});
     }
 
     renderEditingEvent() {
@@ -1073,11 +1083,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     closeCreateEvent() {
-        this.state.showCreate = false;
-        this.state.createEventTimestamp = null;
-        this.state.createEventDurationSecs = null;
-        this.state.createEventTask = null;
-        this.setState(this.state);
+        this.setState({
+            showCreate: false,
+            createEventTimestamp: null,
+            createEventDurationSecs: null,
+            createEventTask: null,
+        });
     }
 
     createEvent(event: Event) {

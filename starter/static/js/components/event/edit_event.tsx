@@ -80,8 +80,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
             }
             event = newEvent;
         }
-        this.state.event = event;
-        this.setState(this.state);
+        this.setState({event: event});
     }
 
     _getEmptyEvent(
@@ -104,26 +103,33 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
     }
 
     toggleStartNow() {
-        this.state.startNow = !this.state.startNow;
-        if (this.state.startNow) {
-            this.state.startAfterLast = false;
+        const startNow = !this.state.startNow;
+        let startAfterLast = this.state.startAfterLast;
+        if (startNow) {
+            startAfterLast = false;
         }
 
-        this.setState(this.state);
+        this.setState({
+            startAfterLast: startAfterLast,
+            startNow: startNow,
+        });
     }
 
     toggleStartAfterLast() {
-        this.state.startAfterLast = !this.state.startAfterLast;
-        if (this.state.startAfterLast) {
-            this.state.startNow = false;
+        const startAfterLast = !this.state.startAfterLast;
+        let startNow = this.state.startNow;
+        if (startAfterLast) {
+            startNow = false;
         }
 
-        this.setState(this.state);
+        this.setState({
+            startAfterLast: startAfterLast,
+            startNow: startNow,
+        });
     }
 
     toggleEndNow() {
-        this.state.endNow = !this.state.endNow;
-        this.setState(this.state);
+        this.setState({endNow: !this.state.endNow});
     }
 
     submitForm(eventType: string) {
@@ -176,9 +182,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         }
         // Reset the form after a submission. We don't clear anything out in case the
         // request fails. We wait for the new props to actually clear it out.
-        this.state.submitted = true;
-
-        this.setState(this.state)
+        this.setState({submitted: true})
     }
 
     autoFillName(): string {
