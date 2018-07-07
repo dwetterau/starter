@@ -81,34 +81,42 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         } else {
             startDayTimestamp = this.computeTodayStartTime(viewType);
         }
-        const [columns, eventToRenderingInfo] = this.divideAndSort(
-            startDayTimestamp, viewType, props.eventsById);
-        const newState: CalendarState = {
+        let cellHeight = DEFAULT_CELL_HEIGHT;
+        let selectedTag = null;
+        if (this.state) {
+            cellHeight = this.state.cellHeight;
+
+            // Want to persist tag between event creations
+            if (this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
+                selectedTag = this.state.selectedTag;
+            }
+        }
+        const [columns, eventToRenderingInfo] = CalendarComponent.divideAndSort(
+            startDayTimestamp,
+            viewType,
+            props.eventsById,
+            selectedTag,
+            props.tagsById,
+            cellHeight,
+        );
+
+        return {
             viewType,
             startDayTimestamp,
             columns,
-            cellHeight: DEFAULT_CELL_HEIGHT,
+            cellHeight: cellHeight,
             showCreate: (this.state) ? this.state.showCreate : false,
             eventToRenderingInfo: eventToRenderingInfo,
             editingEvent: null,
             createEventTimestamp: null,
             createEventDurationSecs: null,
             createEventTask: null,
-            selectedTag: null,
+            selectedTag: selectedTag,
             draggingStartTimestamp: null,
             draggingEndTimestamp: null,
             draggingEvent: null,
             endDraggingEvent: null,
         };
-        if (this.state) {
-            newState.cellHeight = this.state.cellHeight;
-
-            // Want to persist tag between event creations
-            if (this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
-                newState.selectedTag = this.state.selectedTag;
-            }
-        }
-        return newState;
     }
 
     componentDidMount() {
@@ -152,48 +160,17 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return startDayMoment
     }
 
-    shouldCreateEventWithTask() {
-        if (this.state.editingEvent || this.state.showCreate) {
-            return false;
-        }
-
-        // See if we are currently within an event.
-        let now = moment().unix() * 1000;
-        for (let eventId of Object.keys(this.props.eventsById)) {
-            let event = this.props.eventsById[eventId];
-            if (event.startTime < now && (event.startTime + (event.durationSecs * 1000)) >= now) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    shouldEndEventWithTask(task: Task) {
-        if (this.state.showCreate || this.state.editingEvent) {
-            return null;
-        }
-        let now = moment().unix() * 1000;
-        for (let eventId of Object.keys(this.props.eventsById)) {
-            let event = this.props.eventsById[eventId];
-            if (event.startTime < now && (event.startTime + (event.durationSecs * 1000)) >= now) {
-                for (let taskId of event.taskIds) {
-                    if (taskId == task.id) {
-                        return event;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    getEventKey(eventId: number, columnIndex: number): string {
+    static getEventKey(eventId: number, columnIndex: number): string {
         return `${eventId}-${columnIndex}`
     }
 
-    divideAndSort(
+    static divideAndSort(
         startTimestamp: number,
         viewType: CalendarViewType,
-        eventsById: EventsById
+        eventsById: EventsById,
+        selectedTag: Tag,
+        tagsById: TagsById,
+        cellHeight: number,
     ): [Array<Array<number>>, {[eventId: string]: EventRenderingInfo}] {
 
         let columnList: Array<Array<number>>;
@@ -207,16 +184,15 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         let dayStart = moment(startTimestamp); // From seconds back into moment
 
        let allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
-        if (this.state && this.state.selectedTag) {
-            // TODO: This should not be reading from props if it ever wants to handle deletion
-            // of tags.
+        if (selectedTag) {
             allChildIdsOfSelectedTag = getTagAndDescendantsRecursive(
-                this.state.selectedTag.id, this.props.tagsById
+                selectedTag.id,
+                tagsById
             );
         }
 
         const shouldHide = (event: Event) => {
-            if (this.state && this.state.selectedTag) {
+            if (selectedTag) {
                 // See if the task has the right tag
                 let matches = false;
                 event.tagIds.forEach((tagId: number) => {
@@ -279,10 +255,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         // After sorting the events, run the division alg on each column
         const eventToRenderingInfo: {[eventKey: string]: EventRenderingInfo} = {};
 
-        let cellHeight = DEFAULT_CELL_HEIGHT;
-        if (this.state) {
-            cellHeight = this.state.cellHeight;
-        }
         let overlaps = (
             idTopAndHeight: {id: number, top: number, height: number},
             top: number,
@@ -423,14 +395,26 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return [columnList, eventToRenderingInfo];
     }
 
-    resort() {
+    reflowCalendar(
+        startDayTimestamp: number,
+        viewType: CalendarViewType,
+        selectedTag: Tag,
+        cellHeight: number,
+    ) {
         // Recompute all the events and where to render them:
-        const [columns, eventToRenderingInfo] = this.divideAndSort(
-            this.state.startDayTimestamp,
-            this.state.viewType,
+        const [columns, eventToRenderingInfo] = CalendarComponent.divideAndSort(
+            startDayTimestamp,
+            viewType,
             this.props.eventsById,
+            selectedTag,
+            this.props.tagsById,
+            cellHeight,
         );
         this.setState({
+            startDayTimestamp: startDayTimestamp,
+            viewType: viewType,
+            selectedTag: selectedTag,
+            cellHeight: cellHeight,
             columns: columns,
             eventToRenderingInfo: eventToRenderingInfo,
         });
@@ -681,8 +665,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         } else {
             selectedTag = null;
         }
-        this.setState({selectedTag: selectedTag});
-        this.resort();
+        this.reflowCalendar(
+            this.state.startDayTimestamp,
+            this.state.viewType,
+            selectedTag,
+            this.state.cellHeight,
+        );
     }
 
     getAllTagNames(): Array<Tokenizable> {
@@ -714,8 +702,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     changeCellHeight(event: any) {
-        this.setState({cellHeight: event.target.value});
-        this.resort()
+        this.reflowCalendar(
+            this.state.startDayTimestamp,
+            this.state.viewType,
+            this.state.selectedTag,
+            event.target.value,
+        )
     }
 
     renderCellSizeSlider() {
@@ -761,11 +753,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         } else {
             throw Error("Unknown view type transition");
         }
-        this.setState({
-            viewType: type,
-            startDayTimestamp: startDayTimestamp,
-        });
-        this.resort();
+        this.reflowCalendar(
+            startDayTimestamp,
+            type,
+            this.state.selectedTag,
+            this.state.cellHeight,
+        );
     }
 
     renderViewChoice(type: CalendarViewType) {
@@ -811,8 +804,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             startDayTimestamp = moment(
                 this.state.startDayTimestamp).add(diff, "days").unix() * 1000;
         }
-        this.setState({startDayTimestamp: startDayTimestamp});
-        this.resort()
+        this.reflowCalendar(
+            startDayTimestamp,
+            this.state.viewType,
+            this.state.selectedTag,
+            this.state.cellHeight,
+        );
     }
 
     renderPagination() {
@@ -956,7 +953,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 // calculate the width change
                 // TODO: The extra cols only work right now with the expand-to-the-right case
                 const renderingInfo = this.state.eventToRenderingInfo[
-                    this.getEventKey(eventId, columnIndex)];
+                    CalendarComponent.getEventKey(eventId, columnIndex)];
                 let width = renderingInfo.columnWidth;
                 if (renderingInfo.extraCols) {
                     width += renderingInfo.extraCols;
