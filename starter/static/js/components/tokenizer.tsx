@@ -97,17 +97,22 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
     }
 
     updatePendingToken(event: any) {
-        this.state.pendingToken = event.target.value.trim();
-        this.state.autoCompleteTokens = this.updateAutoComplete(event.target.value);
+        const pendingToken = event.target.value.trim();
+        const autoCompleteTokens = this.updateAutoComplete(event.target.value);
 
         // Update the cursor after the resize
+        let selectedTokenIndex = this.state.selectedTokenIndex;
         if (this.state.selectedTokenIndex == null) {
-            this.state.selectedTokenIndex = -1;
+            selectedTokenIndex = -1;
         } else if (this.state.selectedTokenIndex >= this.state.autoCompleteTokens.length) {
-            this.state.selectedTokenIndex = this.state.autoCompleteTokens.length - 1;
+            selectedTokenIndex = this.state.autoCompleteTokens.length - 1;
         }
 
-        this.setState(this.state);
+        this.setState({
+            pendingToken: pendingToken,
+            autoCompleteTokens: autoCompleteTokens,
+            selectedTokenIndex: selectedTokenIndex,
+        });
     }
 
     tokenAlreadyAdded(token: Tokenizable) {
@@ -121,15 +126,17 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
     }
 
     appendToken(token: Tokenizable) {
-        this.state.tokens.push({
+        const newTokens = this.state.tokens.concat([{
             label: token.label,
             subtext: token.subtext,
             value: token.value,
+        }]);
+        this.setState({
+            tokens: newTokens,
+            pendingToken: '',
+            autoCompleteTokens: [],
+            selectedTokenIndex: -1,
         });
-        this.state.pendingToken = '';
-        this.state.autoCompleteTokens = [];
-        this.state.selectedTokenIndex = -1;
-        this.setState(this.state);
 
         this.props.onChange(this.state.tokens);
     }
@@ -184,36 +191,32 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
             if (!this.state.autoCompleteTokens.length) {
                 return
             }
-            this.state.selectedTokenIndex = Math.min(
-                this.state.selectedTokenIndex + 1,
-                this.state.autoCompleteTokens.length - 1,
-            );
-            this.setState(this.state);
+            this.setState({
+                selectedTokenIndex: Math.min(
+                    this.state.selectedTokenIndex + 1,
+                    this.state.autoCompleteTokens.length - 1,
+                ),
+            });
         } else if (event.key == "ArrowUp") {
             if (!this.state.autoCompleteTokens.length) {
                 return
             }
-            this.state.selectedTokenIndex = Math.max(
-                this.state.selectedTokenIndex - 1,
-                0,
-            );
-            this.setState(this.state);
+            this.setState({
+                selectedTokenIndex: Math.max(
+                    this.state.selectedTokenIndex - 1,
+                    0,
+                ),
+            });
         }
     }
 
     removeToken(tokenToRemove: Tokenizable) {
-        this.state.tokens = this.state.tokens.filter((token: Tokenizable) => {
-            return tokenToRemove.label != token.label
+        this.setState({
+            tokens: this.state.tokens.filter((token: Tokenizable) => {
+                return tokenToRemove.label != token.label
+            }),
         });
-        this.setState(this.state);
         this.props.onChange(this.state.tokens);
-    }
-
-    getTokenValues(): Array<Tokenizable>{
-        // This function intended to be called via. ref to get the list of tokens.
-        // TODO: Decide if we want a call like this to attempt to tokenize whatever is left in
-        // pendingToken
-        return this.state.tokens
     }
 
     renderToken(token: Tokenizable, index: number) {
