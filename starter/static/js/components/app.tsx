@@ -107,12 +107,14 @@ export class App extends React.Component<AppProps, AppState> {
     handleDisplayTaskInfo(e: CustomEvent) {
         // Sets the task identified by the event to be selected
         let taskId = e.detail;
-        this.state.detailInfo = {
-            taskId: taskId,
-            tagId: null,
+        let newState = {
+            detailInfo: {
+                taskId: taskId,
+                tagId: null,
+            },
         };
 
-        this.setState(this.state);
+        this.setState(newState);
     }
 
     handleDisplayTagInfo(e: CustomEvent) {

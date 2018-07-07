@@ -20,43 +20,48 @@ export class Capturer extends React.Component<CapturerProps, CapturerState> {
         super(props);
         this.state = {
             captures: props.captures,
-            capturesById: {}
+            capturesById: Capturer.getCapturesById(props.captures)
         };
+    }
 
-        Capturer.updateCapturesById(this.state);
+    static getCapturesById(captures: Array<Capture>): CapturesById {
+        const capturesById:  CapturesById = {};
+        for (let capture of captures) {
+            capturesById[capture.id] = capture;
+        }
+        return capturesById;
+    }
+
+    updateStateWithCaptures(captures: Array<Capture>) {
+        this.setState({
+            captures: captures,
+            capturesById: Capturer.getCapturesById(captures),
+        })
     }
 
     componentWillReceiveProps(props: CapturerProps) {
-        this.state.captures = props.captures;
-        Capturer.updateCapturesById(this.state);
-    }
-
-    // TODO(david): Figure out how to not duplicate this across App
-    static updateCapturesById(state: CapturerState) {
-        const capturesById:  CapturesById = {};
-        for (let capture of state.captures) {
-            capturesById[capture.id] = capture;
-        }
-        state.capturesById = capturesById;
+        this.updateStateWithCaptures(props.captures);
     }
 
     createCapture(capture: Capture) {
-        delete capture["id"];
-        jQuery.post('/api/1/capture/create', capture, (newCaptureJson: string) => {
-            this.state.captures.push(JSON.parse(newCaptureJson));
-            Capturer.updateCapturesById(this.state);
-            this.setState(this.state)
+        const requestedCapture = {
+            content: capture.content,
+            creationTime: capture.creationTime,
+            authorId: capture.authorId,
+        };
+        jQuery.post('/api/1/capture/create', requestedCapture, (newCaptureJson: string) => {
+            const newCaptures = this.state.captures.concat([JSON.parse(newCaptureJson)]);
+            this.updateStateWithCaptures(newCaptures);
         });
     }
 
     deleteCapture(capture: Capture) {
         jQuery.post('/api/1/capture/delete', {id: capture.id}, (deletedCaptureJson: string) => {
             const deletedCaptureId = JSON.parse(deletedCaptureJson).id;
-            this.state.captures = this.state.captures.filter((capture: Capture) => {
+            const filteredCaptures = this.state.captures.filter((capture: Capture) => {
                 return capture.id != deletedCaptureId;
             });
-            Capturer.updateCapturesById(this.state);
-            this.setState(this.state);
+            this.updateStateWithCaptures(filteredCaptures);
         })
     }
 
