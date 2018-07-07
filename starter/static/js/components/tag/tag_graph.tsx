@@ -74,8 +74,7 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
 
     onClick(tag: Tag, event: any) {
         // Idk, open an editor modal or something
-        this.state.editingTag = tag;
-        this.setState(this.state);
+        this.setState({editingTag: tag});
 
         // Don't let this keep going to the parent element.
         event.preventDefault();
@@ -83,13 +82,11 @@ export class TagGraphComponent extends React.Component<TagGraphProps, TagGraphSt
     }
 
     clearEditingTag() {
-        this.state.editingTag = null;
-        this.setState(this.state);
+        this.setState({editingTag: null});
     }
 
     toggleCreatingTag() {
-        this.state.creatingTag = !this.state.creatingTag;
-        this.setState(this.state);
+        this.setState({creatingTag: !this.state.creatingTag});
     }
 
     renderTagById(tagId: number) {
