@@ -51,8 +51,9 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
     }
 
     toggleCreateNote() {
-        this.state.creatingNote = !this.state.creatingNote;
-        this.setState(this.state);
+        this.setState({
+            creatingNote: !this.state.creatingNote,
+        });
     }
 
     renderNote(note: Note) {

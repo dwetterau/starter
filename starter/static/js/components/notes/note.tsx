@@ -31,8 +31,9 @@ export class NoteComponent extends React.Component<NoteProps, NoteState> {
     }
 
     toggleEditing() {
-        this.state.editing = !this.state.editing;
-        this.setState(this.state);
+        this.setState({
+            editing: !this.state.editing,
+        });
     }
 
     renderNoteId() {

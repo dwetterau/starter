@@ -19,12 +19,12 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         let loop = () => {
             this.forceUpdate();
         };
-        this.refreshLoopId = setInterval(loop, 10 * 1000);
+        this.refreshLoopId = window.setInterval(loop, 10 * 1000);
     }
 
     componentWillUnmount() {
         if (this.refreshLoopId) {
-            clearInterval(this.refreshLoopId)
+            window.clearInterval(this.refreshLoopId)
         }
     }
 

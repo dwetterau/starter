@@ -20,12 +20,12 @@ export class TaskDetailComponent extends React.Component<TaskDetailProps, {}> {
         let loop = () => {
             this.forceUpdate();
         };
-        this.refreshLoopId = setInterval(loop, 10 * 1000);
+        this.refreshLoopId = window.setInterval(loop, 10 * 1000);
     }
 
     componentWillUnmount() {
         if (this.refreshLoopId) {
-            clearInterval(this.refreshLoopId);
+            window.clearInterval(this.refreshLoopId);
         }
     }
 
