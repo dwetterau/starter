@@ -44,11 +44,6 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
                 newState.tokens.push(token)
             })
         }
-        if (this.state) {
-            newState.pendingToken = this.state.pendingToken;
-            newState.autoCompleteTokens = this.state.autoCompleteTokens;
-            newState.selectedTokenIndex = this.state.selectedTokenIndex;
-        }
 
         return newState;
     }
@@ -138,7 +133,7 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
             selectedTokenIndex: -1,
         });
 
-        this.props.onChange(this.state.tokens);
+        this.props.onChange(newTokens);
     }
 
     onClick(token: Tokenizable, event: any) {
@@ -211,12 +206,13 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
     }
 
     removeToken(tokenToRemove: Tokenizable) {
-        this.setState({
-            tokens: this.state.tokens.filter((token: Tokenizable) => {
-                return tokenToRemove.label != token.label
-            }),
+        const newTokens = this.state.tokens.filter((token: Tokenizable) => {
+            return tokenToRemove.label != token.label
         });
-        this.props.onChange(this.state.tokens);
+        this.setState({
+            tokens: newTokens,
+        });
+        this.props.onChange(newTokens);
     }
 
     renderToken(token: Tokenizable, index: number) {

@@ -291,7 +291,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     onClick(taskId: number, e: any) {
-        // We stop propagation to prevent event creation modals from appearing.
+        // We stop propagation to prevent task creation modals from appearing.
         e.stopPropagation();
 
         // Send an event to show the detail for the task
@@ -302,10 +302,6 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         document.dispatchEvent(event);
 
         return false;
-    }
-
-    onDoubleClick(task: Task) {
-        this.setState({editingTask: task});
     }
 
     changeViewType(type: TaskBoardViewType) {
@@ -475,7 +471,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                             onDragStart={this.onDragStart.bind(this, task)}
                             onDragEnd={this.onDragEnd.bind(this, task)}
                             onClick={this.onClick.bind(this, task.id)}
-                            onDoubleClick={this.onDoubleClick.bind(this, task)} >
+                        >
                     <TaskComponent
                         task={task}
                         viewType={this.state.viewType}

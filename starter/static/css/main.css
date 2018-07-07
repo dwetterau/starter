@@ -732,10 +732,6 @@ div.right-pane {
 }
 
 /* Ad-hoc fixes for tasks */
-div.main-pane div.task-board {
-    height: auto;
-}
-
 div.main-pane div.task-board div.full-column-container {
     overflow-y: auto;
 }
