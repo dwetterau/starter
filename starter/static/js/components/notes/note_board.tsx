@@ -66,7 +66,7 @@ export class NoteBoardComponent extends React.Component<NoteBoardProps, NoteBoar
                 note={note}
                 tagsById={this.props.tagsById}
                 updateNote={this.props.updateNote}
-                deleteNote={(note: Note) => {}}
+                deleteNote={this.props.deleteNote}
             />
         </div>
     }

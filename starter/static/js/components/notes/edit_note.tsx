@@ -45,16 +45,15 @@ export class EditNoteComponent extends React.Component<EditNoteProps, EditNoteSt
     }
 
     _getEmptyNote(props: EditNoteProps): Note {
-        let note: Note = {
+        // TODO(davidw): Initial tags?
+        return {
             id: 0,
             title: '',
             content: '',
             authorId: props.meUser.id,
             creationTime: moment().unix() * 1000,
             tagIds: [],
-        };
-        // TODO(davidw): Initial tags?
-        return note
+        }
     }
 
     submitForm(eventType: string) {
