@@ -7,7 +7,7 @@ import {
     CapturesById, Capture
 } from "../models";
 import {TagGraphComponent} from "./tag/tag_graph";
-import {TaskBoardComponent} from "./task/task_board"
+import {TaskBoardComponent, TaskBoardView, TaskBoardViewType} from "./task/task_board"
 import {CalendarComponent, CalendarViewType} from "./event/calendar";
 import {AppHeader} from "./app_header";
 import {
@@ -50,6 +50,7 @@ export interface AppState {
     detailInfo: DetailInfo
     notesById: NotesById
     capturesById: CapturesById
+    taskBoardView: TaskBoardView
 }
 
 export enum AppViewMode {
@@ -77,6 +78,10 @@ export class App extends React.Component<AppProps, AppState> {
             notesById: API.getNotesById(props.notes),
             capturesById: API.getCapturesById(props.captures),
             detailInfo: {},
+            taskBoardView: {
+                type: TaskBoardViewType.status,
+                shouldHideClosedTasks: false,
+            }
         };
     }
 
@@ -347,6 +352,43 @@ export class App extends React.Component<AppProps, AppState> {
         this.setState({detailInfo: {}});
     }
 
+    changeTaskBoardView(newView: TaskBoardView) {
+        this.setState({taskBoardView: newView});
+    }
+
+    getSelectedTag(tagName: string): Tag {
+        let selectedTag: Tag = null;
+        if (!tagName) {
+            return selectedTag;
+        }
+        // See if any tag matches
+        let lower = tagName.toLowerCase();
+        for (let tagId of Object.keys(this.state.tagsById)) {
+            if (this.state.tagsById[tagId].name.toLowerCase() == lower) {
+                selectedTag = this.state.tagsById[tagId]
+            }
+        }
+        return selectedTag
+    }
+
+    changeSelectedTag(tag: Tag) {
+        if (!tag) {
+            return;
+        }
+        // TODO: Switch all of this based off the real state when I separate out the routing.
+        if (window.location.pathname == "/plan"
+            || window.location.pathname == "/tag"
+            || window.location.pathname == "/tasks"
+        ) {
+            window.location.href += "/" + tag.name
+        } else if (window.location.pathname == "/") {
+            window.location.href = "/tag/" + tag.name
+        } else {
+            // TODO: Do we need this?
+            window.location.href = "../" + tag.name
+        }
+    }
+
     renderDetail() {
         if (this.state.detailInfo.taskId) {
             let task = this.state.tasksById[this.state.detailInfo.taskId];
@@ -413,16 +455,20 @@ export class App extends React.Component<AppProps, AppState> {
         </div>
     }
 
-    renderTaskBoard(tagName) {
+    renderTaskBoard(tagName: string) {
         return <TaskBoardComponent
             meUser={this.props.meUser}
             tasksById={this.state.tasksById}
-            initialTagName={tagName}
             tagsById={this.state.tagsById}
             eventsById={this.state.eventsById}
             createTask={this.createTask.bind(this)}
             updateTask={this.updateTask.bind(this)}
             deleteTask={this.deleteTask.bind(this)}
+
+            selectedTag={this.getSelectedTag(tagName)}
+            changeSelectedTag={this.changeSelectedTag.bind(this)}
+            view={this.state.taskBoardView}
+            changeView={this.changeTaskBoardView.bind(this)}
         />
     }
 
@@ -533,7 +579,7 @@ export class App extends React.Component<AppProps, AppState> {
 
         return <div>
             <BrowserRouter>
-                <Switch>
+                <div>
                     <Route exact path="/" component={getMergedView} />
                     <Route exact path="/plan" component={getPlanView} />
                     <Route path="/plan/:tagName" component={getPlanViewWithTag} />
@@ -550,7 +596,7 @@ export class App extends React.Component<AppProps, AppState> {
                     <Route path="/tag/:tagName" component={getMergedWithTag} />
                     <Route path="/tags" component={getTagGraph} />
                     <Route path="/notes" component={getNotes} />
-                </Switch>
+                </div>
             </BrowserRouter>
         </div>
     }

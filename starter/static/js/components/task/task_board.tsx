@@ -18,23 +18,30 @@ import {getTagAndDescendantsRecursive} from "../lib/util";
 export interface TaskBoardProps {
     meUser: User,
     tasksById: TasksById,
-    initialTagName?: string,
     tagsById: TagsById,
     eventsById: EventsById,
     createTask: (task: Task) => void,
     updateTask: (task: Task) => void,
     deleteTask: (task: Task) => void,
+
+    selectedTag?: Tag,
+    changeSelectedTag: (Tag) => void,
+    view: TaskBoardView,
+    changeView: (TaskBoardView) => void,
 }
+
 export interface TaskBoardState {
-    viewType: TaskBoardViewType,
     columns: Array<Array<Task>>,
     headers: Array<string>,
     columnTypes: Array<number>,
     createColumnType?: number,
     draggingTask?: Task,
     editingTask?: Task,
+}
+
+export interface TaskBoardView {
+    type: TaskBoardViewType,
     shouldHideClosedTasks: boolean,
-    selectedTag?: Tag,
 }
 
 export enum TaskBoardViewType {
@@ -47,11 +54,11 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     constructor(props: TaskBoardProps) {
         super(props);
 
-        this.state = this.getState(props, TaskBoardViewType.status);
+        this.state = this.getState(props);
     }
 
     componentWillReceiveProps(props: TaskBoardProps) {
-        this.setState(this.getState(props, this.state.viewType))
+        this.setState(this.getState(props))
     }
 
     _handleBeginEditingTask = null;
@@ -76,34 +83,21 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         this.setState({editingTask: this.props.tasksById[taskId]});
     }
 
-    getState(props: TaskBoardProps, viewType: TaskBoardViewType): TaskBoardState {
-        let selectedTag = null;
-        if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
-            selectedTag = this.state.selectedTag;
-        } else if (props.initialTagName) {
-            // See if any tag matches
-            let lower = props.initialTagName.toLowerCase();
-            for (let tagId of Object.keys(props.tagsById)) {
-                if (props.tagsById[tagId].name.toLowerCase() == lower) {
-                    selectedTag = props.tagsById[tagId]
-                }
-            }
-        }
-        const shouldHideClosedTasks = (this.state) ? this.state.shouldHideClosedTasks : true;
+    getState(props: TaskBoardProps): TaskBoardState {
         const [headers, columnTypes, columns] = this.divideByType(
-            props.tasksById, viewType, selectedTag, shouldHideClosedTasks,
+            props.tasksById,
+            props.view.type,
+            props.selectedTag,
+            props.view.shouldHideClosedTasks,
         );
 
         return {
-            viewType,
             columns,
             headers,
             columnTypes,
             createColumnType: null,
             draggingTask: null,
             editingTask: null,
-            selectedTag: selectedTag,
-            shouldHideClosedTasks: shouldHideClosedTasks,
         };
     }
 
@@ -254,13 +248,13 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
         // Update the task with the new column
         let taskToUpdate = this.state.draggingTask;
-        if (this.state.viewType == TaskBoardViewType.status) {
+        if (this.props.view.type == TaskBoardViewType.status) {
             const oldState = taskToUpdate.state;
             taskToUpdate.state = columnType;
             if (oldState != columnType) {
                 taskToUpdate.stateUpdatedTime = moment().unix() * 1000;
             }
-        } else if (this.state.viewType == TaskBoardViewType.priority) {
+        } else if (this.props.view.type == TaskBoardViewType.priority) {
             taskToUpdate.priority = columnType;
         } else {
             throw Error("Haven't implement drag and drop for this view type yet")
@@ -312,44 +306,28 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         return false;
     }
 
-    reflowColumns(type: TaskBoardViewType, selectedTag: Tag, shouldHideClosedTasks: boolean) {
-        const [headers, columnTypes, columns] = this.divideByType(
-            this.props.tasksById,
-            type,
-            selectedTag,
-            shouldHideClosedTasks,
-        );
-
-        this.setState({
-            viewType: type,
-            headers: headers,
-            selectedTag: selectedTag,
-            shouldHideClosedTasks: shouldHideClosedTasks,
-            columnTypes: columnTypes,
-            columns: columns,
+    changeViewType(type: TaskBoardViewType) {
+        this.props.changeView({
+            type: type,
+            shouldHideClosedTasks: this.props.view.shouldHideClosedTasks,
         });
     }
 
-    changeViewType(type: TaskBoardViewType) {
-        this.reflowColumns(type, this.state.selectedTag, this.state.shouldHideClosedTasks);
-    }
-
     changeHideClosedTasks() {
-        this.reflowColumns(
-            this.state.viewType,
-            this.state.selectedTag,
-            !this.state.shouldHideClosedTasks,
-        );
+        this.props.changeView({
+            type: this.props.view.type,
+            shouldHideClosedTasks: !this.props.view.shouldHideClosedTasks,
+        });
     }
 
     getCurrentTagToken(): Array<Tokenizable> {
-        if (!this.state.selectedTag) {
+        if (!this.props.selectedTag) {
             return [];
         }
 
         return [{
-            label: this.state.selectedTag.name,
-            value: this.state.selectedTag.id,
+            label: this.props.selectedTag.name,
+            value: this.props.selectedTag.id,
         }]
     }
 
@@ -366,8 +344,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                 window.location.pathname = "/";
             }
         }
-
-        this.reflowColumns(this.state.viewType, selectedTag, this.state.shouldHideClosedTasks);
+        this.props.changeSelectedTag(selectedTag);
     }
 
     getAllTagNames(): Array<Tokenizable> {
@@ -402,7 +379,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     renderTypeChoice(type: TaskBoardViewType) {
         let className = "view-type-choice";
-        if (type == this.state.viewType) {
+        if (type == this.props.view.type) {
             className += " -selected"
         }
         const typeToName: {[type: number]: string} = {};
@@ -428,7 +405,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     renderHideClosedTasks() {
-        if (this.state.viewType == TaskBoardViewType.status) {
+        if (this.props.view.type == TaskBoardViewType.status) {
             // Don't show an empty column...
             return
         }
@@ -440,7 +417,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                     id="hide-closed"
                     type="checkbox"
                     onChange={this.changeHideClosedTasks.bind(this)}
-                    checked={this.state.shouldHideClosedTasks}
+                    checked={this.props.view.shouldHideClosedTasks}
                 />
             </div>
         )
@@ -489,7 +466,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                         >
                     <TaskComponent
                         task={task}
-                        viewType={this.state.viewType}
+                        viewType={this.props.view.type}
                         tagsById={this.props.tagsById}
                         eventsById={this.props.eventsById}
                     />
@@ -540,18 +517,18 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
         let initialPriority = null;
         let initialState = null;
-        if (this.state.viewType == TaskBoardViewType.priority) {
+        if (this.props.view.type == TaskBoardViewType.priority) {
             initialPriority = this.state.createColumnType;
             initialState = 0;
         }
-        if (this.state.viewType == TaskBoardViewType.status) {
+        if (this.props.view.type == TaskBoardViewType.status) {
             initialPriority = 0;
             initialState = this.state.createColumnType;
         }
 
         const initialTags: Array<number> = [];
-        if (this.state.selectedTag) {
-            initialTags.push(this.state.selectedTag.id);
+        if (this.props.selectedTag) {
+            initialTags.push(this.props.selectedTag.id);
         }
         return <ModalComponent cancelFunc={this.clearCreateColumnType.bind(this)}>
             <EditTaskComponent
