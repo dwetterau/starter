@@ -61,7 +61,10 @@ export class API {
 
     static deleteTask(task: Task, updateFunc: (task: Task) => void) {
         return jQuery.post('/api/1/task/delete', {id: task.id}, (deletedTaskJson: string) => {
-            updateFunc(JSON.parse(deletedTaskJson));
+            if (JSON.parse(deletedTaskJson).id != task.id) {
+                throw Error("Deleted wrong task?")
+            }
+            updateFunc(task);
         });
     }
 
@@ -139,7 +142,10 @@ export class API {
 
     static deleteEvent(event: Event, updateFunc: (event: Event) => void) {
         return jQuery.post('/api/1/event/delete', {id: event.id}, (deletedEventJson: string) => {
-            updateFunc(JSON.parse(deletedEventJson));
+            if (JSON.parse(deletedEventJson).id != event.id) {
+                throw Error("Deleted wrong event?")
+            }
+            updateFunc(event);
         });
     }
 
@@ -197,7 +203,10 @@ export class API {
 
     static deleteNote(note: Note, updateFunc: (note: Note) => void) {
         return jQuery.post('/api/1/note/delete', {id: note.id}, (deletedNoteJson: string) => {
-            updateFunc(JSON.parse(deletedNoteJson));
+            if (JSON.parse(deletedNoteJson).id != note.id) {
+                throw Error("Deleted wrong note?")
+            }
+            updateFunc(note);
         });
     }
 
@@ -222,7 +231,10 @@ export class API {
 
     static deleteCapture(capture: Capture, updateFunc: (capture: Capture) => void) {
         return jQuery.post('/api/1/capture/delete', {id: capture.id}, (deletedCaptureJson: string) => {
-            updateFunc(JSON.parse(deletedCaptureJson));
+            if (JSON.parse(deletedCaptureJson).id != capture.id) {
+                throw Error("Deleted wrong capture?")
+            }
+            updateFunc(capture);
         });
     }
 }

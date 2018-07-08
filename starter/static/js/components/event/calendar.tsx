@@ -519,7 +519,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             this.setState({draggingEvent: null});
             this._dragTargetEventElement.show();
         } else if (this.state.endDraggingEvent) {
-
             const timestamp = this.computeTimestamp(day, index);
             let newDuration = timestamp - this.state.endDraggingEvent.startTime;
             newDuration = Math.max(Math.round(newDuration / 1000) + GRANULARITY, GRANULARITY);
@@ -571,7 +570,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             throw Error("Already was dragging an event...")
         }
         this.setState({draggingEvent: event});
-        this._dragTargetEventElement = jQuery(dragEvent.target)
+        this._dragTargetEventElement = jQuery(dragEvent.target);
+        dragEvent.dataTransfer.setData('text/html', null);
     }
 
     onDragEnd(event: Event) {
@@ -582,16 +582,17 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.setState({
             draggingStartTimestamp: null,
             draggingEndTimestamp: null,
-            endDraggingEvent: null,
+            draggingEvent: null,
         });
         this._dragTargetEventElement.show();
     }
 
-    onEventEndDragStart(event: Event) {
+    onEventEndDragStart(event: Event, dragEvent: DragEvent) {
         if (this.state.endDraggingEvent || this.state.draggingEvent) {
             throw Error("Already dragging an event...");
         }
         this.setState({endDraggingEvent: event});
+        dragEvent.dataTransfer.setData('text/html', null);
     }
 
     onEventEndDragEnd(event: Event) {
@@ -609,6 +610,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     onDragOver(day: string, index: number, event: any) {
         // Watch out: This function is abused and needs refactoring. Event might be undefined,
         // index might be -1. Not at the same time though.
+        if (event) {
+            event.preventDefault()
+        }
         if (index == -1) {
             index = event.target.dataset.index * 1;
         }
@@ -641,9 +645,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         } else {
             // Nothing being dragged
             return
-        }
-        if (event) {
-            event.preventDefault()
         }
     }
 
