@@ -186,7 +186,7 @@ export class API {
         let requestedNote = {
             title: note.title,
             content: note.content,
-            creationtime: note.creationTime,
+            creationTime: note.creationTime,
             authorId: note.authorId,
             tagIds: note.tagIds,
         };
