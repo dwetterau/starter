@@ -14,29 +14,37 @@ export interface CalendarProps {
     eventsById: EventsById,
     tagsById: TagsById,
     tasksById: TasksById,
-    initialViewType: CalendarViewType,
     simpleOptions: boolean,
     createEvent: (event: Event) => void,
     updateEvent: (event: Event) => void,
     deleteEvent: (event: Event) => void,
+    
+    selectedTag?: Tag,
+    changeSelectedTag: (tag?: Tag) => void,
+    view: CalendarView,
+    changeView: (view: CalendarView) => void,
 }
 export interface CalendarState {
-    viewType: CalendarViewType,
-    startDayTimestamp: number,
     columns: Array<Array<number>>,
-    cellHeight: number,
     showCreate: boolean,
     eventToRenderingInfo: {[eventKey: string]: EventRenderingInfo},
     editingEvent?: Event,
     createEventTimestamp?: number,
     createEventDurationSecs?: number,
     createEventTask?: Task,
-    selectedTag?: Tag,
     draggingStartTimestamp?: number,
     draggingEndTimestamp?: number,
     draggingEvent?: Event,
     endDraggingEvent?: Event,
 }
+
+export interface CalendarView {
+    type: CalendarViewType,
+    startDayTimestamp: number,
+    cellHeight: number,
+    initial: boolean,
+}
+
 export enum CalendarViewType {
     week,
     day,
@@ -73,49 +81,34 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     getState(props: CalendarProps) {
-        let viewType = props.initialViewType;
-        let startDayTimestamp: number;
-        if (this.state) {
-            viewType = this.state.viewType;
-            startDayTimestamp = this.state.startDayTimestamp;
-        } else {
-            startDayTimestamp = this.computeTodayStartTime(viewType);
-        }
-        let cellHeight = DEFAULT_CELL_HEIGHT;
-        let selectedTag = null;
-        if (this.state) {
-            cellHeight = this.state.cellHeight;
-
-            // Want to persist tag between event creations
-            if (this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
-                selectedTag = this.state.selectedTag;
-            }
-        }
         const [columns, eventToRenderingInfo] = CalendarComponent.divideAndSort(
-            startDayTimestamp,
-            viewType,
+            props.view,
             props.eventsById,
-            selectedTag,
+            props.selectedTag,
             props.tagsById,
-            cellHeight,
         );
 
         return {
-            viewType,
-            startDayTimestamp,
             columns,
-            cellHeight: cellHeight,
             showCreate: (this.state) ? this.state.showCreate : false,
             eventToRenderingInfo: eventToRenderingInfo,
             editingEvent: null,
             createEventTimestamp: null,
             createEventDurationSecs: null,
             createEventTask: null,
-            selectedTag: selectedTag,
             draggingStartTimestamp: null,
             draggingEndTimestamp: null,
             draggingEvent: null,
             endDraggingEvent: null,
+        };
+    }
+
+    static getInitialView(type: CalendarViewType): CalendarView {
+        return {
+            type: type,
+            startDayTimestamp: this.computeTodayStartTime(type),
+            cellHeight: DEFAULT_CELL_HEIGHT,
+            initial: true,
         };
     }
 
@@ -141,7 +134,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
     }
 
-    computeTodayStartTime(viewType: CalendarViewType): number {
+    static computeTodayStartTime(viewType: CalendarViewType): number {
         let startDayMoment: moment.Moment;
         if (viewType == CalendarViewType.week) {
             startDayMoment = this.computeClosestMonday(moment())
@@ -151,9 +144,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return startDayMoment.unix() * 1000;
     }
 
-    computeClosestMonday(m: moment.Moment): moment.Moment {
-        let startDayMoment = moment().startOf("week").add(1, "days");
-        if (startDayMoment > moment()) {
+    static computeClosestMonday(m: moment.Moment): moment.Moment {
+        let startDayMoment = moment(m).startOf("week").add(1, "days");
+        if (startDayMoment > moment(m)) {
             // It must be Sunday, handle the edge case by subtracting off a week.
             startDayMoment = startDayMoment.subtract(1, "week");
         }
@@ -165,23 +158,21 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     static divideAndSort(
-        startTimestamp: number,
-        viewType: CalendarViewType,
+        view: CalendarView,
         eventsById: EventsById,
         selectedTag: Tag,
         tagsById: TagsById,
-        cellHeight: number,
     ): [Array<Array<number>>, {[eventId: string]: EventRenderingInfo}] {
 
         let columnList: Array<Array<number>>;
-        if (viewType == CalendarViewType.week) {
+        if (view.type == CalendarViewType.week) {
             // Note that the columns will be ordered with the weekend at the end.
              columnList = [[], [], [], [], [], [], []];
         } else {
             columnList = [[]]
         }
 
-        let dayStart = moment(startTimestamp); // From seconds back into moment
+        let dayStart = moment(view.startDayTimestamp); // From seconds back into moment
 
        let allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
         if (selectedTag) {
@@ -231,7 +222,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 }
 
                 // This is pretty hacky, make this cleaner later
-                if (viewType == CalendarViewType.day) {
+                if (view.type == CalendarViewType.day) {
                     // We only want to iterate once if we're in day view
                     break;
                 }
@@ -286,7 +277,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 } else {
                     // event must start somewhere during this day.
                     let percentage = (event.startTime - columnStartTime) / (86400 * 1000);
-                    top = percentage * cellHeight * (86400 / GRANULARITY);
+                    top = percentage * view.cellHeight * (86400 / GRANULARITY);
                 }
                 let realEndTimestamp = Math.min(
                     event.startTime + (event.durationSecs * 1000),
@@ -299,8 +290,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 }
                 // TODO: Keep short end of day events from hanging off the end.
                 height = Math.max(
-                    Math.min(cellHeight, MIN_CELL_HEIGHT),
-                    (durationSecs / GRANULARITY) * cellHeight,
+                    Math.min(view.cellHeight, MIN_CELL_HEIGHT),
+                    (durationSecs / GRANULARITY) * view.cellHeight,
                 );
 
                 // Base case for the initial element
@@ -395,31 +386,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return [columnList, eventToRenderingInfo];
     }
 
-    reflowCalendar(
-        startDayTimestamp: number,
-        viewType: CalendarViewType,
-        selectedTag: Tag,
-        cellHeight: number,
-    ) {
-        // Recompute all the events and where to render them:
-        const [columns, eventToRenderingInfo] = CalendarComponent.divideAndSort(
-            startDayTimestamp,
-            viewType,
-            this.props.eventsById,
-            selectedTag,
-            this.props.tagsById,
-            cellHeight,
-        );
-        this.setState({
-            startDayTimestamp: startDayTimestamp,
-            viewType: viewType,
-            selectedTag: selectedTag,
-            cellHeight: cellHeight,
-            columns: columns,
-            eventToRenderingInfo: eventToRenderingInfo,
-        });
-    }
-
     onDoubleClick(event: Event) {
         this.setState({editingEvent: event});
     }
@@ -427,7 +393,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     computeTimestamp(day: string, index: number): number {
         let offset = index;
 
-        if (this.state.viewType == CalendarViewType.week) {
+        if (this.props.view.type == CalendarViewType.week) {
             DAYS.forEach((curDay: string, i: number) => {
                 if (curDay != day) {
                     return
@@ -436,7 +402,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             });
         }
 
-        return moment(this.state.startDayTimestamp).add(offset, "seconds").unix() * 1000;
+        return moment(this.props.view.startDayTimestamp).add(offset, "seconds").unix() * 1000;
     }
 
     columnMouseDown(day: string, event: any) {
@@ -510,7 +476,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     onDrop(day: string, index: number) {
         if (this.state.draggingEvent) {
-            console.log("Updating the start timestamp!");
             // Update the event with the new timestamp
             let eventToUpdate = this.state.draggingEvent;
             eventToUpdate.startTime = this.computeTimestamp(day, index);
@@ -614,9 +579,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             index = event.target.dataset.index * 1;
         }
         if (this.state.draggingEvent) {
-            console.log("onDragOver happening");
-            //this._dragTargetEventElement.hide();
-
             const timestamp = this.computeTimestamp(day, index);
             // Conceptually this is needed because short events should register only a single cell
             // to be highlighted.
@@ -647,13 +609,13 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     getCurrentTagToken(): Array<Tokenizable> {
-        if (!this.state.selectedTag) {
+        if (!this.props.selectedTag) {
             return [];
         }
 
         return [{
-            label: this.state.selectedTag.name,
-            value: this.state.selectedTag.id,
+            label: this.props.selectedTag.name,
+            value: this.props.selectedTag.id,
         }]
     }
 
@@ -664,12 +626,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         } else {
             selectedTag = null;
         }
-        this.reflowCalendar(
-            this.state.startDayTimestamp,
-            this.state.viewType,
-            selectedTag,
-            this.state.cellHeight,
-        );
+        this.props.changeSelectedTag(selectedTag);
     }
 
     getAllTagNames(): Array<Tokenizable> {
@@ -701,12 +658,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     changeCellHeight(event: any) {
-        this.reflowCalendar(
-            this.state.startDayTimestamp,
-            this.state.viewType,
-            this.state.selectedTag,
-            event.target.value,
-        )
+        const currentView = this.props.view;
+        currentView.cellHeight = event.target.value;
+        this.props.changeView(currentView);
     }
 
     renderCellSizeSlider() {
@@ -719,7 +673,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     type="range"
                     min="20"
                     max="100"
-                    value={this.state.cellHeight}
+                    value={this.props.view.cellHeight}
                     onChange={this.changeCellHeight.bind(this)}
                 />
             </div>
@@ -727,42 +681,42 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     changeViewType(type: CalendarViewType) {
-        if (this.state.viewType == type) {
+        if (this.props.view.type == type) {
             // No transition needed
             return
         }
         let startDayMoment: moment.Moment;
-        let startDayTimestamp = this.state.startDayTimestamp;
-        if (this.state.viewType == CalendarViewType.week && type == CalendarViewType.day) {
+        let startDayTimestamp = this.props.view.startDayTimestamp;
+        if (this.props.view.type == CalendarViewType.week && type == CalendarViewType.day) {
             // Week to day transition, need to either pick today or Monday
-            const monday = moment(this.state.startDayTimestamp);
+            const monday = moment(this.props.view.startDayTimestamp);
             const now = moment();
             if (now.unix() - monday.unix() > 0 && monday.add(1, "week").unix() - now.unix() > 0) {
                 // Current week view contains today, we will use today as the answer.
-                startDayTimestamp = this.computeTodayStartTime(type);
+                startDayTimestamp = CalendarComponent.computeTodayStartTime(type);
             } else {
                 // Current week does not contain today, we will stay with Monday and no-op.
             }
             // TODO: Figure out what to do here with respect to pushing onto the history
-        } else if (this.state.viewType == CalendarViewType.day && type == CalendarViewType.week) {
+        } else if (this.props.view.type == CalendarViewType.day && type == CalendarViewType.week) {
             // Day to week transition, need to find the nearest Monday
-            startDayMoment = this.computeClosestMonday(moment(this.state.startDayTimestamp));
+            startDayMoment = CalendarComponent.computeClosestMonday(
+                moment(this.props.view.startDayTimestamp)
+            );
             startDayTimestamp = startDayMoment.unix() * 1000;
             // TODO: Figure out what to do here with respect to pushing onto the history
         } else {
             throw Error("Unknown view type transition");
         }
-        this.reflowCalendar(
-            startDayTimestamp,
-            type,
-            this.state.selectedTag,
-            this.state.cellHeight,
-        );
+        const currentView = this.props.view;
+        currentView.startDayTimestamp = startDayTimestamp;
+        currentView.type = type;
+        this.props.changeView(currentView);
     }
 
     renderViewChoice(type: CalendarViewType) {
         let className = "view-type-choice";
-        if (type == this.state.viewType) {
+        if (type == this.props.view.type) {
             className += " -selected"
         }
         const typeToName: {[type: number]: string} = {};
@@ -791,24 +745,21 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     changePage(diff: number) {
-        if (this.state.viewType == CalendarViewType.week) {
+        if (this.props.view.type == CalendarViewType.week) {
             diff *= 7;
         }
         // Diff is the difference in days to add to the current time. If it's 0, we reset back
         // to the current day.
         let startDayTimestamp;
         if (diff == 0) {
-            startDayTimestamp = this.computeTodayStartTime(this.state.viewType)
+            startDayTimestamp = CalendarComponent.computeTodayStartTime(this.props.view.type)
         } else {
             startDayTimestamp = moment(
-                this.state.startDayTimestamp).add(diff, "days").unix() * 1000;
+                this.props.view.startDayTimestamp).add(diff, "days").unix() * 1000;
         }
-        this.reflowCalendar(
-            startDayTimestamp,
-            this.state.viewType,
-            this.state.selectedTag,
-            this.state.cellHeight,
-        );
+        const currentView = this.props.view;
+        currentView.startDayTimestamp = startDayTimestamp;
+        this.props.changeView(currentView);
     }
 
     renderPagination() {
@@ -850,7 +801,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     renderCells(day: string) {
         const getColumnRow = (index: number) => {
             const key = "" + index;
-            const style = {height: `${this.state.cellHeight}px`};
+            const style = {height: `${this.props.view.cellHeight}px`};
             const timestamp = this.computeTimestamp(day, index);
             let className = "";
             if (this.state.draggingStartTimestamp && this.state.draggingEndTimestamp) {
@@ -870,7 +821,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             if (day == "times") {
                 let timeHeader = "";
                 if (index % (GRANULARITY * 2) == 0) {
-                    timeHeader = moment(this.state.startDayTimestamp)
+                    timeHeader = moment(this.props.view.startDayTimestamp)
                         .add(index, "seconds").format("h:mm a");
                 }
                 return (
@@ -917,13 +868,13 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     renderCurrentTimeCursor(index: number) {
         const columnTimeRange = 24 * 60 * 60 * 1000;
-        let columnStartTimestamp = this.state.startDayTimestamp + index * columnTimeRange;
+        let columnStartTimestamp = this.props.view.startDayTimestamp + index * columnTimeRange;
         const currentTime = moment().unix() * 1000;
         if (currentTime >= columnStartTimestamp &&
             currentTime < columnStartTimestamp + columnTimeRange) {
             // Okay we can actually render it here.
             let offset = (currentTime - columnStartTimestamp) / columnTimeRange;
-            offset *=  this.state.cellHeight * (86400 / GRANULARITY); // Total height of a column
+            offset *=  this.props.view.cellHeight * (86400 / GRANULARITY); // Total height of a column
             offset -= 2; // Draw it 2 pixels higher because it's width 3.
             const style = {
                 "top": `${offset}px`,
@@ -1006,7 +957,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 <div className="column-header-container">
                     <div className="column-header -times">Time</div>
                     {DAYS.map((day: string, index: number) => {
-                        let m = moment(this.state.startDayTimestamp).add(index, "days");
+                        let m = moment(this.props.view.startDayTimestamp).add(index, "days");
                         return <div key={day} className="column-header">
                             {m.format("ddd M/D")}
                         </div>
@@ -1025,7 +976,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     renderTodayString(): string {
-        return moment(this.state.startDayTimestamp).format("dddd M/D")
+        return moment(this.props.view.startDayTimestamp).format("dddd M/D")
     }
 
     renderDayViewColumns() {
@@ -1048,9 +999,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     renderColumns() {
-        if (this.state.viewType == CalendarViewType.week) {
+        if (this.props.view.type == CalendarViewType.week) {
             return this.renderWeekViewColumns()
-        } else if (this.state.viewType == CalendarViewType.day) {
+        } else if (this.props.view.type == CalendarViewType.day) {
             return this.renderDayViewColumns()
         }
     }
@@ -1098,8 +1049,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
 
         const initialTags: Array<number> = [];
-        if (this.state.selectedTag) {
-            initialTags.push(this.state.selectedTag.id)
+        if (this.props.selectedTag) {
+            initialTags.push(this.props.selectedTag.id)
         }
         const initialTasks: Array<number> = [];
         if (this.state.createEventTask) {

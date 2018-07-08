@@ -8,7 +8,7 @@ import {
 } from "../models";
 import {TagGraphComponent} from "./tag/tag_graph";
 import {TaskBoardComponent, TaskBoardView, TaskBoardViewType} from "./task/task_board"
-import {CalendarComponent, CalendarViewType} from "./event/calendar";
+import {CalendarComponent, CalendarView, CalendarViewType} from "./event/calendar";
 import {AppHeader} from "./app_header";
 import {
     signalDisplayTaskInfo, signalBeginEditingTask, signalDisplayTagInfo,
@@ -51,6 +51,7 @@ export interface AppState {
     notesById: NotesById
     capturesById: CapturesById
     taskBoardView: TaskBoardView
+    calendarView: CalendarView
 }
 
 export enum AppViewMode {
@@ -81,7 +82,8 @@ export class App extends React.Component<AppProps, AppState> {
             taskBoardView: {
                 type: TaskBoardViewType.status,
                 shouldHideClosedTasks: false,
-            }
+            },
+            calendarView: CalendarComponent.getInitialView(CalendarViewType.week),
         };
     }
 
@@ -356,6 +358,22 @@ export class App extends React.Component<AppProps, AppState> {
         this.setState({taskBoardView: newView});
     }
 
+    getCalendarView(viewType: CalendarViewType) {
+        // If we guessed wrong on the initial load, just re-initialize
+        if (this.state.calendarView.initial && viewType != this.state.calendarView.type) {
+            let newView = CalendarComponent.getInitialView(viewType);
+            // FIXME: This is calling setState during render(), we need to know this earlier!!
+            this.setState({calendarView: newView});
+            return newView
+        }
+        return this.state.calendarView;
+    }
+
+    changeCalendarView(newView: CalendarView) {
+        newView.initial = false;
+        this.setState({calendarView: newView});
+    }
+
     getSelectedTag(tagName: string): Tag {
         let selectedTag: Tag = null;
         if (!tagName) {
@@ -478,11 +496,16 @@ export class App extends React.Component<AppProps, AppState> {
             eventsById={this.state.eventsById}
             tagsById={this.state.tagsById}
             tasksById={this.state.tasksById}
-            initialViewType={viewType}
             simpleOptions={simpleOptions}
             createEvent={this.createEvent.bind(this)}
             updateEvent={this.updateEvent.bind(this)}
             deleteEvent={this.deleteEvent.bind(this)}
+
+            // TODO: Unify this better!
+            selectedTag={this.getSelectedTag(null)}
+            changeSelectedTag={this.changeSelectedTag.bind(this)}
+            view={this.getCalendarView(viewType)}
+            changeView={this.changeCalendarView.bind(this)}
         />
     }
 

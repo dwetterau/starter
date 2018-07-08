@@ -25,9 +25,9 @@ export interface TaskBoardProps {
     deleteTask: (task: Task) => void,
 
     selectedTag?: Tag,
-    changeSelectedTag: (Tag) => void,
+    changeSelectedTag: (tag?: Tag) => void,
     view: TaskBoardView,
-    changeView: (TaskBoardView) => void,
+    changeView: (view: TaskBoardView) => void,
 }
 
 export interface TaskBoardState {
@@ -61,6 +61,24 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         this.setState(this.getState(props))
     }
 
+    getState(props: TaskBoardProps): TaskBoardState {
+        const [headers, columnTypes, columns] = this.divideByType(
+            props.tasksById,
+            props.view.type,
+            props.selectedTag,
+            props.view.shouldHideClosedTasks,
+        );
+
+        return {
+            columns,
+            headers,
+            columnTypes,
+            createColumnType: null,
+            draggingTask: null,
+            editingTask: null,
+        };
+    }
+
     _handleBeginEditingTask = null;
     componentDidMount() {
         this._handleBeginEditingTask = this.handleBeginEditingTask.bind(this);
@@ -81,24 +99,6 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
         const taskId = e.detail;
         this.setState({editingTask: this.props.tasksById[taskId]});
-    }
-
-    getState(props: TaskBoardProps): TaskBoardState {
-        const [headers, columnTypes, columns] = this.divideByType(
-            props.tasksById,
-            props.view.type,
-            props.selectedTag,
-            props.view.shouldHideClosedTasks,
-        );
-
-        return {
-            columns,
-            headers,
-            columnTypes,
-            createColumnType: null,
-            draggingTask: null,
-            editingTask: null,
-        };
     }
 
     divideByType(
