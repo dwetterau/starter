@@ -78,7 +78,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
 
     getState(props: TaskBoardProps, viewType: TaskBoardViewType): TaskBoardState {
         let selectedTag = null;
-        if (this.state && this.state.selectedTag) {
+        if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
             selectedTag = this.state.selectedTag;
         } else if (props.initialTagName) {
             // See if any tag matches
@@ -94,7 +94,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             props.tasksById, viewType, selectedTag, shouldHideClosedTasks,
         );
 
-        const newState: TaskBoardState = {
+        return {
             viewType,
             columns,
             headers,
@@ -105,11 +105,6 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             selectedTag: selectedTag,
             shouldHideClosedTasks: shouldHideClosedTasks,
         };
-        if (this.state && this.state.selectedTag && props.tagsById[this.state.selectedTag.id]) {
-            // Copy over the previous selectedTag
-            newState.selectedTag = this.state.selectedTag;
-        }
-        return newState;
     }
 
     divideByType(
