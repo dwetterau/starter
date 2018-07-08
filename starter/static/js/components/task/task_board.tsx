@@ -233,7 +233,7 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         if (this.state.draggingTask) {
             throw Error("Already was dragging a task...")
         }
-        this.setState({draggingTask: null});
+        this.setState({draggingTask: task});
         event.dataTransfer.setData("id", task.id.toString());
         event.dataTransfer.effectAllowed = "move";
         this._dragTargetElement = jQuery(event.target)
@@ -277,22 +277,30 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
         this._dragTargetElement.show();
     }
 
-    onDragOver(event: any) {
+    markColumnAsDraggable(columnDiv: any) {
+        // Also try to remove it from everywhere else
+        let otherColumns = jQuery(".drop-container");
+        if (otherColumns.length == 1 && otherColumns[0] != columnDiv) {
+            otherColumns.removeClass("drop-container");
+        }
+        jQuery(columnDiv).addClass("drop-container");
+    }
+
+    onDragOver(event: DragEvent) {
+        // This marks the element as a "drop target"
+        event.preventDefault();
         if (!this.state.draggingTask) {
             // No task was being dragged
             return
         }
-        event.preventDefault();
         this._dragTargetElement.hide();
-        jQuery(event.target).addClass("drop-container")
-    }
-
-    onDragLeave(event: any) {
-        if (!this.state.draggingTask) {
-            // No event was being dragged
-            return
+        if (jQuery(event.target).hasClass("column-container")) {
+            this.markColumnAsDraggable(event.target);
+        } else {
+            this.markColumnAsDraggable(
+                jQuery(event.target).parents(".column-container")[0]
+            );
         }
-        jQuery(event.target).removeClass("drop-container")
     }
 
     onClick(taskId: number, e: any) {
@@ -473,7 +481,6 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
             className="column-container" key={header}
             onDrop={this.onDrop.bind(this, columnType)}
             onDragOver={this.onDragOver.bind(this)}
-            onDragLeave={this.onDragLeave.bind(this)}
             onClick={this.createTask.bind(this, columnType)}
         >
             <div className="column-header">{header}</div>
