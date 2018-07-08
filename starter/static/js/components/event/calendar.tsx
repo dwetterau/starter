@@ -508,16 +508,15 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.setState({createEventDurationSecs: duration});
     }
 
-    _dragTargetEventElement: any = null;
     onDrop(day: string, index: number) {
         if (this.state.draggingEvent) {
+            console.log("Updating the start timestamp!");
             // Update the event with the new timestamp
             let eventToUpdate = this.state.draggingEvent;
             eventToUpdate.startTime = this.computeTimestamp(day, index);
             this.props.updateEvent(eventToUpdate);
 
             this.setState({draggingEvent: null});
-            this._dragTargetEventElement.show();
         } else if (this.state.endDraggingEvent) {
             const timestamp = this.computeTimestamp(day, index);
             let newDuration = timestamp - this.state.endDraggingEvent.startTime;
@@ -570,7 +569,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             throw Error("Already was dragging an event...")
         }
         this.setState({draggingEvent: event});
-        this._dragTargetEventElement = jQuery(dragEvent.target);
         dragEvent.dataTransfer.setData('text/html', null);
     }
 
@@ -584,7 +582,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             draggingEndTimestamp: null,
             draggingEvent: null,
         });
-        this._dragTargetEventElement.show();
     }
 
     onEventEndDragStart(event: Event, dragEvent: DragEvent) {
@@ -617,7 +614,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             index = event.target.dataset.index * 1;
         }
         if (this.state.draggingEvent) {
-            this._dragTargetEventElement.hide();
+            console.log("onDragOver happening");
+            //this._dragTargetEventElement.hide();
 
             const timestamp = this.computeTimestamp(day, index);
             // Conceptually this is needed because short events should register only a single cell
