@@ -29,7 +29,8 @@
     "babel-preset-react": "^6.24.1",
     "jest": "^23.3.0",
     "react-test-renderer": "^16.4.1",
-    "ts-jest": "^23.0.0"
+    "ts-jest": "^23.0.0",
+    "typescript": "^2.9.2"
   },
   "scripts": {
     "test": "jest"

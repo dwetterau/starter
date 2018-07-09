@@ -17,15 +17,15 @@ import raven
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static/'),
+    os.path.join(BASE_DIR, '../static/'),
 
     # 3rd party libraries we don't bundle for caching reasons
-    os.path.join(BASE_DIR, 'node_modules/react/umd/'),
-    os.path.join(BASE_DIR, 'node_modules/react-dom/umd/'),
-    os.path.join(BASE_DIR, 'node_modules/react-markdown/umd/'),
-    os.path.join(BASE_DIR, 'node_modules/react-router-dom/umd/'),
-    os.path.join(BASE_DIR, 'node_modules/jquery/dist/'),
-    os.path.join(BASE_DIR, 'node_modules/moment/min/'),
+    os.path.join(BASE_DIR, '../node_modules/react/umd/'),
+    os.path.join(BASE_DIR, '../node_modules/react-dom/umd/'),
+    os.path.join(BASE_DIR, '../node_modules/react-markdown/umd/'),
+    os.path.join(BASE_DIR, '../node_modules/react-router-dom/umd/'),
+    os.path.join(BASE_DIR, '../node_modules/jquery/dist/'),
+    os.path.join(BASE_DIR, '../node_modules/moment/min/'),
     # WARNING: Don't forget to also update the prod settings!
 )
 

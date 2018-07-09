@@ -17,15 +17,15 @@ import raven
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATICFILES_DIRS = (
-    os.path.join(PROJECT_DIR, 'static/'),
+    os.path.join(PROJECT_DIR, '../static/'),
 
     # 3rd party libraries we don't bundle for caching reasons
-    os.path.join(PROJECT_DIR, 'node_modules/react/umd/'),
-    os.path.join(PROJECT_DIR, 'node_modules/react-dom/umd/'),
-    os.path.join(PROJECT_DIR, 'node_modules/react-markdown/umd/'),
-    os.path.join(PROJECT_DIR, 'node_modules/react-router-dom/umd/'),
-    os.path.join(PROJECT_DIR, 'node_modules/jquery/dist/'),
-    os.path.join(PROJECT_DIR, 'node_modules/moment/min/'),
+    os.path.join(PROJECT_DIR, '../node_modules/react/umd/'),
+    os.path.join(PROJECT_DIR, '../node_modules/react-dom/umd/'),
+    os.path.join(PROJECT_DIR, '../node_modules/react-markdown/umd/'),
+    os.path.join(PROJECT_DIR, '../node_modules/react-router-dom/umd/'),
+    os.path.join(PROJECT_DIR, '../node_modules/jquery/dist/'),
+    os.path.join(PROJECT_DIR, '../node_modules/moment/min/'),
 )
 STATIC_ROOT = '/www/starter/static'
 
