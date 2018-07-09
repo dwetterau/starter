@@ -1,0 +1,206 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Empty Capture List 1`] = `
+<div
+  className="capturer-container"
+>
+  <div
+    className="capture-list-container"
+  >
+    <div
+      className="capture-list-options"
+    />
+    <div
+      className="card"
+    >
+      <div
+        className="create-capture-container"
+      >
+        <h1>
+          Capture Something...
+        </h1>
+        <div>
+          <div
+            className="content-container"
+          >
+            <textarea
+              name="content"
+              onChange={[Function]}
+              value=""
+            />
+          </div>
+          <div
+            className="create-capture-button-container"
+          >
+            <input
+              onClick={[Function]}
+              type="button"
+              value="Create"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="captured-everything"
+    >
+      You've captured everything! :)
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Multiple captures 1`] = `
+<div
+  className="capturer-container"
+>
+  <div
+    className="capture-list-container"
+  >
+    <div
+      className="capture-list-options"
+    />
+    <div
+      className="card"
+    >
+      <div
+        className="create-capture-container"
+      >
+        <h1>
+          Capture Something...
+        </h1>
+        <div>
+          <div
+            className="content-container"
+          >
+            <textarea
+              name="content"
+              onChange={[Function]}
+              value=""
+            />
+          </div>
+          <div
+            className="create-capture-button-container"
+          >
+            <input
+              onClick={[Function]}
+              type="button"
+              value="Create"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="capture-list-scroll-container"
+    >
+      <div
+        className="capture-container card"
+      >
+        <div
+          className="capture-content"
+        >
+          content 2
+        </div>
+        <div
+          className="capture-options-container"
+        >
+          <div
+            className="capture-delete"
+            onClick={[Function]}
+          >
+            Delete
+          </div>
+        </div>
+      </div>
+      <div
+        className="capture-container card"
+      >
+        <div
+          className="capture-content"
+        >
+          content 1
+        </div>
+        <div
+          className="capture-options-container"
+        >
+          <div
+            className="capture-delete"
+            onClick={[Function]}
+          >
+            Delete
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Multiple captures 2`] = `
+<div
+  className="capturer-container"
+>
+  <div
+    className="capture-list-container"
+  >
+    <div
+      className="capture-list-options"
+    />
+    <div
+      className="card"
+    >
+      <div
+        className="create-capture-container"
+      >
+        <h1>
+          Capture Something...
+        </h1>
+        <div>
+          <div
+            className="content-container"
+          >
+            <textarea
+              name="content"
+              onChange={[Function]}
+              value=""
+            />
+          </div>
+          <div
+            className="create-capture-button-container"
+          >
+            <input
+              onClick={[Function]}
+              type="button"
+              value="Create"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="capture-list-scroll-container"
+    >
+      <div
+        className="capture-container card"
+      >
+        <div
+          className="capture-content"
+        >
+          content 2
+        </div>
+        <div
+          className="capture-options-container"
+        >
+          <div
+            className="capture-delete"
+            onClick={[Function]}
+          >
+            Delete
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

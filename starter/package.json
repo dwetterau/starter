@@ -21,5 +21,36 @@
     "ts-loader": "^4.4.2",
     "webpack": "^4.15.1",
     "webpack-cli": "^3.0.8"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.1.4",
+    "babel-jest": "^23.2.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "jest": "^23.3.0",
+    "react-test-renderer": "^16.4.1",
+    "ts-jest": "^23.0.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$"
   }
 }
