@@ -7,6 +7,6 @@ site.db
 *.log
 diff.sh
 .DS_Store
-starter/static/dist/dev
+static/dist/dev
 .mypy_cache
 index.txt
