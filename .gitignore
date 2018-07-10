@@ -10,3 +10,4 @@ diff.sh
 static/dist/dev
 .mypy_cache
 index.txt
+static/dist/dev/

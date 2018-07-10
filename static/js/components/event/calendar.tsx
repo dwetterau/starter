@@ -407,11 +407,16 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     columnMouseDown(day: string, event: any) {
         let index = event.target.dataset.index * 1;
+        const draggingStartTimestamp = this.computeTimestamp(day, index);
+        const draggingEndTimestamp = this.state.draggingStartTimestamp;
         this.setState({
-            draggingStartTimestamp: this.computeTimestamp(day, index),
-            draggingEndTimestamp: this.state.draggingStartTimestamp,
+            draggingStartTimestamp,
+            draggingEndTimestamp,
+            createEventTimestamp: CalendarComponent.getCreateEventTimestamp(
+                draggingStartTimestamp,
+                draggingEndTimestamp,
+            ),
         });
-        this.updateCreateEventTimestamp();
 
         event.preventDefault();
     }
@@ -422,9 +427,18 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return
         }
         let index = event.target.dataset.index * 1;
-        this.setState({draggingEndTimestamp: this.computeTimestamp(day, index)});
-        this.updateCreateEventTimestamp();
-        this.updateCreateEventDurationSecs();
+        const draggingEndTimestamp = this.computeTimestamp(day, index);
+        this.setState({
+            draggingEndTimestamp,
+            createEventTimestamp: CalendarComponent.getCreateEventTimestamp(
+                this.state.draggingStartTimestamp,
+                draggingEndTimestamp,
+            ),
+            createEventDurationSecs: CalendarComponent.getCreateEventDurationSecs(
+                this.state.draggingStartTimestamp,
+                draggingEndTimestamp,
+            )
+        });
     }
 
     columnMouseUp(day: string, event: any) {
@@ -434,44 +448,37 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
 
         let index = event.target.dataset.index * 1;
-        this.setState({draggingEndTimestamp: this.computeTimestamp(day, index)});
-        this.updateCreateEventTimestamp();
-        this.updateCreateEventDurationSecs();
-
+        const draggingEndTimestamp = this.computeTimestamp(day, index);
         this.setState({
             draggingStartTimestamp: null,
             draggingEndTimestamp: null,
+            createEventTimestamp: CalendarComponent.getCreateEventTimestamp(
+                this.state.draggingStartTimestamp,
+                draggingEndTimestamp,
+            ),
+            createEventDurationSecs: CalendarComponent.getCreateEventDurationSecs(
+                this.state.draggingStartTimestamp,
+                draggingEndTimestamp,
+            ),
             showCreate: true,
         });
     }
 
-    updateCreateEventTimestamp() {
-        let createEventTimestamp;
-        if (this.state.draggingEndTimestamp < this.state.draggingStartTimestamp) {
-            // We dragged backwards, use the end timestamp
-            createEventTimestamp = this.state.draggingEndTimestamp;
-        } else {
-            // Just set the start timestamp
-            createEventTimestamp = this.state.draggingStartTimestamp;
-        }
-        this.setState({createEventTimestamp: createEventTimestamp});
+    static getCreateEventTimestamp(
+        draggingStartTimestamp: number,
+        draggingEndTimestamp: number,
+    ): number {
+        return Math.min(draggingStartTimestamp, draggingEndTimestamp);
     }
 
-    updateCreateEventDurationSecs() {
-        let start: number, end: number;
-        if (this.state.draggingEndTimestamp < this.state.draggingStartTimestamp) {
-            start = this.state.draggingEndTimestamp;
-            end = this.state.draggingStartTimestamp;
-        } else {
-            start = this.state.draggingStartTimestamp;
-            end = this.state.draggingEndTimestamp;
-        }
-
-        let duration = (end - start);
+    static getCreateEventDurationSecs(
+        draggingStartTimestamp: number,
+        draggingEndTimestamp: number,
+    ): number {
+        let duration = Math.abs(draggingStartTimestamp - draggingEndTimestamp);
         duration /= 1000; // convert to seconds
         duration += GRANULARITY; // dragging to the same cell means to make duration equal to GRANULARITY
-
-        this.setState({createEventDurationSecs: duration});
+        return duration;
     }
 
     onDrop(day: string, index: number) {
