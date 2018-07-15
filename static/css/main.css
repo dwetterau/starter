@@ -41,7 +41,7 @@ body {
     margin: 0;
 }
 
-input {
+input[type=text] {
   border: 1px solid rgba(0, 0, 0, 0.4);
   cursor: text;
   background-color: white;
@@ -394,7 +394,6 @@ div.calendar div.full-column-container {
 
 div.calendar div.full-column-container div.header-and-content-container {
     overflow: hidden;
-    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -423,11 +422,12 @@ div.calendar div.column-header.single-day {
 
 div.calendar div.all-columns-container {
     display: flex;
-    height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     border-top: 1px solid rgba(0, 0, 0, .2);
+    background-color: white;
+    padding-top: 1em;
 }
 
 div.calendar div.column-container {
@@ -439,6 +439,7 @@ div.calendar div.column-container {
 
 div.calendar div.column-container.-times {
     max-width: 120px;
+    margin-right: 1em;
 }
 
 div.calendar div.column-container table {
@@ -450,7 +451,7 @@ div.calendar div.column-container.single-day {
 }
 
 div.calendar div.column-container td {
-    border-right: 1px solid rgba(0, 0, 0, .2);
+    border-right: 1px dotted rgba(0, 0, 0, .2);
     border-bottom: 1px solid rgba(0, 0, 0, .2);
     font-size: 14px;
     min-width: 120px;
@@ -462,18 +463,29 @@ div.calendar div.column-container.single-day td {
 }
 
 div.calendar div.column-container tr:nth-child(odd) td {
-    border-bottom-style: dashed;
+    border-bottom-style: none;
+}
+
+div.calendar div.column-container tr:last-child td {
+    border-bottom-style: none;
 }
 
 div.calendar div.column-container:first-child td {
     border-left: 1px solid rgba(0, 0, 0, .2);
+    border-right: none;
+    border-bottom: none;
     cursor: default; /* Prevents times from being click-able */
     vertical-align: top;
     text-align: right;
+    line-height: 0;
 }
 
 div.calendar div.column-container table tbody tr:first-child td {
     border-top: 1px solid rgba(0, 0, 0, .2);
+}
+
+div.calendar div.column-container:first-child table tbody tr:first-child td {
+    border-top: none;
 }
 
 div.calendar div.rendered-event-container {
@@ -488,6 +500,12 @@ div.calendar div.rendered-event-container div.card {
     margin-bottom: 0;
     overflow-y: auto;
     height: 100%;
+    background: #6495ed;
+}
+
+div.calendar div.rendered-event-container div.card div {
+    color: white;
+    font-weight: 400;
 }
 
 div.calendar div.column-container div.current-time-cursor {
@@ -515,8 +533,10 @@ div.calendar div.rendered-event-container div.draggable-event-end {
     margin-top: -3px;
 }
 
-div.calendar div.rendered-event-container div.tag.card {
+div.calendar div.rendered-event-container div.event-card-container div.card {
     overflow-y: hidden;
+    background: #fff;
+    color: #47525d;
 }
 
 /* End of Calendar CSS */

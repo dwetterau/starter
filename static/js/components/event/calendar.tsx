@@ -962,7 +962,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return <div className="full-column-container">
             <div className="header-and-content-container">
                 <div className="column-header-container">
-                    <div className="column-header -times">Time</div>
+                    <div className="column-header -times" />
                     {DAYS.map((day: string, index: number) => {
                         let m = moment(this.props.view.startDayTimestamp).add(index, "days");
                         return <div key={day} className="column-header">
