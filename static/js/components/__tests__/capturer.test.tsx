@@ -1,17 +1,8 @@
 import * as React from "react";
 import * as renderer from 'react-test-renderer';
 import {Capturer} from "../capturer";
-import {Capture, User} from "../../models";
-
-function mockUser(): User {
-   return {
-       id: 1,
-       firstName: "David",
-       lastName: "Wetterau",
-       email: "david@email.com",
-       username: "david",
-   }
-}
+import {Capture} from "../../models";
+import {mockUser} from "../../tests/mock_models"
 
 test('Empty Capture List', () => {
     const testRenderer = renderer.create(

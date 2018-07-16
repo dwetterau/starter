@@ -64,6 +64,8 @@ interface EventRenderingInfo {
 
     height: number
     top: number
+    widthPercentage: number
+    marginLeft: number
 }
 
 export class CalendarComponent extends React.Component<CalendarProps, CalendarState> {
@@ -75,6 +77,10 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     refreshLoopId = 0;
+
+    static now(): moment.Moment {
+        return moment()
+    }
 
     componentWillReceiveProps(props: CalendarProps) {
         this.setState(this.getState(props))
@@ -137,9 +143,9 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     static computeTodayStartTime(viewType: CalendarViewType): number {
         let startDayMoment: moment.Moment;
         if (viewType == CalendarViewType.week) {
-            startDayMoment = this.computeClosestMonday(moment())
+            startDayMoment = this.computeClosestMonday(CalendarComponent.now())
         } else {
-            startDayMoment = moment().startOf("day")
+            startDayMoment = CalendarComponent.now().startOf("day")
         }
         return startDayMoment.unix() * 1000;
     }
@@ -174,7 +180,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         let dayStart = moment(view.startDayTimestamp); // From seconds back into moment
 
-       let allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
+        let allChildIdsOfSelectedTag: {[id: number]: boolean} = {};
         if (selectedTag) {
             allChildIdsOfSelectedTag = getTagAndDescendantsRecursive(
                 selectedTag.id,
@@ -252,6 +258,12 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         ) => {
             // To help with rounding errors
             let eps = 0.0000001;
+
+            // No way around the "top is the same" case.
+            if (Math.abs(top - idTopAndHeight.top) < eps) {
+                return true
+            }
+
             if (top >= idTopAndHeight.top + eps) {
                 if (top < idTopAndHeight.top + idTopAndHeight.height - eps) {
                     return true;
@@ -277,7 +289,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 } else {
                     // event must start somewhere during this day.
                     let percentage = (event.startTime - columnStartTime) / (86400 * 1000);
-                    top = percentage * view.cellHeight * (86400 / GRANULARITY);
+                    top = Math.round(percentage * view.cellHeight * (86400 / GRANULARITY));
                 }
                 let realEndTimestamp = Math.min(
                     event.startTime + (event.durationSecs * 1000),
@@ -289,9 +301,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     durationSecs -= (columnStartTime - event.startTime) / 1000;
                 }
                 // TODO: Keep short end of day events from hanging off the end.
-                height = Math.max(
-                    Math.min(view.cellHeight, MIN_CELL_HEIGHT),
-                    (durationSecs / GRANULARITY) * view.cellHeight,
+                height = Math.round(
+                    Math.max(
+                        Math.min(view.cellHeight, MIN_CELL_HEIGHT),
+                        (durationSecs / GRANULARITY) * view.cellHeight,
+                    )
                 );
 
                 // Base case for the initial element
@@ -303,6 +317,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         extraCols: 0,
                         height: height,
                         top: top,
+                        marginLeft: 0,
+                        widthPercentage: 0,
                     };
                     return
                 }
@@ -323,6 +339,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                                 extraCols: 0, // This is determined later.
                                 height: height,
                                 top: top,
+                                marginLeft: 0,
+                                widthPercentage: 0,
                             }
                         } else {
                             aux[index] = null;
@@ -331,7 +349,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 });
 
 
-                // If this event overlaps with whatever is in aux, we must append
+                // If this event overlaps with everythign that is in aux, we must append
                 if (!slotUsed) {
                     // Append to the end
                     aux.forEach((idTopAndHeight) => {
@@ -347,6 +365,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         extraCols: 0,
                         height: height,
                         top: top,
+                        marginLeft: 0,
+                        widthPercentage: 0,
                     };
                     aux.push({id: event.id, top, height});
                 } else {
@@ -383,6 +403,19 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 }
             })
         });
+
+        for (let eventKey in eventToRenderingInfo) {
+            let renderingInfo = eventToRenderingInfo[eventKey];
+
+            let width = renderingInfo.columnWidth;
+            if (renderingInfo.extraCols) {
+                width += renderingInfo.extraCols;
+            }
+            const widthPercentage = (100.0 / width) * (1 + renderingInfo.extraCols);
+            const marginLeft = (100.0 / width) * renderingInfo.index;
+            renderingInfo.widthPercentage = Math.round(widthPercentage);
+            renderingInfo.marginLeft = Math.round(marginLeft);
+        }
         return [columnList, eventToRenderingInfo];
     }
 
@@ -697,7 +730,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         if (this.props.view.type == CalendarViewType.week && type == CalendarViewType.day) {
             // Week to day transition, need to either pick today or Monday
             const monday = moment(this.props.view.startDayTimestamp);
-            const now = moment();
+            const now = CalendarComponent.now();
             if (now.unix() - monday.unix() > 0 && monday.add(1, "week").unix() - now.unix() > 0) {
                 // Current week view contains today, we will use today as the answer.
                 startDayTimestamp = CalendarComponent.computeTodayStartTime(type);
@@ -876,7 +909,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     renderCurrentTimeCursor(index: number) {
         const columnTimeRange = 24 * 60 * 60 * 1000;
         let columnStartTimestamp = this.props.view.startDayTimestamp + index * columnTimeRange;
-        const currentTime = moment().unix() * 1000;
+        const currentTime = CalendarComponent.now().unix() * 1000;
         if (currentTime >= columnStartTimestamp &&
             currentTime < columnStartTimestamp + columnTimeRange) {
             // Okay we can actually render it here.
@@ -911,20 +944,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 // TODO: The extra cols only work right now with the expand-to-the-right case
                 const renderingInfo = this.state.eventToRenderingInfo[
                     CalendarComponent.getEventKey(eventId, columnIndex)];
-                let width = renderingInfo.columnWidth;
-                if (renderingInfo.extraCols) {
-                    width += renderingInfo.extraCols;
-                }
-                const widthPercentage = (100.0 / width) * (1 + renderingInfo.extraCols);
-                const marginLeft = widthPercentage * renderingInfo.index;
 
                 // We subtract 2 from the height purely for stylistic reasons.
                 const style = {
                     "height": `${renderingInfo.height}px`,
                     "maxHeight": `${renderingInfo.height}px`,
                     "top": `${renderingInfo.top}px`,
-                    "marginLeft": `${marginLeft}%`,
-                    "width": `${widthPercentage}%`,
+                    "marginLeft": `${renderingInfo.marginLeft}%`,
+                    "width": `${renderingInfo.widthPercentage}%`,
                 };
                 let event = this.props.eventsById[eventId];
                 return (
