@@ -3,6 +3,6 @@ node_js:
   - "node"
 
 # Just so that we have consistent timezones between development-generated snapshots and CI
-before_script:
- - echo 'America/Los_Angeles' | sudo tee /etc/timezone
- - sudo dpkg-reconfigure --frontend noninteractive tzdata
+before_install:
+  - export TZ=America/Los_Angeles
+  - date
