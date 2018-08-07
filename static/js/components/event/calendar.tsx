@@ -59,8 +59,8 @@ const MIN_CELL_HEIGHT = 20;
 
 interface EventRenderingInfo {
     index: number
-    columnWidth: number
-    extraCols: number
+    inRowWith: {[id: number]: boolean}
+    biggestClique: Array<number>
 
     height: number
     top: number
@@ -276,9 +276,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             let columnStartTime = moment(dayStart).add(columnIndex, "days").unix() * 1000;
             let columnEndTime = moment(dayStart).add(columnIndex + 1, "days").unix() * 1000;
 
-            // TODO: precompute the max size of aux in order to calculate extra space later.
-
-            let aux: Array<{id: number, top: number, height: number}> = [];
+            let aux: Array<{
+                id: number,
+                top: number,
+                height: number,
+            }> = [];
             column.forEach((eventId) => {
                 let top = null;
                 let height = null;
@@ -308,13 +310,18 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     )
                 );
 
+                // See if we need to shrink aux down
+                while (aux.length && aux[aux.length - 1] == null) {
+                    aux.pop()
+                }
+
                 // Base case for the initial element
                 if (!aux.length) {
                     aux.push({id: event.id, height, top});
                     eventToRenderingInfo[this.getEventKey(event.id, columnIndex)] = {
                         index: 0,
-                        columnWidth: 1,
-                        extraCols: 0,
+                        inRowWith: {},
+                        biggestClique: [event.id],
                         height: height,
                         top: top,
                         marginLeft: 0,
@@ -324,19 +331,25 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 }
 
                 let slotUsed = false;
+                let inRowWith: {[id: number]: boolean} = {};
                 // If this event doesn't overlap with an element in the array, replace it.
                 // During the replace, we need to calculate what the max width was for the element.
                 aux.forEach((idTopAndHeight, index) => {
-                    if (!idTopAndHeight || !overlaps(idTopAndHeight, top)) {
+                    if (!idTopAndHeight) {
+                        return
+                    }
+
+                    if (!overlaps(idTopAndHeight, top)) {
                         // Doesn't overlap, will use this slot (if it's the first) and evict
                         if (!slotUsed) {
                             slotUsed = true;
+
                             // Replace out this element
                             aux[index] = {id: event.id, top, height};
                             eventToRenderingInfo[this.getEventKey(event.id, columnIndex)] = {
                                 index,
-                                columnWidth: 0, // This will be resized later.
-                                extraCols: 0, // This is determined later.
+                                inRowWith,
+                                biggestClique: [event.id],
                                 height: height,
                                 top: top,
                                 marginLeft: 0,
@@ -345,77 +358,179 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         } else {
                             aux[index] = null;
                         }
+                    } else {
+                        // We do overlap with this element, add it to our list and us to theirs
+                        let otherRenderingInfo = eventToRenderingInfo[
+                            this.getEventKey(idTopAndHeight.id, columnIndex)];
+                        otherRenderingInfo.inRowWith[event.id] = true;
+                        inRowWith[idTopAndHeight.id] = true
                     }
                 });
 
-
-                // If this event overlaps with everythign that is in aux, we must append
-                if (!slotUsed) {
-                    // Append to the end
-                    aux.forEach((idTopAndHeight) => {
-                        if (!idTopAndHeight) {
-                            return
-                        }
-                        let key = this.getEventKey(idTopAndHeight.id, columnIndex);
-                        eventToRenderingInfo[key].columnWidth = aux.length + 1;
-                    });
-                    eventToRenderingInfo[this.getEventKey(event.id, columnIndex)] = {
-                        columnWidth: aux.length + 1,
-                        index: aux.length,
-                        extraCols: 0,
-                        height: height,
-                        top: top,
-                        marginLeft: 0,
-                        widthPercentage: 0,
-                    };
-                    aux.push({id: event.id, top, height});
-                } else {
-                    // See if we need to resize aux
-                    while (aux.length && aux[aux.length - 1] == null) {
-                        aux.pop()
-                    }
-                    // Everything left in the aux array at this point must be overlapping at some point
-                    let numNotNull = 0;
-                    let maxWidth = aux.length;
-                    aux.forEach((idTopAndHeight) => {
-                        if (idTopAndHeight) {
-                            numNotNull++;
-                            maxWidth = Math.max(
-                                maxWidth,
-                                eventToRenderingInfo[
-                                    this.getEventKey(idTopAndHeight.id, columnIndex)].columnWidth
-                            );
-                        }
-                    });
-
-                    aux.forEach((idTopAndHeight) => {
-                        if (!idTopAndHeight) {
-                            return
-                        }
-                        let key = this.getEventKey(idTopAndHeight.id, columnIndex);
-                        const newWidth = Math.max(
-                            numNotNull,
-                            eventToRenderingInfo[key].columnWidth
-                        );
-                        eventToRenderingInfo[key].columnWidth = newWidth;
-                        eventToRenderingInfo[key].extraCols = maxWidth - newWidth;
-                    });
+                if (slotUsed) {
+                    return;
                 }
-            })
-        });
 
-        for (let eventKey in eventToRenderingInfo) {
-            let renderingInfo = eventToRenderingInfo[eventKey];
+                // If this event overlaps with everything that is in aux, we must append
+                // This also implies that nothing in aux is null
+                eventToRenderingInfo[this.getEventKey(event.id, columnIndex)] = {
+                    index: aux.length,
+                    inRowWith: inRowWith,
+                    biggestClique: [event.id],
+                    height: height,
+                    top: top,
+                    marginLeft: 0,
+                    widthPercentage: 0,
+                };
+                aux.push({id: event.id, top, height});
+            });
 
-            let width = renderingInfo.columnWidth;
-            if (renderingInfo.extraCols) {
-                width += renderingInfo.extraCols;
+            // This loop determines the maximally sized clique each event is a member of.
+            let eventsToSize = {};
+            let numToSize = 0;
+            column.forEach((eventId) => {
+                eventsToSize[eventId] = true;
+                numToSize++;
+
+                // Find the largest clique this event is in (remember to include itself).
+                let ourInfo = eventToRenderingInfo[this.getEventKey(eventId, columnIndex)];
+                let neighbors = [];
+                for (let neighborId in ourInfo.inRowWith) {
+                    neighbors.push(neighborId)
+                }
+                for (let subsetNumber = 1; subsetNumber < (1 << neighbors.length); subsetNumber++) {
+                    let subset = [eventId];
+                    for (let i = 0; i < neighbors.length; i++) {
+                        if (subsetNumber & (1 << i)) {
+                            subset.push(1 * neighbors[i]);
+                        }
+                    }
+
+                    // Verify that it's a clique
+                    let passed = true;
+                    for (let neighbor of subset) {
+                        let key = this.getEventKey(neighbor, columnIndex);
+                        let edges = eventToRenderingInfo[key].inRowWith;
+                        for (let otherNeighbor of subset) {
+                            // We don't store the self edge because why.
+                            if (otherNeighbor == neighbor) {
+                                continue
+                            }
+                            if (!edges[otherNeighbor]) {
+                                passed = false;
+                                break;
+                            }
+                        }
+                        if (!passed) {
+                            break
+                        }
+                    }
+                    if (!passed) {
+                        continue;
+                    }
+
+                    if (subset.length > ourInfo.biggestClique.length) {
+                        ourInfo.biggestClique = subset;
+                    }
+                }
+            });
+
+            // Sort by biggest cliques first
+            column.sort((eventId1, eventId2) => {
+                let info1 = eventToRenderingInfo[this.getEventKey(eventId1, columnIndex)];
+                let info2 = eventToRenderingInfo[this.getEventKey(eventId2, columnIndex)];
+                return info2.biggestClique.length - info1.biggestClique.length
+            });
+
+            // This iterates from largest cliques to smallest until all events have been sized.
+            while (numToSize > 0) {
+                for (let eventId of column) {
+                    if (!eventsToSize[eventId]) {
+                        continue
+                    }
+
+                    // This is the next one to size!
+                    // First - see if any neighbors are already sized
+                    let info = eventToRenderingInfo[this.getEventKey(eventId, columnIndex)];
+                    let anySized = false;
+                    for (let neighbor of info.biggestClique) {
+                        if (!eventsToSize[neighbor]) {
+                            anySized = true;
+                            break
+                        }
+                    }
+
+                    if (anySized) {
+                        // Finish sizing our clique.
+                        // Start from our index, look at the others in the clique, find
+                        // connected regions, then size each of those using all available space.
+                        info.biggestClique.sort((eventId1, eventId2) => {
+                            let info1 = eventToRenderingInfo[this.getEventKey(eventId1, columnIndex)];
+                            let info2 = eventToRenderingInfo[this.getEventKey(eventId2, columnIndex)];
+                            return info1.index - info2.index;
+                        });
+                        let leftSizedInfo = null;
+                        for (let i = 0; i < info.biggestClique.length; ) {
+                            let curEventId = info.biggestClique[i];
+                            if (!eventsToSize[curEventId]) {
+                                leftSizedInfo = eventToRenderingInfo[this.getEventKey(curEventId, columnIndex)];
+                                i++;
+                                continue
+                            }
+                            let j = i + 1;
+                            let rightSizedInfo = null;
+                            for (; j < info.biggestClique.length; j++) {
+                                let endEventId = info.biggestClique[j];
+                                if (!eventsToSize[endEventId]) {
+                                    rightSizedInfo = eventToRenderingInfo[this.getEventKey(endEventId, columnIndex)];
+                                    break
+                                }
+                            }
+
+                            let leftOffset = 0;
+                            if (leftSizedInfo != null) {
+                                leftOffset = leftSizedInfo.marginLeft + leftSizedInfo.widthPercentage;
+                            }
+                            let rightOffset = 100;
+                            if (rightSizedInfo != null) {
+                                rightOffset = rightSizedInfo.marginLeft;
+                            }
+
+                            // Now divide each element's space evenly
+                            let unsizedWidth = j - i;
+                            let width = (rightOffset - leftOffset) / unsizedWidth;
+                            let marginLeft = leftOffset;
+                            for (let k = i; k < j; k++) {
+                                let key = this.getEventKey(info.biggestClique[k], columnIndex);
+                                let renderingInfo = eventToRenderingInfo[key];
+                                renderingInfo.marginLeft = marginLeft;
+                                renderingInfo.widthPercentage = width;
+
+                                delete eventsToSize[info.biggestClique[k]];
+                                numToSize--;
+
+                                marginLeft += width;
+                            }
+                            i = j;
+                        }
+
+                    } else {
+                        // This is the easy case! Size everything in the clique
+                        let width = info.biggestClique.length;
+                        const widthPercentage = 100.0 / width;
+                        for (let neighbor of info.biggestClique) {
+                            let renderingInfo = eventToRenderingInfo[this.getEventKey(neighbor, columnIndex)];
+                            const marginLeft = (100.0 / width) * renderingInfo.index;
+                            renderingInfo.widthPercentage = Math.round(widthPercentage);
+                            renderingInfo.marginLeft = Math.round(marginLeft);
+
+                            delete eventsToSize[neighbor];
+                            numToSize--;
+                        }
+                    }
+                }
             }
-            const widthPercentage = (100.0 / width) * (1 + renderingInfo.extraCols);
-            const marginLeft = (100.0 / width) * renderingInfo.index;
-            renderingInfo.widthPercentage = Math.round(widthPercentage);
-            renderingInfo.marginLeft = Math.round(marginLeft);
-        }
+        });
         return [columnList, eventToRenderingInfo];
     }
 

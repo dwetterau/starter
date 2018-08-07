@@ -55,7 +55,7 @@ test('Empty Calendar App', () => {
     expect(tree).toMatchSnapshot("empty week view");
 });
 
-test('Event overlap unit tests', () => {
+test('Basic event overlap', () => {
     const eventFactory = new mockEventFactory();
     let start = MOCK_UNIX_TIMESTAMP_MILLIS + 2 * 60 * 60 * 1000;
     let e1 = eventFactory.makeEvent(
@@ -77,8 +77,6 @@ test('Event overlap unit tests', () => {
     expect(eventToRenderInfo).toMatchObject({
         '1-0': {
             index: 0,
-            columnWidth: 2,
-            extraCols: 0,
             height: 200,
             top: 100,
             marginLeft: 0,
@@ -86,8 +84,6 @@ test('Event overlap unit tests', () => {
         },
         '2-0': {
             index: 1,
-            columnWidth: 2,
-            extraCols: 0,
             height: 50,
             top: 125,
             marginLeft: 50,
@@ -111,8 +107,6 @@ test('Event overlap unit tests', () => {
     let expected = {
         '1-0': {
             index: 0,
-            columnWidth: 3,
-            extraCols: 0,
             height: 200,
             top: 100,
             marginLeft: 0,
@@ -120,8 +114,6 @@ test('Event overlap unit tests', () => {
         },
         '2-0': {
             index: 1,
-            columnWidth: 3,
-            extraCols: 0,
             height: 50,
             top: 125,
             marginLeft: 33,
@@ -129,8 +121,6 @@ test('Event overlap unit tests', () => {
         },
         '3-0': {
             index: 2,
-            columnWidth: 3,
-            extraCols: 0,
             height: 50,
             top: 150,
             marginLeft: 67,
@@ -153,8 +143,6 @@ test('Event overlap unit tests', () => {
     expect(columnList).toMatchObject([[1, 2, 3, 4]]);
     expected['4-0'] =  {
         index: 1,
-        columnWidth: 2,
-        extraCols: 1,
         height: 50,
         top: 200,
         marginLeft: 33,
@@ -185,20 +173,16 @@ test('Event overlap unit tests', () => {
     expect(columnList).toMatchObject([[5, 6, 7, 8]]);
     expect(eventToRenderInfo).toMatchObject({
         '5-0': {
-            index: 0, columnWidth: 3, extraCols: 0,
-            height: 75, top: 100, marginLeft: 0, widthPercentage: 33
+            index: 0, height: 75, top: 100, marginLeft: 0, widthPercentage: 33
         },
         '6-0': {
-            index: 1, columnWidth: 3, extraCols: 0,
-            height: 75, top: 125, marginLeft: 33, widthPercentage: 33
+            index: 1, height: 75, top: 125, marginLeft: 33, widthPercentage: 33
         },
         '7-0': {
-            index: 2, columnWidth: 3, extraCols: 0,
-            height: 100, top: 150, marginLeft: 67, widthPercentage: 33
+            index: 2, height: 100, top: 150, marginLeft: 67, widthPercentage: 33
         },
         '8-0': {
-            index: 0, columnWidth: 2, extraCols: 1,
-            height: 50, top: 200, marginLeft: 0, widthPercentage: 67
+            index: 0, height: 50, top: 200, marginLeft: 0, widthPercentage: 67
         }
     });
 
@@ -213,13 +197,70 @@ test('Event overlap unit tests', () => {
     expect(columnList).toMatchObject([[5, 9]]);
     expect(eventToRenderInfo).toMatchObject({
         '5-0': {
-            index: 0, columnWidth: 2, extraCols: 0,
-            height: 75, top: 100, marginLeft: 0, widthPercentage: 50
+            index: 0, height: 75, top: 100, marginLeft: 0, widthPercentage: 50
         },
         '9-0': {
-            index: 1, columnWidth: 2, extraCols: 0,
-            height: 75, top: 100, marginLeft: 50, widthPercentage: 50
+            index: 1, top: 100, marginLeft: 50, widthPercentage: 50
         }
+    });
+});
+
+test('More event overlap', () => {
+    const eventFactory = new mockEventFactory();
+    let start = MOCK_UNIX_TIMESTAMP_MILLIS + 2 * 60 * 60 * 1000;
+    let e1 = eventFactory.makeEvent(
+        start,
+        2 * 3600,
+    );
+    let e2 = eventFactory.makeEvent(
+        start + (2 * 60 * 60 * 1000),
+        3600,
+    );
+    let e3 = eventFactory.makeEvent(
+        start + (60 * 60 * 1000),
+        2 * 3600,
+    );
+    let e4 = eventFactory.makeEvent(
+        start + (2 * 60 * 60 * 1000),
+        3600,
+    );
+    let [columnList, eventToRenderInfo] = CalendarComponent.divideAndSort(
+        standardView(),
+        API.getEventsById([e1, e2, e3, e4]),
+        null,
+        {},
+    );
+
+    expect(columnList).toMatchObject([[3, 2, 4, 1]]);
+    expect(eventToRenderInfo).toMatchObject({
+        '1-0': {
+            index: 0,
+            height: 100,
+            top: 100,
+            marginLeft: 0,
+            widthPercentage: 33,
+        },
+        '2-0': {
+            index: 0,
+            height: 50,
+            top: 200,
+            marginLeft: 0,
+            widthPercentage: 33,
+        },
+        '3-0': {
+            index: 1,
+            height: 100,
+            top: 150,
+            marginLeft: 33,
+            widthPercentage: 33,
+        },
+        '4-0': {
+            index: 2,
+            height: 50,
+            top: 200,
+            marginLeft: 67,
+            widthPercentage: 33,
+        },
     });
 });
 
