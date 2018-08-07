@@ -1,0 +1,175 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dropdown select with enter 1`] = `
+<div
+  className="tokenizer-container"
+>
+  <div
+    className="pending-state-container"
+  >
+    <div
+      className="pending-token-container"
+    >
+      <input
+        onChange={[Function]}
+        onKeyDown={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value=""
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Dropdown select with enter 2`] = `
+<div
+  className="tokenizer-container"
+>
+  <div
+    className="pending-state-container"
+  >
+    <div
+      className="pending-token-container"
+    >
+      <input
+        onChange={[Function]}
+        onKeyDown={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="l"
+      />
+    </div>
+    <div
+      className="autocomplete-token-container"
+    >
+      <div
+        className="autocomplete-token"
+        onClick={[Function]}
+      >
+        l1
+      </div>
+      <div
+        className="autocomplete-token"
+        onClick={[Function]}
+      >
+        l2
+      </div>
+      <div
+        className="autocomplete-token"
+        onClick={[Function]}
+      >
+        l2
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Dropdown select with enter 3`] = `
+<div
+  className="tokenizer-container"
+>
+  <div
+    className="pending-state-container"
+  >
+    <div
+      className="pending-token-container"
+    >
+      <input
+        onChange={[Function]}
+        onKeyDown={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="l"
+      />
+    </div>
+    <div
+      className="autocomplete-token-container"
+    >
+      <div
+        className="autocomplete-token"
+        onClick={[Function]}
+      >
+        l1
+      </div>
+      <div
+        className="autocomplete-token"
+        onClick={[Function]}
+      >
+        l2
+      </div>
+      <div
+        className="autocomplete-token"
+        onClick={[Function]}
+      >
+        l2
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Dropdown select with enter 4`] = `
+<div
+  className="tokenizer-container"
+>
+  <div
+    className="pending-state-container"
+  >
+    <div
+      className="pending-token-container"
+    >
+      <input
+        onChange={[Function]}
+        onKeyDown={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="l1"
+      />
+    </div>
+    <div
+      className="autocomplete-token-container"
+    >
+      <div
+        className="autocomplete-token"
+        onClick={[Function]}
+      >
+        l1
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Dropdown select with enter 5`] = `
+<div
+  className="tokenizer-container"
+>
+  <div
+    className="pending-state-container"
+  >
+    <div
+      className="pending-token-container"
+    >
+      <input
+        onChange={[Function]}
+        onKeyDown={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="l1"
+      />
+    </div>
+    <div
+      className="autocomplete-token-container"
+    >
+      <div
+        className="autocomplete-token -selected"
+        onClick={[Function]}
+      >
+        l1
+      </div>
+    </div>
+  </div>
+</div>
+`;
