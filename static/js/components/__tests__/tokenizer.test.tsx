@@ -9,9 +9,7 @@ test('Dropdown select with enter', () => {
         {label: "l2", value: "val2"},
         {label: "l2", value: "val3"},
     ];
-    let onChange = function(tokens: Array<Tokenizable>) {
-
-    };
+    let onChange = function(tokens: Array<Tokenizable>) {};
 
     const testRenderer = renderer.create(
         <TokenizerComponent onChange={onChange} possibleTokens={tokens} />

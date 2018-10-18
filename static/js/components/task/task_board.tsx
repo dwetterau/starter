@@ -175,11 +175,6 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
                 }
             }
 
-            if (!this.state) {
-                // Other checks can only return true if state is defined.
-                return false;
-            }
-
             if (task.state == 1000) {
                 if (type == TaskBoardViewType.priority && shouldHideClosedTasks) {
                     return true;
@@ -307,9 +302,15 @@ export class TaskBoardComponent extends React.Component<TaskBoardProps, TaskBoar
     }
 
     changeViewType(type: TaskBoardViewType) {
+        // We want to default to shouldHideClosedTasks for priority view
+        let defaultShouldHideClosed = this.props.view.shouldHideClosedTasks;
+        if (type == TaskBoardViewType.priority) {
+            defaultShouldHideClosed = true;
+        }
+
         this.props.changeView({
             type: type,
-            shouldHideClosedTasks: this.props.view.shouldHideClosedTasks,
+            shouldHideClosedTasks: defaultShouldHideClosed,
         });
     }
 
