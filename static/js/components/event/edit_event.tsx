@@ -332,6 +332,15 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
 
     renderForm() {
         return <div>
+            <div className="tag-tokenizer-container">
+                <label>Tags:</label>
+                <TokenizerComponent
+                    onChange={this.retrieveTagNames.bind(this)}
+                    initialValues={this.getCurrentTags()}
+                    possibleTokens={this.getAllTagNames()}
+                />
+            </div>
+
             <div className="name-container">
                 <label htmlFor="name">Name: </label>
                 <input
@@ -349,15 +358,6 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                     onChange={this.retrieveTaskNames.bind(this)}
                     initialValues={this.getCurrentTasks()}
                     possibleTokens={this.getAllTaskNames()}
-                />
-            </div>
-
-            <div className="tag-tokenizer-container">
-                <label>Tags:</label>
-                <TokenizerComponent
-                    onChange={this.retrieveTagNames.bind(this)}
-                    initialValues={this.getCurrentTags()}
-                    possibleTokens={this.getAllTagNames()}
                 />
             </div>
 
