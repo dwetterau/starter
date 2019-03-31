@@ -21,6 +21,7 @@ export class CreateTagComponent extends React.Component<CreateTagProps, CreateTa
                 name: '',
                 childTagIds: [],
                 ownerId: this.props.meUser.id,
+                color: '',
             },
         }
     }
@@ -34,6 +35,11 @@ export class CreateTagComponent extends React.Component<CreateTagProps, CreateTa
         this.setState(this.state);
     }
 
+    updateColor(event: any) {
+        this.state.tag.color = event.target.value;
+        this.setState(this.state);
+    }
+
     renderForm() {
         return <div>
             <div className="name-container">
@@ -42,6 +48,14 @@ export class CreateTagComponent extends React.Component<CreateTagProps, CreateTa
                     type="text" name="name"
                     value={this.state.tag.name}
                     onChange={this.updateName.bind(this)}
+                />
+            </div>
+             <div className="color-container">
+                <label htmlFor="color">Color: </label>
+                <input
+                    type="text" name="color"
+                    value={this.state.tag.color}
+                    onChange={this.updateColor.bind(this)}
                 />
             </div>
 

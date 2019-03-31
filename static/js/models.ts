@@ -62,6 +62,7 @@ export class Tag {
     readonly id: number;
     name: string;
     readonly ownerId: number;
+    color: string;
     childTagIds: Array<number>;
 }
 

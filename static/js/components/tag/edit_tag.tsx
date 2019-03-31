@@ -38,6 +38,11 @@ export class EditTagComponent extends React.Component<EditTagProps, EditTagState
         }
     }
 
+    updateColor(event: any) {
+        this.state.tag.color = event.target.value;
+        this.setState(this.state);
+    }
+
     updateName(event: any) {
         this.state.tag.name = event.target.value;
         this.setState(this.state);
@@ -84,6 +89,15 @@ export class EditTagComponent extends React.Component<EditTagProps, EditTagState
                     type="text" name="name"
                     value={this.state.tag.name}
                     onChange={this.updateName.bind(this)}
+                />
+            </div>
+
+            <div className="color-container">
+                <label htmlFor="color">Color: </label>
+                <input
+                    type="text" name="color"
+                    value={this.state.tag.color}
+                    onChange={this.updateColor.bind(this)}
                 />
             </div>
 

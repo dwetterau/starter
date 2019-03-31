@@ -25,6 +25,7 @@ LocalNoteId = NewType("LocalNoteId", int)
 CaptureId = NewType("CaptureId", int)
 LocalCaptureId = NewType("LocalCaptureId", int)
 
+
 class Tag(models.Model):
     """
     A way to keep track of many different tasks.
@@ -35,6 +36,7 @@ class Tag(models.Model):
                            symmetrical=False,
                            verbose_name="The tags contained by this tag")
     owner = models.ForeignKey(User, related_name="owned_tags", verbose_name="Owner of this tag")
+    color = models.CharField("css color value", max_length=64, default="")
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super(Tag, self).__init__(*args, **kwargs)
@@ -66,6 +68,7 @@ class Tag(models.Model):
         return dict(
             id=self.id,
             name=self.name,
+            color=self.color,
             ownerId=self.owner_id,
             childTagIds=self.get_child_ids(),
         )

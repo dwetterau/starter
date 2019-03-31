@@ -162,6 +162,7 @@ export class API {
             name: tag.name,
             ownerId: tag.ownerId,
             childTagIds: tag.childTagIds,
+            color: tag.color,
         };
         return jQuery.post('/api/1/tag/create', requestedTag, (newTagJson: string) => {
             updateFunc(JSON.parse(newTagJson));

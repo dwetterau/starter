@@ -410,6 +410,17 @@ def _valid_tag_name(x: str) -> str:
     return x
 
 
+_css_color_pattern = re.compile("^(#[0-9a-f]{3}|#(?:[0-9a-f]{2}){2,4}|(rgb|hsl)a?\((\d+%?(deg|rad|grad|turn)?[,\s]+){2,3}[\s\/]*[\d\.]+%?\))$")
+
+
+def _valid_css_color(x: str) -> str:
+    if not x:
+        return ""
+    x = _required_string(x)
+    assert _css_color_pattern.match(x)
+    return x
+
+
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def create_tag(request: HttpRequest) -> HttpResponse:
@@ -417,6 +428,7 @@ def create_tag(request: HttpRequest) -> HttpResponse:
         'name': _valid_tag_name,
         'childTagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
+        'color': _valid_css_color,
     }  # type: Dict[str, Callable[[str], Any]]
 
     try:
@@ -445,6 +457,7 @@ def create_tag(request: HttpRequest) -> HttpResponse:
     tag = Tag.objects.create(
         name=args_to_objects["name"],
         owner_id=request.user.id,
+        color=args_to_objects["color"],
     )
     if child_tags_by_id:
         tag.set_children(child_tags_by_id.values())
@@ -460,6 +473,7 @@ def update_tag(request: HttpRequest) -> HttpResponse:
         'name': _valid_tag_name,
         'childTagIds[]': lambda x: Tag.objects.get(id=int(x)),
         'ownerId': lambda user_id: User.objects.get(id=int(user_id)),
+        'color': _valid_css_color,
     }  # type: Dict[str, Callable[[str], Any]]
 
     try:
@@ -530,6 +544,7 @@ def update_tag(request: HttpRequest) -> HttpResponse:
 
     # Copy in all the mutable fields
     tag.name = args_to_objects["name"]
+    tag.color = args_to_objects["color"]
     tag.save()
 
     if set(child_tags_by_id.keys()) != original_children_id_set:
