@@ -36,7 +36,7 @@ export interface CalendarState {
     draggingEndTimestamp?: number,
     draggingEvent?: Event,
     endDraggingEvent?: Event,
-}
+    tagIdToParents: {[tagId: number]: Array<number>}}
 
 export interface CalendarView {
     type: CalendarViewType,
@@ -106,7 +106,32 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             draggingEndTimestamp: null,
             draggingEvent: null,
             endDraggingEvent: null,
+            tagIdToParents: CalendarComponent.computeTagIdToParent(props.tagsById),
         };
+    }
+
+    static computeTagIdToParent(tagsById: TagsById): {[tagId: number]: Array<number>} {
+        let tagToParents = {};
+
+        // First we need to sort all the tag ids. This makes sure when we add parents, we are doing
+        // so in increasing tagID order (to break ties).
+        let tagIds = [...Object.keys(tagsById)];
+        tagIds.sort();
+
+        for (let tagId of tagIds) {
+            // Make sure every entry is in the map
+            if (!tagToParents.hasOwnProperty(tagId)) {
+                tagToParents[tagId] = [];
+            }
+            for (let childId of tagsById[tagId].childTagIds) {
+                if (!tagToParents.hasOwnProperty(childId)) {
+                    tagToParents[childId] = [];
+                }
+                tagToParents[childId].push(parseInt(tagId));
+            }
+        }
+
+        return tagToParents;
     }
 
     static getInitialView(type: CalendarViewType): CalendarView {
@@ -1044,6 +1069,39 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         }
     }
 
+    tagColor(tag: Tag): string {
+        // Now see if any tag has a color. We do this by stopping at the first color we encounter
+        // while doing the following walk:
+        // 1. See if the tag has a color.
+        // 2. Traverse up to the root.
+        // 3. If a tag has multiple parents, traverse the lower-id one first.
+        if (tag.color.length > 0) {
+            return tag.color
+        }
+
+        for (let parentId of this.state.tagIdToParents[tag.id]) {
+            let parent = this.props.tagsById[parentId];
+            let parentColor = this.tagColor(parent);
+            if (parentColor.length > 0) {
+                return parentColor
+            }
+        }
+
+        return "";
+    }
+
+    computeColor(event: Event) {
+        for (let tagId of event.tagIds) {
+            let tag = this.props.tagsById[tagId];
+            let tagColor = this.tagColor(tag);
+            if (tagColor.length > 0) {
+                return tagColor
+            }
+        }
+         // Default of nice blue
+        return "#6495ed";
+    }
+
     renderColumn(columnIndex: number, column: Array<number>, singleDay?: boolean) {
         const day = DAYS[columnIndex];
         let className = "column-container";
@@ -1083,6 +1141,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                             onDragStart={this.onDragStart.bind(this, event)}
                             onDragEnd={this.onDragEnd.bind(this, event)}
                             onDoubleClick={this.onDoubleClick.bind(this, event)}
+                            style={{"background": this.computeColor(event)}}
                         >
                             <EventComponent
                                 event={event}

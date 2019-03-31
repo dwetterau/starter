@@ -3,13 +3,13 @@ import * as React from "react";
 import * as renderer from 'react-test-renderer';
 import {CalendarComponent, CalendarView, CalendarViewType} from "../calendar";
 import {mockEventFactory, mockUser} from "../../../tests/mock_models";
-import {Event, EventsById} from "../../../models";
+import {Event, EventsById, Tag, TagsById} from "../../../models";
 import {API} from "../../../api";
 
 // July 15th, 2018
 const MOCK_UNIX_TIMESTAMP_MILLIS = 1531638000000;
 
-function rendererFromView(view: CalendarView, events?: Array<Event>) {
+function rendererFromView(view: CalendarView, events?: Array<Event>, tagsById?: TagsById) {
     CalendarComponent.now = function(): moment.Moment {
         return moment(MOCK_UNIX_TIMESTAMP_MILLIS)
     };
@@ -17,11 +17,15 @@ function rendererFromView(view: CalendarView, events?: Array<Event>) {
     if (events != null) {
         eventsById = API.getEventsById(events)
     }
+    let tagsByIdToUse: TagsById = {};
+    if (tagsById != null) {
+        tagsByIdToUse = tagsById
+    }
     return renderer.create(
         <CalendarComponent
             meUser={mockUser()}
             eventsById={eventsById}
-            tagsById={{}}
+            tagsById={tagsByIdToUse}
             tasksById={{}}
             simpleOptions={false}
             createEvent={() => {}}
@@ -281,4 +285,61 @@ test('Event overlap snapshot cases', () => {
     let e5 = eventFactory.makeEvent(start, 4 * 3600);
     tree = rendererFromView(standardView(), [e1, e5]).toJSON();
     expect(tree).toMatchSnapshot("Two exactly-overlapping 1 hour events");
+});
+
+let tagWithChildren = (id: number, children: Array<number>, color?: string): Tag => {
+    return {
+        id: id,
+        name: "test" + id,
+        ownerId: 1,
+        color: color,
+        childTagIds: children,
+    }
+};
+
+test('tag to parent ids', () => {
+    let tagsById: TagsById = {
+        1: tagWithChildren(1, [2, 3, 4]),
+        2: tagWithChildren(2, [3, 4]),
+        3: tagWithChildren(3, [4]),
+        4: tagWithChildren(4, [5]),
+        5: tagWithChildren(5, []),
+        6: tagWithChildren(6, [7]),
+        7: tagWithChildren(7, []),
+    };
+
+    let toParent = CalendarComponent.computeTagIdToParent(tagsById);
+    expect(toParent).toEqual({
+        1: [],
+        2: [1],
+        3: [1, 2],
+        4: [1, 2, 3],
+        5: [4],
+        6: [],
+        7: [6],
+    })
+});
+
+test('Event color rendering', () => {
+    let view = standardView();
+    view.initial = true;
+    const eventFactory = new mockEventFactory();
+
+    let tagsById: TagsById = {
+        1: tagWithChildren(1, [2], "#000"),
+        2: tagWithChildren(2, [], ""),
+        3: tagWithChildren(3, [], "#111"),
+    };
+
+    let e1 = eventFactory.makeEvent(MOCK_UNIX_TIMESTAMP_MILLIS, 4 * 3600, [2, 3]);
+    let tree = rendererFromView(standardView(), [e1], tagsById).toJSON();
+    expect(tree).toMatchSnapshot("Event with inherited color #000");
+
+    e1 = eventFactory.makeEvent(MOCK_UNIX_TIMESTAMP_MILLIS, 4 * 3600, [3, 2]);
+    tree = rendererFromView(standardView(), [e1], tagsById).toJSON();
+    expect(tree).toMatchSnapshot("Event with direct color #111");
+
+    e1 = eventFactory.makeEvent(MOCK_UNIX_TIMESTAMP_MILLIS, 4 * 3600, []);
+    tree = rendererFromView(standardView(), [e1], tagsById).toJSON();
+    expect(tree).toMatchSnapshot("Event with default color");
 });

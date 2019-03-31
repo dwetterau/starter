@@ -17,14 +17,20 @@ export class mockEventFactory {
         this.id = 0;
     }
 
-    makeEvent(startTimeMillis: number, durationSecs: number): Event {
+    makeEvent(startTimeMillis: number, durationSecs: number, tagIds?: Array<number>): Event {
         this.id++;
+
+        let tagIdsToUse = [];
+        if (tagIds != null) {
+            tagIdsToUse = tagIds
+        }
+
         return {
             id: this.id,
             name: `Event with id=${this.id}`,
             authorId: 1,
             ownerId: 1,
-            tagIds: [],
+            tagIds: tagIdsToUse,
             startTime: startTimeMillis,
             durationSecs: durationSecs,
             taskIds: [],

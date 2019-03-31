@@ -7628,6 +7628,4523 @@ exports[`Empty Calendar App: empty week view 1`] = `
 </div>
 `;
 
+exports[`Event color rendering: Event with default color 1`] = `
+<div
+  className="calendar"
+>
+  <div
+    className="options"
+  >
+    <div
+      className="cell-size-slider"
+    >
+      <input
+        max="100"
+        min="20"
+        onChange={[Function]}
+        type="range"
+        value={25}
+      />
+    </div>
+    <div
+      className="tag-selector-container"
+    >
+      <div
+        className="tag-selector-label"
+      >
+        Filter Tag:
+      </div>
+      <div
+        className="tokenizer-container"
+      >
+        <div
+          className="pending-state-container"
+        >
+          <div
+            className="pending-token-container"
+          >
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              onKeyPress={[Function]}
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="view-type-selector"
+    >
+      <div
+        className="view-type-choice"
+        onClick={[Function]}
+      >
+        Week
+      </div>
+      <div
+        className="view-type-choice -selected"
+        onClick={[Function]}
+      >
+        Day
+      </div>
+    </div>
+    <div
+      className="pagination-container"
+    >
+      <div
+        className="pagination-option"
+        onClick={[Function]}
+      >
+        Previous
+      </div>
+      <div
+        className="pagination-option"
+        onClick={[Function]}
+      >
+        Next
+      </div>
+      <div
+        className="pagination-option"
+        onClick={[Function]}
+      >
+        Today
+      </div>
+    </div>
+  </div>
+  <div
+    className="full-column-container"
+  >
+    <div
+      className="header-and-content-container"
+    >
+      <div
+        className="column-header-container"
+      >
+        <div
+          className="column-header -times"
+        >
+          Time
+        </div>
+        <div
+          className="column-header single-day"
+        >
+          Sunday 7/15
+        </div>
+      </div>
+      <div
+        className="all-columns-container"
+      >
+        <div
+          className="column-container -times"
+        >
+          <table
+            cellPadding="0"
+            cellSpacing="0"
+            onDragOver={[Function]}
+            onMouseDown={[Function]}
+            onMouseOver={[Function]}
+            onMouseUp={[Function]}
+          >
+            <tbody>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  12:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  1:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  2:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  3:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  4:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  5:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  6:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  7:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  8:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  9:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  10:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  11:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  12:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  1:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  2:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  3:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  4:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  5:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  6:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  7:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  8:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  9:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  10:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  11:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          className="column-container single-day"
+        >
+          <table
+            cellPadding="0"
+            cellSpacing="0"
+            onDragOver={[Function]}
+            onMouseDown={[Function]}
+            onMouseOver={[Function]}
+            onMouseUp={[Function]}
+          >
+            <tbody>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={0}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={1800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={3600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={5400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={7200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={9000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={10800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={12600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={14400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={16200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={18000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={19800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={21600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={23400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={25200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={27000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={28800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={30600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={32400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={34200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={36000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={37800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={39600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={41400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={43200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={45000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={46800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={48600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={50400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={52200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={54000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={55800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={57600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={59400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={61200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={63000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={64800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={66600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={68400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={70200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={72000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={73800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={75600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={77400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={79200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={81000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={82800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={84600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div
+            className="current-time-cursor"
+            data-top={-2}
+            onDragOver={[Function]}
+            onDrop={[Function]}
+            style={
+              Object {
+                "top": "-2px",
+              }
+            }
+          />
+          <div
+            className="rendered-event-container"
+            onDragOver={[Function]}
+            onDrop={[Function]}
+            style={
+              Object {
+                "height": "200px",
+                "marginLeft": "0%",
+                "maxHeight": "200px",
+                "top": "0px",
+                "width": "100%",
+              }
+            }
+          >
+            <div
+              className="rendered-event card"
+              draggable={true}
+              onDoubleClick={[Function]}
+              onDragEnd={[Function]}
+              onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#6495ed",
+                }
+              }
+            >
+              <div
+                className="event-container"
+              >
+                <div
+                  className="name"
+                >
+                  Event with id=3
+                </div>
+                <div
+                  className="event-card-container"
+                />
+              </div>
+            </div>
+            <div
+              className="draggable-event-end"
+              draggable={true}
+              onDragEnd={[Function]}
+              onDragStart={[Function]}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Event color rendering: Event with direct color #111 1`] = `
+<div
+  className="calendar"
+>
+  <div
+    className="options"
+  >
+    <div
+      className="cell-size-slider"
+    >
+      <input
+        max="100"
+        min="20"
+        onChange={[Function]}
+        type="range"
+        value={25}
+      />
+    </div>
+    <div
+      className="tag-selector-container"
+    >
+      <div
+        className="tag-selector-label"
+      >
+        Filter Tag:
+      </div>
+      <div
+        className="tokenizer-container"
+      >
+        <div
+          className="pending-state-container"
+        >
+          <div
+            className="pending-token-container"
+          >
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              onKeyPress={[Function]}
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="view-type-selector"
+    >
+      <div
+        className="view-type-choice"
+        onClick={[Function]}
+      >
+        Week
+      </div>
+      <div
+        className="view-type-choice -selected"
+        onClick={[Function]}
+      >
+        Day
+      </div>
+    </div>
+    <div
+      className="pagination-container"
+    >
+      <div
+        className="pagination-option"
+        onClick={[Function]}
+      >
+        Previous
+      </div>
+      <div
+        className="pagination-option"
+        onClick={[Function]}
+      >
+        Next
+      </div>
+      <div
+        className="pagination-option"
+        onClick={[Function]}
+      >
+        Today
+      </div>
+    </div>
+  </div>
+  <div
+    className="full-column-container"
+  >
+    <div
+      className="header-and-content-container"
+    >
+      <div
+        className="column-header-container"
+      >
+        <div
+          className="column-header -times"
+        >
+          Time
+        </div>
+        <div
+          className="column-header single-day"
+        >
+          Sunday 7/15
+        </div>
+      </div>
+      <div
+        className="all-columns-container"
+      >
+        <div
+          className="column-container -times"
+        >
+          <table
+            cellPadding="0"
+            cellSpacing="0"
+            onDragOver={[Function]}
+            onMouseDown={[Function]}
+            onMouseOver={[Function]}
+            onMouseUp={[Function]}
+          >
+            <tbody>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  12:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  1:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  2:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  3:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  4:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  5:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  6:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  7:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  8:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  9:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  10:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  11:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  12:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  1:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  2:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  3:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  4:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  5:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  6:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  7:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  8:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  9:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  10:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  11:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          className="column-container single-day"
+        >
+          <table
+            cellPadding="0"
+            cellSpacing="0"
+            onDragOver={[Function]}
+            onMouseDown={[Function]}
+            onMouseOver={[Function]}
+            onMouseUp={[Function]}
+          >
+            <tbody>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={0}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={1800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={3600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={5400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={7200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={9000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={10800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={12600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={14400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={16200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={18000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={19800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={21600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={23400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={25200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={27000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={28800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={30600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={32400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={34200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={36000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={37800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={39600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={41400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={43200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={45000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={46800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={48600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={50400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={52200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={54000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={55800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={57600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={59400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={61200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={63000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={64800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={66600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={68400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={70200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={72000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={73800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={75600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={77400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={79200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={81000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={82800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={84600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div
+            className="current-time-cursor"
+            data-top={-2}
+            onDragOver={[Function]}
+            onDrop={[Function]}
+            style={
+              Object {
+                "top": "-2px",
+              }
+            }
+          />
+          <div
+            className="rendered-event-container"
+            onDragOver={[Function]}
+            onDrop={[Function]}
+            style={
+              Object {
+                "height": "200px",
+                "marginLeft": "0%",
+                "maxHeight": "200px",
+                "top": "0px",
+                "width": "100%",
+              }
+            }
+          >
+            <div
+              className="rendered-event card"
+              draggable={true}
+              onDoubleClick={[Function]}
+              onDragEnd={[Function]}
+              onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#111",
+                }
+              }
+            >
+              <div
+                className="event-container"
+              >
+                <div
+                  className="name"
+                >
+                  Event with id=2
+                </div>
+                <div
+                  className="event-card-container"
+                >
+                  <div
+                    className="tag card"
+                    onClick={[Function]}
+                  >
+                    test3
+                  </div>
+                  <div
+                    className="tag card"
+                    onClick={[Function]}
+                  >
+                    test2
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="draggable-event-end"
+              draggable={true}
+              onDragEnd={[Function]}
+              onDragStart={[Function]}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Event color rendering: Event with inherited color #000 1`] = `
+<div
+  className="calendar"
+>
+  <div
+    className="options"
+  >
+    <div
+      className="cell-size-slider"
+    >
+      <input
+        max="100"
+        min="20"
+        onChange={[Function]}
+        type="range"
+        value={25}
+      />
+    </div>
+    <div
+      className="tag-selector-container"
+    >
+      <div
+        className="tag-selector-label"
+      >
+        Filter Tag:
+      </div>
+      <div
+        className="tokenizer-container"
+      >
+        <div
+          className="pending-state-container"
+        >
+          <div
+            className="pending-token-container"
+          >
+            <input
+              onChange={[Function]}
+              onKeyDown={[Function]}
+              onKeyPress={[Function]}
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="view-type-selector"
+    >
+      <div
+        className="view-type-choice"
+        onClick={[Function]}
+      >
+        Week
+      </div>
+      <div
+        className="view-type-choice -selected"
+        onClick={[Function]}
+      >
+        Day
+      </div>
+    </div>
+    <div
+      className="pagination-container"
+    >
+      <div
+        className="pagination-option"
+        onClick={[Function]}
+      >
+        Previous
+      </div>
+      <div
+        className="pagination-option"
+        onClick={[Function]}
+      >
+        Next
+      </div>
+      <div
+        className="pagination-option"
+        onClick={[Function]}
+      >
+        Today
+      </div>
+    </div>
+  </div>
+  <div
+    className="full-column-container"
+  >
+    <div
+      className="header-and-content-container"
+    >
+      <div
+        className="column-header-container"
+      >
+        <div
+          className="column-header -times"
+        >
+          Time
+        </div>
+        <div
+          className="column-header single-day"
+        >
+          Sunday 7/15
+        </div>
+      </div>
+      <div
+        className="all-columns-container"
+      >
+        <div
+          className="column-container -times"
+        >
+          <table
+            cellPadding="0"
+            cellSpacing="0"
+            onDragOver={[Function]}
+            onMouseDown={[Function]}
+            onMouseOver={[Function]}
+            onMouseUp={[Function]}
+          >
+            <tbody>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  12:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  1:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  2:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  3:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  4:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  5:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  6:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  7:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  8:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  9:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  10:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  11:00 am
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  12:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  1:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  2:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  3:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  4:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  5:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  6:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  7:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  8:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  9:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  10:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  11:00 pm
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td>
+                  
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div
+          className="column-container single-day"
+        >
+          <table
+            cellPadding="0"
+            cellSpacing="0"
+            onDragOver={[Function]}
+            onMouseDown={[Function]}
+            onMouseOver={[Function]}
+            onMouseUp={[Function]}
+          >
+            <tbody>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={0}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={1800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={3600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={5400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={7200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={9000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={10800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={12600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={14400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={16200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={18000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={19800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={21600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={23400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={25200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={27000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={28800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={30600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={32400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={34200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={36000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={37800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={39600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={41400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={43200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={45000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={46800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={48600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={50400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={52200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={54000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={55800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={57600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={59400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={61200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={63000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={64800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={66600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={68400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={70200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={72000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={73800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={75600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={77400}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={79200}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={81000}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={82800}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+              <tr
+                style={
+                  Object {
+                    "height": "25px",
+                  }
+                }
+              >
+                <td
+                  className=""
+                  data-day="Monday"
+                  data-index={84600}
+                  onDrop={[Function]}
+                >
+                   
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div
+            className="current-time-cursor"
+            data-top={-2}
+            onDragOver={[Function]}
+            onDrop={[Function]}
+            style={
+              Object {
+                "top": "-2px",
+              }
+            }
+          />
+          <div
+            className="rendered-event-container"
+            onDragOver={[Function]}
+            onDrop={[Function]}
+            style={
+              Object {
+                "height": "200px",
+                "marginLeft": "0%",
+                "maxHeight": "200px",
+                "top": "0px",
+                "width": "100%",
+              }
+            }
+          >
+            <div
+              className="rendered-event card"
+              draggable={true}
+              onDoubleClick={[Function]}
+              onDragEnd={[Function]}
+              onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#000",
+                }
+              }
+            >
+              <div
+                className="event-container"
+              >
+                <div
+                  className="name"
+                >
+                  Event with id=1
+                </div>
+                <div
+                  className="event-card-container"
+                >
+                  <div
+                    className="tag card"
+                    onClick={[Function]}
+                  >
+                    test2
+                  </div>
+                  <div
+                    className="tag card"
+                    onClick={[Function]}
+                  >
+                    test3
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="draggable-event-end"
+              draggable={true}
+              onDragEnd={[Function]}
+              onDragStart={[Function]}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
 <div
   className="calendar"
@@ -9092,6 +13609,11 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
               onDoubleClick={[Function]}
               onDragEnd={[Function]}
               onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#6495ed",
+                }
+              }
             >
               <div
                 className="event-container"
@@ -9133,6 +13655,11 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
               onDoubleClick={[Function]}
               onDragEnd={[Function]}
               onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#6495ed",
+                }
+              }
             >
               <div
                 className="event-container"
@@ -10625,6 +15152,11 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
               onDoubleClick={[Function]}
               onDragEnd={[Function]}
               onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#6495ed",
+                }
+              }
             >
               <div
                 className="event-container"
@@ -10666,6 +15198,11 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
               onDoubleClick={[Function]}
               onDragEnd={[Function]}
               onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#6495ed",
+                }
+              }
             >
               <div
                 className="event-container"
@@ -10707,6 +15244,11 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
               onDoubleClick={[Function]}
               onDragEnd={[Function]}
               onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#6495ed",
+                }
+              }
             >
               <div
                 className="event-container"
@@ -10748,6 +15290,11 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
               onDoubleClick={[Function]}
               onDragEnd={[Function]}
               onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#6495ed",
+                }
+              }
             >
               <div
                 className="event-container"
@@ -12240,6 +16787,11 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
               onDoubleClick={[Function]}
               onDragEnd={[Function]}
               onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#6495ed",
+                }
+              }
             >
               <div
                 className="event-container"
@@ -12281,6 +16833,11 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
               onDoubleClick={[Function]}
               onDragEnd={[Function]}
               onDragStart={[Function]}
+              style={
+                Object {
+                  "background": "#6495ed",
+                }
+              }
             >
               <div
                 className="event-container"
