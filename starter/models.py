@@ -7,7 +7,7 @@ from typing import Any, Dict, Iterable, List, Optional, NewType, Tuple
 
 from django.contrib.auth.models import User
 from django.db import models
-
+from django.db.models import CASCADE
 
 UserId = NewType("UserId", int)
 
@@ -35,7 +35,7 @@ class Tag(models.Model):
                            through="TagEdge",
                            symmetrical=False,
                            verbose_name="The tags contained by this tag")
-    owner = models.ForeignKey(User, related_name="owned_tags", verbose_name="Owner of this tag")
+    owner = models.ForeignKey(User, on_delete=CASCADE, related_name="owned_tags", verbose_name="Owner of this tag")
     color = models.CharField("css color value", max_length=64, default="")
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -87,8 +87,8 @@ class Tag(models.Model):
 
 class TagEdge(models.Model):
     # No, these related names are not flipped. It's just unintuitive.
-    parent_tag = models.ForeignKey(Tag, related_name='child_tag')
-    child_tag = models.ForeignKey(Tag, related_name='parent_tag')
+    parent_tag = models.ForeignKey(Tag, on_delete=CASCADE, related_name='child_tag')
+    child_tag = models.ForeignKey(Tag, on_delete=CASCADE, related_name='parent_tag')
 
 global_task_cache = {}  # type: Dict[TaskId, Tuple[LocalTaskId, List[TagId], List[LocalEventId]]]
 
@@ -120,15 +120,15 @@ class Task(models.Model):
 
     title = models.CharField("Title of the task", max_length=128)
     description = models.TextField("Description of the task", max_length=2000)
-    author = models.ForeignKey(User, related_name="authored_tasks",
+    author = models.ForeignKey(User, on_delete=CASCADE, related_name="authored_tasks",
                                verbose_name="Original author of the task")
-    owner = models.ForeignKey(User, related_name="owned_tasks",
+    owner = models.ForeignKey(User, on_delete=CASCADE, related_name="owned_tasks",
                               verbose_name="Current owner of the task")
 
-    tags = models.ManyToManyField(Tag, verbose_name="The tags for the task")
+    tags = models.ManyToManyField(Tag, through='TaskTags', verbose_name="The tags for the task")
     priority = models.SmallIntegerField("The assigned priority of the task")
     state = models.SmallIntegerField("The current state of the task")
-    events = models.ManyToManyField('Event', verbose_name="The events for this task")
+    events = models.ManyToManyField('Event', through='TaskEvents', verbose_name="The events for this task")
     expected_duration_secs = models.IntegerField("Expected duration of the task in seconds")
     due_time = models.DateTimeField(
         "Time that the task is due",
@@ -240,24 +240,24 @@ class Task(models.Model):
 
 
 class TaskGlobalId(models.Model):
-    user = models.ForeignKey(User, related_name="user")
-    task = models.ForeignKey(Task, related_name="task")
+    user = models.ForeignKey(User, on_delete=CASCADE, related_name="user")
+    task = models.ForeignKey(Task, on_delete=CASCADE, related_name="task")
     local_id = models.IntegerField(db_index=True)
 
     GLOBAL_WLOCK = Lock()
 
 
 class TaskTags(models.Model):
-    task = models.ForeignKey(Task, related_name="_tags")
-    tag = models.ForeignKey(Tag, related_name="_tasks")
+    task = models.ForeignKey(Task, on_delete=CASCADE, related_name="_tags")
+    tag = models.ForeignKey(Tag, on_delete=CASCADE, related_name="_tasks")
 
     class Meta:
         db_table = "starter_task_tags"
 
 
 class TaskEvents(models.Model):
-    task = models.ForeignKey(Task, related_name="_events")
-    event = models.ForeignKey("Event", related_name="_tasks")
+    task = models.ForeignKey(Task, on_delete=CASCADE, related_name="_events")
+    event = models.ForeignKey("Event", on_delete=CASCADE, related_name="_tasks")
 
     class Meta:
         db_table = "starter_task_events"
@@ -268,12 +268,12 @@ class Event(models.Model):
     start_time = models.DateTimeField("Start time of the event")
     duration_secs = models.IntegerField("Duration of events in seconds")
 
-    author = models.ForeignKey(User, related_name="authored_events",
+    author = models.ForeignKey(User, on_delete=CASCADE, related_name="authored_events",
                                verbose_name="Original author of the event")
-    owner = models.ForeignKey(User, related_name="owned_events",
+    owner = models.ForeignKey(User, on_delete=CASCADE, related_name="owned_events",
                               verbose_name="Current owner of the event")
 
-    tags = models.ManyToManyField(Tag, verbose_name="The tags for the event")
+    tags = models.ManyToManyField(Tag, through='EventTags', verbose_name="The tags for the event")
 
     @classmethod
     def event_is_recent(cls, event: "Event"):
@@ -399,16 +399,16 @@ class Event(models.Model):
 
 
 class EventGlobalId(models.Model):
-    user = models.ForeignKey(User, related_name="user_events")
-    event = models.ForeignKey(Event, related_name="event_user")
+    user = models.ForeignKey(User, on_delete=CASCADE, related_name="user_events")
+    event = models.ForeignKey(Event, on_delete=CASCADE, related_name="event_user")
     local_id = models.IntegerField(db_index=True)
 
     GLOBAL_WLOCK = Lock()
 
 
 class EventTags(models.Model):
-    event = models.ForeignKey(Event, related_name="_tags")
-    tag = models.ForeignKey(Tag, related_name="_events")
+    event = models.ForeignKey(Event, on_delete=CASCADE, related_name="_tags")
+    tag = models.ForeignKey(Tag, on_delete=CASCADE, related_name="_events")
 
     class Meta:
         db_table = "starter_event_tags"
@@ -420,7 +420,7 @@ class AuthToken(models.Model):
     class Type(enum.Enum):
         STRAVA = 1
 
-    user = models.ForeignKey(User, related_name="auth_tokens",
+    user = models.ForeignKey(User, on_delete=CASCADE, related_name="auth_tokens",
                              verbose_name="The user authorized by the token")
     type = models.SmallIntegerField("The type of auth token", db_index=True)
     token = models.CharField("The token given out by the provider", max_length=128)
@@ -432,9 +432,9 @@ class StravaActivity(models.Model):
 
     # Connect this to our internal models
     # Note: Since there is only one importer, we should only import activities by the user.
-    importer = models.ForeignKey(User, related_name="strava_activities",
+    importer = models.ForeignKey(User, on_delete=CASCADE, related_name="strava_activities",
                                  verbose_name="The user that imported the data")
-    event = models.ForeignKey(Event, related_name="strava_activity",
+    event = models.ForeignKey(Event, on_delete=CASCADE, related_name="strava_activity",
                               verbose_name="The strava activity for this event")
 
     # Relevant cached fields
@@ -447,7 +447,7 @@ class StravaActivity(models.Model):
 class Note(models.Model):
     title = models.CharField("Title of note", max_length=128)
     content = models.TextField("Content of the note", max_length=65536)
-    author = models.ForeignKey(User, related_name="authored_notes",
+    author = models.ForeignKey(User, on_delete=CASCADE, related_name="authored_notes",
                                verbose_name="Original author of the note")
     creation_time = models.DateTimeField("Creation time of the note")
 
@@ -527,21 +527,21 @@ class Note(models.Model):
 
 
 class NoteGlobalId(models.Model):
-    user = models.ForeignKey(User, related_name="user_notes")
-    note = models.ForeignKey(Note, related_name="note_user")
+    user = models.ForeignKey(User, on_delete=CASCADE, related_name="user_notes")
+    note = models.ForeignKey(Note, on_delete=CASCADE, related_name="note_user")
     local_id = models.IntegerField(db_index=True)
 
     GLOBAL_WLOCK = Lock()
 
 
 class NoteTags(models.Model):
-    note = models.ForeignKey(Note)
-    tag = models.ForeignKey(Tag)
+    note = models.ForeignKey(Note, on_delete=CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=CASCADE)
 
 
 class Capture(models.Model):
     content = models.TextField("Content of the capture", max_length=65536)
-    author = models.ForeignKey(User, related_name="authored_captures",
+    author = models.ForeignKey(User, on_delete=CASCADE, related_name="authored_captures",
                                verbose_name="Original author of the capture")
     creation_time = models.DateTimeField("Creation time of the capture")
 
@@ -598,8 +598,8 @@ class Capture(models.Model):
 
 
 class CaptureGlobalId(models.Model):
-    user = models.ForeignKey(User, related_name="user_captures")
-    capture = models.ForeignKey(Capture, related_name="capture_user")
+    user = models.ForeignKey(User, on_delete=CASCADE, related_name="user_captures")
+    capture = models.ForeignKey(Capture, on_delete=CASCADE, related_name="capture_user")
     local_id = models.IntegerField(db_index=True)
 
     GLOBAL_WLOCK = Lock()

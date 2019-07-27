@@ -47,10 +47,10 @@ urlpatterns = [
         form_class=UserCreationForm,
         success_url='/'
     )),
-    url(r'^auth/login/?$', auth_views.login),
+    url(r'^auth/login/?$', auth_views.LoginView.as_view()),
     url(r'^auth/logout/?$', views.logout),
-    url(r'^auth/password_change/?$', auth_views.password_change),
-    url(r'^auth/password_change_done/?$', auth_views.password_change_done),
+    url(r'^auth/password_change/?$', auth_views.PasswordChangeView.as_view()),
+    url(r'^auth/password_change_done/?$', auth_views.PasswordChangeDoneView.as_view()),
 
     # API v1
     url(r'^api/1/task/create/?$', views.create_task),
