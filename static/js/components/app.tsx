@@ -528,6 +528,18 @@ export class App extends React.Component<AppProps, AppState> {
         />
     }
 
+    // Wraps the component in a main pane that also allows detail to be rendered at the bottom
+    renderWrapped(component) {
+        return <div className="merged-container">
+            <div className="main-pane main-pane-full">
+                <div className="merged-task-container">
+                    {component()}
+                </div>
+                {this.renderDetail()}
+            </div>
+        </div>
+    }
+
     renderNotes() {
         return <NoteBoardComponent
             meUser={this.props.meUser}
@@ -577,19 +589,19 @@ export class App extends React.Component<AppProps, AppState> {
         let getTaskBoard = () => {
             return this.renderPageContainer(
                 AppViewMode.taskView,
-                this.renderTaskBoard.bind(this),
+                this.renderWrapped.bind(this, this.renderTaskBoard.bind(this)),
             )
         };
         let getCalendarWeek = (viewType) => {
             return this.renderPageContainer(
                 AppViewMode.eventView,
-                this.renderCalendar.bind(this, viewType, false)
+                this.renderWrapped.bind(this, this.renderCalendar.bind(this, viewType, false)),
             )
         };
         let getTagGraph = () => {
             return this.renderPageContainer(
                 AppViewMode.tagView,
-                this.renderTagGraph.bind(this),
+                this.renderWrapped.bind(this, this.renderTagGraph.bind(this)),
             )
         };
 

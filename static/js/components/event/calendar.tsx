@@ -72,7 +72,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     constructor(props: CalendarProps) {
         super(props);
-
         this.state = this.getState(props)
     }
 
@@ -144,14 +143,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     componentDidMount() {
-        const cursor = document.getElementsByClassName("current-time-cursor");
-        if (cursor.length) {
-            // Scroll the calendar view so that the current time is in the middle.
-            const container = document.getElementsByClassName("all-columns-container")[0];
-            const top = jQuery(cursor[0]).data("top");
-            container.scrollTop = top - container.clientHeight / 2;
-        }
-
         // Register a loop to keep refreshing the cursor.
         let loop = () => {
             this.forceUpdate();

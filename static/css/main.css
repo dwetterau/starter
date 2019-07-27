@@ -65,7 +65,7 @@ div.header-container {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding: 1em 1em 0;
+    padding: 0.8em 1em 0;
     background-color: #fff;
 }
 
@@ -424,8 +424,7 @@ div.calendar div.all-columns-container {
     display: flex;
     overflow-x: hidden;
     overflow-y: auto;
-    border-bottom: 1px solid rgba(0, 0, 0, .2);
-    border-top: 1px solid rgba(0, 0, 0, .2);
+    border: 1px solid rgba(0, 0, 0, .2);
     background-color: white;
     padding-top: 1em;
 }
@@ -471,7 +470,6 @@ div.calendar div.column-container tr:last-child td {
 }
 
 div.calendar div.column-container:first-child td {
-    border-left: 1px solid rgba(0, 0, 0, .2);
     border-right: none;
     border-bottom: none;
     cursor: default; /* Prevents times from being click-able */
@@ -747,6 +745,11 @@ div.main-pane {
     flex-direction: column;
 }
 
+div.main-pane.main-pane-full {
+    max-width: 100%;
+    min-width: 100%;
+}
+
 div.merged-task-container {
     height: 100%;
     overflow-y: auto;
@@ -768,6 +771,20 @@ div.main-pane div.task-board div.full-column-container {
 }
 
 /* Ad-hoc fixes for calendar */
+div.main-pane div.calendar {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+div.main-pane div.calendar div.full-column-container {
+    overflow-y: scroll;
+}
+
+div.main-pane div.calendar div.full-column-container div.header-and-content-container {
+    min-height: 100%;
+}
+
 div.right-pane div.calendar div.full-column-container {
     padding: 0;
 }
