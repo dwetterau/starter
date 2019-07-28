@@ -22,6 +22,7 @@ STATICFILES_DIRS = (
     # 3rd party libraries we don't bundle for caching reasons
     os.path.join(BASE_DIR, '../node_modules/react/umd/'),
     os.path.join(BASE_DIR, '../node_modules/react-dom/umd/'),
+    os.path.join(BASE_DIR, '../node_modules/react-google-charts/dist/'),
     os.path.join(BASE_DIR, '../node_modules/react-markdown/umd/'),
     os.path.join(BASE_DIR, '../node_modules/react-router-dom/umd/'),
     os.path.join(BASE_DIR, '../node_modules/jquery/dist/'),

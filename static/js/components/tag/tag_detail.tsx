@@ -1,5 +1,7 @@
 import * as moment from "moment";
 import * as React from "react"
+import { Chart } from "react-google-charts";
+
 import {Event, EventsById, Tag, TagsById} from "../../models";
 import {getTagAndDescendantsRecursive, renderDuration, getTagParentIds} from "../lib/util";
 import {TagComponent} from "./tag";
@@ -138,6 +140,34 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         return [timeSpentDay, timeSpentWeek, timeSpentLastWeek, timeSpentMonth];
     }
 
+    spentTimeGraphData(eventIds: Array<number>) {
+        // TODO: Allow options for the time window to compute data for.
+        // TODO: Allow different aggregations as well (daily, monthly, etc.)
+        // Output format example:
+        // [["Date", "Hours"], ['2019-07-28', 5.5], ['2019-07-29', 12]]
+        let buckets = [];
+        let curStart = moment().startOf("day");
+        let curEnd = moment();
+
+        // Compute buckets for the past 30 days;
+        for (let i = 0; i < 30; i++) {
+            let curBucket = 0;
+            for (let eventId of eventIds) {
+                curBucket += this.computeDurationOfEventBetweenTimestamps(
+                    this.props.eventsById[eventId],
+                    curStart.unix() * 1000,
+                    curEnd.unix() * 1000,
+                )
+            }
+            buckets.push([curStart.toDate(), curBucket / (60 * 60)]);
+            // Adjust the time bounds
+            curEnd = moment(curStart);
+            curStart = curStart.subtract(1, "day");
+        }
+        buckets.push(["Date", "Hours"]);
+        return buckets.reverse();
+    }
+
     renderOptions() {
         return <div className="options">
             <a className="close-button" onClick={this.props.closeCallback}>Close</a>
@@ -200,7 +230,18 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         let relevantEvents = this.computeAllRelevantEvents();
         let [timeSpentDay, timeSpentWeek, timeSpentLastWeek, timeSpentMonth] =
             this.computeSpentTimes(relevantEvents);
+        let chartData = this.spentTimeGraphData(relevantEvents);
         return <div className="time-info">
+            <Chart
+                chartType={"LineChart"}
+                options={{
+                    "curveType": "function",
+                    "vAxis": {"minValue": 0, "viewWindow": {"min": 0}},
+                }}
+                data={chartData}
+                width={"100%"}
+                height={"200px"}
+            />
             {this.renderDurationWithName("Spent today", timeSpentDay)}
             {this.renderDurationWithName("Spent this week", timeSpentWeek)}
             {this.renderDurationWithName("Spent last week", timeSpentLastWeek)}
@@ -211,9 +252,9 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
     render() {
         return <div className="detail-container">
             {this.renderHeader()}
+            {this.renderTimeInfo()}
             {this.renderParentTags()}
             {this.renderDescendantTags()}
-            {this.renderTimeInfo()}
         </div>
     }
 }
