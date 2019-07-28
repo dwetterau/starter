@@ -54,6 +54,19 @@ export class Event {
     startTime: number;
     durationSecs: number;
     taskIds: Array<number>;
+
+    static clone(e: Event): Event {
+        return {
+            id: e.id,
+            name: e.name,
+            authorId: e.authorId,
+            ownerId: e.ownerId,
+            tagIds: e.tagIds.slice(0),
+            startTime: e.startTime,
+            durationSecs: e.durationSecs,
+            taskIds: e.taskIds.slice(0),
+        }
+    }
 }
 
 export interface EventsById {[eventId: number]: Event}

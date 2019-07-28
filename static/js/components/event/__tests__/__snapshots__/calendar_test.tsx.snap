@@ -9076,6 +9076,8 @@ exports[`Event color rendering: Event with default color 1`] = `
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "200px",
@@ -10582,6 +10584,8 @@ exports[`Event color rendering: Event with direct color #111 1`] = `
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "200px",
@@ -12101,6 +12105,8 @@ exports[`Event color rendering: Event with inherited color #000 1`] = `
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "200px",
@@ -13620,6 +13626,8 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "200px",
@@ -13675,6 +13683,8 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "50px",
@@ -15181,6 +15191,8 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "200px",
@@ -15236,6 +15248,8 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "50px",
@@ -15291,6 +15305,8 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "50px",
@@ -15346,6 +15362,8 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "50px",
@@ -16852,6 +16870,8 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "200px",
@@ -16907,6 +16927,8 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
             className="rendered-event-container"
             onDragOver={[Function]}
             onDrop={[Function]}
+            onMouseMove={[Function]}
+            onMouseUp={[Function]}
             style={
               Object {
                 "height": "200px",

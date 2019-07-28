@@ -528,11 +528,6 @@ div.calendar div.column-container.single-day div.current-time-cursor {
     min-width: 360px;
 }
 
-div.calendar div.column-container tr td.-selected {
-    background-color: rgba(0, 0, 0, .2);
-    border: none;
-}
-
 div.calendar div.rendered-event-container div.draggable-event-end {
     cursor: ns-resize;
     width: 100%;
