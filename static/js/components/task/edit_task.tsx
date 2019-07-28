@@ -109,7 +109,7 @@ export class EditTaskComponent extends React.Component<EditTaskProps, EditTaskSt
 
     updateDueTime(time: moment.Moment) {
         let newDueTime = 0;
-        if (time) {
+        if (time && time.unix) {
             newDueTime = time.unix() * 1000;
         }
         this.state.task.dueTime = newDueTime;
