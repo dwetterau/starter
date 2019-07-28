@@ -695,6 +695,9 @@ div.modal h3 {
 div.modal-container div.cancel-button-container {
     cursor: pointer;
     float: right;
+    padding: 10px;
+    margin-right: -10px;
+    margin-top: -10px;
 }
 
 div.modal label {

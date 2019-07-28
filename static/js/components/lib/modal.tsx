@@ -6,8 +6,6 @@ export interface ModalProps {
 }
 
 export class ModalComponent extends React.Component<ModalProps, {}> {
-
-
     componentDidMount() {
         // Focus the first input element after the modal appears.
         let modalElements = document.getElementsByClassName("modal");
@@ -35,7 +33,7 @@ export class ModalComponent extends React.Component<ModalProps, {}> {
             className="cancel-button-container"
             onClick={this.props.cancelFunc}
         >
-            x
+            close
         </div>
     }
 

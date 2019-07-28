@@ -271,6 +271,12 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
         return names;
     }
 
+    onTagTokenizerExit() {
+        if (this.props.createMode) {
+            this.submitForm("create");
+        }
+    }
+
     retrieveTaskNames(tokens: Array<Tokenizable>) {
         // Determine if there are any new ids.
         let oldTaskIdMap = {};
@@ -336,6 +342,7 @@ export class EditEventComponent extends React.Component<EditEventProps, EditEven
                 <label>Tags:</label>
                 <TokenizerComponent
                     onChange={this.retrieveTagNames.bind(this)}
+                    onExit={this.onTagTokenizerExit.bind(this)}
                     initialValues={this.getCurrentTags()}
                     possibleTokens={this.getAllTagNames()}
                 />

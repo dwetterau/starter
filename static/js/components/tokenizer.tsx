@@ -10,6 +10,11 @@ export interface TokenizerProps {
     initialValues?: Array<Tokenizable>, // Note this does not work outside of the first call.
     possibleTokens?: Array<Tokenizable>,
     tokenLimit?: number, // Limit of 0 is the same as unlimited
+
+    // If provided, will be called when the user indicates they are done entering tokens.
+    // An example is if they have selected a token and then press "Enter" again without attempting
+    // to add another token.
+    onExit?: () => void,
 }
 export interface TokenizerState {
     tokens: Array<Tokenizable>,
@@ -205,6 +210,12 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
         } else if (event.key == "Enter") {
             if (this.state.autoCompleteTokens.length == 1) {
                 this.setState({selectedTokenIndex: 0});
+                return;
+            }
+            if (this.state.tokens.length > 0 && this.state.pendingToken.length == 0) {
+                if (this.props.onExit) {
+                    this.props.onExit()
+                }
             }
         }
     }
