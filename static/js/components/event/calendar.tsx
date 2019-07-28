@@ -68,6 +68,8 @@ interface EventRenderingInfo {
     marginLeft: number
 }
 
+let lastScrollPosition = -1;
+
 export class CalendarComponent extends React.Component<CalendarProps, CalendarState> {
 
     constructor(props: CalendarProps) {
@@ -143,6 +145,20 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     componentDidMount() {
+        const container = document.getElementsByClassName("all-columns-container")[0];
+        container.addEventListener("scroll", () => {
+            lastScrollPosition = container.scrollTop;
+        });
+        const cursor = document.getElementsByClassName("current-time-cursor");
+        if (lastScrollPosition == -1 && cursor.length) {
+            // Scroll the calendar view so that the current time is in the middle.
+            const top = jQuery(cursor[0]).data("top");
+            container.scrollTop = top - container.clientHeight / 2;
+        } else {
+            // Restore the old scroll we were at.
+            container.scrollTop = lastScrollPosition
+        }
+
         // Register a loop to keep refreshing the cursor.
         let loop = () => {
             this.forceUpdate();
