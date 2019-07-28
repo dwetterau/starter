@@ -1,6 +1,5 @@
 * {
     font-family: "Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,sans-serif!important;
-    letter-spacing: .3px;
     color: #47525d;
     font-weight: 100;
 }
@@ -503,7 +502,17 @@ div.calendar div.rendered-event-container div.card {
 
 div.calendar div.rendered-event-container div.card div {
     color: white;
-    font-weight: 400;
+    font-weight: 600;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+div.calendar div.rendered-event-container div.card div.event-time-container {
+   font-weight: 400;
+}
+
+div.event-container div.event-name-and-time-container.inline-name-and-time {
+    display: flex;
 }
 
 div.calendar div.column-container div.current-time-cursor {

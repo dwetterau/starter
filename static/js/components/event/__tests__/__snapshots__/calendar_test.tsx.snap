@@ -9102,9 +9102,18 @@ exports[`Event color rendering: Event with default color 1`] = `
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=3
+                  <div
+                    className="name"
+                  >
+                    Event with id=3
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    12 - 4am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -10599,9 +10608,18 @@ exports[`Event color rendering: Event with direct color #111 1`] = `
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=2
+                  <div
+                    className="name"
+                  >
+                    Event with id=2
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    12 - 4am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -12109,9 +12127,18 @@ exports[`Event color rendering: Event with inherited color #000 1`] = `
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=1
+                  <div
+                    className="name"
+                  >
+                    Event with id=1
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    12 - 4am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -13619,9 +13646,18 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=1
+                  <div
+                    className="name"
+                  >
+                    Event with id=1
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    2 - 6am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -13665,9 +13701,18 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=2
+                  <div
+                    className="name"
+                  >
+                    Event with id=2
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    2:30 - 3:30am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -15162,9 +15207,18 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=1
+                  <div
+                    className="name"
+                  >
+                    Event with id=1
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    2 - 6am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -15208,9 +15262,18 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=2
+                  <div
+                    className="name"
+                  >
+                    Event with id=2
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    2:30 - 3:30am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -15254,9 +15317,18 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=3
+                  <div
+                    className="name"
+                  >
+                    Event with id=3
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    3 - 4am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -15300,9 +15372,18 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=4
+                  <div
+                    className="name"
+                  >
+                    Event with id=4
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    4 - 5am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -16797,9 +16878,18 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=1
+                  <div
+                    className="name"
+                  >
+                    Event with id=1
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    2 - 6am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"
@@ -16843,9 +16933,18 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
                 className="event-container"
               >
                 <div
-                  className="name"
+                  className="event-name-and-time-container"
                 >
-                  Event with id=5
+                  <div
+                    className="name"
+                  >
+                    Event with id=5
+                  </div>
+                  <div
+                    className="event-time-container"
+                  >
+                    2 - 6am
+                  </div>
                 </div>
                 <div
                   className="event-card-container"

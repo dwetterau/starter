@@ -1,4 +1,6 @@
+import * as moment from "moment";
 import * as React from "react";
+
 import {Event, TagsById} from "../../models";
 import {TagComponent} from "../tag/tag";
 import {signalDisplayTaskInfo} from "../../events";
@@ -18,6 +20,34 @@ export class EventComponent extends React.Component<EventProps, {}> {
         document.dispatchEvent(event);
     }
 
+    shortTimeMoment(m: moment.Moment, includeAM: boolean): string {
+        const amSuffix = includeAM? "a": "";
+        if (m.minutes() != 0) {
+            return m.format("h:mm" + amSuffix)
+        }
+        return m.format("h" + amSuffix);
+    }
+
+    timeString() {
+        const startMoment = moment(this.props.event.startTime);
+
+        // We render durations <= 30 minutes with just the start time.
+        if (this.props.event.durationSecs <= 30 * 60) {
+            return this.shortTimeMoment(startMoment, true)
+        }
+        // Otherwise, we'll render "start - end"
+        const endMoment = moment(
+            this.props.event.startTime + (this.props.event.durationSecs * 1000),
+        );
+        let startString = this.shortTimeMoment(startMoment, true);
+        // If they're in the same part of the day, omit the "am" part from the start;
+        if (endMoment.format("wwYa") == startMoment.format("wwYa")) {
+            startString = this.shortTimeMoment(startMoment, false);
+        }
+        let endString = this.shortTimeMoment(endMoment, true);
+        return `${startString} - ${endString}`
+    }
+
     renderTag(tagId: number) {
         const tag = this.props.tagsById[tagId];
         return <TagComponent tag={tag} key={tagId}/>
@@ -28,6 +58,29 @@ export class EventComponent extends React.Component<EventProps, {}> {
             {this.props.event.name}
         </div>
     };
+
+    renderTime() {
+        return <div className="event-time-container">
+            {this.timeString()}
+        </div>
+    }
+
+    renderNameAndTime() {
+        if (this.props.event.durationSecs > 30 * 60) {
+            return <div className="event-name-and-time-container">
+                {this.renderName()}
+                {this.renderTime()}
+            </div>
+        }
+        return <div className="event-name-and-time-container inline-name-and-time">
+            <div className="name">
+                {this.props.event.name + ","}
+            </div>
+            <div className="event-time-container">
+                {this.timeString()}
+            </div>
+        </div>
+    }
 
     renderTags() {
         if (!this.props.event.tagIds.length) {
@@ -53,7 +106,7 @@ export class EventComponent extends React.Component<EventProps, {}> {
 
     render() {
         return <div className="event-container">
-            {this.renderName()}
+            {this.renderNameAndTime()}
             <div className="event-card-container">
                 {this.renderTags()}
                 {this.renderTasks()}
