@@ -669,7 +669,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     columnMouseUp(day: string, event: any) {
-        if (!this.state.createEventTimestamp) {
+        if (!this.state.draggingStartTimestamp) {
             // No dragging was happening, nothing to do.
             return
         }
@@ -728,7 +728,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             this.props.updateEvent(eventToUpdate);
 
             this.setState({endDraggingEvent: null});
-        } else if (this.state.createEventTimestamp) {
+        } else if (this.state.draggingStartTimestamp) {
             this.finishPendingCreateEvent(day, index);
         } else {
             // No event was being dragged
@@ -1084,7 +1084,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 onMouseDown={this.columnMouseDown.bind(this, day)}
                 onMouseOver={debounce(this.columnMouseMove.bind(this, day), 50)}
                 onMouseUp={this.columnMouseUp.bind(this, day)}
-                onDragOver={debounce(this.onDragOver.bind(this, day, -1), 50)}
+                onDragOver={this.onDragOver.bind(this, day, -1)}
             >
                 <tbody>
                     {tableRows}
@@ -1196,7 +1196,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         key={eventId}
                         style={style}
                         onDrop={this.onDropPassThrough.bind(this)}
-                        onDragOver={debounce(this.onDragOverPassThrough.bind(this), 50)}
+                        onDragOver={this.onDragOverPassThrough.bind(this)}
                         onMouseMove={debounce(this.onDragOverPassThrough.bind(this), 50)}
                         onMouseUp={this.onDropPassThrough.bind(this)}
                     >
