@@ -56,6 +56,7 @@ const GRANULARITY = 1800; // Each cell is 30 minutes (unit in seconds)
 
 const DEFAULT_CELL_HEIGHT = 25;
 const MIN_CELL_HEIGHT = 20;
+const FAKE_EVENT_ID = -1;
 
 interface EventRenderingInfo {
     index: number
@@ -603,23 +604,58 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         event.preventDefault();
     }
 
+    makePendingEvent(createEventTimestamp, createEventDurationSecs): Event {
+        return {
+            id: FAKE_EVENT_ID,
+            name: "(untitled)",
+            authorId: this.props.meUser.id,
+            ownerId: this.props.meUser.id,
+            tagIds: [],
+            startTime: createEventTimestamp,
+            durationSecs: createEventDurationSecs,
+            taskIds: [],
+        }
+    }
+
     columnMouseOver(day: string, event: any) {
         if (!this.state.draggingStartTimestamp) {
             // No dragging was happening, nothing to do.
             return
         }
         let index = event.target.dataset.index * 1;
+        this.updatePendingCreateEvent(day, index);
+    }
+
+    updatePendingCreateEvent(day: string, index: number) {
         const draggingEndTimestamp = this.computeTimestamp(day, index);
+        const createEventTimestamp = CalendarComponent.getCreateEventTimestamp(
+            this.state.draggingStartTimestamp,
+            draggingEndTimestamp,
+        );
+        const createEventDurationSecs = CalendarComponent.getCreateEventDurationSecs(
+            this.state.draggingStartTimestamp,
+            draggingEndTimestamp,
+        );
+
+        // Inject a fake event and re-render everything?
+        let events = {};
+        for (let eventId in this.props.eventsById) {
+            events[eventId] = this.props.eventsById[eventId];
+        }
+        events[FAKE_EVENT_ID] = this.makePendingEvent(createEventTimestamp, createEventDurationSecs);
+        const [columns, eventToRenderingInfo] = CalendarComponent.divideAndSort(
+            this.props.view,
+            events,
+            this.props.selectedTag,
+            this.props.tagsById,
+        );
+
         this.setState({
             draggingEndTimestamp,
-            createEventTimestamp: CalendarComponent.getCreateEventTimestamp(
-                this.state.draggingStartTimestamp,
-                draggingEndTimestamp,
-            ),
-            createEventDurationSecs: CalendarComponent.getCreateEventDurationSecs(
-                this.state.draggingStartTimestamp,
-                draggingEndTimestamp,
-            )
+            createEventTimestamp: createEventTimestamp,
+            createEventDurationSecs: createEventDurationSecs,
+            columns: columns,
+            eventToRenderingInfo: eventToRenderingInfo,
         });
     }
 
@@ -628,8 +664,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             // No dragging was happening, nothing to do.
             return
         }
-
         let index = event.target.dataset.index * 1;
+        this.finishPendingCreateEvent(day, index);
+    }
+
+    finishPendingCreateEvent(day: string, index: number) {
         const draggingEndTimestamp = this.computeTimestamp(day, index);
         this.setState({
             draggingStartTimestamp: null,
@@ -681,6 +720,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             this.props.updateEvent(eventToUpdate);
 
             this.setState({endDraggingEvent: null});
+        } else if (this.state.draggingStartTimestamp) {
+            this.finishPendingCreateEvent(day, index);
         } else {
             // No event was being dragged
             return
@@ -791,6 +832,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     draggingEndTimestamp: timestamp,
                 });
             }
+        } else if (this.state.draggingStartTimestamp) {
+            this.updatePendingCreateEvent(day, index);
         } else {
             // Nothing being dragged
             return
@@ -1046,7 +1089,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 onMouseDown={this.columnMouseDown.bind(this, day)}
                 onMouseOver={debounce(this.columnMouseOver.bind(this, day), 50)}
                 onMouseUp={this.columnMouseUp.bind(this, day)}
-                onDragOver={this.onDragOver.bind(this, day, -1)}
+                onDragOver={debounce(this.onDragOver.bind(this, day, -1), 50)}
             >
                 <tbody>
                     {tableRows}
@@ -1111,6 +1154,16 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return "#6495ed";
     }
 
+    getEvent(eventId: number) {
+        if (eventId == FAKE_EVENT_ID) {
+            return this.makePendingEvent(
+                this.state.createEventTimestamp,
+                this.state.createEventDurationSecs,
+            )
+        }
+        return this.props.eventsById[eventId];
+    }
+
     renderColumn(columnIndex: number, column: Array<number>, singleDay?: boolean) {
         const day = DAYS[columnIndex];
         let className = "column-container";
@@ -1135,14 +1188,16 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     "marginLeft": `${renderingInfo.marginLeft}%`,
                     "width": `${renderingInfo.widthPercentage}%`,
                 };
-                let event = this.props.eventsById[eventId];
+                let event = this.getEvent(eventId);
                 return (
                     <div
                         className="rendered-event-container"
                         key={eventId}
                         style={style}
                         onDrop={this.onDropPassThrough.bind(this)}
-                        onDragOver={this.onDragOverPassThrough.bind(this)}
+                        onDragOver={debounce(this.onDragOverPassThrough.bind(this), 50)}
+                        onMouseMove={debounce(this.onDragOverPassThrough.bind(this), 50)}
+                        onMouseUp={this.onDropPassThrough.bind(this)}
                     >
                         <div
                             className="rendered-event card"
@@ -1247,11 +1302,21 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     }
 
     closeCreateEvent() {
+        // Re-generate the events to remove the pending one.
+        const [columns, eventToRenderingInfo] = CalendarComponent.divideAndSort(
+            this.props.view,
+            this.props.eventsById,
+            this.props.selectedTag,
+            this.props.tagsById,
+        );
+
         this.setState({
             showCreate: false,
             createEventTimestamp: null,
             createEventDurationSecs: null,
             createEventTask: null,
+            columns: columns,
+            eventToRenderingInfo: eventToRenderingInfo,
         });
     }
 
