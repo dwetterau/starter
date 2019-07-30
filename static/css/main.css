@@ -297,10 +297,15 @@ div.detail-container div.time-info {
 
 div.detail-container div.time-info div.chart-container {
     display: flex;
+    justify-content: space-between;
 }
 
 div.detail-container div.time-info div.chart-container div:first-child {
-    flex-grow: .7;
+    width: 70%;
+}
+
+div.detail-container div.time-info div.chart-container div:last-child {
+    width: 30%;
 }
 
 /* This apparently stops the annoying flickering from google charts */
@@ -318,15 +323,6 @@ div.detail-container div.task-status div {
 
 div.detail-container div.task-status div.info-container {
     display: flex;
-    justify-content: space-between;
-}
-
-div.detail-container div.task-status div.info-container div:first-child {
-    width: 70%
-}
-
-div.detail-container div.task-status div.info-container div:last-child {
-    width: 30%
 }
 
 div.detail-container div.task-status div.task-color {

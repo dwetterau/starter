@@ -157,6 +157,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
             for (let tagId in allTags) {
                 tagToHours[tagId] = 0
             }
+            let total = 0;
             for (let eventId of eventIds) {
                 const event = this.props.eventsById[eventId];
                 let curBucket = this.computeDurationOfEventBetweenTimestamps(
@@ -167,11 +168,12 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
                 if (curBucket == 0) {
                     continue;
                 }
+                total += curBucket / (60 * 60);
                 for (let tagId of event.tagIds) {
                     tagToHours[tagId] += curBucket / event.tagIds.length / (60 * 60);
                 }
             }
-            let bucketValues = [curStart.toDate()];
+            let bucketValues = [curStart.toDate(), total];
             for (let tagId in allTags) {
                 bucketValues.push(tagToHours[tagId])
             }
@@ -180,7 +182,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
             curEnd = moment(curStart);
             curStart = curStart.subtract(1, "day");
         }
-        let headers = ["Date"];
+        let headers = ["Date", "Total"];
         for (let tagId in allTags) {
             headers.push(this.props.tagsById[tagId].name)
         }
@@ -286,6 +288,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         let pieChartData = this.pieChartData(relevantEvents);
         return <div className="time-info">
             <div className={"chart-container"}>
+                <div>
                 <Chart
                     chartType={"AreaChart"}
                     options={{
@@ -294,16 +297,27 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
                             "title": "Hours",
                             "viewWindow": {"min": 0},
                         },
-                        "isStacked": true,
+                        "isStacked": false,
+                        "responsive": true,
+                        "maintainAspectRatio": false,
                     }}
                     data={chartData}
                     height={"300px"}
+                    width={"100%"}
                 />
+                </div>
+                <div>
                 <Chart
                     chartType={"PieChart"}
+                    options={{
+                        "responsive": true,
+                        "maintainAspectRatio": false,
+                    }}
                     data={pieChartData}
                     height={"300px"}
+                    width={"100%"}
                 />
+                </div>
             </div>
             {this.renderDurationWithName("Spent today", timeSpentDay)}
             {this.renderDurationWithName("Spent this week", timeSpentWeek)}
