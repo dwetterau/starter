@@ -7,6 +7,7 @@ import {getTagAndDescendantsRecursive, renderDuration, getTagParentIds} from "..
 import {TagComponent} from "./tag";
 
 interface TagDetailProps {
+    // TODO: Allow this to also show a tag for "everything" by being empty?
     tag: Tag,
     eventsById: EventsById,
     tagsById: TagsById,
@@ -148,28 +149,48 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         let buckets = [];
         let curStart = moment().startOf("day");
         let curEnd = moment();
+        const allTags = getTagAndDescendantsRecursive(this.props.tag.id, this.props.tagsById);
 
         // Compute buckets for the past 30 days;
         for (let i = 0; i < 30; i++) {
-            let curBucket = 0;
+            let tagToHours = {};
+            for (let tagId in allTags) {
+                tagToHours[tagId] = 0
+            }
             for (let eventId of eventIds) {
-                curBucket += this.computeDurationOfEventBetweenTimestamps(
-                    this.props.eventsById[eventId],
+                const event = this.props.eventsById[eventId];
+                let curBucket = this.computeDurationOfEventBetweenTimestamps(
+                    event,
                     curStart.unix() * 1000,
                     curEnd.unix() * 1000,
-                )
+                );
+                if (curBucket == 0) {
+                    continue;
+                }
+                for (let tagId of event.tagIds) {
+                    tagToHours[tagId] += curBucket / event.tagIds.length / (60 * 60);
+                }
             }
-            buckets.push([curStart.toDate(), curBucket / (60 * 60)]);
+            let bucketValues = [curStart.toDate()];
+            for (let tagId in allTags) {
+                bucketValues.push(tagToHours[tagId])
+            }
+            buckets.push(bucketValues);
             // Adjust the time bounds
             curEnd = moment(curStart);
             curStart = curStart.subtract(1, "day");
         }
-        buckets.push(["Date", "Hours"]);
+        let headers = ["Date"];
+        for (let tagId in allTags) {
+            headers.push(this.props.tagsById[tagId].name)
+        }
+        buckets.push(headers);
         return buckets.reverse();
     }
 
     pieChartData(eventIds: Array<number>) {
         // TODO: Allow options for the time window to compute data for.
+        // TODO: Unify this computation with the above.
         let end = moment();
         let start = moment(end).startOf("day").subtract(30, "day");
         const allTags = getTagAndDescendantsRecursive(this.props.tag.id, this.props.tagsById);
@@ -273,7 +294,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
                             "title": "Hours",
                             "viewWindow": {"min": 0},
                         },
-                        "legend": {"position": "none"},
+                        "isStacked": true,
                     }}
                     data={chartData}
                     height={"300px"}

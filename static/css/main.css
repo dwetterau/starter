@@ -318,6 +318,15 @@ div.detail-container div.task-status div {
 
 div.detail-container div.task-status div.info-container {
     display: flex;
+    justify-content: space-between;
+}
+
+div.detail-container div.task-status div.info-container div:first-child {
+    width: 70%
+}
+
+div.detail-container div.task-status div.info-container div:last-child {
+    width: 30%
 }
 
 div.detail-container div.task-status div.task-color {
