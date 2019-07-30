@@ -168,6 +168,37 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         return buckets.reverse();
     }
 
+    pieChartData(eventIds: Array<number>) {
+        // TODO: Allow options for the time window to compute data for.
+        let end = moment();
+        let start = moment(end).startOf("day").subtract(30, "day");
+        const allTags = getTagAndDescendantsRecursive(this.props.tag.id, this.props.tagsById);
+        let tagToHours = {};
+        for (let tagId in allTags) {
+            tagToHours[tagId] = 0
+        }
+        for (let eventId of eventIds) {
+            const event = this.props.eventsById[eventId];
+            let contribution = this.computeDurationOfEventBetweenTimestamps(
+                event,
+                start.unix() * 1000,
+                end.unix() * 1000,
+            );
+            if (contribution == 0) {
+                continue;
+            }
+            // TODO: Maybe only portion the time to the deepest tag?
+            for (let tagId of event.tagIds) {
+                tagToHours[tagId] = contribution / event.tagIds.length / (60 * 60);
+            }
+        }
+        let buckets = [["Tag", "Hours"]];
+        for (let tagId in tagToHours) {
+            buckets.push([this.props.tagsById[tagId].name, tagToHours[tagId]]);
+        }
+        return buckets;
+    }
+
     renderOptions() {
         return <div className="options">
             <a className="close-button" onClick={this.props.closeCallback}>Close</a>
@@ -231,17 +262,28 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         let [timeSpentDay, timeSpentWeek, timeSpentLastWeek, timeSpentMonth] =
             this.computeSpentTimes(relevantEvents);
         let chartData = this.spentTimeGraphData(relevantEvents);
+        let pieChartData = this.pieChartData(relevantEvents);
         return <div className="time-info">
-            <Chart
-                chartType={"LineChart"}
-                options={{
-                    "curveType": "function",
-                    "vAxis": {"minValue": 0, "viewWindow": {"min": 0}},
-                }}
-                data={chartData}
-                width={"100%"}
-                height={"200px"}
-            />
+            <div className={"chart-container"}>
+                <Chart
+                    chartType={"AreaChart"}
+                    options={{
+                        "vAxis": {
+                            "minValue": 0,
+                            "title": "Hours",
+                            "viewWindow": {"min": 0},
+                        },
+                        "legend": {"position": "none"},
+                    }}
+                    data={chartData}
+                    height={"300px"}
+                />
+                <Chart
+                    chartType={"PieChart"}
+                    data={pieChartData}
+                    height={"300px"}
+                />
+            </div>
             {this.renderDurationWithName("Spent today", timeSpentDay)}
             {this.renderDurationWithName("Spent this week", timeSpentWeek)}
             {this.renderDurationWithName("Spent last week", timeSpentLastWeek)}
