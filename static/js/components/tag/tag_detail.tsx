@@ -189,7 +189,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
             }
             // TODO: Maybe only portion the time to the deepest tag?
             for (let tagId of event.tagIds) {
-                tagToHours[tagId] = contribution / event.tagIds.length / (60 * 60);
+                tagToHours[tagId] += contribution / event.tagIds.length / (60 * 60);
             }
         }
         let buckets = [["Tag", "Hours"]];
