@@ -6,6 +6,8 @@ import {Event, EventsById, Tag, TagsById} from "../../models";
 import {getTagAndDescendantsRecursive, renderDuration, getTagParentIds} from "../lib/util";
 import {TagComponent} from "./tag";
 
+const orderedColors =["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac", "#b77322", "#16d620", "#b91383", "#f4359e", "#9c5935", "#a9c413", "#2a778d", "#668d1c", "#bea413", "#0c5922", "#743411"];
+
 interface TagDetailProps {
     // TODO: Allow this to also show a tag for "everything" by being empty?
     tag: Tag,
@@ -150,8 +152,17 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         let curStart = moment().startOf("day");
         let curEnd = moment();
         const allTags = getTagAndDescendantsRecursive(this.props.tag.id, this.props.tagsById);
+        let sortedTags = [];
+        for (let tagId in allTags) {
+            sortedTags.push([this.props.tagsById[tagId].name, tagId])
+        }
+        sortedTags.sort((a, b) => {
+           return a[0].localeCompare(b[0]);
+        });
+
 
         // Compute buckets for the past 30 days;
+        let tagHasTime = {};
         for (let i = 0; i < 30; i++) {
             let tagToHours = {};
             for (let tagId in allTags) {
@@ -170,11 +181,12 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
                 }
                 total += curBucket / (60 * 60);
                 for (let tagId of event.tagIds) {
+                    tagHasTime[tagId] = true;
                     tagToHours[tagId] += curBucket / event.tagIds.length / (60 * 60);
                 }
             }
             let bucketValues = [curStart.toDate(), total];
-            for (let tagId in allTags) {
+            for (let [, tagId] of sortedTags) {
                 bucketValues.push(tagToHours[tagId])
             }
             buckets.push(bucketValues);
@@ -183,11 +195,22 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
             curStart = curStart.subtract(1, "day");
         }
         let headers = ["Date", "Total"];
-        for (let tagId in allTags) {
-            headers.push(this.props.tagsById[tagId].name)
+        for (let [name, ] of sortedTags) {
+            headers.push(name)
         }
         buckets.push(headers);
-        return buckets.reverse();
+        let withZeros = buckets.reverse();
+        for (let i = headers.length - 1; i > 1; i--) {
+            let [, tagId] = sortedTags[i-2];
+            if (tagHasTime[tagId]) {
+                continue
+            }
+            // Delete this column!
+            for (let j = 0; j < withZeros.length; j++) {
+                withZeros[j].splice(i, 1);
+            }
+        }
+        return withZeros;
     }
 
     pieChartData(eventIds: Array<number>) {
@@ -217,9 +240,17 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         }
         let buckets = [["Tag", "Hours"]];
         for (let tagId in tagToHours) {
+            if (!tagToHours[tagId]) {
+                continue;
+            }
             buckets.push([this.props.tagsById[tagId].name, tagToHours[tagId]]);
         }
-        return buckets;
+        return buckets.sort((a, b) => {
+            if (a[0] == "Tag") {
+                return -1
+            }
+            return a[0].localeCompare(b[0])
+        })
     }
 
     renderOptions() {
@@ -300,6 +331,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
                         "isStacked": false,
                         "responsive": true,
                         "maintainAspectRatio": false,
+                        "colors": orderedColors.slice(0, chartData[0].length-1),
                     }}
                     data={chartData}
                     height={"300px"}
@@ -312,6 +344,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
                     options={{
                         "responsive": true,
                         "maintainAspectRatio": false,
+                        "colors": orderedColors.slice(1,1+pieChartData.length-1),
                     }}
                     data={pieChartData}
                     height={"300px"}
