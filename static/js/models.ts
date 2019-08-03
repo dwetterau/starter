@@ -71,6 +71,8 @@ export class Event {
 
 export interface EventsById {[eventId: number]: Event}
 
+export const ROOT_TAG_ID = 0;
+
 export class Tag {
     readonly id: number;
     name: string;
@@ -80,6 +82,79 @@ export class Tag {
 }
 
 export interface TagsById {[tagId: number]: Tag}
+
+export function getRootTag(userID, allTags: Array<Tag>): Tag {
+    let tagsById = {};
+    for (let tag of allTags) {
+        tagsById[tag.id] = tag
+    }
+    return {
+        id: ROOT_TAG_ID,
+        name: "Root",
+        ownerId: userID,
+        color: "",
+        childTagIds: getTopmostTags(tagsById),
+    }
+}
+
+export function getTagAndDescendantsRecursive(tagId: number, tagsById: TagsById):
+    {[tagId: number]: boolean}
+{
+    const tagDescendantSet: {[tagId: number]: boolean} = {};
+    const queue: Array<number> = [tagId];
+    while (queue.length) {
+        const curTagId = queue.pop();
+        tagDescendantSet[curTagId] = true;
+        for (let tagId of tagsById[curTagId].childTagIds) {
+            if (!tagDescendantSet[tagId]) {
+                queue.push(tagId);
+            }
+        }
+    }
+    return tagDescendantSet;
+}
+
+export function getTagParentIds(tagId: number, tagsById: TagsById): Array<number> {
+    const tagParentIds: Array<number> = [];
+    for (let parentTagId of Object.keys(tagsById)) {
+        let parentTag: Tag = tagsById[parentTagId];
+        for (let childTagId of parentTag.childTagIds) {
+            if (childTagId == tagId) {
+                tagParentIds.push(parentTag.id);
+                break
+            }
+        }
+    }
+    return tagParentIds
+}
+
+// Initially we think that all tags are root tags.
+export function getTopmostTags(tagsById: TagsById): Array<number> {
+    const rootTagIds: { [tagId: string]: boolean } = {};
+    Object.keys(tagsById).forEach((tagId) => {
+        if (tagId == ROOT_TAG_ID + "") {
+            return
+        }
+        rootTagIds[tagId] = true;
+    });
+    Object.keys(tagsById).forEach((tagId) => {
+        if (tagId == ROOT_TAG_ID + "") {
+            return
+        }
+        const tag = tagsById[+tagId];
+        for (let childTagId of tag.childTagIds) {
+            if (rootTagIds.hasOwnProperty("" + childTagId)) {
+                delete rootTagIds[childTagId]
+            }
+        }
+    });
+
+    const rootTagIdList: Array<number> = [];
+    Object.keys(rootTagIds).forEach((rootTagId) => {
+        rootTagIdList.push(+rootTagId)
+    });
+    return rootTagIdList;
+}
 
 export class Note {
     readonly id: number;

@@ -73,7 +73,7 @@ export class App extends React.Component<AppProps, AppState> {
             tags: props.tags,
             notes: props.notes,
             captures: props.captures,
-            tagsById: API.getTagsById(props.tags),
+            tagsById: API.getTagsById(props.meUser.id, props.tags),
             eventsById: API.getEventsById(props.events),
             tasksById: API.getTasksById(props.tasks),
             notesById: API.getNotesById(props.notes),
@@ -255,7 +255,7 @@ export class App extends React.Component<AppProps, AppState> {
     updateStateWithTags(tags: Array<Tag>) {
         this.setState({
             tags: tags,
-            tagsById: API.getTagsById(tags),
+            tagsById: API.getTagsById(this.props.meUser.id, tags),
         })
     }
 
@@ -408,7 +408,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     renderDetail() {
-        if (this.state.detailInfo.taskId) {
+        if (this.state.detailInfo.taskId != null) {
             let task = this.state.tasksById[this.state.detailInfo.taskId];
             if (!task) {
                 console.error("Task not found to show detail for...");
@@ -421,7 +421,7 @@ export class App extends React.Component<AppProps, AppState> {
                 closeCallback={this.closeDetail.bind(this)}
                 editCallback={this.beginEditingSelectedTask.bind(this)}
             />
-        } else if (this.state.detailInfo.tagId) {
+        } else if (this.state.detailInfo.tagId != null) {
             let tag = this.state.tagsById[this.state.detailInfo.tagId];
             if (!tag) {
                 console.error("Tag not found to show detail for...");

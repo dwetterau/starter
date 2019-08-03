@@ -2,8 +2,8 @@ import * as moment from "moment";
 import * as React from "react"
 import { Chart } from "react-google-charts";
 
-import {Event, EventsById, Tag, TagsById} from "../../models";
-import {getTagAndDescendantsRecursive, renderDuration, getTagParentIds} from "../lib/util";
+import {Event, EventsById, Tag, TagsById, getTagAndDescendantsRecursive, getTagParentIds} from "../../models";
+import {renderDuration} from "../lib/util";
 import {TagComponent} from "./tag";
 
 const orderedColors =["#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00", "#b82e2e", "#316395", "#994499", "#22aa99", "#aaaa11", "#6633cc", "#e67300", "#8b0707", "#651067", "#329262", "#5574a6", "#3b3eac", "#b77322", "#16d620", "#b91383", "#f4359e", "#9c5935", "#a9c413", "#2a778d", "#668d1c", "#bea413", "#0c5922", "#743411"];
@@ -331,6 +331,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
                         "isStacked": false,
                         "responsive": true,
                         "maintainAspectRatio": false,
+                        "title": `Daily time spent tagged with "${this.props.tag.name}"`,
                         "colors": orderedColors.slice(0, chartData[0].length-1),
                     }}
                     data={chartData}
@@ -344,6 +345,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
                     options={{
                         "responsive": true,
                         "maintainAspectRatio": false,
+                        "title": `Total time breakdown for "${this.props.tag.name}"`,
                         "colors": orderedColors.slice(1,1+pieChartData.length-1),
                     }}
                     data={pieChartData}

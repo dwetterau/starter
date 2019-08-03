@@ -3,11 +3,11 @@ import * as moment from "moment";
 import * as React from "react";
 
 import {EditEventComponent} from "./edit_event"
-import {Event, User, TagsById, Tag, TasksById, Task, EventsById} from "../../models"
+import {Event, User, TagsById, Tag, TasksById, Task, EventsById, getTagAndDescendantsRecursive} from "../../models"
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
 import {ModalComponent} from "../lib/modal";
-import {debounce, getTagAndDescendantsRecursive} from "../lib/util";
+import {debounce} from "../lib/util";
 
 export interface CalendarProps {
     meUser: User,

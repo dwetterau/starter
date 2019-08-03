@@ -5,7 +5,7 @@ import * as moment from "moment";
 import {EditTaskComponent} from "./edit_task";
 import {
     Task, stateNameList, User, priorityNameList, TagsById, Tag, EventsById,
-    TasksById
+    TasksById, getTagAndDescendantsRecursive
 } from "../../models";
 import {TaskComponent} from "./task";
 import {TokenizerComponent, Tokenizable} from "../tokenizer";
@@ -13,7 +13,6 @@ import {ModalComponent} from "../lib/modal";
 import {
     signalDisplayTaskInfo, signalBeginEditingTask
 } from "../../events";
-import {getTagAndDescendantsRecursive} from "../lib/util";
 
 export interface TaskBoardProps {
     meUser: User,

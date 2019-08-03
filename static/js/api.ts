@@ -4,7 +4,7 @@ import {
     CapturesById,
     Event, EventsById,
     Note,
-    NotesById,
+    NotesById, getRootTag,
     Tag,
     TagsById,
     Task,
@@ -149,8 +149,10 @@ export class API {
         });
     }
 
-    static getTagsById(tags: Array<Tag>): TagsById {
+    static getTagsById(userID: number, tags: Array<Tag>): TagsById {
+        let rootTag = getRootTag(userID, tags);
         const tagsById: TagsById = {};
+        tagsById[rootTag.id] = rootTag;
         for (let tag of tags) {
             tagsById[tag.id] = tag;
         }
