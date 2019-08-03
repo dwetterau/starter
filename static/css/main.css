@@ -291,6 +291,10 @@ div.detail-container div.options a {
     cursor: pointer;
 }
 
+div.detail-container div.options a.days-button.selected {
+    font-weight: 600;
+}
+
 div.detail-container div.time-info {
     padding-top: .25em;
 }

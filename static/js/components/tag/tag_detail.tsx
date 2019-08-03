@@ -16,9 +16,19 @@ interface TagDetailProps {
     closeCallback: () => void,
 }
 
-export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
-    refreshLoopId = 0;
+interface TagDetailState {
+    graphWindowDays: number,
+}
 
+export class TagDetailComponent extends React.Component<TagDetailProps, TagDetailState> {
+    constructor(props: TagDetailProps) {
+        super(props);
+        this.state = {
+            graphWindowDays: 30,
+        }
+    }
+
+    refreshLoopId = 0;
     componentDidMount() {
         // Register a loop to keep refreshing the "time spent" estimates and percentage.
         let loop = () => {
@@ -161,9 +171,9 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         });
 
 
-        // Compute buckets for the past 30 days;
+        // Compute buckets for the past `n` days;
         let tagHasTime = {};
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < this.state.graphWindowDays; i++) {
             let tagToHours = {};
             for (let tagId in allTags) {
                 tagToHours[tagId] = 0
@@ -185,7 +195,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
                     tagToHours[tagId] += curBucket / event.tagIds.length / (60 * 60);
                 }
             }
-            let bucketValues = [curStart.toDate(), total];
+            let bucketValues = [curStart.toDate()];
             for (let [, tagId] of sortedTags) {
                 bucketValues.push(tagToHours[tagId])
             }
@@ -194,14 +204,14 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
             curEnd = moment(curStart);
             curStart = curStart.subtract(1, "day");
         }
-        let headers = ["Date", "Total"];
+        let headers = ["Date"];
         for (let [name, ] of sortedTags) {
             headers.push(name)
         }
         buckets.push(headers);
         let withZeros = buckets.reverse();
-        for (let i = headers.length - 1; i > 1; i--) {
-            let [, tagId] = sortedTags[i-2];
+        for (let i = headers.length - 1; i > 0; i--) {
+            let [, tagId] = sortedTags[i-1];
             if (tagHasTime[tagId]) {
                 continue
             }
@@ -217,7 +227,7 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         // TODO: Allow options for the time window to compute data for.
         // TODO: Unify this computation with the above.
         let end = moment();
-        let start = moment(end).startOf("day").subtract(30, "day");
+        let start = moment(end).startOf("day").subtract(this.state.graphWindowDays, "day");
         const allTags = getTagAndDescendantsRecursive(this.props.tag.id, this.props.tagsById);
         let tagToHours = {};
         for (let tagId in allTags) {
@@ -253,8 +263,21 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         })
     }
 
+    changeGraphDays(days: number) {
+        this.setState({graphWindowDays: days});
+    }
+
     renderOptions() {
+        const isSelected = (n: number) => {
+            if (n == this.state.graphWindowDays) {
+                return "days-button selected"
+            }
+            return "days-button";
+        };
         return <div className="options">
+            <a className={isSelected(7)} onClick={this.changeGraphDays.bind(this, 7)}>7d</a>
+            <a className={isSelected(14)} onClick={this.changeGraphDays.bind(this, 14)}>14d</a>
+            <a className={isSelected(30)} onClick={this.changeGraphDays.bind(this, 30)}>30d</a>
             <a className="close-button" onClick={this.props.closeCallback}>Close</a>
         </div>
     }
@@ -311,49 +334,57 @@ export class TagDetailComponent extends React.Component<TagDetailProps, {}> {
         </div>
     }
 
+    renderCharts(relevantEventIds: Array<number>) {
+        let chartData = this.spentTimeGraphData(relevantEventIds);
+        let pieChartData = this.pieChartData(relevantEventIds);
+        if (pieChartData.length == 1) {
+            // Hide all the charts if there's no data.
+            return
+        }
+        return <div className={"chart-container"}>
+            <div>
+            <Chart
+                chartType={"ColumnChart"}
+                options={{
+                    "vAxis": {
+                        "minValue": 0,
+                        "title": "Hours",
+                        "viewWindow": {"min": 0},
+                    },
+                    "isStacked": true,
+                    "responsive": true,
+                    "maintainAspectRatio": false,
+                    "title": `Daily time spent tagged with "${this.props.tag.name}"`,
+                    "colors": orderedColors.slice(0, chartData[0].length),
+                }}
+                data={chartData}
+                height={"300px"}
+                width={"100%"}
+            />
+            </div>
+            <div>
+            <Chart
+                chartType={"PieChart"}
+                options={{
+                    "responsive": true,
+                    "maintainAspectRatio": false,
+                    "title": `Total time breakdown for "${this.props.tag.name}"`,
+                    "colors": orderedColors.slice(0, pieChartData.length),
+                }}
+                data={pieChartData}
+                height={"300px"}
+                width={"100%"}
+            />
+            </div>
+        </div>
+    }
+
     renderTimeInfo() {
         let relevantEvents = this.computeAllRelevantEvents();
         let [timeSpentDay, timeSpentWeek, timeSpentLastWeek, timeSpentMonth] =
             this.computeSpentTimes(relevantEvents);
-        let chartData = this.spentTimeGraphData(relevantEvents);
-        let pieChartData = this.pieChartData(relevantEvents);
         return <div className="time-info">
-            <div className={"chart-container"}>
-                <div>
-                <Chart
-                    chartType={"AreaChart"}
-                    options={{
-                        "vAxis": {
-                            "minValue": 0,
-                            "title": "Hours",
-                            "viewWindow": {"min": 0},
-                        },
-                        "isStacked": false,
-                        "responsive": true,
-                        "maintainAspectRatio": false,
-                        "title": `Daily time spent tagged with "${this.props.tag.name}"`,
-                        "colors": orderedColors.slice(0, chartData[0].length-1),
-                    }}
-                    data={chartData}
-                    height={"300px"}
-                    width={"100%"}
-                />
-                </div>
-                <div>
-                <Chart
-                    chartType={"PieChart"}
-                    options={{
-                        "responsive": true,
-                        "maintainAspectRatio": false,
-                        "title": `Total time breakdown for "${this.props.tag.name}"`,
-                        "colors": orderedColors.slice(1,1+pieChartData.length-1),
-                    }}
-                    data={pieChartData}
-                    height={"300px"}
-                    width={"100%"}
-                />
-                </div>
-            </div>
+            {this.renderCharts(relevantEvents)}
             {this.renderDurationWithName("Spent today", timeSpentDay)}
             {this.renderDurationWithName("Spent this week", timeSpentWeek)}
             {this.renderDurationWithName("Spent last week", timeSpentLastWeek)}
