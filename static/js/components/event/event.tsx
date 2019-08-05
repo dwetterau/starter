@@ -31,8 +31,8 @@ export class EventComponent extends React.Component<EventProps, {}> {
     timeString() {
         const startMoment = moment(this.props.event.startTime);
 
-        // We render durations <= 30 minutes with just the start time.
-        if (this.props.event.durationSecs <= 30 * 60) {
+        // We render short events with just the start time.
+        if (this.isShortEvent()) {
             return this.shortTimeMoment(startMoment, true)
         }
         // Otherwise, we'll render "start - end"
@@ -57,7 +57,7 @@ export class EventComponent extends React.Component<EventProps, {}> {
         return <div className="name">
             {this.props.event.name}
         </div>
-    };
+    }
 
     renderTime() {
         return <div className="event-time-container">
@@ -65,8 +65,16 @@ export class EventComponent extends React.Component<EventProps, {}> {
         </div>
     }
 
-    renderNameAndTime() {
+    isShortEvent(): boolean {
         if (this.props.event.durationSecs > 30 * 60) {
+            return false;
+        }
+        return this.props.event.name.length <= 10;
+
+    }
+
+    renderNameAndTime() {
+        if (!this.isShortEvent()) {
             return <div className="event-name-and-time-container">
                 {this.renderName()}
                 {this.renderTime()}

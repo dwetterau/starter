@@ -197,6 +197,18 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return `${eventId}-${columnIndex}`
     }
 
+    static approximateMinCellHeight(event: Event): number {
+        let minHeight = MIN_CELL_HEIGHT;
+        let longName = event.name.length > 10;
+        if (longName) {
+            minHeight += MIN_CELL_HEIGHT;
+        }
+        if (event.tagIds.length > 1 || (longName && event.tagIds.length > 0)) {
+            minHeight += MIN_CELL_HEIGHT;
+        }
+        return minHeight;
+    }
+
     static divideAndSort(
         view: CalendarView,
         eventsById: EventsById,
@@ -339,7 +351,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 // TODO: Keep short end of day events from hanging off the end.
                 height = Math.round(
                     Math.max(
-                        Math.min(view.cellHeight, MIN_CELL_HEIGHT),
+                        CalendarComponent.approximateMinCellHeight(event),
                         (durationSecs / GRANULARITY) * view.cellHeight,
                     )
                 );
