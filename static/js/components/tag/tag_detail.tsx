@@ -197,6 +197,10 @@ export class TagDetailComponent extends React.Component<TagDetailProps, TagDetai
             }
             let bucketValues = [curStart.toDate()];
             for (let [, tagId] of sortedTags) {
+                if (!tagToHours[tagId]) {
+                    bucketValues.push(null);
+                    continue;
+                }
                 bucketValues.push(tagToHours[tagId])
             }
             buckets.push(bucketValues);
@@ -341,17 +345,22 @@ export class TagDetailComponent extends React.Component<TagDetailProps, TagDetai
             // Hide all the charts if there's no data.
             return
         }
+        let genAxis = () => {
+            return {
+                "minValue": 0,
+                "title": "Hours",
+                "viewWindow": {"min": 0},
+            }
+        };
+
         return <div className={"chart-container"}>
             <div>
             <Chart
-                chartType={"ColumnChart"}
+                chartType={"SteppedAreaChart"}
                 options={{
-                    "vAxis": {
-                        "minValue": 0,
-                        "title": "Hours",
-                        "viewWindow": {"min": 0},
-                    },
+                    vAxis: genAxis(),
                     "isStacked": true,
+                    "connectSteps": false,
                     "responsive": true,
                     "maintainAspectRatio": false,
                     "title": `Daily time spent tagged with "${this.props.tag.name}"`,

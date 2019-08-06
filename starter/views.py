@@ -266,6 +266,20 @@ def delete_task(request: HttpRequest) -> HttpResponse:
     return HttpResponse(json.dumps(dict(id=arguments["id"])), status=200)
 
 
+def _validate_event(args_to_objects, new_tags_by_id, new_tasks_by_id, request):
+    if request.user not in [args_to_objects["authorId"], args_to_objects["ownerId"]]:
+        return HttpResponse("Must create or edit events as owner or author".encode(), status=400)
+
+    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
+        return HttpResponse("Tag not found".encode(), status=400)
+
+    if any(task.owner_id != request.user.id for task in new_tasks_by_id.values()):
+        return HttpResponse("Task not found".encode(), status=400)
+
+    if not new_tags_by_id:
+        return HttpResponse("Events must have at least one tag.", status=400)
+
+
 @login_required(login_url=u'/auth/login')
 @require_http_methods(["POST"])
 def create_event(request: HttpRequest) -> HttpResponse:
@@ -295,14 +309,9 @@ def create_event(request: HttpRequest) -> HttpResponse:
     args_to_objects = dict(arguments)
 
     # Business logic checks
-    if args_to_objects["authorId"] != request.user:
-        return HttpResponse("Logged in user not the author".encode(), status=400)
-
-    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
-        return HttpResponse("Tag not found".encode(), status=400)
-
-    if any(task.owner_id != request.user.id for task in new_tasks_by_id.values()):
-        return HttpResponse("Task not found".encode(), status=400)
+    error = _validate_event(args_to_objects, new_tags_by_id, new_tasks_by_id, request)
+    if error:
+        return error
 
     event = Event.objects.create(
         name=args_to_objects["name"],
@@ -351,18 +360,12 @@ def update_event(request: HttpRequest) -> HttpResponse:
     args_to_objects = dict(arguments)
 
     # Business logic checks
-    if request.user not in [args_to_objects["authorId"], args_to_objects["ownerId"]]:
-        return HttpResponse("Must edit as owner or author".encode(), status=400)
-
     event = Event.get_by_local_id(args_to_objects["id"], request.user)
     if not event or event.author != args_to_objects["authorId"]:
         return HttpResponse("Invalid event specified.".encode(), status=400)
-
-    if any(tag.owner_id != request.user.id for tag in new_tags_by_id.values()):
-        return HttpResponse("Tag not found".encode(), status=400)
-
-    if any(task.owner_id != request.user.id for task in new_tasks_by_id.values()):
-        return HttpResponse("Task not found".encode(), status=400)
+    error = _validate_event(args_to_objects, new_tags_by_id, new_tasks_by_id, request)
+    if error:
+        return error
 
     # Copy in all the mutable fields
     event.name = args_to_objects["name"]
