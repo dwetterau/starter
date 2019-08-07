@@ -52,10 +52,11 @@ export enum CalendarViewType {
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-const GRANULARITY = 1800; // Each cell is 30 minutes (unit in seconds)
+const GRANULARITY = 60 * 60; // Each cell is 60 minutes (unit in seconds)
+const MIN_EVENT_DURATION = 15 * 60;
 
-const DEFAULT_CELL_HEIGHT = 25;
-const MIN_CELL_HEIGHT = 20;
+const DEFAULT_CELL_HEIGHT = 50;
+const MIN_CELL_HEIGHT = 40;
 const FAKE_EVENT_ID = -1;
 
 interface EventRenderingInfo {
@@ -572,8 +573,18 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         this.setState({editingEvent: event});
     }
 
-    computeTimestamp(day: string, index: number): number {
+    computeTimestamp(day: string, index: number, percentage: number): number {
         let offset = index;
+        // Let's do some buckets based on percentage
+        if (percentage >= .125 && percentage < .375) {
+            offset += GRANULARITY * .25
+        } else if (percentage >= .375 && percentage < .625) {
+            offset += GRANULARITY * .5
+        } else if (percentage >= .625 && percentage < .875) {
+            offset += GRANULARITY * .75
+        } else if (percentage >= .875) {
+            offset += GRANULARITY
+        }
 
         if (this.props.view.type == CalendarViewType.week) {
             DAYS.forEach((curDay: string, i: number) => {
@@ -587,9 +598,21 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         return moment(this.props.view.startDayTimestamp).add(offset, "seconds").unix() * 1000;
     }
 
+    getPercentageFromEvent(event: any) {
+        let e = event;
+        if (e.offsetY == undefined && window.event) {
+            e = window.event;
+        }
+        if (!e.offsetY) {
+            // TODO: Sort out what to do in these cases. I think it's debounce related.
+            return 0
+        }
+        return e.offsetY / this.props.view.cellHeight
+    }
+
     columnMouseDown(day: string, event: any) {
         let index = event.target.dataset.index * 1;
-        const draggingStartTimestamp = this.computeTimestamp(day, index);
+        const draggingStartTimestamp = this.computeTimestamp(day, index, this.getPercentageFromEvent(event));
         const draggingEndTimestamp = this.state.draggingStartTimestamp;
         this.setState({
             draggingStartTimestamp,
@@ -621,7 +644,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return
         }
         let index = event.target.dataset.index * 1;
-        this.updatePendingCreateEvent(day, index);
+        let timestamp = this.computeTimestamp(day, index, this.getPercentageFromEvent(event));
+        this.updatePendingCreateEvent(timestamp);
     }
 
     injectUpdatedEvent(event: Event): [Array<Array<number>>, {[eventId: string]: EventRenderingInfo}] {
@@ -638,15 +662,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         );
     }
 
-    updatePendingCreateEvent(day: string, index: number) {
-        const draggingEndTimestamp = this.computeTimestamp(day, index);
+    updatePendingCreateEvent(timestamp: number) {
         const createEventTimestamp = CalendarComponent.getCreateEventTimestamp(
             this.state.draggingStartTimestamp,
-            draggingEndTimestamp,
+            timestamp,
         );
         const createEventDurationSecs = CalendarComponent.getCreateEventDurationSecs(
             this.state.draggingStartTimestamp,
-            draggingEndTimestamp,
+            timestamp,
         );
 
         // This re-build is pretty expensive, so skip all of it if we can.
@@ -674,20 +697,20 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             return
         }
         let index = event.target.dataset.index * 1;
-        this.finishPendingCreateEvent(day, index);
+        let timestamp = this.computeTimestamp(day, index,this.getPercentageFromEvent(event) );
+        this.finishPendingCreateEvent(timestamp);
     }
 
-    finishPendingCreateEvent(day: string, index: number) {
-        const draggingEndTimestamp = this.computeTimestamp(day, index);
+    finishPendingCreateEvent(timestamp: number) {
         this.setState({
             draggingStartTimestamp: null,
             createEventTimestamp: CalendarComponent.getCreateEventTimestamp(
                 this.state.draggingStartTimestamp,
-                draggingEndTimestamp,
+                timestamp,
             ),
             createEventDurationSecs: CalendarComponent.getCreateEventDurationSecs(
                 this.state.draggingStartTimestamp,
-                draggingEndTimestamp,
+                timestamp,
             ),
             showCreate: true,
         });
@@ -706,22 +729,28 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
     ): number {
         let duration = Math.abs(draggingStartTimestamp - draggingEndTimestamp);
         duration /= 1000; // convert to seconds
-        duration += GRANULARITY; // dragging to the same cell means to make duration equal to GRANULARITY
+        duration = Math.max(duration, MIN_EVENT_DURATION);
         return duration;
     }
 
-    onDrop(day: string, index: number) {
+    onDrop(day: string, index: number, e: any, percentage: number) {
+        if (percentage == undefined) {
+            percentage = this.getPercentageFromEvent(e);
+        }
+        let timestamp = this.computeTimestamp(day, index, percentage);
         if (this.state.draggingEvent) {
             // Update the event with the new timestamp
             let eventToUpdate = this.state.draggingEvent;
-            eventToUpdate.startTime = this.computeTimestamp(day, index);
+            eventToUpdate.startTime = timestamp;
             this.props.updateEvent(eventToUpdate);
 
             this.setState({draggingEvent: null});
         } else if (this.state.endDraggingEvent) {
-            const timestamp = this.computeTimestamp(day, index);
             let newDuration = timestamp - this.state.endDraggingEvent.startTime;
-            newDuration = Math.max(Math.round(newDuration / 1000) + GRANULARITY, GRANULARITY);
+            newDuration = Math.max(
+                Math.round(newDuration / 1000),
+                MIN_EVENT_DURATION,
+            );
 
             let eventToUpdate = this.state.endDraggingEvent;
             eventToUpdate.durationSecs = newDuration;
@@ -729,14 +758,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
             this.setState({endDraggingEvent: null});
         } else if (this.state.draggingStartTimestamp) {
-            this.finishPendingCreateEvent(day, index);
+            this.finishPendingCreateEvent(timestamp);
         } else {
             // No event was being dragged
             return
         }
     }
 
-    getDayAndIndexUnderneathEvent(event: any, callback: (day: string, index: number) => void) {
+    getDayAndIndexUnderneathEvent(event: any, callback: (day: string, index: number, event: any, percentage: number) => void) {
         const xPos = event.clientX;
         const yPos = event.clientY;
 
@@ -746,7 +775,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         if (dropTargetBelow.prop("tagName") == "TD") {
             // Great, we found a cell that we can actually finish dropping into
             const data = dropTargetBelow.data();
-            callback(data.day, data.index);
+            const percentage = (yPos - dropTargetBelow.offset().top) / this.props.view.cellHeight;
+            callback(data.day, data.index, null, percentage);
         }
 
         // Show the element again
@@ -805,17 +835,18 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         });
     }
 
-    onDragOver(day: string, index: number, event: any) {
+    onDragOver(day: string, index: number, event: any, percentage: number) {
         // Watch out: This function is abused and needs refactoring. Event might be undefined,
         // index might be -1. Not at the same time though.
         if (event) {
-            event.preventDefault()
+            event.preventDefault();
         }
         if (index == -1) {
             index = event.target.dataset.index * 1;
+            percentage = this.getPercentageFromEvent(event);
         }
+        let timestamp = this.computeTimestamp(day, index, percentage);
         if (this.state.draggingEvent) {
-            const timestamp = this.computeTimestamp(day, index);
             if (this.state.draggingEvent.startTime == timestamp) {
                 return
             }
@@ -828,9 +859,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 draggingEvent: toModify,
             });
         } else if (this.state.endDraggingEvent) {
-            const timestamp = this.computeTimestamp(day, index);
             let newDuration = timestamp - this.state.endDraggingEvent.startTime;
-            newDuration = Math.max(Math.round(newDuration / 1000) + GRANULARITY, GRANULARITY);
+            newDuration = Math.max(
+                Math.round(newDuration / 1000),
+                MIN_EVENT_DURATION,
+            );
             if (newDuration == this.state.endDraggingEvent.durationSecs) {
                 return;
             }
@@ -843,7 +876,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 endDraggingEvent: toModify,
             });
         } else if (this.state.draggingStartTimestamp) {
-            this.updatePendingCreateEvent(day, index);
+            this.updatePendingCreateEvent(timestamp);
         } else {
             // Nothing being dragged
             return
@@ -1047,7 +1080,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             let className = "";
             if (day == "times") {
                 let timeHeader = "";
-                if (index % (GRANULARITY * 2) == 0) {
+                if (index % GRANULARITY == 0) {
                     timeHeader = moment(this.props.view.startDayTimestamp)
                         .add(index, "seconds").format("h:mm a");
                 }

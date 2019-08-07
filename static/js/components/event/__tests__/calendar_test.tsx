@@ -42,7 +42,7 @@ function standardView(): CalendarView {
     return {
         type: CalendarViewType.day,
         startDayTimestamp: MOCK_UNIX_TIMESTAMP_MILLIS,
-        cellHeight: 25,
+        cellHeight: 50,
         initial: false,
     }
 }

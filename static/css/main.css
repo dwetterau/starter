@@ -480,10 +480,6 @@ div.calendar div.column-container.single-day td {
     min-width: 360px;
 }
 
-div.calendar div.column-container tr:nth-child(odd) td {
-    border-bottom-style: none;
-}
-
 div.calendar div.column-container tr:last-child td {
     border-bottom-style: none;
 }
