@@ -208,7 +208,8 @@ export class TokenizerComponent extends React.Component<TokenizerProps, Tokenize
                 ),
             });
         } else if (event.key == "Enter") {
-            if (this.state.autoCompleteTokens.length >= 1 && !this.state.selectedTokenIndex) {
+            if ((this.state.autoCompleteTokens.length > 1 && !this.state.selectedTokenIndex) ||
+                    this.state.autoCompleteTokens.length == 1) {
                 this.setState({selectedTokenIndex: 0});
                 return;
             }
