@@ -7,7 +7,6 @@ import {Event, User, TagsById, Tag, TasksById, Task, EventsById, getTagAndDescen
 import {Tokenizable, TokenizerComponent} from "../tokenizer";
 import {EventComponent} from "./event";
 import {ModalComponent} from "../lib/modal";
-import {debounce} from "../lib/util";
 
 export interface CalendarProps {
     meUser: User,
@@ -56,7 +55,7 @@ const GRANULARITY = 60 * 60; // Each cell is 60 minutes (unit in seconds)
 const MIN_EVENT_DURATION = 15 * 60;
 
 const DEFAULT_CELL_HEIGHT = 50;
-const MIN_CELL_HEIGHT = 40;
+const MIN_EVENT_HEIGHT = 25;
 const FAKE_EVENT_ID = -1;
 
 interface EventRenderingInfo {
@@ -340,7 +339,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 // TODO: Keep short end of day events from hanging off the end.
                 height = Math.round(
                     Math.max(
-                        Math.min(view.cellHeight, MIN_CELL_HEIGHT),
+                        Math.min(view.cellHeight, MIN_EVENT_HEIGHT),
                         (durationSecs / GRANULARITY) * view.cellHeight,
                     )
                 );
@@ -1115,7 +1114,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 cellPadding="0"
                 cellSpacing="0"
                 onMouseDown={this.columnMouseDown.bind(this, day)}
-                onMouseOver={debounce(this.columnMouseMove.bind(this, day), 50)}
+                onMouseOver={this.columnMouseMove.bind(this, day)}
                 onMouseUp={this.columnMouseUp.bind(this, day)}
                 onDragOver={this.onDragOver.bind(this, day, -1)}
             >
@@ -1230,7 +1229,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         style={style}
                         onDrop={this.onDropPassThrough.bind(this)}
                         onDragOver={this.onDragOverPassThrough.bind(this)}
-                        onMouseMove={debounce(this.onDragOverPassThrough.bind(this), 50)}
+                        onMouseMove={this.onDragOverPassThrough.bind(this)}
                         onMouseUp={this.onDropPassThrough.bind(this)}
                     >
                         <div
