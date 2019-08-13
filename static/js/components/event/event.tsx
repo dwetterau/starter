@@ -31,8 +31,8 @@ export class EventComponent extends React.Component<EventProps, {}> {
     timeString() {
         const startMoment = moment(this.props.event.startTime);
 
-        // We render durations <= 30 minutes with just the start time.
-        if (this.props.event.durationSecs <= 30 * 60) {
+        // We render durations <= 15 minutes with just the start time.
+        if (this.props.event.durationSecs <= 15 * 60) {
             return this.shortTimeMoment(startMoment, true)
         }
         // Otherwise, we'll render "start - end"

@@ -319,13 +319,14 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 let top = null;
                 let height = null;
                 let event = eventsById[eventId];
+                let eps = 1e-6;
                 if (event.startTime < columnStartTime) {
                     // event started on a previous day.
                     top = 0;
                 } else {
                     // event must start somewhere during this day.
                     let percentage = (event.startTime - columnStartTime) / (86400 * 1000);
-                    top = Math.round(percentage * view.cellHeight * (86400 / GRANULARITY));
+                    top = Math.round(percentage * view.cellHeight * (86400 / GRANULARITY) + eps);
                 }
                 let realEndTimestamp = Math.min(
                     event.startTime + (event.durationSecs * 1000),
@@ -337,10 +338,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                     durationSecs -= (columnStartTime - event.startTime) / 1000;
                 }
                 // TODO: Keep short end of day events from hanging off the end.
-                height = Math.round(
+                // Note: We want to floor this to make sure that we don't accidentally overlap.
+                height = Math.floor(
                     Math.max(
                         Math.min(view.cellHeight, MIN_EVENT_HEIGHT),
-                        (durationSecs / GRANULARITY) * view.cellHeight,
+                        (durationSecs / GRANULARITY) * view.cellHeight + eps,
                     )
                 );
 
