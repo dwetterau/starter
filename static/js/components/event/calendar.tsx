@@ -51,11 +51,18 @@ export enum CalendarViewType {
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+// TODO: Expand this so each day's column is only one cell
 const GRANULARITY = 60 * 60; // Each cell is 60 minutes (unit in seconds)
+
+// Used during new event creation to prevent "too short" of events. Not a hard limit.
 const MIN_EVENT_DURATION = 15 * 60;
 
+// The default size for a cell.
+// TODO: Decouple this from granularity to have it keep reprsenting the size of each day.
 const DEFAULT_CELL_HEIGHT = 50;
-const MIN_EVENT_HEIGHT = 25;
+
+// Never use fewer than this many pixels for an event.
+const MIN_EVENT_HEIGHT = 20;
 const FAKE_EVENT_ID = -1;
 
 interface EventRenderingInfo {
@@ -641,11 +648,13 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     columnMouseMove(day: string, event: any) {
         if (!this.state.draggingStartTimestamp) {
+            console.log("no starting timestamp");
             // No dragging was happening, nothing to do.
             return
         }
         let index = event.target.dataset.index * 1;
         let timestamp = this.computeTimestamp(day, index, this.getPercentageFromEvent(event));
+        console.log("computed timestamp as", timestamp);
         this.updatePendingCreateEvent(timestamp);
     }
 
@@ -676,8 +685,10 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         // This re-build is pretty expensive, so skip all of it if we can.
         if (this.state.createEventTimestamp == createEventTimestamp &&
             this.state.createEventDurationSecs == createEventDurationSecs) {
+            console.log("We think this event is the same.");
             return
         }
+        console.log("We're reflowing all events....");
 
         // Inject a fake event for the one we're creating.
         const [columns, eventToRenderingInfo] = this.injectUpdatedEvent(
@@ -1116,7 +1127,7 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                 cellPadding="0"
                 cellSpacing="0"
                 onMouseDown={this.columnMouseDown.bind(this, day)}
-                onMouseOver={this.columnMouseMove.bind(this, day)}
+                onMouseMove={this.columnMouseMove.bind(this, day)}
                 onMouseUp={this.columnMouseUp.bind(this, day)}
                 onDragOver={this.onDragOver.bind(this, day, -1)}
             >

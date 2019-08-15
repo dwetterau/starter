@@ -116,7 +116,7 @@ exports[`Empty Calendar App: empty day view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -395,7 +395,7 @@ exports[`Empty Calendar App: empty day view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -947,7 +947,7 @@ exports[`Empty Calendar App: empty week view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -1226,7 +1226,7 @@ exports[`Empty Calendar App: empty week view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -1636,7 +1636,7 @@ exports[`Empty Calendar App: empty week view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -2035,7 +2035,7 @@ exports[`Empty Calendar App: empty week view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -2434,7 +2434,7 @@ exports[`Empty Calendar App: empty week view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -2833,7 +2833,7 @@ exports[`Empty Calendar App: empty week view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -3232,7 +3232,7 @@ exports[`Empty Calendar App: empty week view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -3631,7 +3631,7 @@ exports[`Empty Calendar App: empty week view 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -4144,7 +4144,7 @@ exports[`Event color rendering: Event with default color 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -4423,7 +4423,7 @@ exports[`Event color rendering: Event with default color 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -5004,7 +5004,7 @@ exports[`Event color rendering: Event with direct color #111 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -5283,7 +5283,7 @@ exports[`Event color rendering: Event with direct color #111 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -5877,7 +5877,7 @@ exports[`Event color rendering: Event with inherited color #000 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -6156,7 +6156,7 @@ exports[`Event color rendering: Event with inherited color #000 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -6750,7 +6750,7 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -7029,7 +7029,7 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -7667,7 +7667,7 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -7946,7 +7946,7 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -8698,7 +8698,7 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
@@ -8977,7 +8977,7 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
             cellSpacing="0"
             onDragOver={[Function]}
             onMouseDown={[Function]}
-            onMouseOver={[Function]}
+            onMouseMove={[Function]}
             onMouseUp={[Function]}
           >
             <tbody>
