@@ -4844,7 +4844,6 @@ exports[`Event color rendering: Event with default color 1`] = `
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -4877,7 +4876,6 @@ exports[`Event color rendering: Event with default color 1`] = `
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -5704,7 +5702,6 @@ exports[`Event color rendering: Event with direct color #111 1`] = `
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -5750,7 +5747,6 @@ exports[`Event color rendering: Event with direct color #111 1`] = `
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -6577,7 +6573,6 @@ exports[`Event color rendering: Event with inherited color #000 1`] = `
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -6623,7 +6618,6 @@ exports[`Event color rendering: Event with inherited color #000 1`] = `
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -7450,7 +7444,6 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -7483,7 +7476,6 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -7507,7 +7499,6 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -7540,7 +7531,6 @@ exports[`Event overlap snapshot cases: One overlapping 1 hour event 1`] = `
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -8367,7 +8357,6 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -8400,7 +8389,6 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -8424,7 +8412,6 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -8457,7 +8444,6 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -8481,7 +8467,6 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -8514,7 +8499,6 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -8538,7 +8522,6 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -8571,7 +8554,6 @@ exports[`Event overlap snapshot cases: Three columns of events 1`] = `
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -9398,7 +9380,6 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -9431,7 +9412,6 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>
@@ -9455,7 +9435,6 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
               className="rendered-event card"
               draggable={true}
               onDoubleClick={[Function]}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
               style={
                 Object {
@@ -9488,7 +9467,6 @@ exports[`Event overlap snapshot cases: Two exactly-overlapping 1 hour events 1`]
             <div
               className="draggable-event-end"
               draggable={true}
-              onDragEnd={[Function]}
               onDragStart={[Function]}
             />
           </div>

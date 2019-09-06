@@ -648,13 +648,11 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
     columnMouseMove(day: string, event: any) {
         if (!this.state.draggingStartTimestamp) {
-            console.log("no starting timestamp");
             // No dragging was happening, nothing to do.
             return
         }
         let index = event.target.dataset.index * 1;
         let timestamp = this.computeTimestamp(day, index, this.getPercentageFromEvent(event));
-        console.log("computed timestamp as", timestamp);
         this.updatePendingCreateEvent(timestamp);
     }
 
@@ -685,10 +683,8 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         // This re-build is pretty expensive, so skip all of it if we can.
         if (this.state.createEventTimestamp == createEventTimestamp &&
             this.state.createEventDurationSecs == createEventDurationSecs) {
-            console.log("We think this event is the same.");
             return
         }
-        console.log("We're reflowing all events....");
 
         // Inject a fake event for the one we're creating.
         const [columns, eventToRenderingInfo] = this.injectUpdatedEvent(
@@ -755,8 +751,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             let eventToUpdate = this.state.draggingEvent;
             eventToUpdate.startTime = timestamp;
             this.props.updateEvent(eventToUpdate);
-
-            this.setState({draggingEvent: null});
         } else if (this.state.endDraggingEvent) {
             let newDuration = timestamp - this.state.endDraggingEvent.startTime;
             newDuration = Math.max(
@@ -767,8 +761,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
             let eventToUpdate = this.state.endDraggingEvent;
             eventToUpdate.durationSecs = newDuration;
             this.props.updateEvent(eventToUpdate);
-
-            this.setState({endDraggingEvent: null});
         } else if (this.state.draggingStartTimestamp) {
             this.finishPendingCreateEvent(timestamp);
         } else {
@@ -818,16 +810,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
         dragEvent.dataTransfer.setDragImage(new Image(), 0, 0);
     }
 
-    onDragEnd(event: Event) {
-        if (!this.state.draggingEvent || this.state.draggingEvent.id != event.id) {
-            return
-        }
-
-        this.setState({
-            draggingEvent: null,
-        });
-    }
-
     onEventEndDragStart(event: Event, dragEvent: DragEvent) {
         if (this.state.endDraggingEvent || this.state.draggingEvent) {
             throw Error("Already dragging an event...");
@@ -835,16 +817,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
 
         this.setState({endDraggingEvent: Event.clone(event)});
         dragEvent.dataTransfer.setData('text/html', null);
-    }
-
-    onEventEndDragEnd(event: Event) {
-        if (!this.state.endDraggingEvent || this.state.endDraggingEvent.id != event.id) {
-            return
-        }
-
-        this.setState({
-            endDraggingEvent: null,
-        });
     }
 
     onDragOver(day: string, index: number, event: any, percentage: number) {
@@ -1249,7 +1221,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                             className="rendered-event card"
                             draggable={true}
                             onDragStart={this.onDragStart.bind(this, event)}
-                            onDragEnd={this.onDragEnd.bind(this, event)}
                             onDoubleClick={this.onDoubleClick.bind(this, event)}
                             style={{"background": this.computeColor(event)}}
                         >
@@ -1261,7 +1232,6 @@ export class CalendarComponent extends React.Component<CalendarProps, CalendarSt
                         <div className="draggable-event-end"
                              draggable={true}
                              onDragStart={this.onEventEndDragStart.bind(this, event)}
-                             onDragEnd={this.onEventEndDragEnd.bind(this, event)}
                         />
                     </div>
                 );

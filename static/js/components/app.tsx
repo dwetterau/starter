@@ -133,6 +133,7 @@ export class App extends React.Component<AppProps, AppState> {
         // the editors :(
         // TODO: What if we haven't cleared the last one?
         this._apiError = apiError;
+        this._apiRequestMessage = null;
 
         // Clear out the error in a few seconds
         setTimeout(() => {
@@ -150,6 +151,15 @@ export class App extends React.Component<AppProps, AppState> {
         ).removeClass("hidden");
     }
 
+    // Note: This stuff isn't using react because doing that reflows the dom too early and
+    // breaks creation states.
+    // A successful request will clear out the toast when the dom reflows.
+    _apiRequestMessage: string = null;
+    startRequestToast(startMessage: string) {
+        this._apiRequestMessage = startMessage;
+        jQuery("#toast-container").html(startMessage).removeClass("hidden")
+    }
+
     // API-style methods for updating global state.
     updateStateWithTasks(tasks: Array<Task>) {
         this.setState({
@@ -165,6 +175,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     updateTask(task: Task) {
+        this.startRequestToast("Updating task...");
         API.updateTask(task, (updatedTask) => {
             const newTasks = this.state.tasks.map((task: Task) => {
                 if (task.id == updatedTask.id) {
@@ -178,6 +189,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     deleteTask(task: Task) {
+        this.startRequestToast("Deleting task...");
         API.deleteTask(task, (deletedTask) => {
             this.updateStateWithTasks(this.state.tasks.filter((task: Task) => {
                 return task.id != deletedTask.id;
@@ -217,6 +229,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     createEvent(event: Event) {
+        this.startRequestToast("Creating event...");
         API.createEvent(event, (event) => {
             this.updateStateWithEvents(
                 event,
@@ -227,6 +240,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     updateEvent(event: Event) {
+        this.startRequestToast("Updating event...");
         API.updateEvent(event, (updatedEvent) => {
             let updatedEvents = this.state.events.map((event: Event) => {
                 if (event.id == updatedEvent.id) {
@@ -244,6 +258,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     deleteEvent(event: Event) {
+        this.startRequestToast("Deleting event...");
         API.deleteEvent(event, (deletedEvent) => {
             const events = this.state.events.filter((event: Event) => {
                 return event.id != deletedEvent.id;
