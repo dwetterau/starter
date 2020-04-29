@@ -6,7 +6,7 @@
     "@types/react-router-dom": "^4.3.4",
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "linkify-it": "^2.2.0",
     "moment": "^2.24.0",
     "react": "^16.8.6",
