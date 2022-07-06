@@ -8,7 +8,7 @@
     "file-loader": "^1.1.11",
     "jquery": "^3.4.1",
     "linkify-it": "^2.2.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "react": "^16.8.6",
     "react-datetime": "^2.16.3",
     "react-dom": "^16.8.6",
